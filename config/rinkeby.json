@@ -3,5 +3,8 @@
   "address_projects": "0x34A1d33e49907ADFE05fb4E21411a06a8c4300eE",
   "startBlock_projects": 9115779,
   "address_terminalV1": "0x9A5EbE744DF7B66E8Bdd41DB8d6C52073556eD93",
-  "startBlock_terminalV1": 9115779
+  "startBlock_terminalV1": 9115779,
+  "address_ticketBooth": "0x0d038636a670E8bd8cF7D56BC4626f2a6446cF11",
+  "startBlock_ticketBooth": 9115779,
+  "projectTokens": []
 }

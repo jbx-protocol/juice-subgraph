@@ -27,6 +27,28 @@ dataSources:
           handler: handleSetUri
       file: ./src/mapping.ts
   - kind: ethereum/contract
+    name: TicketBooth
+    network: {{network}}
+    source:
+      address: '{{address_ticketBooth}}'
+      abi: TicketBooth
+      startBlock: {{startBlock_ticketBooth}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - TokenHolder
+      abis:
+        - name: TicketBooth
+          file: ./abis/TicketBooth.json
+      eventHandlers:
+        - event: Print(indexed address,indexed uint256,uint256,bool,bool,address)
+          handler: handlePrint
+        - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
+          handler: handleTicketTransfer
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
     name: TerminalV1
     network: {{network}}
     source:
@@ -44,6 +66,7 @@ dataSources:
         - PrintPremineEvent
         - TapEvent
         - RedeemEvent
+        - TokenHolder
         - PrintReservesEvent
         - DistributeToPayoutModEvent
         - DistributeToTicketModEvent
@@ -68,3 +91,27 @@ dataSources:
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
       file: ./src/mapping.ts
+  {{ #projectTokens }}
+  {{ #address  }} # Only add contract reference for tokens with address
+  - kind: ethereum/contract
+    name: {{name}}
+    network: {{network}}
+    source:
+      address: '{{address}}'
+      abi: {{name}}
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - TokenHolder
+      abis:
+        - name: {{name}}
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handle{{name}}Transfer
+      file: ./src/ERC20Tokens.ts
+  {{ /address }}
+  {{ /projectTokens }}

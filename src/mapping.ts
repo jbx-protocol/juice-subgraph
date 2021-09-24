@@ -11,6 +11,7 @@ import {
   Project,
   RedeemEvent,
   TapEvent,
+  TokenHolder,
 } from "../generated/schema";
 import {
   AddToBalance,
@@ -30,6 +31,8 @@ import {
   SetYielder,
   Tap,
 } from "../generated/TerminalV1/TerminalV1";
+import { Print, Transfer } from "../generated/TicketBooth/TicketBooth";
+import { hasTrackedTokens } from "./utils";
 
 /**
  * Check health of deployed subgraph
@@ -163,6 +166,16 @@ export function handleRedeem(event: Redeem): void {
     event.params.returnAmount
   );
   project.save();
+
+  if (hasTrackedTokens(event.params._projectId)) {
+    let tokenHolder = TokenHolder.load(
+      event.params._projectId.toHexString() +
+        "-" +
+        event.params.holder.toHexString()
+    );
+    tokenHolder.balance = tokenHolder.balance.minus(event.params.amount);
+    tokenHolder.save();
+  }
 }
 
 export function handlePrintReserveTickets(event: PrintReserveTickets): void {
@@ -200,6 +213,61 @@ export function handleAddToBalance(event: AddToBalance): void {
   let project = Project.load(event.params.projectId.toHexString());
   project.currentBalance = project.currentBalance.plus(event.params.value);
   project.save();
+}
+
+export function handlePrint(event: Print): void {
+  if (!hasTrackedTokens(event.params.projectId)) return;
+
+  let id =
+    event.params.projectId.toHexString() +
+    "-" +
+    event.params.holder.toHexString();
+
+  let tokenHolder = TokenHolder.load(id);
+
+  if (!tokenHolder) {
+    tokenHolder = new TokenHolder(id);
+    tokenHolder.project = event.params.projectId.toHexString();
+    tokenHolder.balance = new BigInt(0);
+    tokenHolder.address = event.params.holder;
+  }
+
+  tokenHolder.balance = tokenHolder.balance.plus(event.params.amount);
+
+  tokenHolder.save();
+}
+
+export function handleTicketTransfer(event: Transfer): void {
+  if (!hasTrackedTokens(event.params.projectId)) return;
+
+  let senderTokenHolder = TokenHolder.load(
+    event.params.projectId.toHexString() +
+      "-" +
+      event.params.holder.toHexString()
+  );
+
+  let receiverId =
+    event.params.projectId.toHexString() +
+    "-" +
+    event.params.recipient.toHexString();
+  let receiverTokenHolder = TokenHolder.load(receiverId);
+
+  if (!receiverTokenHolder) {
+    receiverTokenHolder = new TokenHolder(receiverId);
+    receiverTokenHolder.project = event.params.projectId.toHexString();
+    receiverTokenHolder.address = event.params.recipient;
+    receiverTokenHolder.balance = new BigInt(0);
+  }
+
+  receiverTokenHolder.balance = receiverTokenHolder.balance.plus(
+    event.params.amount
+  );
+  senderTokenHolder.balance = senderTokenHolder.balance.minus(
+    event.params.amount
+  );
+
+  senderTokenHolder.save();
+  receiverTokenHolder.save();
 }
 
 export function handleDistributeToPayoutMod(

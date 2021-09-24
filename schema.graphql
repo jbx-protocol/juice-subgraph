@@ -28,6 +28,13 @@ type PayerReport @entity {
   lastPaidTimestamp: BigInt!
 }
 
+type TokenHolder @entity {
+  id: ID!
+  project: Project!
+  address: Bytes!
+  balance: BigInt!
+}
+
 type PayEvent @entity {
   id: ID!
   project: Project!
