@@ -1,6 +1,25 @@
 specVersion: 0.0.1
 schema:
   file: ./schema.graphql
+templates:
+  - name: TreasuryToken
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/erc20.ts
+      entities:
+        - Exchange
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
 dataSources:
   - kind: ethereum/contract
     name: Projects
@@ -11,7 +30,7 @@ dataSources:
       startBlock: {{startBlock_projects}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - Project
@@ -25,7 +44,7 @@ dataSources:
           handler: handleSetHandle
         - event: SetUri(indexed uint256,string,address)
           handler: handleSetUri
-      file: ./src/mapping.ts
+      file: ./src/mappings/projects.ts
   - kind: ethereum/contract
     name: TicketBooth
     network: {{network}}
@@ -35,7 +54,7 @@ dataSources:
       startBlock: {{startBlock_ticketBooth}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - TokenHolder
@@ -47,7 +66,7 @@ dataSources:
           handler: handlePrint
         - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
           handler: handleTicketTransfer
-      file: ./src/mapping.ts
+      file: ./src/mappings/ticketBooth.ts
   - kind: ethereum/contract
     name: TerminalV1
     network: {{network}}
@@ -57,7 +76,7 @@ dataSources:
       startBlock: {{startBlock_terminalV1}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - Project
@@ -90,7 +109,7 @@ dataSources:
           handler: handleDistributeToPayoutMod
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
-      file: ./src/mapping.ts
+      file: ./src/mappings/terminalV1.ts
   {{ #projectTokens }}
   {{ #address  }} # Only add contract reference for tokens with address
   - kind: ethereum/contract
@@ -102,7 +121,7 @@ dataSources:
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - TokenHolder
@@ -112,6 +131,6 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handle{{name}}Transfer
-      file: ./src/ERC20Tokens.ts
+      file: ./src/mappings/projectTokens.ts
   {{ /address }}
   {{ /projectTokens }}

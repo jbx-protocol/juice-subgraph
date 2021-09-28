@@ -6,26 +6,18 @@ const { projectTokens } = JSON.parse(fs.readFileSync(`config/${network}.json`));
 
 // Write ERC20 handlers
 fs.writeFileSync(
-  `src/ERC20Tokens.ts`,
+  `src/mappings/projectTokens.ts`,
   `import { BigInt } from "@graphprotocol/graph-ts";
-import { TransferEvent } from "./types";
-import { handleERC20Transfer } from "./utils";
+import { Transfer } from "../../generated/templates/TreasuryToken/ERC20";
+import { handleProjectERC20Transfer } from "./erc20";
 
 ${projectTokens
   .filter((token) => token.address) // Only add handler for config with address
   .map(
     (token) =>
-      `export function handle${token.name}Transfer(event: TransferEvent): void {
-  handleERC20Transfer(new BigInt(${token.projectId}), event);
+      `export function handle${token.name}Transfer(event: Transfer): void {
+  handleProjectERC20Transfer(new BigInt(${token.projectId}), event);
 }`
   )
   .join("\n \n")}`
-);
-
-// Write trackTokensForProjectIds
-fs.writeFileSync(
-  `src/trackTokensForProjectIds.ts`,
-  `export const trackTokensForProjectIds: number[] = [${projectTokens.map(
-    (token) => token.projectId
-  )}];`
 );
