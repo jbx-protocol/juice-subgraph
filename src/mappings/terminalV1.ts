@@ -68,7 +68,6 @@ export function handlePay(event: Pay): void {
     participant.totalPaid = event.params.amount;
     participant.project = project.id;
     participant.tokenBalance = new BigInt(0);
-    participant.receivedPreminedTokens = new BigInt(0);
   } else {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }
@@ -91,21 +90,6 @@ export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
   printPremine.timestamp = event.block.timestamp;
   printPremine.txHash = event.transaction.hash;
   printPremine.save();
-
-  let participantId = idForParticipant(
-    event.params.projectId,
-    event.params.beneficiary
-  );
-  let participant = Participant.load(participantId);
-  if (!participant) {
-    participant = new Participant(participantId);
-    participant.totalPaid = new BigInt(0);
-    participant.tokenBalance = new BigInt(0);
-    participant.wallet = event.params.beneficiary;
-    participant.lastPaidTimestamp = new BigInt(0);
-  }
-  participant.receivedPreminedTokens = event.params.amount;
-  participant.save();
 }
 
 export function handleTap(event: Tap): void {

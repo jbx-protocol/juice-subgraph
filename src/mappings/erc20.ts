@@ -23,7 +23,6 @@ export function handleProjectERC20Transfer(
     receiver.tokenBalance = new BigInt(0);
     receiver.totalPaid = new BigInt(0);
     receiver.lastPaidTimestamp = new BigInt(0);
-    receiver.receivedPreminedTokens = new BigInt(0);
   }
   receiver.tokenBalance = receiver.tokenBalance.plus(event.params.value);
   receiver.save();

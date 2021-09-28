@@ -15,7 +15,6 @@ export function handlePrint(event: Print): void {
     participant.wallet = event.params.holder;
     participant.totalPaid = new BigInt(0);
     participant.lastPaidTimestamp = new BigInt(0);
-    participant.receivedPreminedTokens = new BigInt(0);
   }
 
   participant.tokenBalance = participant.tokenBalance.plus(event.params.amount);
@@ -44,7 +43,6 @@ export function handleTicketTransfer(event: Transfer): void {
     receiver.tokenBalance = new BigInt(0);
     receiver.totalPaid = new BigInt(0);
     receiver.lastPaidTimestamp = new BigInt(0);
-    receiver.receivedPreminedTokens = new BigInt(0);
   }
   receiver.tokenBalance = receiver.tokenBalance.plus(event.params.amount);
   receiver.save();

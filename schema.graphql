@@ -27,7 +27,6 @@ type Participant @entity {
   totalPaid: BigInt!
   lastPaidTimestamp: BigInt!
   tokenBalance: BigInt!
-  receivedPreminedTokens: BigInt!
 }
 
 type PayEvent @entity {
