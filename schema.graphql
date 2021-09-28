@@ -7,7 +7,7 @@ type Project @entity {
   totalPaid: BigInt!
   totalRedeemed: BigInt!
   currentBalance: BigInt!
-  payers: [PayerReport!]! @derivedFrom(field: "project")
+  participants: [Participant!]! @derivedFrom(field: "project")
   payEvents: [PayEvent!]! @derivedFrom(field: "project")
   printPremineEvents: [PrintPremineEvent!]! @derivedFrom(field: "project")
   tapEvents: [TapEvent!]! @derivedFrom(field: "project")
@@ -20,12 +20,13 @@ type Project @entity {
     @derivedFrom(field: "project")
 }
 
-type PayerReport @entity {
+type Participant @entity {
   id: ID!
   project: Project!
-  payer: Bytes!
+  wallet: Bytes!
   totalPaid: BigInt!
   lastPaidTimestamp: BigInt!
+  tokenBalance: BigInt!
 }
 
 type PayEvent @entity {

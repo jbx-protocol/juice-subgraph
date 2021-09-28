@@ -30,3 +30,6 @@ yarn prepare:${network} && graph deploy --node https://api.studio.thegraph.com/d
 ```
 
 `yarn prepare:${network}` will generate the proper `subgraph.yaml` file based on the network you are trying to deploy to.
+
+To check health of a deployed subgraph:
+```curl -X POST -d '{ "query": "{indexingStatuses(subgraphs: [\"<deployment-id>\"]) {synced health fatalError {message block { number } handler } subgraph chains { chainHeadBlock { number } latestBlock { number }}}}"}' https://api.thegraph.com/index-node/graphql```
