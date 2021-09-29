@@ -6,7 +6,7 @@
 ### Install
 
 ```bash
-yarn install install
+yarn install
 ```
 
 ### Deploy
