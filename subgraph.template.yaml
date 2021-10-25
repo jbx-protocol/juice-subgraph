@@ -4,7 +4,7 @@ schema:
 templates:
   - name: TreasuryToken
     kind: ethereum/contract
-    network: mainnet
+    network: {{network}}
     source:
       abi: ERC20
     mapping:
