@@ -20,6 +20,14 @@ type Project @entity {
     @derivedFrom(field: "project")
 }
 
+type _Schema_
+  @fulltext(
+    name: "projectSearch"
+    language: en
+    algorithm: rank
+    include: [{ entity: "Project", fields: [{ name: "handle" }] }]
+  )
+
 type Participant @entity {
   id: ID!
   project: Project!
