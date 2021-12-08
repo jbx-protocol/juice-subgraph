@@ -116,6 +116,49 @@ dataSources:
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
       file: ./src/mappings/terminalV1.ts
+  - kind: ethereum/contract
+    name: TerminalV1_1
+    network: {{network}}
+    source:
+      address: '{{address_terminalV1_1}}'
+      abi: TerminalV1_1
+      startBlock: {{startBlock_terminalV1_1}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Project
+        - PayerReport
+        - PayEvent
+        - PrintPremineEvent
+        - TapEvent
+        - RedeemEvent
+        - TokenHolder
+        - PrintReservesEvent
+        - DistributeToPayoutModEvent
+        - DistributeToTicketModEvent
+      abis:
+        - name: TerminalV1_1
+          file: ./abis/TerminalV1_1.json
+      eventHandlers:
+        - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,string,address)
+          handler: handlePay
+        - event: PrintTickets(indexed uint256,indexed address,uint256,uint256,string,address)
+          handler: handlePrintTickets
+        - event: PrintReserveTickets(indexed uint256,indexed uint256,indexed address,uint256,uint256,address)
+          handler: handlePrintReserveTickets
+        - event: Tap(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,uint256,uint256,address)
+          handler: handleTap
+        - event: Redeem(indexed address,indexed address,indexed uint256,uint256,uint256,address)
+          handler: handleRedeem
+        - event: AddToBalance(indexed uint256,uint256,address)
+          handler: handleAddToBalance
+        - event: DistributeToPayoutMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address,address,uint56),uint256,address)
+          handler: handleDistributeToPayoutMod
+        - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
+          handler: handleDistributeToTicketMod
+      file: ./src/mappings/terminalV1_1.ts
   # Add all token contract references with address
   {{ #projectTokens }}
   {{ #address  }}
