@@ -6,6 +6,7 @@ import { Project } from "../../generated/schema";
 export function handleProjectCreate(event: Create): void {
   let project = new Project(event.params.projectId.toString());
   if (!project) return;
+  project.terminal = event.params.terminal;
   project.handle = event.params.handle.toHexString();
   project.creator = event.params.owner;
   project.createdAt = event.block.timestamp;

@@ -251,7 +251,12 @@ export function handleDeposit(event: Deposit): void {}
 
 export function handleEnsureTargetLocalWei(event: EnsureTargetLocalWei): void {}
 
-export function handleMigrate(event: Migrate): void {}
+export function handleMigrate(event: Migrate): void {
+  let projectId = event.params.projectId.toString();
+  let project = Project.load(projectId);
+  project.terminal = event.params.to;
+  project.save();
+}
 
 export function handleSetFee(event: SetFee): void {}
 

@@ -115,6 +115,8 @@ dataSources:
           handler: handleDistributeToPayoutMod
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
+        - event: Migrate(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
+          handler: handleMigrate
       file: ./src/mappings/terminalV1.ts
   - kind: ethereum/contract
     name: TerminalV1_1
