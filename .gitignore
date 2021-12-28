@@ -16,3 +16,5 @@ yarn-error.log*
 public/
 
 subgraph.yaml
+
+src/mappings/projectTokens

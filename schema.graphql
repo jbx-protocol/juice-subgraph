@@ -58,7 +58,6 @@ type PrintPremineEvent @entity {
   project: Project!
   beneficiary: Bytes!
   amount: BigInt!
-  currency: BigInt!
   memo: String
   caller: Bytes!
   timestamp: BigInt!

@@ -8,10 +8,10 @@ const projectTokens = JSON.parse(
 
 // Write ERC20 handlers
 fs.writeFileSync(
-  `src/mappings/projectTokens.ts`,
+  `src/mappings/projectTokens/${network}.ts`,
   `import { BigInt } from "@graphprotocol/graph-ts";
-import { Transfer } from "../../generated/templates/TreasuryToken/ERC20";
-import { handleProjectERC20Transfer } from "./erc20";
+import { Transfer } from "../../../generated/templates/TreasuryToken/ERC20";
+import { handleProjectERC20Transfer } from "../erc20";
 
 export const indexedProjectERC20s: string[] = [${projectTokens
     .map((token) => `"${token.projectId}"`)

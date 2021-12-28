@@ -1,4 +1,7 @@
-specVersion: 0.0.1
+specVersion: 0.0.4
+description: Juicebox protocol on {{network}}
+features:
+  - fullTextSearch
 schema:
   file: ./schema.graphql
 templates:
@@ -115,7 +118,7 @@ dataSources:
           handler: handleDistributeToPayoutMod
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
-        - event: Migrate(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
+        - event: Migrate(indexed uint256,indexed address,uint256,address)
           handler: handleMigrate
       file: ./src/mappings/terminalV1.ts
   - kind: ethereum/contract
@@ -144,9 +147,9 @@ dataSources:
         - name: TerminalV1_1
           file: ./abis/TerminalV1_1.json
       eventHandlers:
-        - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,string,address)
+        - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,string,address)
           handler: handlePay
-        - event: PrintTickets(indexed uint256,indexed address,uint256,uint256,string,address)
+        - event: PrintTickets(indexed uint256,indexed address,uint256,string,address)
           handler: handlePrintTickets
         - event: PrintReserveTickets(indexed uint256,indexed uint256,indexed address,uint256,uint256,address)
           handler: handlePrintReserveTickets
@@ -183,6 +186,6 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handle{{name}}Transfer
-      file: ./src/mappings/projectTokens.ts
+      file: ./src/mappings/projectTokens/{{network}}.ts
   {{ /address }}
   {{ /projectTokens }}

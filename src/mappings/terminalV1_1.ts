@@ -14,7 +14,6 @@ import {
 import {
   AddToBalance,
   AllowMigration,
-  AppointGovernance,
   Deposit,
   DistributeToPayoutMod,
   DistributeToTicketMod,
@@ -84,7 +83,6 @@ export function handlePrintTickets(event: PrintTickets): void {
   printPremine.amount = event.params.amount;
   printPremine.beneficiary = event.params.beneficiary;
   printPremine.caller = event.params.caller;
-  printPremine.currency = event.params.currency;
   printPremine.memo = event.params.memo;
   printPremine.project = event.params.projectId.toString();
   printPremine.timestamp = event.block.timestamp;
@@ -255,8 +253,6 @@ export function handleDistributeToTicketMod(
 }
 
 export function handleAllowMigration(event: AllowMigration): void {}
-
-export function handleAppointGovernance(event: AppointGovernance): void {}
 
 export function handleDeposit(event: Deposit): void {}
 

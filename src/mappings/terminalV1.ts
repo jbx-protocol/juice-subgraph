@@ -83,7 +83,6 @@ export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
   printPremine.amount = event.params.amount;
   printPremine.beneficiary = event.params.beneficiary;
   printPremine.caller = event.params.caller;
-  printPremine.currency = event.params.currency;
   printPremine.memo = event.params.memo;
   printPremine.project = event.params.projectId.toString();
   printPremine.timestamp = event.block.timestamp;
@@ -254,6 +253,7 @@ export function handleEnsureTargetLocalWei(event: EnsureTargetLocalWei): void {}
 export function handleMigrate(event: Migrate): void {
   let projectId = event.params.projectId.toString();
   let project = Project.load(projectId);
+  if (!project) return;
   project.terminal = event.params.to;
   project.save();
 }

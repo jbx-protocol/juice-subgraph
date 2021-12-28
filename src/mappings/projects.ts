@@ -7,7 +7,7 @@ export function handleProjectCreate(event: Create): void {
   let project = new Project(event.params.projectId.toString());
   if (!project) return;
   project.terminal = event.params.terminal;
-  project.handle = event.params.handle.toHexString();
+  project.handle = event.params.handle.toString();
   project.creator = event.params.owner;
   project.createdAt = event.block.timestamp;
   project.uri = event.params.uri;
@@ -20,7 +20,7 @@ export function handleProjectCreate(event: Create): void {
 export function handleSetHandle(event: SetHandle): void {
   let project = Project.load(event.params.projectId.toString());
   if (!project) return;
-  project.handle = event.params.handle.toHexString();
+  project.handle = event.params.handle.toString();
   project.save();
 }
 
