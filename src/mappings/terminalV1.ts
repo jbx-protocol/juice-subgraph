@@ -67,7 +67,6 @@ export function handlePay(event: Pay): void {
     participant.wallet = event.params.beneficiary;
     participant.totalPaid = event.params.amount;
     participant.project = project.id;
-    participant.tokenBalance = new BigInt(0);
   } else {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }
@@ -150,16 +149,6 @@ export function handleRedeem(event: Redeem): void {
       event.params.returnAmount
     );
     project.save();
-  }
-
-  let participant = Participant.load(
-    idForParticipant(event.params._projectId, event.params.holder)
-  );
-  if (participant) {
-    participant.tokenBalance = participant.tokenBalance.minus(
-      event.params.amount
-    );
-    participant.save();
   }
 }
 

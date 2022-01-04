@@ -10,9 +10,9 @@ export function handleProjectCreate(event: Create): void {
   project.creator = event.params.owner;
   project.createdAt = event.block.timestamp;
   project.uri = event.params.uri;
-  project.totalPaid = new BigInt(0);
-  project.totalRedeemed = new BigInt(0);
-  project.currentBalance = new BigInt(0);
+  project.totalPaid = BigInt.fromString("0");
+  project.totalRedeemed = BigInt.fromString("0");
+  project.currentBalance = BigInt.fromString("0");
   project.save();
 }
 
