@@ -8,5 +8,30 @@
   "startBlock_terminalV1_1": 9115779,
   "address_ticketBooth": "0x0d038636a670E8bd8cF7D56BC4626f2a6446cF11",
   "startBlock_ticketBooth": 9115779,
-  "projectTokens": []
+  "erc20s": [
+    {
+      "name": "RDAO",
+      "projectId": 12,
+      "address": "0x5e5d16a25f66FD7f3909d950395e36027A76C785", 
+      "startBlock": 9490340
+    },
+    {
+      "name": "GANGGNAG",
+      "projectId": 20,
+      "address": "0xC0b68905dC500e0F9CeD08e12856B44B36Aa4c2A", 
+      "startBlock": 9573210
+    },
+    {
+      "name": "BOOT",
+      "projectId": 4,
+      "address": "0x2E67902728E2A2002445629E240EEC56EFE935b0", 
+      "startBlock": 9375812
+    },
+    {
+      "name": "TEST",
+      "projectId": 1,
+      "address": "0x1902d25Af4ede56b78c9483B2f3F6ad99b0C72DC", 
+      "startBlock": 9721857
+    }
+  ]
 }

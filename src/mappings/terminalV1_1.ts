@@ -1,5 +1,3 @@
-import { BigInt } from "@graphprotocol/graph-ts";
-
 import {
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
@@ -20,8 +18,8 @@ import {
   EnsureTargetLocalWei,
   Migrate,
   Pay,
-  PrintTickets,
   PrintReserveTickets,
+  PrintTickets,
   Redeem,
   SetFee,
   SetTargetLocalWei,
@@ -66,7 +64,6 @@ export function handlePay(event: Pay): void {
     participant.wallet = event.params.beneficiary;
     participant.totalPaid = event.params.amount;
     participant.project = project.id;
-    participant.tokenBalance = new BigInt(0);
   } else {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }
@@ -149,16 +146,6 @@ export function handleRedeem(event: Redeem): void {
     );
     project.save();
   }
-
-  let participant = Participant.load(
-    idForParticipant(event.params._projectId, event.params.holder)
-  );
-  if (participant) {
-    participant.tokenBalance = participant.tokenBalance.minus(
-      event.params.amount
-    );
-    participant.save();
-  }
 }
 
 export function handlePrintReserveTickets(event: PrintReserveTickets): void {
@@ -179,18 +166,6 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
   printReserveEvent.txHash = event.transaction.hash;
   printReserveEvent.save();
 }
-
-// export function handleConfigure(event: Configure): void {
-//   let configureEvent = new ConfigureEvent(
-//     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-//   );
-//   configureEvent.caller = event.params.caller;
-//   configureEvent.fundingCycleId = event.params.fundingCycleId;
-//   configureEvent.project = event.params.projectId.toHexString();
-//   configureEvent.timestamp = event.block.timestamp;
-//   configureEvent.txHash = event.transaction.hash;
-//   configureEvent.save();
-// }
 
 export function handleAddToBalance(event: AddToBalance): void {
   let project = Project.load(event.params.projectId.toString());

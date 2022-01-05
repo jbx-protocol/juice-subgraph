@@ -2,22 +2,19 @@ const fs = require("fs");
 
 const network = process.argv.slice(2)[0];
 
-const projectTokens = JSON.parse(
+const erc20s = JSON.parse(
   fs.readFileSync(`config/${network}.json`)
-).projectTokens.filter((token) => token.address); // Only use tokens with address
+).erc20s.sort((a, b) => (a.projectId < b.projectId ? -1 : 1));
 
 // Write ERC20 handlers
 fs.writeFileSync(
-  `src/mappings/projectTokens/${network}.ts`,
-  `import { BigInt } from "@graphprotocol/graph-ts";
-import { Transfer } from "../../../generated/templates/TreasuryToken/ERC20";
-import { handleProjectERC20Transfer } from "../erc20";
+  `src/erc20/mapping.ts`,
+  erc20s?.length
+    ? `import { BigInt } from "@graphprotocol/graph-ts";
+import { Transfer } from "../../generated/templates/ERC20/ERC20";
+import { handleProjectERC20Transfer } from "../utils";
 
-export const indexedProjectERC20s: string[] = [${projectTokens
-    .map((token) => `"${token.projectId}"`)
-    .join(", ")}]
-
-${projectTokens
+${erc20s
   .map(
     (token) =>
       `export function handle${token.name}Transfer(event: Transfer): void {
@@ -25,4 +22,13 @@ ${projectTokens
 }`
   )
   .join("\n \n")}`
+    : ""
+);
+
+// Write ERC20 indexed list
+fs.writeFileSync(
+  `src/erc20/indexedERC20s.ts`,
+  `export const indexedERC20s: string[] = [${erc20s
+    .map((token) => `"${token.projectId}"`)
+    .join(", ")}]`
 );

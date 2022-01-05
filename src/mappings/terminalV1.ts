@@ -1,5 +1,3 @@
-import { BigInt } from "@graphprotocol/graph-ts";
-
 import {
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
@@ -169,18 +167,6 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
   printReserveEvent.txHash = event.transaction.hash;
   printReserveEvent.save();
 }
-
-// export function handleConfigure(event: Configure): void {
-//   let configureEvent = new ConfigureEvent(
-//     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-//   );
-//   configureEvent.caller = event.params.caller;
-//   configureEvent.fundingCycleId = event.params.fundingCycleId;
-//   configureEvent.project = event.params.projectId.toHexString();
-//   configureEvent.timestamp = event.block.timestamp;
-//   configureEvent.txHash = event.transaction.hash;
-//   configureEvent.save();
-// }
 
 export function handleAddToBalance(event: AddToBalance): void {
   let project = Project.load(event.params.projectId.toString());

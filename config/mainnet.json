@@ -4,11 +4,11 @@
   "startBlock_projects": 12833319,
   "address_terminalV1": "0xd569D3CCE55b71a8a3f3C418c329A66e5f714431",
   "startBlock_terminalV1": 12833319,
-  "address_terminalV1_1": "",
+  "address_terminalV1_1": false,
   "startBlock_terminalV1_1": 12833319,
   "address_ticketBooth": "0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc",
   "startBlock_ticketBooth": 12833319,
-  "projectTokens": [
+  "erc20s": [
     {
       "name": "JBX",
       "projectId": 1,
@@ -22,11 +22,6 @@
       "startBlock": 12833319
     },
     {
-      "name": "WAGMI",
-      "projectId": 5,
-      "startBlock": 12833319
-    },
-    {
       "name": "SHARK",
       "projectId": 7,
       "address": "0x232AFcE9f1b3AAE7cb408e482E847250843DB931", 
@@ -36,11 +31,6 @@
       "name": "CND",
       "projectId": 8,
       "address": "0x72a5db34ea0804910BEa8Ae0a8C863Ac08CDa401", 
-      "startBlock": 12833319
-    },
-    {
-      "name": "WIKI",
-      "projectId": 10,
       "startBlock": 12833319
     }
   ]
