@@ -1,3 +1,5 @@
+import { BigInt } from "@graphprotocol/graph-ts";
+
 import {
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
@@ -52,7 +54,6 @@ export function handlePay(event: Pay): void {
   if (!project) return;
   project.totalPaid = project.totalPaid.plus(event.params.amount);
   project.currentBalance = project.currentBalance.plus(event.params.amount);
-  project.save();
 
   let participantId = idForParticipant(
     event.params.projectId,
@@ -64,11 +65,16 @@ export function handlePay(event: Pay): void {
     participant.wallet = event.params.beneficiary;
     participant.totalPaid = event.params.amount;
     participant.project = project.id;
+
+    project.participantsCount = project.participantsCount.plus(
+      BigInt.fromString("1")
+    );
   } else {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }
   participant.lastPaidTimestamp = event.block.timestamp;
 
+  project.save();
   participant.save();
 }
 

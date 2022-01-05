@@ -1,6 +1,6 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 
-import { Participant } from "../../generated/schema";
+import { Participant, Project } from "../../generated/schema";
 import {
   Print,
   Redeem,
@@ -16,13 +16,22 @@ export function handlePrint(event: Print): void {
   let participant = Participant.load(id);
 
   if (!participant) {
-    participant = new Participant(id);
-    participant.project = projectId.toString();
-    participant.stakedBalance = BigInt.fromString("0");
-    participant.unstakedBalance = BigInt.fromString("0");
-    participant.wallet = event.params.holder;
-    participant.totalPaid = BigInt.fromString("0");
-    participant.lastPaidTimestamp = BigInt.fromString("0");
+    let project = Project.load(projectId.toString());
+
+    if (project) {
+      participant = new Participant(id);
+      participant.project = project.id;
+      participant.stakedBalance = BigInt.fromString("0");
+      participant.unstakedBalance = BigInt.fromString("0");
+      participant.wallet = event.params.holder;
+      participant.totalPaid = BigInt.fromString("0");
+      participant.lastPaidTimestamp = BigInt.fromString("0");
+
+      project.participantsCount = project.participantsCount.plus(
+        BigInt.fromString("1")
+      );
+      project.save();
+    }
   }
 
   if (event.params.preferUnstakedTickets) {
@@ -44,36 +53,65 @@ export function handlePrint(event: Print): void {
 
 export function handleTicketTransfer(event: Transfer): void {
   let projectId = event.params.projectId;
+
+  let project = Project.load(projectId.toString());
+
   let sender = Participant.load(
     idForParticipant(projectId, event.params.holder)
   );
+
   if (sender) {
     sender.stakedBalance = sender.stakedBalance.minus(event.params.amount);
+
     updateBalance(sender);
+
+    if (sender.balance.isZero()) {
+      project.participantsCount = project.participantsCount.minus(
+        BigInt.fromString("1")
+      );
+      project.save();
+    }
+
     sender.save();
   }
 
   let receiverId = idForParticipant(projectId, event.params.recipient);
+
   let receiver = Participant.load(receiverId);
+
   if (!receiver) {
-    receiver = new Participant(receiverId);
-    receiver.project = projectId.toString();
-    receiver.wallet = event.params.recipient;
-    receiver.stakedBalance = BigInt.fromString("0");
-    receiver.unstakedBalance = BigInt.fromString("0");
-    receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = BigInt.fromString("0");
+    let project = Project.load(projectId.toString());
+
+    if (project) {
+      receiver = new Participant(receiverId);
+      receiver.project = project.id;
+      receiver.wallet = event.params.recipient;
+      receiver.stakedBalance = BigInt.fromString("0");
+      receiver.unstakedBalance = BigInt.fromString("0");
+      receiver.totalPaid = BigInt.fromString("0");
+      receiver.lastPaidTimestamp = BigInt.fromString("0");
+
+      project.participantsCount = project.participantsCount.plus(
+        BigInt.fromString("1")
+      );
+      project.save();
+    }
   }
+
   receiver.stakedBalance = receiver.stakedBalance.plus(event.params.amount);
+
   updateBalance(receiver);
+
   receiver.save();
 }
 
 export function handleUnstake(event: Unstake): void {
   let projectId = event.params.projectId;
+
   let participant = Participant.load(
     idForParticipant(projectId, event.params.holder)
   );
+
   if (participant) {
     participant.stakedBalance = participant.stakedBalance.minus(
       event.params.amount
@@ -93,9 +131,11 @@ export function handleUnstake(event: Unstake): void {
 
 export function handleStake(event: Stake): void {
   let projectId = event.params.projectId;
+
   let participant = Participant.load(
     idForParticipant(projectId, event.params.holder)
   );
+
   if (participant) {
     participant.stakedBalance = participant.stakedBalance.plus(
       event.params.amount
@@ -156,8 +196,13 @@ export function handleRedeem(event: Redeem): void {
 
   updateBalance(participant);
 
+  if (participant.balance.isZero()) {
+    let project = Project.load(projectId.toString());
+    project.participantsCount = project.participantsCount.minus(
+      BigInt.fromString("1")
+    );
+    project.save();
+  }
+
   participant.save();
 }
-
-// TODO create datasource from ERC20 template using token address available in V2 contracts
-// export function handleTicketsIssue(event: Issue): void {}

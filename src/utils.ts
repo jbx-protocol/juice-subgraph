@@ -26,10 +26,19 @@ export function handleProjectERC20Transfer(
   event: Transfer
 ): void {
   let sender = Participant.load(idForParticipant(projectId, event.params.from));
+  let project = Project.load(projectId.toString());
+
   if (sender) {
     sender.unstakedBalance = sender.unstakedBalance.minus(event.params.value);
 
     updateBalance(sender);
+
+    if (sender.balance.isZero()) {
+      project.participantsCount = project.participantsCount.minus(
+        BigInt.fromString("1")
+      );
+      project.save();
+    }
 
     sender.save();
   }
@@ -40,8 +49,12 @@ export function handleProjectERC20Transfer(
   if (!receiver) {
     receiver = new Participant(receiverId);
 
-    let project = Project.load(projectId.toString());
-    if (project) receiver.project = project.id;
+    if (project) {
+      receiver.project = project.id;
+      project.participantsCount = project.participantsCount.plus(
+        BigInt.fromString("1")
+      );
+    }
 
     receiver.wallet = event.params.to;
     receiver.stakedBalance = BigInt.fromString("0");
