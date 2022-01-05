@@ -12,7 +12,6 @@
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.22.1",
     "@graphprotocol/graph-ts": "^0.22.1",
-    "ethers": "^5.5.2",
     "mustache": "^4.0.1"
   },
   "devDependencies": {
