@@ -65,10 +65,6 @@ export function handlePay(event: Pay): void {
     participant.wallet = event.params.beneficiary;
     participant.totalPaid = event.params.amount;
     participant.project = project.id;
-
-    project.participantsCount = project.participantsCount.plus(
-      BigInt.fromString("1")
-    );
   } else {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }

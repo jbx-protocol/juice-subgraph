@@ -17,7 +17,7 @@ import { handleProjectERC20Transfer } from "../utils";
 ${erc20s
   .map(
     (token) =>
-      `export function handle${token.name}Transfer(event: Transfer): void {
+      `export function handle${token.symbol}${token.projectId}Transfer(event: Transfer): void {
   handleProjectERC20Transfer(BigInt.fromString("${token.projectId}"), event);
 }`
   )

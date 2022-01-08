@@ -4,6 +4,22 @@ features:
   - fullTextSearch
 schema:
   file: ./schema.graphql
+templates:
+  - name: ERC20
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/erc20/mapping.ts
+      entities:
+        - Participant
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
 dataSources:
   - kind: ethereum/contract
     name: Projects
@@ -41,7 +57,9 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
+        - DeployedERC20Event
         - Participant
+        - Project
       abis:
         - name: TicketBooth
           file: ./abis/TicketBooth.json
@@ -56,6 +74,8 @@ dataSources:
           handler: handleStake
         - event: Redeem(indexed address,indexed uint256,uint256,uint256,bool,address)
           handler: handleRedeem
+        - event: Issue(indexed uint256,string,string,address)
+          handler: handleIssue
       file: ./src/mappings/ticketBooth.ts
   - kind: ethereum/contract
     name: TerminalV1
@@ -149,11 +169,11 @@ dataSources:
   {{ /address_terminalV1_1 }}
   {{ #erc20s }}
   - kind: ethereum/contract
-    name: {{name}}
+    name: erc20_{{symbol}}_{{projectId}}
     network: {{network}}
     source:
       address: '{{address}}'
-      abi: {{name}}
+      abi: erc20_{{symbol}}_{{projectId}}
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
@@ -162,10 +182,10 @@ dataSources:
       entities:
         - Participant
       abis:
-        - name: {{name}}
+        - name: erc20_{{symbol}}_{{projectId}}
           file: ./abis/ERC20.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
-          handler: handle{{name}}Transfer
+          handler: handle{{symbol}}{{projectId}}Transfer
       file: ./src/erc20/mapping.ts
   {{ /erc20s }}

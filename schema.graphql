@@ -8,7 +8,7 @@ type Project @entity {
   totalRedeemed: BigInt!
   currentBalance: BigInt!
   participants: [Participant!]! @derivedFrom(field: "project")
-  participantsCount: BigInt!
+  holdersCount: BigInt!
   terminal: Bytes!
   payEvents: [PayEvent!]! @derivedFrom(field: "project")
   printPremineEvents: [PrintPremineEvent!]! @derivedFrom(field: "project")
@@ -20,6 +20,7 @@ type Project @entity {
     @derivedFrom(field: "project")
   distributeToTicketModEvents: [DistributeToTicketModEvent!]!
     @derivedFrom(field: "project")
+  deployedERC20s: [DeployedERC20Event!]! @derivedFrom(field: "project")
 }
 
 type _Schema_
@@ -143,4 +144,11 @@ type DistributeToTicketModEvent @entity {
   printReservesEvent: PrintReservesEvent!
   timestamp: BigInt!
   txHash: Bytes!
+}
+
+type DeployedERC20Event @entity {
+  id: ID!
+  project: Project!
+  symbol: String!
+  deployedAtBlockNum: BigInt!
 }

@@ -33,10 +33,13 @@ export function handleProjectERC20Transfer(
 
     updateBalance(sender);
 
-    if (sender.balance.isZero()) {
-      project.participantsCount = project.participantsCount.minus(
-        BigInt.fromString("1")
-      );
+    // Decrement holdersCount if sender sent the rest of their tokens
+    if (
+      sender.balance.isZero() &&
+      event.params.to !== event.params.from &&
+      project
+    ) {
+      project.holdersCount = project.holdersCount.minus(BigInt.fromString("1"));
       project.save();
     }
 
@@ -47,21 +50,27 @@ export function handleProjectERC20Transfer(
   let receiver = Participant.load(receiverId);
 
   if (!receiver) {
-    receiver = new Participant(receiverId);
-
     if (project) {
+      receiver = new Participant(receiverId);
       receiver.project = project.id;
-      project.participantsCount = project.participantsCount.plus(
-        BigInt.fromString("1")
-      );
-    }
+      receiver.wallet = event.params.to;
+      receiver.stakedBalance = BigInt.fromString("0");
+      receiver.unstakedBalance = BigInt.fromString("0");
+      receiver.totalPaid = BigInt.fromString("0");
+      receiver.lastPaidTimestamp = BigInt.fromString("0");
 
-    receiver.wallet = event.params.to;
-    receiver.stakedBalance = BigInt.fromString("0");
-    receiver.unstakedBalance = BigInt.fromString("0");
-    receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = BigInt.fromString("0");
+      // Increment holdersCount if receiver is new and received >0 tokens
+      if (!event.params.value.isZero()) {
+        project.holdersCount = project.holdersCount.plus(
+          BigInt.fromString("1")
+        );
+        project.save();
+      }
+    }
   }
+
+  if (!receiver) return;
+
   receiver.unstakedBalance = receiver.unstakedBalance.plus(event.params.value);
 
   updateBalance(receiver);

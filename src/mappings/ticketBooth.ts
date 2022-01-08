@@ -1,7 +1,12 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 
-import { Participant, Project } from "../../generated/schema";
 import {
+  DeployedERC20Event,
+  Participant,
+  Project,
+} from "../../generated/schema";
+import {
+  Issue,
   Print,
   Redeem,
   Stake,
@@ -27,12 +32,17 @@ export function handlePrint(event: Print): void {
       participant.totalPaid = BigInt.fromString("0");
       participant.lastPaidTimestamp = BigInt.fromString("0");
 
-      project.participantsCount = project.participantsCount.plus(
-        BigInt.fromString("1")
-      );
-      project.save();
+      // Increment holdersCount if participant is new and received >0 tokens
+      if (!event.params.amount.isZero()) {
+        project.holdersCount = project.holdersCount.plus(
+          BigInt.fromString("1")
+        );
+        project.save();
+      }
     }
   }
+
+  if (!participant) return;
 
   if (event.params.preferUnstakedTickets) {
     if (!erc20IsIndexed(projectId)) {
@@ -61,16 +71,19 @@ export function handleTicketTransfer(event: Transfer): void {
   );
 
   if (sender) {
+    // Decrement holdersCount if sender sent all their tokens
+    if (
+      event.params.amount.equals(sender.balance) &&
+      event.params.holder !== event.params.recipient &&
+      project
+    ) {
+      project.holdersCount = project.holdersCount.minus(BigInt.fromString("1"));
+      project.save();
+    }
+
     sender.stakedBalance = sender.stakedBalance.minus(event.params.amount);
 
     updateBalance(sender);
-
-    if (sender.balance.isZero()) {
-      project.participantsCount = project.participantsCount.minus(
-        BigInt.fromString("1")
-      );
-      project.save();
-    }
 
     sender.save();
   }
@@ -80,8 +93,6 @@ export function handleTicketTransfer(event: Transfer): void {
   let receiver = Participant.load(receiverId);
 
   if (!receiver) {
-    let project = Project.load(projectId.toString());
-
     if (project) {
       receiver = new Participant(receiverId);
       receiver.project = project.id;
@@ -91,12 +102,17 @@ export function handleTicketTransfer(event: Transfer): void {
       receiver.totalPaid = BigInt.fromString("0");
       receiver.lastPaidTimestamp = BigInt.fromString("0");
 
-      project.participantsCount = project.participantsCount.plus(
-        BigInt.fromString("1")
-      );
-      project.save();
+      // Increment holdersCount if receiver is new and received >0 tokens
+      if (!event.params.amount.isZero()) {
+        project.holdersCount = project.holdersCount.plus(
+          BigInt.fromString("1")
+        );
+        project.save();
+      }
     }
   }
+
+  if (!receiver) return;
 
   receiver.stakedBalance = receiver.stakedBalance.plus(event.params.amount);
 
@@ -196,13 +212,35 @@ export function handleRedeem(event: Redeem): void {
 
   updateBalance(participant);
 
+  // Decrement holdersCount if participant redeemed all their tokens
   if (participant.balance.isZero()) {
     let project = Project.load(projectId.toString());
-    project.participantsCount = project.participantsCount.minus(
-      BigInt.fromString("1")
-    );
-    project.save();
+
+    if (project) {
+      project.holdersCount = project.holdersCount.minus(BigInt.fromString("1"));
+      project.save();
+    }
   }
 
   participant.save();
+}
+
+export function handleIssue(event: Issue): void {
+  let project = Project.load(event.params.projectId.toString());
+
+  if (!project) return;
+
+  let deployedERC20Event = new DeployedERC20Event(
+    project.id.toString() +
+      "-" +
+      event.params.symbol +
+      "-" +
+      event.block.number.toString()
+  );
+
+  deployedERC20Event.project = project.id;
+  deployedERC20Event.symbol = event.params.symbol;
+  deployedERC20Event.deployedAtBlockNum = event.block.number;
+
+  deployedERC20Event.save();
 }
