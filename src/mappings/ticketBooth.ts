@@ -19,27 +19,27 @@ export function handlePrint(event: Print): void {
   let projectId = event.params.projectId;
   let id = idForParticipant(projectId, event.params.holder);
   let participant = Participant.load(id);
+  let project = Project.load(projectId.toString());
+
+  if (!project) return;
+
+  if (
+    !event.params.amount.isZero() &&
+    (!participant || participant.balance.isZero())
+  ) {
+    // Increment holdersCount if participant is new or has zero balance and received >0 tokens
+    project.holdersCount = project.holdersCount.plus(BigInt.fromString("1"));
+    project.save();
+  }
 
   if (!participant) {
-    let project = Project.load(projectId.toString());
-
-    if (project) {
-      participant = new Participant(id);
-      participant.project = project.id;
-      participant.stakedBalance = BigInt.fromString("0");
-      participant.unstakedBalance = BigInt.fromString("0");
-      participant.wallet = event.params.holder;
-      participant.totalPaid = BigInt.fromString("0");
-      participant.lastPaidTimestamp = BigInt.fromString("0");
-
-      // Increment holdersCount if participant is new and received >0 tokens
-      if (!event.params.amount.isZero()) {
-        project.holdersCount = project.holdersCount.plus(
-          BigInt.fromString("1")
-        );
-        project.save();
-      }
-    }
+    participant = new Participant(id);
+    participant.project = project.id;
+    participant.stakedBalance = BigInt.fromString("0");
+    participant.unstakedBalance = BigInt.fromString("0");
+    participant.wallet = event.params.holder;
+    participant.totalPaid = BigInt.fromString("0");
+    participant.lastPaidTimestamp = BigInt.fromString("0");
   }
 
   if (!participant) return;
@@ -66,6 +66,8 @@ export function handleTicketTransfer(event: Transfer): void {
 
   let project = Project.load(projectId.toString());
 
+  if (!project) return;
+
   let sender = Participant.load(
     idForParticipant(projectId, event.params.holder)
   );
@@ -74,8 +76,7 @@ export function handleTicketTransfer(event: Transfer): void {
     // Decrement holdersCount if sender sent all their tokens
     if (
       event.params.amount.equals(sender.balance) &&
-      event.params.holder !== event.params.recipient &&
-      project
+      event.params.holder !== event.params.recipient
     ) {
       project.holdersCount = project.holdersCount.minus(BigInt.fromString("1"));
       project.save();
@@ -92,24 +93,23 @@ export function handleTicketTransfer(event: Transfer): void {
 
   let receiver = Participant.load(receiverId);
 
-  if (!receiver) {
-    if (project) {
-      receiver = new Participant(receiverId);
-      receiver.project = project.id;
-      receiver.wallet = event.params.recipient;
-      receiver.stakedBalance = BigInt.fromString("0");
-      receiver.unstakedBalance = BigInt.fromString("0");
-      receiver.totalPaid = BigInt.fromString("0");
-      receiver.lastPaidTimestamp = BigInt.fromString("0");
+  // Increment holdersCount if receiver is new or had 0 balance and received >0 tokens
+  if (
+    !event.params.amount.isZero() &&
+    (!receiver || receiver.balance.isZero())
+  ) {
+    project.holdersCount = project.holdersCount.plus(BigInt.fromString("1"));
+    project.save();
+  }
 
-      // Increment holdersCount if receiver is new and received >0 tokens
-      if (!event.params.amount.isZero()) {
-        project.holdersCount = project.holdersCount.plus(
-          BigInt.fromString("1")
-        );
-        project.save();
-      }
-    }
+  if (!receiver) {
+    receiver = new Participant(receiverId);
+    receiver.project = project.id;
+    receiver.wallet = event.params.recipient;
+    receiver.stakedBalance = BigInt.fromString("0");
+    receiver.unstakedBalance = BigInt.fromString("0");
+    receiver.totalPaid = BigInt.fromString("0");
+    receiver.lastPaidTimestamp = BigInt.fromString("0");
   }
 
   if (!receiver) return;

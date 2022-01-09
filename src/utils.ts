@@ -28,6 +28,8 @@ export function handleProjectERC20Transfer(
   let sender = Participant.load(idForParticipant(projectId, event.params.from));
   let project = Project.load(projectId.toString());
 
+  if (!project) return;
+
   if (sender) {
     sender.unstakedBalance = sender.unstakedBalance.minus(event.params.value);
 
@@ -49,24 +51,23 @@ export function handleProjectERC20Transfer(
   let receiverId = idForParticipant(projectId, event.params.to);
   let receiver = Participant.load(receiverId);
 
-  if (!receiver) {
-    if (project) {
-      receiver = new Participant(receiverId);
-      receiver.project = project.id;
-      receiver.wallet = event.params.to;
-      receiver.stakedBalance = BigInt.fromString("0");
-      receiver.unstakedBalance = BigInt.fromString("0");
-      receiver.totalPaid = BigInt.fromString("0");
-      receiver.lastPaidTimestamp = BigInt.fromString("0");
+  // Increment holdersCount if receiver is new or had 0 balance and received >0 tokens
+  if (
+    !event.params.value.isZero() &&
+    (!receiver || receiver.balance.isZero())
+  ) {
+    project.holdersCount = project.holdersCount.plus(BigInt.fromString("1"));
+    project.save();
+  }
 
-      // Increment holdersCount if receiver is new and received >0 tokens
-      if (!event.params.value.isZero()) {
-        project.holdersCount = project.holdersCount.plus(
-          BigInt.fromString("1")
-        );
-        project.save();
-      }
-    }
+  if (!receiver) {
+    receiver = new Participant(receiverId);
+    receiver.project = project.id;
+    receiver.wallet = event.params.to;
+    receiver.stakedBalance = BigInt.fromString("0");
+    receiver.unstakedBalance = BigInt.fromString("0");
+    receiver.totalPaid = BigInt.fromString("0");
+    receiver.lastPaidTimestamp = BigInt.fromString("0");
   }
 
   if (!receiver) return;
