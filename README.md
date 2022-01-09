@@ -1,13 +1,23 @@
-# juice-graph
+# Juicebox Subgraph
 
-- Mainnet: https://thegraph.com/explorer/subgraph/decentraland/juicebox
-- Rinkeby: https://thegraph.com/explorer/subgraph/decentraland/juicebox-rinkeby
+- Mainnet: https://thegraph.com/explorer/subgraph?id=0x63a2368f4b509438ca90186cb1c15156713d5834-0&view=Overview
+- Rinkeby: [unpublished]
 
 ### Install
 
 ```bash
 yarn install
 ```
+
+### Prepare
+
+```bash
+yarn prepare:${network} (mainnet, rinkeby)
+```
+
+- Runs a script to generate handlers for projects' ERC20 tokens, defined in the `erc20s` property of `config/**.json`.
+- Compiles subgraph.yaml from subgraph.template.yaml
+- Generates types from schema.graphql
 
 ### Deploy
 
@@ -17,19 +27,20 @@ First you will need to authenticate with the proper deploy key for the given net
 graph auth  --studio ${your-key}
 ```
 
-If you are deploying one of the official Juicebox subgraphs (listed above), deploy it using the following:
+If you are deploying one of the official Juicebox subgraphs:
 
 ```bash
-yarn prepare:${network} && yarn deploy:${network}
+yarn deploy:${network}
 ```
 
 If you are deploying your own Subgraph for testing:
 
 ```bash
-yarn prepare:${network} && graph deploy --node https://api.studio.thegraph.com/deploy/ ${your-project}
+graph deploy --node https://api.studio.thegraph.com/deploy/${project}
 ```
 
-`yarn prepare:${network}` will generate the proper `subgraph.yaml` file based on the network you are trying to deploy to.
+To check health of a deployed subgraph: 
 
-To check health of a deployed subgraph:
-```curl -X POST -d '{ "query": "{indexingStatuses(subgraphs: [\"<deployment-id>\"]) {synced health fatalError {message block { number } handler } subgraph chains { chainHeadBlock { number } latestBlock { number }}}}"}' https://api.thegraph.com/index-node/graphql```
+```
+curl -X POST -d '{ "query": "{indexingStatuses(subgraphs: [\"<deployment-id>\"]) {synced health fatalError {message block { number } handler } subgraph chains { chainHeadBlock { number } latestBlock { number }}}}"}' https://api.thegraph.com/index-node/graphql
+```

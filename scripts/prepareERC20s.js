@@ -6,6 +6,8 @@ const erc20s = JSON.parse(
   fs.readFileSync(`config/${network}.json`)
 ).erc20s.sort((a, b) => (a.projectId < b.projectId ? -1 : 1));
 
+if (!fs.existsSync("src/erc20")) fs.mkdirSync("src/erc20");
+
 // Write ERC20 handlers
 fs.writeFileSync(
   `src/erc20/mapping.ts`,
