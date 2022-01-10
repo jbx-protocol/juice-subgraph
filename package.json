@@ -7,7 +7,7 @@
     "prepare:mainnet": "node scripts/prepareERC20s.js mainnet && mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml && yarn codegen",
     "prepare:rinkeby": "node scripts/prepareERC20s.js rinkeby && mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml && yarn codegen",
     "deploy:mainnet": "yarn prepare:mainnet && graph deploy --studio juicebox",
-    "deploy:rinkeby": "yarn prepare:rinkeby && graph deploy --studio juicebox-rinkeby"
+    "deploy:rinkeby": "yarn prepare:rinkeby && graph deploy --node https://api.studio.thegraph.com/deploy/ juicebox-dev-rinkeby"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.22.1",
