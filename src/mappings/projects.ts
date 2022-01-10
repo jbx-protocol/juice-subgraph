@@ -12,7 +12,6 @@ export function handleProjectCreate(event: Create): void {
   project.createdAt = event.block.timestamp;
   project.uri = event.params.uri;
   project.totalPaid = BigInt.fromString("0");
-  project.holdersCount = BigInt.fromString("0");
   project.totalRedeemed = BigInt.fromString("0");
   project.currentBalance = BigInt.fromString("0");
   project.save();

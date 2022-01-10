@@ -23,15 +23,6 @@ export function handlePrint(event: Print): void {
 
   if (!project) return;
 
-  if (
-    !event.params.amount.isZero() &&
-    (!participant || participant.balance.isZero())
-  ) {
-    // Increment holdersCount if participant is new or has zero balance and received >0 tokens
-    project.holdersCount = project.holdersCount.plus(BigInt.fromString("1"));
-    project.save();
-  }
-
   if (!participant) {
     participant = new Participant(id);
     participant.project = project.id;
@@ -73,15 +64,6 @@ export function handleTicketTransfer(event: Transfer): void {
   );
 
   if (sender) {
-    // Decrement holdersCount if sender sent all their tokens
-    if (
-      event.params.amount.equals(sender.balance) &&
-      event.params.holder !== event.params.recipient
-    ) {
-      project.holdersCount = project.holdersCount.minus(BigInt.fromString("1"));
-      project.save();
-    }
-
     sender.stakedBalance = sender.stakedBalance.minus(event.params.amount);
 
     updateBalance(sender);
@@ -92,15 +74,6 @@ export function handleTicketTransfer(event: Transfer): void {
   let receiverId = idForParticipant(projectId, event.params.recipient);
 
   let receiver = Participant.load(receiverId);
-
-  // Increment holdersCount if receiver is new or had 0 balance and received >0 tokens
-  if (
-    !event.params.amount.isZero() &&
-    (!receiver || receiver.balance.isZero())
-  ) {
-    project.holdersCount = project.holdersCount.plus(BigInt.fromString("1"));
-    project.save();
-  }
 
   if (!receiver) {
     receiver = new Participant(receiverId);
@@ -211,16 +184,6 @@ export function handleRedeem(event: Redeem): void {
   }
 
   updateBalance(participant);
-
-  // Decrement holdersCount if participant redeemed all their tokens
-  if (participant.balance.isZero()) {
-    let project = Project.load(projectId.toString());
-
-    if (project) {
-      project.holdersCount = project.holdersCount.minus(BigInt.fromString("1"));
-      project.save();
-    }
-  }
 
   participant.save();
 }

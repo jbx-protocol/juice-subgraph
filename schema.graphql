@@ -8,7 +8,6 @@ type Project @entity {
   totalRedeemed: BigInt!
   currentBalance: BigInt!
   participants: [Participant!]! @derivedFrom(field: "project")
-  holdersCount: BigInt!
   terminal: Bytes!
   payEvents: [PayEvent!]! @derivedFrom(field: "project")
   printPremineEvents: [PrintPremineEvent!]! @derivedFrom(field: "project")

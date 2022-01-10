@@ -35,30 +35,11 @@ export function handleProjectERC20Transfer(
 
     updateBalance(sender);
 
-    // Decrement holdersCount if sender sent the rest of their tokens
-    if (
-      sender.balance.isZero() &&
-      event.params.to !== event.params.from &&
-      project
-    ) {
-      project.holdersCount = project.holdersCount.minus(BigInt.fromString("1"));
-      project.save();
-    }
-
     sender.save();
   }
 
   let receiverId = idForParticipant(projectId, event.params.to);
   let receiver = Participant.load(receiverId);
-
-  // Increment holdersCount if receiver is new or had 0 balance and received >0 tokens
-  if (
-    !event.params.value.isZero() &&
-    (!receiver || receiver.balance.isZero())
-  ) {
-    project.holdersCount = project.holdersCount.plus(BigInt.fromString("1"));
-    project.save();
-  }
 
   if (!receiver) {
     receiver = new Participant(receiverId);
