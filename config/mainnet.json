@@ -412,6 +412,12 @@
       "address": "0x46d1cD81092D4Eb1F46B7f0079AC7835BEE311D0"
     },
     {
+      "symbol": "BRGR",
+      "projectId": 201,
+      "startBlock": 13964612,
+      "address": "0x6eA929B78Dd8D8124bfF2A3034EE415dF099229a"
+    },
+    {
       "symbol": "PLANT",
       "projectId": 202,
       "startBlock": 13831163,
