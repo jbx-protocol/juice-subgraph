@@ -8,6 +8,8 @@
   "startBlock_terminalV1_1": 9115779,
   "address_ticketBooth": "0x0d038636a670E8bd8cF7D56BC4626f2a6446cF11",
   "startBlock_ticketBooth": 9115779,
+  "address_jbProjects": "0x05ea48673d41DC75fbDC8f32fA825be69c1BD5B2",
+  "startBlock_jbProjects": 9115779,
   "erc20s": [
     {
       "symbol": "RDAO",

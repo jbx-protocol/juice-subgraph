@@ -1,4 +1,3 @@
-import { BigInt } from "@graphprotocol/graph-ts";
 import {
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
@@ -9,26 +8,25 @@ import {
   Project,
   RedeemEvent,
   TapEvent,
-} from "../../generated/schema";
+} from "../../../generated/schema";
 import {
   AddToBalance,
   AllowMigration,
-  AppointGovernance,
   Deposit,
   DistributeToPayoutMod,
   DistributeToTicketMod,
   EnsureTargetLocalWei,
   Migrate,
   Pay,
-  PrintPreminedTickets,
   PrintReserveTickets,
+  PrintTickets,
   Redeem,
   SetFee,
   SetTargetLocalWei,
   SetYielder,
   Tap,
-} from "../../generated/TerminalV1/TerminalV1";
-import { idForParticipant } from "../utils";
+} from "../../../generated/TerminalV1_1/TerminalV1_1";
+import { idForParticipant, idForProject } from "../../utils";
 
 export function handlePay(event: Pay): void {
   let timestamp = event.block.timestamp;
@@ -37,7 +35,7 @@ export function handlePay(event: Pay): void {
   let pay = new PayEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
-  let projectId = event.params.projectId.toString();
+  let projectId = idForProject(event.params.projectId, 1);
   if (pay) {
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
@@ -57,6 +55,7 @@ export function handlePay(event: Pay): void {
 
   let participantId = idForParticipant(
     event.params.projectId,
+    1,
     event.params.beneficiary
   );
   let participant = Participant.load(participantId);
@@ -74,26 +73,26 @@ export function handlePay(event: Pay): void {
   participant.save();
 }
 
-export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
+export function handlePrintTickets(event: PrintTickets): void {
   let printPremine = new PrintPremineEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
+  let projectId = idForProject(event.params.projectId, 1);
   if (!printPremine) return;
   printPremine.amount = event.params.amount;
   printPremine.beneficiary = event.params.beneficiary;
   printPremine.caller = event.params.caller;
   printPremine.memo = event.params.memo;
-  printPremine.project = event.params.projectId.toString();
+  printPremine.project = projectId;
   printPremine.timestamp = event.block.timestamp;
   printPremine.txHash = event.transaction.hash;
   printPremine.save();
 }
 
 export function handleTap(event: Tap): void {
+  let projectId = idForProject(event.params.projectId, 1);
   let tapEvent = new TapEvent(
-    event.params.projectId.toString() +
-      "-" +
-      event.transaction.hash.toHexString()
+    projectId + "-" + event.transaction.hash.toHexString()
   );
   if (tapEvent) {
     tapEvent.amount = event.params.amount;
@@ -104,13 +103,13 @@ export function handleTap(event: Tap): void {
     tapEvent.fundingCycleId = event.params.fundingCycleId;
     tapEvent.govFeeAmount = event.params.govFeeAmount;
     tapEvent.netTransferAmount = event.params.netTransferAmount;
-    tapEvent.project = event.params.projectId.toString();
+    tapEvent.project = projectId;
     tapEvent.timestamp = event.block.timestamp;
     tapEvent.txHash = event.transaction.hash;
     tapEvent.save();
   }
 
-  let project = Project.load(event.params.projectId.toString());
+  let project = Project.load(projectId);
   if (project) {
     project.currentBalance = project.currentBalance
       .minus(event.params.govFeeAmount)
@@ -122,6 +121,7 @@ export function handleTap(event: Tap): void {
 export function handleRedeem(event: Redeem): void {
   let timestamp = event.block.timestamp;
   let caller = event.params.caller;
+  let projectId = idForProject(event.params._projectId, 1);
 
   let redeemEvent = new RedeemEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
@@ -132,13 +132,13 @@ export function handleRedeem(event: Redeem): void {
     redeemEvent.caller = caller;
     redeemEvent.holder = event.params.holder;
     redeemEvent.returnAmount = event.params.returnAmount;
-    redeemEvent.project = event.params._projectId.toString();
+    redeemEvent.project = projectId;
     redeemEvent.timestamp = timestamp;
     redeemEvent.txHash = event.transaction.hash;
     redeemEvent.save();
   }
 
-  let project = Project.load(event.params._projectId.toString());
+  let project = Project.load(projectId);
   if (project) {
     project.totalRedeemed = project.totalRedeemed.plus(
       event.params.returnAmount
@@ -151,10 +151,9 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handlePrintReserveTickets(event: PrintReserveTickets): void {
+  let projectId = idForProject(event.params.projectId, 1);
   let printReserveEvent = new PrintReservesEvent(
-    event.params.projectId.toString() +
-      "-" +
-      event.transaction.hash.toHexString()
+    projectId + "-" + event.transaction.hash.toHexString()
   );
   if (!printReserveEvent) return;
   printReserveEvent.beneficiary = event.params.beneficiary;
@@ -163,14 +162,15 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
   printReserveEvent.caller = event.params.caller;
   printReserveEvent.count = event.params.count;
   printReserveEvent.fundingCycleId = event.params.fundingCycleId;
-  printReserveEvent.project = event.params.projectId.toString();
+  printReserveEvent.project = projectId;
   printReserveEvent.timestamp = event.block.timestamp;
   printReserveEvent.txHash = event.transaction.hash;
   printReserveEvent.save();
 }
 
 export function handleAddToBalance(event: AddToBalance): void {
-  let project = Project.load(event.params.projectId.toString());
+  let projectId = idForProject(event.params.projectId, 1);
+  let project = Project.load(projectId);
   if (!project) return;
   project.currentBalance = project.currentBalance.plus(event.params.value);
   project.save();
@@ -182,12 +182,11 @@ export function handleDistributeToPayoutMod(
   let distributeToPayoutModEvent = new DistributeToPayoutModEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
+  let projectId = idForProject(event.params.projectId, 1);
   if (!distributeToPayoutModEvent) return;
   distributeToPayoutModEvent.tapEvent =
-    event.params.projectId.toString() +
-    "-" +
-    event.transaction.hash.toHexString();
-  distributeToPayoutModEvent.project = event.params.projectId.toString();
+    projectId + "-" + event.transaction.hash.toHexString();
+  distributeToPayoutModEvent.project = projectId;
   distributeToPayoutModEvent.caller = event.params.caller;
   distributeToPayoutModEvent.projectId = event.params.projectId;
   distributeToPayoutModEvent.fundingCycleId = event.params.fundingCycleId;
@@ -209,12 +208,11 @@ export function handleDistributeToTicketMod(
   let distributeToTicketModEvent = new DistributeToTicketModEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
+  let projectId = idForProject(event.params.projectId, 1);
 
   if (!distributeToTicketModEvent) return;
   distributeToTicketModEvent.printReservesEvent =
-    event.params.projectId.toString() +
-    "-" +
-    event.transaction.hash.toHexString();
+    projectId + "-" + event.transaction.hash.toHexString();
   distributeToTicketModEvent.caller = event.params.caller;
   distributeToTicketModEvent.modBeneficiary = event.params.mod.beneficiary;
   distributeToTicketModEvent.modPreferUnstaked =
@@ -224,26 +222,18 @@ export function handleDistributeToTicketMod(
   distributeToTicketModEvent.fundingCycleId = event.params.fundingCycleId;
   distributeToTicketModEvent.txHash = event.transaction.hash;
   distributeToTicketModEvent.timestamp = event.block.timestamp;
-  distributeToTicketModEvent.project = event.params.projectId.toString();
+  distributeToTicketModEvent.project = projectId;
 
   distributeToTicketModEvent.save();
 }
 
 export function handleAllowMigration(event: AllowMigration): void {}
 
-export function handleAppointGovernance(event: AppointGovernance): void {}
-
 export function handleDeposit(event: Deposit): void {}
 
 export function handleEnsureTargetLocalWei(event: EnsureTargetLocalWei): void {}
 
-export function handleMigrate(event: Migrate): void {
-  let projectId = event.params.projectId.toString();
-  let project = Project.load(projectId);
-  if (!project) return;
-  project.terminal = event.params.to;
-  project.save();
-}
+export function handleMigrate(event: Migrate): void {}
 
 export function handleSetFee(event: SetFee): void {}
 

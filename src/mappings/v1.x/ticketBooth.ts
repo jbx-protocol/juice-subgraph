@@ -4,7 +4,7 @@ import {
   DeployedERC20Event,
   Participant,
   Project,
-} from "../../generated/schema";
+} from "../../../generated/schema";
 import {
   Issue,
   Print,
@@ -12,14 +12,19 @@ import {
   Stake,
   Transfer,
   Unstake,
-} from "../../generated/TicketBooth/TicketBooth";
-import { erc20IsIndexed, idForParticipant, updateBalance } from "../utils";
+} from "../../../generated/TicketBooth/TicketBooth";
+import {
+  erc20IsIndexed,
+  idForParticipant,
+  idForProject,
+  updateBalance,
+} from "../../utils";
 
 export function handlePrint(event: Print): void {
-  let projectId = event.params.projectId;
-  let id = idForParticipant(projectId, event.params.holder);
+  let projectId = idForProject(event.params.projectId, 1);
+  let id = idForParticipant(event.params.projectId, 1, event.params.holder);
   let participant = Participant.load(id);
-  let project = Project.load(projectId.toString());
+  let project = Project.load(projectId);
 
   if (!project) return;
 
@@ -36,7 +41,7 @@ export function handlePrint(event: Print): void {
   if (!participant) return;
 
   if (event.params.preferUnstakedTickets) {
-    if (!erc20IsIndexed(projectId)) {
+    if (!erc20IsIndexed(event.params.projectId)) {
       participant.unstakedBalance = participant.unstakedBalance.plus(
         event.params.amount
       );
@@ -53,14 +58,13 @@ export function handlePrint(event: Print): void {
 }
 
 export function handleTicketTransfer(event: Transfer): void {
-  let projectId = event.params.projectId;
-
-  let project = Project.load(projectId.toString());
+  let projectId = idForProject(event.params.projectId, 1);
+  let project = Project.load(projectId);
 
   if (!project) return;
 
   let sender = Participant.load(
-    idForParticipant(projectId, event.params.holder)
+    idForParticipant(event.params.projectId, 1, event.params.holder)
   );
 
   if (sender) {
@@ -71,7 +75,11 @@ export function handleTicketTransfer(event: Transfer): void {
     sender.save();
   }
 
-  let receiverId = idForParticipant(projectId, event.params.recipient);
+  let receiverId = idForParticipant(
+    event.params.projectId,
+    1,
+    event.params.recipient
+  );
 
   let receiver = Participant.load(receiverId);
 
@@ -95,10 +103,8 @@ export function handleTicketTransfer(event: Transfer): void {
 }
 
 export function handleUnstake(event: Unstake): void {
-  let projectId = event.params.projectId;
-
   let participant = Participant.load(
-    idForParticipant(projectId, event.params.holder)
+    idForParticipant(event.params.projectId, 1, event.params.holder)
   );
 
   if (participant) {
@@ -106,7 +112,7 @@ export function handleUnstake(event: Unstake): void {
       event.params.amount
     );
 
-    if (!erc20IsIndexed(projectId)) {
+    if (!erc20IsIndexed(event.params.projectId)) {
       participant.unstakedBalance = participant.unstakedBalance.plus(
         event.params.amount
       );
@@ -119,10 +125,8 @@ export function handleUnstake(event: Unstake): void {
 }
 
 export function handleStake(event: Stake): void {
-  let projectId = event.params.projectId;
-
   let participant = Participant.load(
-    idForParticipant(projectId, event.params.holder)
+    idForParticipant(event.params.projectId, 1, event.params.holder)
   );
 
   if (participant) {
@@ -130,7 +134,7 @@ export function handleStake(event: Stake): void {
       event.params.amount
     );
 
-    if (!erc20IsIndexed(projectId)) {
+    if (!erc20IsIndexed(event.params.projectId)) {
       participant.unstakedBalance = participant.unstakedBalance.minus(
         event.params.amount
       );
@@ -143,23 +147,21 @@ export function handleStake(event: Stake): void {
 }
 
 export function handleRedeem(event: Redeem): void {
-  let projectId = event.params.projectId;
-
   let participant = Participant.load(
-    idForParticipant(projectId, event.params.holder)
+    idForParticipant(event.params.projectId, 1, event.params.holder)
   );
 
   if (!participant) return;
 
   if (event.params.preferUnstaked) {
     if (participant.unstakedBalance.gt(event.params.amount)) {
-      if (!erc20IsIndexed(projectId)) {
+      if (!erc20IsIndexed(event.params.projectId)) {
         participant.unstakedBalance = participant.unstakedBalance.minus(
           event.params.amount
         );
       }
     } else {
-      if (!erc20IsIndexed(projectId)) {
+      if (!erc20IsIndexed(event.params.projectId)) {
         participant.unstakedBalance = BigInt.fromString("0");
       }
 
@@ -175,7 +177,7 @@ export function handleRedeem(event: Redeem): void {
     } else {
       participant.stakedBalance = BigInt.fromString("0");
 
-      if (!erc20IsIndexed(projectId)) {
+      if (!erc20IsIndexed(event.params.projectId)) {
         participant.unstakedBalance = participant.unstakedBalance.minus(
           event.params.amount.minus(participant.stakedBalance)
         );
@@ -189,16 +191,13 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handleIssue(event: Issue): void {
-  let project = Project.load(event.params.projectId.toString());
+  let projectId = idForProject(event.params.projectId, 1);
+  let project = Project.load(projectId);
 
   if (!project) return;
 
   let deployedERC20Event = new DeployedERC20Event(
-    project.id.toString() +
-      "-" +
-      event.params.symbol +
-      "-" +
-      event.block.number.toString()
+    projectId + "-" + event.params.symbol + "-" + event.block.number.toString()
   );
 
   deployedERC20Event.project = project.id;

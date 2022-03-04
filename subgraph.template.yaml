@@ -44,7 +44,7 @@ dataSources:
           handler: handleSetHandle
         - event: SetUri(indexed uint256,string,address)
           handler: handleSetUri
-      file: ./src/mappings/projects.ts
+      file: ./src/mappings/v1.x/projects.ts
   - kind: ethereum/contract
     name: TicketBooth
     network: {{network}}
@@ -76,7 +76,7 @@ dataSources:
           handler: handleRedeem
         - event: Issue(indexed uint256,string,string,address)
           handler: handleIssue
-      file: ./src/mappings/ticketBooth.ts
+      file: ./src/mappings/v1.x/ticketBooth.ts
   - kind: ethereum/contract
     name: TerminalV1
     network: {{network}}
@@ -121,7 +121,27 @@ dataSources:
           handler: handleDistributeToTicketMod
         - event: Migrate(indexed uint256,indexed address,uint256,address)
           handler: handleMigrate
-      file: ./src/mappings/terminalV1.ts
+      file: ./src/mappings/v1.x/terminalV1.ts
+  - kind: ethereum/contract
+    name: JBProjects
+    network: {{network}}
+    source:
+      address: '{{address_jbProjects}}'
+      abi: JBProjects
+      startBlock: {{startBlock_jbProjects}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Project
+      abis:
+        - name: JBProjects
+          file: ./abis/JBProjects.json
+      eventHandlers:
+        - event: Create(indexed uint256,indexed address,(string,uint256),address)
+          handler: handleCreate
+      file: ./src/mappings/v2/JBProjects.ts
   {{ #address_terminalV1_1 }}
   - kind: ethereum/contract
     name: TerminalV1_1
@@ -165,7 +185,7 @@ dataSources:
           handler: handleDistributeToPayoutMod
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
-      file: ./src/mappings/terminalV1_1.ts
+      file: ./src/mappings/v1.x/terminalV1_1.ts
   {{ /address_terminalV1_1 }}
   {{ #erc20s }}
   - kind: ethereum/contract

@@ -6,9 +6,17 @@ import { indexedERC20s } from "./erc20/indexedERC20s";
 
 export function idForParticipant(
   projectId: BigInt,
+  cv: number,
   walletAddress: Bytes
 ): string {
-  return projectId.toString() + "-" + walletAddress.toHexString().toLowerCase();
+  return `${idForProject(
+    projectId,
+    cv
+  )}-${walletAddress.toHexString().toLowerCase()}`;
+}
+
+export function idForProject(projectId: BigInt, cv: number): string {
+  return `${cv.toString().split(".")[0]}-${projectId.toString()}`;
 }
 
 export function erc20IsIndexed(projectId: BigInt): boolean {
@@ -25,8 +33,10 @@ export function handleProjectERC20Transfer(
   projectId: BigInt,
   event: Transfer
 ): void {
-  let sender = Participant.load(idForParticipant(projectId, event.params.from));
-  let project = Project.load(projectId.toString());
+  let sender = Participant.load(
+    idForParticipant(projectId, 1, event.params.from)
+  );
+  let project = Project.load(idForProject(projectId, 1));
 
   if (!project) return;
 
@@ -38,7 +48,7 @@ export function handleProjectERC20Transfer(
     sender.save();
   }
 
-  let receiverId = idForParticipant(projectId, event.params.to);
+  let receiverId = idForParticipant(projectId, 1, event.params.to);
   let receiver = Participant.load(receiverId);
 
   if (!receiver) {

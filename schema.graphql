@@ -1,14 +1,20 @@
 type Project @entity {
   id: ID!
-  handle: String!
+  projectId: Int!
+  cv: Int! # contracts version
+
+  # Conditional on if using v1.x or v2 contracts
+  handle: String
+  metadataUri: String
+  metadataDomain: BigInt
+  terminal: Bytes
+
   creator: Bytes!
   createdAt: BigInt!
-  uri: String
   totalPaid: BigInt!
   totalRedeemed: BigInt!
   currentBalance: BigInt!
   participants: [Participant!]! @derivedFrom(field: "project")
-  terminal: Bytes!
   payEvents: [PayEvent!]! @derivedFrom(field: "project")
   printPremineEvents: [PrintPremineEvent!]! @derivedFrom(field: "project")
   tapEvents: [TapEvent!]! @derivedFrom(field: "project")
