@@ -123,6 +123,60 @@ dataSources:
           handler: handleMigrate
       file: ./src/mappings/v1.x/terminalV1.ts
   - kind: ethereum/contract
+    name: JBController
+    network: {{network}}
+    source:
+      address: '{{address_jbController}}'
+      abi: JBController
+      startBlock: {{startBlock_jbController}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Participant
+      abis:
+        - name: JBController
+          file: ./abis/JBController.json
+      eventHandlers:
+        - event: MintTokens(indexed address,indexed uint256,indexed uint256,string,uint256,address)
+          handler: handleMintTokens
+        - event: BurnTokens(indexed address,indexed uint256,uint256,string,address)
+          handler: handleBurnTokens
+        - event: DistributeReservedTokens(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,string,address)
+          handler: handleDistributeReservedTokens
+        - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,uint256,uint256,address,uint256,address),uint256,address)
+          handler: handleDistributeToReservedTokenSplit
+      file: ./src/mappings/v2/JBController.ts
+  - kind: ethereum/contract
+    name: JBTokenStore
+    network: {{network}}
+    source:
+      address: '{{address_jbTokenStore}}'
+      abi: JBTokenStore
+      startBlock: {{startBlock_jbTokenStore}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Participant
+      abis:
+        - name: JBTokenStore
+          file: ./abis/JBTokenStore.json
+      eventHandlers:
+        - event: Burn(indexed address,indexed uint256,uint256,uint256,bool,address)
+          handler: handleBurn
+        - event: Claim(indexed address,indexed uint256,uint256,address)
+          handler: handleClaim
+        - event: Issue(indexed uint256,indexed address,string,string,address)
+          handler: handleIssue
+        - event: Mint(indexed address,indexed uint256,uint256,bool,bool,address)
+          handler: handleMint
+        - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
+          handler: handleTransfer
+      file: ./src/mappings/v2/JBTokenStore.ts
+  - kind: ethereum/contract
     name: JBProjects
     network: {{network}}
     source:
@@ -161,7 +215,7 @@ dataSources:
         - PrintPremineEvent
         - TapEvent
         - RedeemEvent
-        - TokenHolder
+        - Participant
         - PrintReservesEvent
         - DistributeToPayoutModEvent
         - DistributeToTicketModEvent

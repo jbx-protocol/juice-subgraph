@@ -10,6 +10,12 @@
   "startBlock_ticketBooth": 9115779,
   "address_jbProjects": "0x05ea48673d41DC75fbDC8f32fA825be69c1BD5B2",
   "startBlock_jbProjects": 9115779,
+  "address_jbController": "0xb6301A0DBd16F57Ca880e3088e1405505cd44622",
+  "startBlock_jbController": 9115779,
+  "address_jbETHPaymentTerminal": "0x2d110f9DDa8d019B453299151631e9dfb69cfcb7",
+  "startBlock_jbETHPaymentTerminal": 9115779,
+  "address_jbTokenStore": "0xBd0A8D0617eea36A4399d3d61027e338c4Faa36f",
+  "startBlock_jbTokenStore": 9115779,
   "erc20s": [
     {
       "symbol": "RDAO",

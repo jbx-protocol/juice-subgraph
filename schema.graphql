@@ -49,7 +49,6 @@ type Participant @entity {
 type PayEvent @entity {
   id: ID!
   project: Project!
-  fundingCycleId: BigInt!
   caller: Bytes!
   beneficiary: Bytes!
   amount: BigInt!
@@ -146,4 +145,5 @@ type DeployedERC20Event @entity {
   project: Project!
   symbol: String!
   deployedAtBlockNum: BigInt!
+  address: Bytes
 }

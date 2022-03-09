@@ -3,10 +3,11 @@ import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { Participant, Project } from "../generated/schema";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
 import { indexedERC20s } from "./erc20/indexedERC20s";
+import { CV } from "./types";
 
 export function idForParticipant(
   projectId: BigInt,
-  cv: number,
+  cv: CV,
   walletAddress: Bytes
 ): string {
   return `${idForProject(
@@ -15,7 +16,7 @@ export function idForParticipant(
   )}-${walletAddress.toHexString().toLowerCase()}`;
 }
 
-export function idForProject(projectId: BigInt, cv: number): string {
+export function idForProject(projectId: BigInt, cv: CV): string {
   return `${cv.toString().split(".")[0]}-${projectId.toString()}`;
 }
 
