@@ -10,16 +10,22 @@ import {
   DeployedERC20Event,
   Participant,
   Project,
+  ProjectEvent,
 } from "../../../generated/schema";
 import { CV } from "../../types";
-import { idForParticipant, idForProject, updateBalance } from "../../utils";
+import {
+  idForParticipant,
+  idForProject,
+  idForProjectEvent,
+  updateBalance,
+} from "../../utils";
 
-const CV: CV = 2;
+const cv: CV = 2;
 
 export function handleBurn(event: Burn): void {
   let holderId = idForParticipant(
     event.params.projectId,
-    CV,
+    cv,
     event.params.holder
   );
   let participant = Participant.load(holderId);
@@ -49,7 +55,7 @@ export function handleBurn(event: Burn): void {
 
 export function handleClaim(event: Claim): void {
   let participant = Participant.load(
-    idForParticipant(event.params.projectId, CV, event.params.holder)
+    idForParticipant(event.params.projectId, cv, event.params.holder)
   );
 
   if (participant) {
@@ -64,7 +70,7 @@ export function handleClaim(event: Claim): void {
 }
 
 export function handleIssue(event: Issue): void {
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
 
   if (!project) return;
@@ -79,6 +85,19 @@ export function handleIssue(event: Issue): void {
   deployedERC20Event.address = event.params.token;
 
   deployedERC20Event.save();
+
+  let projectEvent = new ProjectEvent(
+    idForProjectEvent(
+      event.params.projectId,
+      cv,
+      event.transaction.hash,
+      event.transactionLogIndex
+    )
+  );
+  projectEvent.timestamp = event.block.timestamp;
+  projectEvent.deployedERC20Event = deployedERC20Event.id;
+  projectEvent.project = projectId;
+  projectEvent.save();
 }
 
 export function handleMint(event: Mint): void {
@@ -87,10 +106,10 @@ export function handleMint(event: Mint): void {
 
   let receiverId = idForParticipant(
     event.params.projectId,
-    CV,
+    cv,
     event.params.holder
   );
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   let receiver = Participant.load(receiverId);
 
   if (!receiver) {

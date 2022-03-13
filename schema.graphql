@@ -46,6 +46,20 @@ type Participant @entity {
   unstakedBalance: BigInt!
 }
 
+type ProjectEvent @entity {
+  id: ID!
+  project: Project!
+  timestamp: BigInt!
+  payEvent: PayEvent 
+  printPremineEvent: PrintPremineEvent 
+  tapEvent: TapEvent 
+  redeemEvent: RedeemEvent 
+  printReservesEvent: PrintReservesEvent 
+  distributeToPayoutModEvent: DistributeToPayoutModEvent 
+  distributeToTicketModEvent: DistributeToTicketModEvent 
+  deployedERC20Event: DeployedERC20Event
+}
+
 type PayEvent @entity {
   id: ID!
   project: Project!

@@ -6,6 +6,7 @@ import {
   PrintPremineEvent,
   PrintReservesEvent,
   Project,
+  ProjectEvent,
   RedeemEvent,
   TapEvent,
 } from "../../../generated/schema";
@@ -28,9 +29,9 @@ import {
   Tap,
 } from "../../../generated/TerminalV1/TerminalV1";
 import { CV } from "../../types";
-import { idForParticipant, idForProject } from "../../utils";
+import { idForParticipant, idForProject, idForProjectEvent } from "../../utils";
 
-const CV: CV = 1;
+const cv: CV = 1;
 
 export function handlePay(event: Pay): void {
   let timestamp = event.block.timestamp;
@@ -39,7 +40,7 @@ export function handlePay(event: Pay): void {
   let pay = new PayEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   if (pay) {
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
@@ -51,6 +52,19 @@ export function handlePay(event: Pay): void {
     pay.save();
   }
 
+  let projectEvent = new ProjectEvent(
+    idForProjectEvent(
+      event.params.projectId,
+      cv,
+      event.transaction.hash,
+      event.transactionLogIndex
+    )
+  );
+  projectEvent.timestamp = event.block.timestamp;
+  projectEvent.payEvent = pay.id;
+  projectEvent.project = projectId;
+  projectEvent.save();
+
   let project = Project.load(projectId);
   if (!project) return;
   project.totalPaid = project.totalPaid.plus(event.params.amount);
@@ -58,7 +72,7 @@ export function handlePay(event: Pay): void {
 
   let participantId = idForParticipant(
     event.params.projectId,
-    CV,
+    cv,
     event.params.beneficiary
   );
   let participant = Participant.load(participantId);
@@ -77,7 +91,7 @@ export function handlePay(event: Pay): void {
 }
 
 export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   let printPremine = new PrintPremineEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
@@ -90,10 +104,23 @@ export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
   printPremine.timestamp = event.block.timestamp;
   printPremine.txHash = event.transaction.hash;
   printPremine.save();
+
+  let projectEvent = new ProjectEvent(
+    idForProjectEvent(
+      event.params.projectId,
+      cv,
+      event.transaction.hash,
+      event.transactionLogIndex
+    )
+  );
+  projectEvent.timestamp = event.block.timestamp;
+  projectEvent.printPremineEvent = printPremine.id;
+  projectEvent.project = projectId;
+  projectEvent.save();
 }
 
 export function handleTap(event: Tap): void {
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   let tapEvent = new TapEvent(
     projectId + "-" + event.transaction.hash.toHexString()
   );
@@ -110,6 +137,19 @@ export function handleTap(event: Tap): void {
     tapEvent.timestamp = event.block.timestamp;
     tapEvent.txHash = event.transaction.hash;
     tapEvent.save();
+
+    let projectEvent = new ProjectEvent(
+      idForProjectEvent(
+        event.params.projectId,
+        cv,
+        event.transaction.hash,
+        event.transactionLogIndex
+      )
+    );
+    projectEvent.timestamp = event.block.timestamp;
+    projectEvent.tapEvent = tapEvent.id;
+    projectEvent.project = projectId;
+    projectEvent.save();
   }
 
   let project = Project.load(projectId);
@@ -124,7 +164,7 @@ export function handleTap(event: Tap): void {
 export function handleRedeem(event: Redeem): void {
   let timestamp = event.block.timestamp;
   let caller = event.params.caller;
-  let projectId = idForProject(event.params._projectId, CV);
+  let projectId = idForProject(event.params._projectId, cv);
 
   let redeemEvent = new RedeemEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
@@ -139,6 +179,19 @@ export function handleRedeem(event: Redeem): void {
     redeemEvent.timestamp = timestamp;
     redeemEvent.txHash = event.transaction.hash;
     redeemEvent.save();
+
+    let projectEvent = new ProjectEvent(
+      idForProjectEvent(
+        event.params._projectId,
+        cv,
+        event.transaction.hash,
+        event.transactionLogIndex
+      )
+    );
+    projectEvent.timestamp = event.block.timestamp;
+    projectEvent.redeemEvent = redeemEvent.id;
+    projectEvent.project = projectId;
+    projectEvent.save();
   }
 
   let project = Project.load(projectId);
@@ -154,7 +207,7 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handlePrintReserveTickets(event: PrintReserveTickets): void {
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   let printReserveEvent = new PrintReservesEvent(
     projectId + "-" + event.transaction.hash.toHexString()
   );
@@ -169,10 +222,23 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
   printReserveEvent.timestamp = event.block.timestamp;
   printReserveEvent.txHash = event.transaction.hash;
   printReserveEvent.save();
+
+  let projectEvent = new ProjectEvent(
+    idForProjectEvent(
+      event.params.projectId,
+      cv,
+      event.transaction.hash,
+      event.transactionLogIndex
+    )
+  );
+  projectEvent.timestamp = event.block.timestamp;
+  projectEvent.printReservesEvent = printReserveEvent.id;
+  projectEvent.project = projectId;
+  projectEvent.save();
 }
 
 export function handleAddToBalance(event: AddToBalance): void {
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
   if (!project) return;
   project.currentBalance = project.currentBalance.plus(event.params.value);
@@ -185,7 +251,7 @@ export function handleDistributeToPayoutMod(
   let distributeToPayoutModEvent = new DistributeToPayoutModEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   if (!distributeToPayoutModEvent) return;
   distributeToPayoutModEvent.tapEvent =
     projectId + "-" + event.transaction.hash.toHexString();
@@ -203,6 +269,19 @@ export function handleDistributeToPayoutMod(
   distributeToPayoutModEvent.txHash = event.transaction.hash;
 
   distributeToPayoutModEvent.save();
+
+  let projectEvent = new ProjectEvent(
+    idForProjectEvent(
+      event.params.projectId,
+      cv,
+      event.transaction.hash,
+      event.transactionLogIndex
+    )
+  );
+  projectEvent.timestamp = event.block.timestamp;
+  projectEvent.distributeToPayoutModEvent = distributeToPayoutModEvent.id;
+  projectEvent.project = projectId;
+  projectEvent.save();
 }
 
 export function handleDistributeToTicketMod(
@@ -211,7 +290,7 @@ export function handleDistributeToTicketMod(
   let distributeToTicketModEvent = new DistributeToTicketModEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
 
   if (!distributeToTicketModEvent) return;
   distributeToTicketModEvent.printReservesEvent =
@@ -228,6 +307,19 @@ export function handleDistributeToTicketMod(
   distributeToTicketModEvent.project = projectId;
 
   distributeToTicketModEvent.save();
+
+  let projectEvent = new ProjectEvent(
+    idForProjectEvent(
+      event.params.projectId,
+      cv,
+      event.transaction.hash,
+      event.transactionLogIndex
+    )
+  );
+  projectEvent.timestamp = event.block.timestamp;
+  projectEvent.distributeToTicketModEvent = distributeToTicketModEvent.id;
+  projectEvent.project = projectId;
+  projectEvent.save();
 }
 
 export function handleAllowMigration(event: AllowMigration): void {}
@@ -239,7 +331,7 @@ export function handleDeposit(event: Deposit): void {}
 export function handleEnsureTargetLocalWei(event: EnsureTargetLocalWei): void {}
 
 export function handleMigrate(event: Migrate): void {
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
   if (!project) return;
   project.terminal = event.params.to;

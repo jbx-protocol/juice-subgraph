@@ -5,6 +5,18 @@ import { Transfer } from "../generated/templates/ERC20/ERC20";
 import { indexedERC20s } from "./erc20/indexedERC20s";
 import { CV } from "./types";
 
+export function idForProjectEvent(
+  projectId: BigInt,
+  cv: CV,
+  txHash: Bytes,
+  logIndex: BigInt
+): string {
+  return `${idForProject(
+    projectId,
+    cv
+  )}-${txHash.toHexString().toLowerCase()}-${logIndex.toString()}`;
+}
+
 export function idForParticipant(
   projectId: BigInt,
   cv: CV,

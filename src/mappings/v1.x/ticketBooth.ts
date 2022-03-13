@@ -4,6 +4,7 @@ import {
   DeployedERC20Event,
   Participant,
   Project,
+  ProjectEvent,
 } from "../../../generated/schema";
 import {
   Issue,
@@ -18,14 +19,15 @@ import {
   erc20IsIndexed,
   idForParticipant,
   idForProject,
+  idForProjectEvent,
   updateBalance,
 } from "../../utils";
 
-const CV: CV = 1;
+const cv: CV = 1;
 
 export function handlePrint(event: Print): void {
-  let projectId = idForProject(event.params.projectId, CV);
-  let id = idForParticipant(event.params.projectId, CV, event.params.holder);
+  let projectId = idForProject(event.params.projectId, cv);
+  let id = idForParticipant(event.params.projectId, cv, event.params.holder);
   let participant = Participant.load(id);
   let project = Project.load(projectId);
 
@@ -61,13 +63,13 @@ export function handlePrint(event: Print): void {
 }
 
 export function handleTicketTransfer(event: Transfer): void {
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
 
   if (!project) return;
 
   let sender = Participant.load(
-    idForParticipant(event.params.projectId, CV, event.params.holder)
+    idForParticipant(event.params.projectId, cv, event.params.holder)
   );
 
   if (sender) {
@@ -80,7 +82,7 @@ export function handleTicketTransfer(event: Transfer): void {
 
   let receiverId = idForParticipant(
     event.params.projectId,
-    CV,
+    cv,
     event.params.recipient
   );
 
@@ -107,7 +109,7 @@ export function handleTicketTransfer(event: Transfer): void {
 
 export function handleUnstake(event: Unstake): void {
   let participant = Participant.load(
-    idForParticipant(event.params.projectId, CV, event.params.holder)
+    idForParticipant(event.params.projectId, cv, event.params.holder)
   );
 
   if (participant) {
@@ -129,7 +131,7 @@ export function handleUnstake(event: Unstake): void {
 
 export function handleStake(event: Stake): void {
   let participant = Participant.load(
-    idForParticipant(event.params.projectId, CV, event.params.holder)
+    idForParticipant(event.params.projectId, cv, event.params.holder)
   );
 
   if (participant) {
@@ -151,7 +153,7 @@ export function handleStake(event: Stake): void {
 
 export function handleRedeem(event: Redeem): void {
   let participant = Participant.load(
-    idForParticipant(event.params.projectId, CV, event.params.holder)
+    idForParticipant(event.params.projectId, cv, event.params.holder)
   );
 
   if (!participant) return;
@@ -194,7 +196,7 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handleIssue(event: Issue): void {
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
 
   if (!project) return;
@@ -208,4 +210,17 @@ export function handleIssue(event: Issue): void {
   deployedERC20Event.deployedAtBlockNum = event.block.number;
 
   deployedERC20Event.save();
+
+  let projectEvent = new ProjectEvent(
+    idForProjectEvent(
+      event.params.projectId,
+      cv,
+      event.transaction.hash,
+      event.transactionLogIndex
+    )
+  );
+  projectEvent.timestamp = event.block.timestamp;
+  projectEvent.deployedERC20Event = deployedERC20Event.id;
+  projectEvent.project = projectId;
+  projectEvent.save();
 }

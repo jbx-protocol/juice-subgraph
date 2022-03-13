@@ -1,1 +1,1 @@
-export type CV = 1 | 2;
+export type CV = i32;

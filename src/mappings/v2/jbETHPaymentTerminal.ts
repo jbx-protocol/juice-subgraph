@@ -11,12 +11,13 @@ import {
   Participant,
   PayEvent,
   Project,
+  ProjectEvent,
   RedeemEvent,
 } from "../../../generated/schema";
 import { CV } from "../../types";
-import { idForParticipant, idForProject } from "../../utils";
+import { idForParticipant, idForProject, idForProjectEvent } from "../../utils";
 
-const CV: CV = 2;
+const cv: CV = 2;
 
 export function handleAddToBalance(event: AddToBalance): void {}
 
@@ -35,7 +36,7 @@ export function handlePay(event: Pay): void {
   let pay = new PayEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
   if (pay) {
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
@@ -47,6 +48,19 @@ export function handlePay(event: Pay): void {
     pay.save();
   }
 
+  let projectEvent = new ProjectEvent(
+    idForProjectEvent(
+      event.params.projectId,
+      cv,
+      event.transaction.hash,
+      event.transactionLogIndex
+    )
+  );
+  projectEvent.timestamp = event.block.timestamp;
+  projectEvent.payEvent = pay.id;
+  projectEvent.project = projectId;
+  projectEvent.save();
+
   let project = Project.load(projectId);
   if (!project) return;
   project.totalPaid = project.totalPaid.plus(event.params.amount);
@@ -54,7 +68,7 @@ export function handlePay(event: Pay): void {
 
   let participantId = idForParticipant(
     event.params.projectId,
-    CV,
+    cv,
     event.params.beneficiary
   );
   let participant = Participant.load(participantId);
@@ -75,7 +89,7 @@ export function handlePay(event: Pay): void {
 export function handleRedeemTokens(event: RedeemTokens): void {
   let timestamp = event.block.timestamp;
   let caller = event.params.caller;
-  let projectId = idForProject(event.params.projectId, CV);
+  let projectId = idForProject(event.params.projectId, cv);
 
   let redeemEvent = new RedeemEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
@@ -90,6 +104,19 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     redeemEvent.timestamp = timestamp;
     redeemEvent.txHash = event.transaction.hash;
     redeemEvent.save();
+
+    let projectEvent = new ProjectEvent(
+      idForProjectEvent(
+        event.params.projectId,
+        cv,
+        event.transaction.hash,
+        event.transactionLogIndex
+      )
+    );
+    projectEvent.timestamp = event.block.timestamp;
+    projectEvent.redeemEvent = redeemEvent.id;
+    projectEvent.project = projectId;
+    projectEvent.save();
   }
 
   let project = Project.load(projectId);

@@ -5,13 +5,13 @@ import { Project } from "../../../generated/schema";
 import { CV } from "../../types";
 import { idForProject } from "../../utils";
 
-const CV: CV = 2;
+const cv: CV = 2;
 
 export function handleCreate(event: Create): void {
-  let project = new Project(idForProject(event.params.projectId, CV));
+  let project = new Project(idForProject(event.params.projectId, cv));
   if (!project) return;
   project.projectId = event.params.projectId.toI32();
-  project.cv = CV;
+  project.cv = cv;
   project.creator = event.params.owner;
   project.createdAt = event.block.timestamp;
   project.metadataUri = event.params.metadata.content;
@@ -23,7 +23,7 @@ export function handleCreate(event: Create): void {
 }
 
 export function handleSetMetadata(event: SetMetadata): void {
-  let project = Project.load(idForProject(event.params.projectId, CV));
+  let project = Project.load(idForProject(event.params.projectId, cv));
   if (!project) return;
   project.metadataUri = event.params.metadata.content;
   project.metadataDomain = event.params.metadata.domain;
