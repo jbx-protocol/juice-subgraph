@@ -5,9 +5,9 @@ import {
   SetHandle,
   SetUri,
 } from "../../../generated/Projects/Projects";
-import { Project } from "../../../generated/schema";
+import { Project, ProtocolLog, ProtocolV1Log } from "../../../generated/schema";
 import { CV } from "../../types";
-import { idForProject } from "../../utils";
+import { idForProject, protocolId, updateProtocolEntity } from "../../utils";
 
 const cv: CV = 1;
 
@@ -25,6 +25,17 @@ export function handleProjectCreate(event: Create): void {
   project.totalRedeemed = BigInt.fromString("0");
   project.currentBalance = BigInt.fromString("0");
   project.save();
+
+  if (!ProtocolLog.load(protocolId)) new ProtocolLog(protocolId).save();
+
+  let v1Log = ProtocolV1Log.load(protocolId);
+  if (!v1Log) v1Log = new ProtocolV1Log(protocolId);
+  // We only need to create log here, since there will only be one entity and it will be created when first project is created.
+  v1Log.projectsCount = v1Log.projectsCount + 1;
+  v1Log.log = protocolId;
+  v1Log.save();
+
+  updateProtocolEntity();
 }
 
 export function handleSetHandle(event: SetHandle): void {

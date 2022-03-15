@@ -7,6 +7,7 @@ import {
   PrintReservesEvent,
   Project,
   ProjectEvent,
+  ProtocolV1Log,
   RedeemEvent,
   TapEvent,
 } from "../../../generated/schema";
@@ -28,7 +29,13 @@ import {
   Tap,
 } from "../../../generated/TerminalV1_1/TerminalV1_1";
 import { CV } from "../../types";
-import { idForParticipant, idForProject, idForProjectEvent } from "../../utils";
+import {
+  idForParticipant,
+  idForProject,
+  idForProjectEvent,
+  protocolId,
+  updateProtocolEntity,
+} from "../../utils";
 
 const cv: CV = 1;
 
@@ -51,6 +58,15 @@ export function handlePay(event: Pay): void {
     pay.save();
   }
 
+  let log = ProtocolV1Log.load(protocolId);
+  if (!log) log = new ProtocolV1Log(protocolId);
+  if (log) {
+    log.volumePaid = log.volumePaid.plus(event.params.amount);
+    log.paymentsCount = log.paymentsCount + 1;
+    log.save();
+  }
+  updateProtocolEntity();
+
   let projectEvent = new ProjectEvent(
     idForProjectEvent(
       event.params.projectId,
@@ -59,6 +75,8 @@ export function handlePay(event: Pay): void {
       event.transactionLogIndex
     )
   );
+  projectEvent.cv = cv;
+  projectEvent.projectId = event.params.projectId;
   projectEvent.timestamp = timestamp;
   projectEvent.payEvent = pay.id;
   projectEvent.project = projectId;
@@ -112,6 +130,8 @@ export function handlePrintTickets(event: PrintTickets): void {
       event.transactionLogIndex
     )
   );
+  projectEvent.cv = cv;
+  projectEvent.projectId = event.params.projectId;
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.printPremineEvent = printPremine.id;
   projectEvent.project = projectId;
@@ -145,6 +165,8 @@ export function handleTap(event: Tap): void {
         event.transactionLogIndex
       )
     );
+    projectEvent.cv = cv;
+    projectEvent.projectId = event.params.projectId;
     projectEvent.timestamp = event.block.timestamp;
     projectEvent.tapEvent = tapEvent.id;
     projectEvent.project = projectId;
@@ -187,11 +209,22 @@ export function handleRedeem(event: Redeem): void {
         event.transactionLogIndex
       )
     );
+    projectEvent.cv = cv;
+    projectEvent.projectId = event.params._projectId;
     projectEvent.timestamp = event.block.timestamp;
     projectEvent.redeemEvent = redeemEvent.id;
     projectEvent.project = projectId;
     projectEvent.save();
   }
+
+  let log = ProtocolV1Log.load(protocolId);
+  if (!log) log = new ProtocolV1Log(protocolId);
+  if (log) {
+    log.volumeRedeemed = log.volumeRedeemed.plus(event.params.amount);
+    log.redeemCount = log.redeemCount + 1;
+    log.save();
+  }
+  updateProtocolEntity();
 
   let project = Project.load(projectId);
   if (project) {
@@ -230,6 +263,8 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
       event.transactionLogIndex
     )
   );
+  projectEvent.cv = cv;
+  projectEvent.projectId = event.params.projectId;
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.printReservesEvent = printReserveEvent.id;
   projectEvent.project = projectId;
@@ -277,6 +312,8 @@ export function handleDistributeToPayoutMod(
       event.transactionLogIndex
     )
   );
+  projectEvent.cv = cv;
+  projectEvent.projectId = event.params.projectId;
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.distributeToPayoutModEvent = distributeToPayoutModEvent.id;
   projectEvent.project = projectId;
@@ -315,6 +352,8 @@ export function handleDistributeToTicketMod(
       event.transactionLogIndex
     )
   );
+  projectEvent.cv = cv;
+  projectEvent.projectId = event.params.projectId;
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.distributeToTicketModEvent = distributeToTicketModEvent.id;
   projectEvent.project = projectId;

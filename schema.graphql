@@ -1,3 +1,38 @@
+type ProtocolLog @entity {
+  id: ID!
+  v1: ProtocolV1Log @derivedFrom(field: "log")
+  v2: ProtocolV2Log @derivedFrom(field: "log")
+
+  projectsCount: Int!
+  volumePaid: BigInt!
+  volumeRedeemed: BigInt!
+  paymentsCount: Int!
+  redeemCount: Int!
+  erc20Count: Int!
+}
+
+type ProtocolV1Log @entity {
+  id: ID!
+  log: ProtocolLog!
+  projectsCount: Int!
+  volumePaid: BigInt!
+  volumeRedeemed: BigInt!
+  paymentsCount: Int!
+  redeemCount: Int!
+  erc20Count: Int!
+}
+
+type ProtocolV2Log @entity {
+  id: ID!
+  log: ProtocolLog!
+  projectsCount: Int!
+  volumePaid: BigInt!
+  volumeRedeemed: BigInt!
+  paymentsCount: Int!
+  redeemCount: Int!
+  erc20Count: Int!
+}
+
 type Project @entity {
   id: ID!
   projectId: Int!
@@ -49,6 +84,8 @@ type Participant @entity {
 type ProjectEvent @entity {
   id: ID!
   project: Project!
+  projectId: BigInt!
+  cv: Int!
   timestamp: BigInt!
   payEvent: PayEvent 
   printPremineEvent: PrintPremineEvent 

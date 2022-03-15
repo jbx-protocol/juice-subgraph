@@ -1,4 +1,5 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, DataSourceContext } from "@graphprotocol/graph-ts";
+
 import {
   Burn,
   Claim,
@@ -11,13 +12,19 @@ import {
   Participant,
   Project,
   ProjectEvent,
+  ProtocolV2Log,
 } from "../../../generated/schema";
+
+import { ERC20 } from "../../../generated/templates/ERC20/ERC20";
+
 import { CV } from "../../types";
 import {
   idForParticipant,
   idForProject,
   idForProjectEvent,
+  protocolId,
   updateBalance,
+  updateProtocolEntity,
 } from "../../utils";
 
 const cv: CV = 2;
@@ -94,10 +101,31 @@ export function handleIssue(event: Issue): void {
       event.transactionLogIndex
     )
   );
+  projectEvent.cv = cv;
+  projectEvent.projectId = event.params.projectId;
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.deployedERC20Event = deployedERC20Event.id;
   projectEvent.project = projectId;
   projectEvent.save();
+
+  let log = ProtocolV2Log.load(protocolId);
+  if (!log) log = new ProtocolV2Log(protocolId);
+  if (log) {
+    log.erc20Count = log.erc20Count + 1;
+    log.save();
+  }
+  updateProtocolEntity();
+
+  // let erc20Contract = ERC20.bind(event.params.token);
+  // let erc20Contract2 = ERC20.bindWithContext(
+  //   event.params.token,
+  //   new DataSourceContext()
+  // );
+  // let erc20Contract3 = ERC20.create(event.params.token);
+  // let erc20Contract4 = ERC20.createWithContext(
+  //   event.params.token,
+  //   new DataSourceContext()
+  // );
 }
 
 export function handleMint(event: Mint): void {

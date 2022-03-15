@@ -5,6 +5,7 @@ import {
   Participant,
   Project,
   ProjectEvent,
+  ProtocolV1Log,
 } from "../../../generated/schema";
 import {
   Issue,
@@ -21,6 +22,8 @@ import {
   idForProject,
   idForProjectEvent,
   updateBalance,
+  protocolId,
+  updateProtocolEntity,
 } from "../../utils";
 
 const cv: CV = 1;
@@ -211,6 +214,14 @@ export function handleIssue(event: Issue): void {
 
   deployedERC20Event.save();
 
+  let log = ProtocolV1Log.load(protocolId);
+  if (!log) log = new ProtocolV1Log(protocolId);
+  if (log) {
+    log.erc20Count = log.erc20Count + 1;
+    log.save();
+  }
+  updateProtocolEntity();
+
   let projectEvent = new ProjectEvent(
     idForProjectEvent(
       event.params.projectId,
@@ -219,6 +230,8 @@ export function handleIssue(event: Issue): void {
       event.transactionLogIndex
     )
   );
+  projectEvent.cv = cv;
+  projectEvent.projectId = event.params.projectId;
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.deployedERC20Event = deployedERC20Event.id;
   projectEvent.project = projectId;

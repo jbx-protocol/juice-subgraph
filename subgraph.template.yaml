@@ -20,6 +20,9 @@ templates:
       abis:
         - name: ERC20
           file: ./abis/ERC20.json
+      # eventHandlers:
+      #   - event: Transfer(address,uint256,uint256)
+      #     handler: handleERC20Transfer
 dataSources:
   - kind: ethereum/contract
     name: Projects
@@ -34,6 +37,8 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Project
+        - ProtocolLog
+        - ProtocolV1Log
       abis:
         - name: Projects
           file: ./abis/Projects.json
@@ -60,6 +65,7 @@ dataSources:
         - DeployedERC20Event
         - Participant
         - Project
+        - ProtocolV1Log
       abis:
         - name: TicketBooth
           file: ./abis/TicketBooth.json
@@ -99,6 +105,7 @@ dataSources:
         - PrintReservesEvent
         - DistributeToPayoutModEvent
         - DistributeToTicketModEvent
+        - ProtocolV1Log
       abis:
         - name: TerminalV1
           file: ./abis/TerminalV1.json
@@ -161,6 +168,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Participant
+        - ProtocolV2Log
       abis:
         - name: JBTokenStore
           file: ./abis/JBTokenStore.json
@@ -189,6 +197,8 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Project
+        - ProtocolLog
+        - ProtocolV2Log
       abis:
         - name: JBProjects
           file: ./abis/JBProjects.json
@@ -196,7 +206,29 @@ dataSources:
         - event: Create(indexed uint256,indexed address,(string,uint256),address)
           handler: handleCreate
       file: ./src/mappings/v2/JBProjects.ts
-  {{ #address_terminalV1_1 }}
+  - kind: ethereum/contract
+    name: JBETHPaymentTerminal
+    network: {{network}}
+    source:
+      address: '{{address_jbETHPaymentTerminal}}'
+      abi: JBETHPaymentTerminal
+      startBlock: {{startBlock_jbETHPaymentTerminal}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Project
+        - ProtocolV2Log
+      abis:
+        - name: JBETHPaymentTerminal
+          file: ./abis/JBETHPaymentTerminal.json
+      eventHandlers:
+        - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,uint256,string,address)
+          handler: handlePay
+        - event: RedeemTokens(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,address)
+          handler: handlePay
+      file: ./src/mappings/v2/jbETHPaymentTerminal.ts
   - kind: ethereum/contract
     name: TerminalV1_1
     network: {{network}}
@@ -219,6 +251,7 @@ dataSources:
         - PrintReservesEvent
         - DistributeToPayoutModEvent
         - DistributeToTicketModEvent
+        - ProtocolV1Log
       abis:
         - name: TerminalV1_1
           file: ./abis/TerminalV1_1.json
@@ -240,7 +273,6 @@ dataSources:
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
       file: ./src/mappings/v1.x/terminalV1_1.ts
-  {{ /address_terminalV1_1 }}
   {{ #erc20s }}
   - kind: ethereum/contract
     name: erc20_{{symbol}}_{{projectId}}

@@ -12,10 +12,17 @@ import {
   PayEvent,
   Project,
   ProjectEvent,
+  ProtocolV2Log,
   RedeemEvent,
 } from "../../../generated/schema";
 import { CV } from "../../types";
-import { idForParticipant, idForProject, idForProjectEvent } from "../../utils";
+import {
+  idForParticipant,
+  idForProject,
+  idForProjectEvent,
+  protocolId,
+  updateProtocolEntity,
+} from "../../utils";
 
 const cv: CV = 2;
 
@@ -48,6 +55,15 @@ export function handlePay(event: Pay): void {
     pay.save();
   }
 
+  let log = ProtocolV2Log.load(protocolId);
+  if (!log) log = new ProtocolV2Log(protocolId);
+  if (log) {
+    log.volumePaid = log.volumePaid.plus(event.params.amount);
+    log.paymentsCount = log.paymentsCount + 1;
+    log.save();
+  }
+  updateProtocolEntity();
+
   let projectEvent = new ProjectEvent(
     idForProjectEvent(
       event.params.projectId,
@@ -56,6 +72,8 @@ export function handlePay(event: Pay): void {
       event.transactionLogIndex
     )
   );
+  projectEvent.cv = cv;
+  projectEvent.projectId = event.params.projectId;
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.payEvent = pay.id;
   projectEvent.project = projectId;
@@ -113,10 +131,21 @@ export function handleRedeemTokens(event: RedeemTokens): void {
         event.transactionLogIndex
       )
     );
+    projectEvent.cv = cv;
+    projectEvent.projectId = event.params.projectId;
     projectEvent.timestamp = event.block.timestamp;
     projectEvent.redeemEvent = redeemEvent.id;
     projectEvent.project = projectId;
     projectEvent.save();
+
+    let log = ProtocolV2Log.load(protocolId);
+    if (!log) log = new ProtocolV2Log(protocolId);
+    if (log) {
+      log.volumeRedeemed = log.volumeRedeemed.plus(event.params.tokenCount);
+      log.redeemCount = log.redeemCount + 1;
+      log.save();
+    }
+    updateProtocolEntity();
   }
 
   let project = Project.load(projectId);

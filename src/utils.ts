@@ -1,9 +1,44 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 
-import { Participant, Project } from "../generated/schema";
+import {
+  Participant,
+  Project,
+  ProtocolLog,
+  ProtocolV1Log,
+  ProtocolV2Log,
+} from "../generated/schema";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
 import { indexedERC20s } from "./erc20/indexedERC20s";
 import { CV } from "./types";
+
+export const protocolId = "1";
+
+export function updateProtocolEntity(): void {
+  const protocol = ProtocolLog.load(protocolId);
+  const protocolV1Log = ProtocolV1Log.load(protocolId);
+  const protocolV2Log = ProtocolV2Log.load(protocolId);
+
+  if (protocol && protocolV1Log) {
+    protocol.erc20Count =
+      protocolV1Log.erc20Count + (protocolV2Log ? protocolV2Log.erc20Count : 0);
+    protocol.paymentsCount =
+      protocolV1Log.paymentsCount +
+      (protocolV2Log ? protocolV2Log.paymentsCount : 0);
+    protocol.projectsCount =
+      protocolV1Log.projectsCount +
+      (protocolV2Log ? protocolV2Log.projectsCount : 0);
+    protocol.redeemCount =
+      protocolV1Log.redeemCount +
+      (protocolV2Log ? protocolV2Log.redeemCount : 0);
+    protocol.volumePaid = protocolV2Log
+      ? protocolV1Log.volumePaid.plus(protocolV2Log.volumePaid)
+      : protocolV1Log.volumePaid;
+    protocol.volumeRedeemed = protocolV2Log
+      ? protocolV1Log.volumeRedeemed.plus(protocolV2Log.volumePaid)
+      : protocolV1Log.volumeRedeemed;
+    protocol.save();
+  }
+}
 
 export function idForProjectEvent(
   projectId: BigInt,

@@ -1,9 +1,9 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 
 import { Create, SetMetadata } from "../../../generated/JBProjects/JBProjects";
-import { Project } from "../../../generated/schema";
+import { Project, ProtocolV2Log } from "../../../generated/schema";
 import { CV } from "../../types";
-import { idForProject } from "../../utils";
+import { idForProject, protocolId, updateProtocolEntity } from "../../utils";
 
 const cv: CV = 2;
 
@@ -20,6 +20,14 @@ export function handleCreate(event: Create): void {
   project.totalRedeemed = BigInt.fromString("0");
   project.currentBalance = BigInt.fromString("0");
   project.save();
+
+  let log = ProtocolV2Log.load(protocolId);
+  if (!log) log = new ProtocolV2Log(protocolId);
+  // We only need to create log here, since there will only be one entity and it will be created when first project is created.
+  log.projectsCount = log.projectsCount + 1;
+  log.log = protocolId;
+  log.save();
+  updateProtocolEntity();
 }
 
 export function handleSetMetadata(event: SetMetadata): void {
