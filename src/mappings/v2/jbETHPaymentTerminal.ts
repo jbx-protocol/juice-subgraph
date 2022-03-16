@@ -73,7 +73,7 @@ export function handlePay(event: Pay): void {
     )
   );
   projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId;
+  projectEvent.projectId = event.params.projectId.toI32();
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.payEvent = pay.id;
   projectEvent.project = projectId;
@@ -132,7 +132,7 @@ export function handleRedeemTokens(event: RedeemTokens): void {
       )
     );
     projectEvent.cv = cv;
-    projectEvent.projectId = event.params.projectId;
+    projectEvent.projectId = event.params.projectId.toI32();
     projectEvent.timestamp = event.block.timestamp;
     projectEvent.redeemEvent = redeemEvent.id;
     projectEvent.project = projectId;

@@ -15,6 +15,7 @@ import {
   AddToBalance,
   AllowMigration,
   AppointGovernance,
+  Configure,
   Deposit,
   DistributeToPayoutMod,
   DistributeToTicketMod,
@@ -77,7 +78,7 @@ export function handlePay(event: Pay): void {
     )
   );
   projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId;
+  projectEvent.projectId = event.params.projectId.toI32();
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.payEvent = pay.id;
   projectEvent.project = projectId;
@@ -132,7 +133,7 @@ export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
     )
   );
   projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId;
+  projectEvent.projectId = event.params.projectId.toI32();
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.printPremineEvent = printPremine.id;
   projectEvent.project = projectId;
@@ -167,7 +168,7 @@ export function handleTap(event: Tap): void {
       )
     );
     projectEvent.cv = cv;
-    projectEvent.projectId = event.params.projectId;
+    projectEvent.projectId = event.params.projectId.toI32();
     projectEvent.timestamp = event.block.timestamp;
     projectEvent.tapEvent = tapEvent.id;
     projectEvent.project = projectId;
@@ -211,7 +212,7 @@ export function handleRedeem(event: Redeem): void {
       )
     );
     projectEvent.cv = cv;
-    projectEvent.projectId = event.params._projectId;
+    projectEvent.projectId = event.params._projectId.toI32();
     projectEvent.timestamp = event.block.timestamp;
     projectEvent.redeemEvent = redeemEvent.id;
     projectEvent.project = projectId;
@@ -265,7 +266,7 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
     )
   );
   projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId;
+  projectEvent.projectId = event.params.projectId.toI32();
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.printReservesEvent = printReserveEvent.id;
   projectEvent.project = projectId;
@@ -292,9 +293,9 @@ export function handleDistributeToPayoutMod(
     projectId + "-" + event.transaction.hash.toHexString();
   distributeToPayoutModEvent.project = projectId;
   distributeToPayoutModEvent.caller = event.params.caller;
-  distributeToPayoutModEvent.projectId = event.params.projectId;
+  distributeToPayoutModEvent.projectId = event.params.projectId.toI32();
   distributeToPayoutModEvent.fundingCycleId = event.params.fundingCycleId;
-  distributeToPayoutModEvent.modProjectId = event.params.mod.projectId;
+  distributeToPayoutModEvent.modProjectId = event.params.mod.projectId.toI32();
   distributeToPayoutModEvent.modBeneficiary = event.params.mod.beneficiary;
   distributeToPayoutModEvent.modAllocator = event.params.mod.allocator;
   distributeToPayoutModEvent.modPreferUnstaked =
@@ -314,7 +315,7 @@ export function handleDistributeToPayoutMod(
     )
   );
   projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId;
+  projectEvent.projectId = event.params.projectId.toI32();
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.distributeToPayoutModEvent = distributeToPayoutModEvent.id;
   projectEvent.project = projectId;
@@ -337,7 +338,7 @@ export function handleDistributeToTicketMod(
   distributeToTicketModEvent.modPreferUnstaked =
     event.params.mod.preferUnstaked;
   distributeToTicketModEvent.modCut = event.params.modCut;
-  distributeToTicketModEvent.projectId = event.params.projectId;
+  distributeToTicketModEvent.projectId = event.params.projectId.toI32();
   distributeToTicketModEvent.fundingCycleId = event.params.fundingCycleId;
   distributeToTicketModEvent.txHash = event.transaction.hash;
   distributeToTicketModEvent.timestamp = event.block.timestamp;
@@ -354,7 +355,7 @@ export function handleDistributeToTicketMod(
     )
   );
   projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId;
+  projectEvent.projectId = event.params.projectId.toI32();
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.distributeToTicketModEvent = distributeToTicketModEvent.id;
   projectEvent.project = projectId;

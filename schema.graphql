@@ -33,10 +33,19 @@ type ProtocolV2Log @entity {
   erc20Count: Int!
 }
 
+type ProjectCreateEvent @entity {
+  id: ID!
+  cv: Int!
+  projectId: Int!
+  timestamp: BigInt!
+  txHash: Bytes!
+  caller: Bytes!
+}
+
 type Project @entity {
   id: ID!
   projectId: Int!
-  cv: Int! # contracts version
+  cv: Int!
 
   # Conditional on if using v1.x or v2 contracts
   handle: String
@@ -84,7 +93,7 @@ type Participant @entity {
 type ProjectEvent @entity {
   id: ID!
   project: Project!
-  projectId: BigInt!
+  projectId: Int!
   cv: Int!
   timestamp: BigInt!
   payEvent: PayEvent 
@@ -95,6 +104,7 @@ type ProjectEvent @entity {
   distributeToPayoutModEvent: DistributeToPayoutModEvent 
   distributeToTicketModEvent: DistributeToTicketModEvent 
   deployedERC20Event: DeployedERC20Event
+  projectCreateEvent: ProjectCreateEvent
 }
 
 type PayEvent @entity {
@@ -165,8 +175,8 @@ type DistributeToPayoutModEvent @entity {
   id: ID!
   project: Project!
   fundingCycleId: BigInt!
-  projectId: BigInt!
-  modProjectId: BigInt!
+  projectId: Int!
+  modProjectId: Int!
   modAllocator: Bytes!
   modBeneficiary: Bytes!
   modPreferUnstaked: Boolean!
@@ -181,7 +191,7 @@ type DistributeToTicketModEvent @entity {
   id: ID!
   project: Project!
   fundingCycleId: BigInt!
-  projectId: BigInt!
+  projectId: Int!
   modBeneficiary: Bytes!
   modPreferUnstaked: Boolean!
   modCut: BigInt!
@@ -195,6 +205,7 @@ type DeployedERC20Event @entity {
   id: ID!
   project: Project!
   symbol: String!
-  deployedAtBlockNum: BigInt!
   address: Bytes
+  timestamp: BigInt!
+  txHash: Bytes!
 }

@@ -207,11 +207,10 @@ export function handleIssue(event: Issue): void {
   let deployedERC20Event = new DeployedERC20Event(
     projectId + "-" + event.params.symbol + "-" + event.block.number.toString()
   );
-
   deployedERC20Event.project = project.id;
   deployedERC20Event.symbol = event.params.symbol;
-  deployedERC20Event.deployedAtBlockNum = event.block.number;
-
+  deployedERC20Event.timestamp = event.block.timestamp;
+  deployedERC20Event.txHash = event.transaction.hash;
   deployedERC20Event.save();
 
   let log = ProtocolV1Log.load(protocolId);
@@ -231,7 +230,7 @@ export function handleIssue(event: Issue): void {
     )
   );
   projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId;
+  projectEvent.projectId = event.params.projectId.toI32();
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.deployedERC20Event = deployedERC20Event.id;
   projectEvent.project = projectId;
