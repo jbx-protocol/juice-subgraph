@@ -115,16 +115,16 @@ export function handleIssue(event: Issue): void {
   }
   updateProtocolEntity();
 
-  // let erc20Contract = ERC20.bind(event.params.token);
-  // let erc20Contract2 = ERC20.bindWithContext(
-  //   event.params.token,
-  //   new DataSourceContext()
-  // );
-  // let erc20Contract3 = ERC20.create(event.params.token);
-  // let erc20Contract4 = ERC20.createWithContext(
-  //   event.params.token,
-  //   new DataSourceContext()
-  // );
+  let erc20Contract = ERC20.bind(event.params.token);
+  let erc20Contract2 = ERC20.bindWithContext(
+    event.params.token,
+    new DataSourceContext()
+  );
+  let erc20Contract3 = ERC20.create(event.params.token);
+  let erc20Contract4 = ERC20.createWithContext(
+    event.params.token,
+    new DataSourceContext()
+  );
 }
 
 export function handleMint(event: Mint): void {
