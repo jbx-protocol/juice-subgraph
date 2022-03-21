@@ -14,15 +14,15 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/erc20/mapping.ts
+      file: ./src/erc20/v2/mapping.ts
       entities:
         - Participant
       abis:
         - name: ERC20
           file: ./abis/ERC20.json
-      # eventHandlers:
-      #   - event: Transfer(address,uint256,uint256)
-      #     handler: handleERC20Transfer
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleV2Transfer
 dataSources:
   - kind: ethereum/contract
     name: Projects
@@ -279,7 +279,7 @@ dataSources:
     network: {{network}}
     source:
       address: '{{address}}'
-      abi: erc20_{{symbol}}_{{projectId}}
+      abi: ERC20
       startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
@@ -288,10 +288,10 @@ dataSources:
       entities:
         - Participant
       abis:
-        - name: erc20_{{symbol}}_{{projectId}}
+        - name: ERC20
           file: ./abis/ERC20.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handle{{symbol}}{{projectId}}Transfer
-      file: ./src/erc20/mapping.ts
+      file: ./src/erc20/v1.x/mapping.ts
   {{ /erc20s }}

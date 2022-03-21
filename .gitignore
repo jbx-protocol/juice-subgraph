@@ -17,4 +17,4 @@ public/
 
 subgraph.yaml
 
-src/erc20/**
+src/erc20/v1.x/**

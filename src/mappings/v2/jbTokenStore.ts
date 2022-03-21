@@ -15,7 +15,7 @@ import {
   ProtocolV2Log,
 } from "../../../generated/schema";
 
-import { ERC20 } from "../../../generated/templates/ERC20/ERC20";
+import { ERC20 } from "../../../generated/templates";
 
 import { CV } from "../../types";
 import {
@@ -115,16 +115,9 @@ export function handleIssue(event: Issue): void {
   }
   updateProtocolEntity();
 
-  let erc20Contract = ERC20.bind(event.params.token);
-  let erc20Contract2 = ERC20.bindWithContext(
-    event.params.token,
-    new DataSourceContext()
-  );
-  let erc20Contract3 = ERC20.create(event.params.token);
-  let erc20Contract4 = ERC20.createWithContext(
-    event.params.token,
-    new DataSourceContext()
-  );
+  let erc20Context = new DataSourceContext();
+  erc20Context.setString("projectId", projectId);
+  ERC20.createWithContext(event.params.token, erc20Context);
 }
 
 export function handleMint(event: Mint): void {

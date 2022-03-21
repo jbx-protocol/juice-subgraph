@@ -10,11 +10,11 @@ if (!fs.existsSync("src/erc20")) fs.mkdirSync("src/erc20");
 
 // Write ERC20 handlers
 fs.writeFileSync(
-  `src/erc20/mapping.ts`,
+  `src/erc20/v1.x/mapping.ts`,
   erc20s?.length
     ? `import { BigInt } from "@graphprotocol/graph-ts";
-import { Transfer } from "../../generated/templates/ERC20/ERC20";
-import { handleProjectERC20Transfer } from "../utils";
+import { Transfer } from "../../../generated/templates/ERC20/ERC20";
+import { handleProjectERC20Transfer } from "../../utils";
 
 ${erc20s
   .map(
@@ -29,7 +29,7 @@ ${erc20s
 
 // Write ERC20 indexed list
 fs.writeFileSync(
-  `src/erc20/indexedERC20s.ts`,
+  `src/erc20/v1.x/indexedERC20s.ts`,
   `export const indexedERC20s: string[] = [${erc20s
     .map((token) => `"${token.projectId}"`)
     .join(", ")}]`

@@ -8,7 +8,7 @@ import {
   ProtocolV2Log,
 } from "../generated/schema";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
-import { indexedERC20s } from "./erc20/indexedERC20s";
+import { indexedERC20s } from "./erc20/v1.x/indexedERC20s";
 import { CV } from "./types";
 
 export const protocolId = "1";
