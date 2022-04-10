@@ -8,6 +8,14 @@
   "startBlock_terminalV1_1": 13979856,
   "address_ticketBooth": "0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc",
   "startBlock_ticketBooth": 12833319,
+  "address_jbProjects": "0x0000000000000000000000000000000000000000",
+  "startBlock_jbProjects": 9115779,
+  "address_jbController": "0x0000000000000000000000000000000000000000",
+  "startBlock_jbController": 9115779,
+  "address_jbETHPaymentTerminal": "0x0000000000000000000000000000000000000000",
+  "startBlock_jbETHPaymentTerminal": 9115779,
+  "address_jbTokenStore": "0x0000000000000000000000000000000000000000",
+  "startBlock_jbTokenStore": 9115779,
   "erc20s": [
     {
       "symbol": "JBX",

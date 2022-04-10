@@ -8,7 +8,8 @@
     "prepare:rinkeby": "node scripts/prepareERC20s.js rinkeby && mustache config/rinkeby.json subgraph.template.yaml > subgraph.yaml && yarn codegen",
     "deploy:mainnet": "yarn prepare:mainnet && graph deploy --studio juicebox",
     "deploy:rinkeby": "yarn prepare:rinkeby && graph deploy --node https://api.studio.thegraph.com/deploy/ juicebox-dev-rinkeby",
-    "deploy:rinkeby-v2": "yarn prepare:rinkeby && graph deploy --node https://api.studio.thegraph.com/deploy/ juicebox-v2-dev-rink"
+    "deploy:rinkeby-v2-dev": "yarn prepare:rinkeby && graph deploy --node https://api.studio.thegraph.com/deploy/ juicebox-v2-dev-rinkeby",
+    "deploy:mainnet-v2-dev": "yarn prepare:rinkeby && graph deploy --node https://api.studio.thegraph.com/deploy/ juicebox-v2-dev-mainnet"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.22.1",
