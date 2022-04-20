@@ -2,6 +2,11 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "_baseWeightCurrency",
+        "type": "uint256"
+      },
+      {
         "internalType": "contract IJBOperatorStore",
         "name": "_operatorStore",
         "type": "address"
@@ -22,7 +27,12 @@
         "type": "address"
       },
       {
-        "internalType": "contract JBETHPaymentTerminalStore",
+        "internalType": "contract IJBPrices",
+        "name": "_prices",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IJBSingleTokenPaymentTerminalStore",
         "name": "_store",
         "type": "address"
       },
@@ -38,6 +48,26 @@
   {
     "inputs": [],
     "name": "FEE_TOO_HIGH",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "INADEQUATE_DISTRIBUTION_AMOUNT",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "INADEQUATE_RECLAIM_AMOUNT",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "INADEQUATE_TOKEN_COUNT",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NO_MSG_VALUE_ALLOWED",
     "type": "error"
   },
   {
@@ -63,6 +93,11 @@
   },
   {
     "inputs": [],
+    "name": "PROJECT_TERMINAL_MISMATCH",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "REDEEM_TO_ZERO_ADDRESS",
     "type": "error"
   },
@@ -79,11 +114,6 @@
   {
     "inputs": [],
     "name": "UNAUTHORIZED",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "ZERO_VALUE_SENT",
     "type": "error"
   },
   {
@@ -115,6 +145,174 @@
       }
     ],
     "name": "AddToBalance",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IJBPayDelegate",
+        "name": "delegate",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "payer",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "projectId",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "decimals",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "currency",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct JBTokenAmount",
+            "name": "amount",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256",
+            "name": "projectTokenCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "memo",
+            "type": "string"
+          },
+          {
+            "internalType": "bytes",
+            "name": "metadata",
+            "type": "bytes"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct JBDidPayData",
+        "name": "data",
+        "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "DelegateDidPay",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IJBRedemptionDelegate",
+        "name": "delegate",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "holder",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "projectId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "projectTokenCount",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "decimals",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "currency",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct JBTokenAmount",
+            "name": "reclaimedAmount",
+            "type": "tuple"
+          },
+          {
+            "internalType": "address payable",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "memo",
+            "type": "string"
+          },
+          {
+            "internalType": "bytes",
+            "name": "metadata",
+            "type": "bytes"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct JBDidRedeemData",
+        "name": "data",
+        "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "DelegateDidRedeem",
     "type": "event"
   },
   {
@@ -159,7 +357,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "feeAmount",
+        "name": "fee",
         "type": "uint256"
       },
       {
@@ -190,19 +388,19 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "fundingCycleConfiguration",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "fundingCycleNumber",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "uint256",
         "name": "projectId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "domain",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "group",
         "type": "uint256"
       },
       {
@@ -210,6 +408,11 @@
           {
             "internalType": "bool",
             "name": "preferClaimed",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "preferAddToBalance",
             "type": "bool"
           },
           {
@@ -270,7 +473,7 @@
       },
       {
         "indexed": true,
-        "internalType": "contract IJBTerminal",
+        "internalType": "contract IJBPaymentTerminal",
         "name": "to",
         "type": "address"
       },
@@ -333,6 +536,12 @@
       {
         "indexed": false,
         "internalType": "address",
+        "name": "payer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "beneficiary",
         "type": "address"
       },
@@ -345,13 +554,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "weight",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "tokenCount",
+        "name": "beneficiaryTokenCount",
         "type": "uint256"
       },
       {
@@ -387,9 +590,14 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint8",
+            "internalType": "uint32",
             "name": "fee",
-            "type": "uint8"
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "feeDiscount",
+            "type": "uint32"
           },
           {
             "internalType": "address",
@@ -454,7 +662,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "claimedAmount",
+        "name": "reclaimedAmount",
         "type": "uint256"
       },
       {
@@ -496,7 +704,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "contract IJBFeeGauge",
         "name": "feeGauge",
         "type": "address"
@@ -509,6 +717,31 @@
       }
     ],
     "name": "SetFeeGauge",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IJBPaymentTerminal",
+        "name": "terminal",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bool",
+        "name": "flag",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "SetFeelessTerminal",
     "type": "event"
   },
   {
@@ -547,14 +780,20 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "feeAmount",
+        "name": "distributedAmount",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "transferAmount",
+        "name": "netDistributedamount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "memo",
+        "type": "string"
       },
       {
         "indexed": false,
@@ -569,9 +808,38 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      }
+    ],
+    "name": "acceptsToken",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "_projectId",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       },
       {
         "internalType": "string",
@@ -586,12 +854,95 @@
   },
   {
     "inputs": [],
-    "name": "delegate",
+    "name": "baseWeightCurrency",
     "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "currency",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "name": "currencyForToken",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_projectId",
+        "type": "uint256"
+      }
+    ],
+    "name": "currentEthOverflowOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "decimalsForToken",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -629,7 +980,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_minReturnedWei",
+        "name": "_minReturnedTokens",
         "type": "uint256"
       },
       {
@@ -639,27 +990,14 @@
       }
     ],
     "name": "distributePayoutsOf",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_projectId",
-        "type": "uint256"
-      }
-    ],
-    "name": "ethBalanceOf",
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "netLeftoverDistributionAmount",
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -706,9 +1044,14 @@
             "type": "uint256"
           },
           {
-            "internalType": "uint8",
+            "internalType": "uint32",
             "name": "fee",
-            "type": "uint8"
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "feeDiscount",
+            "type": "uint32"
           },
           {
             "internalType": "address",
@@ -727,18 +1070,43 @@
   {
     "inputs": [
       {
+        "internalType": "contract IJBPaymentTerminal",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "isFeelessTerminal",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "_projectId",
         "type": "uint256"
       },
       {
-        "internalType": "contract IJBTerminal",
+        "internalType": "contract IJBPaymentTerminal",
         "name": "_to",
         "type": "address"
       }
     ],
     "name": "migrate",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -776,6 +1144,16 @@
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
         "internalType": "address",
         "name": "_beneficiary",
         "type": "address"
@@ -797,13 +1175,45 @@
       },
       {
         "internalType": "bytes",
-        "name": "_delegateMetadata",
+        "name": "_metadata",
         "type": "bytes"
       }
     ],
     "name": "pay",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "payoutSplitsGroup",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "prices",
+    "outputs": [
+      {
+        "internalType": "contract IJBPrices",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -851,7 +1261,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_minReturnedWei",
+        "name": "_minReturnedTokens",
         "type": "uint256"
       },
       {
@@ -866,7 +1276,7 @@
       },
       {
         "internalType": "bytes",
-        "name": "_delegateMetadata",
+        "name": "_metadata",
         "type": "bytes"
       }
     ],
@@ -874,40 +1284,11 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "claimAmount",
+        "name": "reclaimAmount",
         "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_projectId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_fundingCycleConfiguration",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_fundingCycleNumber",
-        "type": "uint256"
-      }
-    ],
-    "name": "remainingDistributionLimitOf",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -944,6 +1325,24 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "contract IJBPaymentTerminal",
+        "name": "_terminal",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_flag",
+        "type": "bool"
+      }
+    ],
+    "name": "setFeelessTerminal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "splitsStore",
     "outputs": [
@@ -961,7 +1360,7 @@
     "name": "store",
     "outputs": [
       {
-        "internalType": "contract JBETHPaymentTerminalStore",
+        "internalType": "contract IJBSingleTokenPaymentTerminalStore",
         "name": "",
         "type": "address"
       }
@@ -1014,17 +1413,28 @@
       },
       {
         "internalType": "uint256",
-        "name": "_minReturnedWei",
+        "name": "_minReturnedTokens",
         "type": "uint256"
       },
       {
         "internalType": "address payable",
         "name": "_beneficiary",
         "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_memo",
+        "type": "string"
       }
     ],
     "name": "useAllowanceOf",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "netDistributedAmount",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   }

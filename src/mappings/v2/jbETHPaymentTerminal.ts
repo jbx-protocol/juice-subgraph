@@ -8,33 +8,90 @@ import {
   UseAllowance,
 } from "../../../generated/JBETHPaymentTerminal/JBETHPaymentTerminal";
 import {
+  DistributePayoutsEvent,
+  DistributeToPayoutSplitEvent,
   Participant,
   PayEvent,
   Project,
-  ProjectEvent,
   ProtocolV2Log,
   RedeemEvent,
+  UseAllowanceEvent,
 } from "../../../generated/schema";
 import { CV } from "../../types";
 import {
+  saveNewProjectEvent,
   idForParticipant,
   idForProject,
-  idForProjectEvent,
   protocolId,
   updateProtocolEntity,
+  ProjectEventKey,
 } from "../../utils";
 
 const cv: CV = 2;
 
-export function handleAddToBalance(event: AddToBalance): void {}
+export function handleAddToBalance(event: AddToBalance): void {
+  let projectId = idForProject(event.params.projectId, cv);
+  let project = Project.load(projectId);
+  if (!project) return;
+  project.currentBalance = project.currentBalance.plus(event.params.amount);
+  project.save();
+}
 
-export function handleDistributePayouts(event: DistributePayouts): void {}
+export function handleDistributePayouts(event: DistributePayouts): void {
+  let projectId = idForProject(event.params.projectId, cv);
+  let distributePayoutsEvent = new DistributePayoutsEvent(
+    projectId + "-" + event.transaction.hash.toHexString()
+  );
+  if (!distributePayoutsEvent) return;
+  distributePayoutsEvent.amount = event.params.amount;
+  distributePayoutsEvent.beneficiary = event.params.beneficiary;
+  distributePayoutsEvent.beneficiaryDistributionAmount =
+    event.params.beneficiaryDistributionAmount;
+  distributePayoutsEvent.caller = event.params.caller;
+  distributePayoutsEvent.distributedAmount = event.params.distributedAmount;
+  distributePayoutsEvent.fee = event.params.fee;
+  distributePayoutsEvent.fundingCycleConfiguration =
+    event.params.fundingCycleConfiguration;
+  distributePayoutsEvent.fundingCycleNumber = event.params.fundingCycleNumber.toI32();
+  distributePayoutsEvent.memo = event.params.memo;
+  distributePayoutsEvent.projectId = event.params.projectId.toI32();
+  distributePayoutsEvent.save();
+
+  saveNewProjectEvent(
+    event,
+    event.params.projectId,
+    distributePayoutsEvent.id,
+    cv,
+    ProjectEventKey.distributePayoutsEvent
+  );
+}
 
 export function handleDistributeToPayoutSplit(
   event: DistributeToPayoutSplit
-): void {}
+): void {
+  let projectId = idForProject(event.params.projectId, cv);
+  let distributePayoutSplitEvent = new DistributeToPayoutSplitEvent(
+    projectId + "-" + event.transaction.hash.toHexString()
+  );
 
-export function handleMigrate(event: Migrate): void {}
+  if (distributePayoutSplitEvent) {
+    distributePayoutSplitEvent.project = projectId;
+    distributePayoutSplitEvent.amount = event.params.amount;
+    distributePayoutSplitEvent.caller = event.params.caller;
+    distributePayoutSplitEvent.domain = event.params.domain;
+    distributePayoutSplitEvent.group = event.params.group;
+    distributePayoutSplitEvent.projectId = event.params.projectId.toI32();
+    distributePayoutSplitEvent.splitProjectId = event.params.split.projectId.toI32();
+    distributePayoutSplitEvent.allocator = event.params.split.allocator;
+    distributePayoutSplitEvent.beneficiary = event.params.split.beneficiary;
+    distributePayoutSplitEvent.lockedUntil = event.params.split.lockedUntil.toI32();
+    distributePayoutSplitEvent.percent = event.params.split.percent.toI32();
+    distributePayoutSplitEvent.preferClaimed = event.params.split.preferClaimed;
+    distributePayoutSplitEvent.preferAddToBalance =
+      event.params.split.preferAddToBalance;
+    distributePayoutSplitEvent.save();
+  }
+}
 
 export function handlePay(event: Pay): void {
   let timestamp = event.block.timestamp;
@@ -53,6 +110,14 @@ export function handlePay(event: Pay): void {
     pay.timestamp = timestamp;
     pay.txHash = event.transaction.hash;
     pay.save();
+
+    saveNewProjectEvent(
+      event,
+      event.params.projectId,
+      pay.id,
+      cv,
+      ProjectEventKey.payEvent
+    );
   }
 
   let log = ProtocolV2Log.load(protocolId);
@@ -63,21 +128,6 @@ export function handlePay(event: Pay): void {
     log.save();
   }
   updateProtocolEntity();
-
-  let projectEvent = new ProjectEvent(
-    idForProjectEvent(
-      event.params.projectId,
-      cv,
-      event.transaction.hash,
-      event.transactionLogIndex
-    )
-  );
-  projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId.toI32();
-  projectEvent.timestamp = event.block.timestamp;
-  projectEvent.payEvent = pay.id;
-  projectEvent.project = projectId;
-  projectEvent.save();
 
   let project = Project.load(projectId);
   if (!project) return;
@@ -117,26 +167,19 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     redeemEvent.beneficiary = event.params.beneficiary;
     redeemEvent.caller = caller;
     redeemEvent.holder = event.params.holder;
-    redeemEvent.returnAmount = event.params.claimedAmount;
+    redeemEvent.returnAmount = event.params.reclaimedAmount;
     redeemEvent.project = projectId;
     redeemEvent.timestamp = timestamp;
     redeemEvent.txHash = event.transaction.hash;
     redeemEvent.save();
 
-    let projectEvent = new ProjectEvent(
-      idForProjectEvent(
-        event.params.projectId,
-        cv,
-        event.transaction.hash,
-        event.transactionLogIndex
-      )
+    saveNewProjectEvent(
+      event,
+      event.params.projectId,
+      redeemEvent.id,
+      cv,
+      ProjectEventKey.redeemEvent
     );
-    projectEvent.cv = cv;
-    projectEvent.projectId = event.params.projectId.toI32();
-    projectEvent.timestamp = event.block.timestamp;
-    projectEvent.redeemEvent = redeemEvent.id;
-    projectEvent.project = projectId;
-    projectEvent.save();
 
     let log = ProtocolV2Log.load(protocolId);
     if (!log) log = new ProtocolV2Log(protocolId);
@@ -151,13 +194,43 @@ export function handleRedeemTokens(event: RedeemTokens): void {
   let project = Project.load(projectId);
   if (project) {
     project.totalRedeemed = project.totalRedeemed.plus(
-      event.params.claimedAmount
+      event.params.reclaimedAmount
     );
     project.currentBalance = project.currentBalance.minus(
-      event.params.claimedAmount
+      event.params.reclaimedAmount
     );
     project.save();
   }
 }
 
-export function handleUseAllowance(event: UseAllowance): void {}
+export function handleUseAllowance(event: UseAllowance): void {
+  let projectId = idForProject(event.params.projectId, cv);
+  let useAllowanceEvent = new UseAllowanceEvent(
+    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
+  );
+
+  if (!useAllowanceEvent) return;
+
+  useAllowanceEvent.project = projectId;
+  useAllowanceEvent.amount = event.params.amount;
+  useAllowanceEvent.beneficiary = event.params.beneficiary;
+  useAllowanceEvent.caller = event.params.caller;
+  useAllowanceEvent.distributedAmount = event.params.distributedAmount;
+  useAllowanceEvent.fundingCycleConfiguration =
+    event.params.fundingCycleConfiguration;
+  useAllowanceEvent.fundingCycleNumber = event.params.fundingCycleNumber.toI32();
+  useAllowanceEvent.memo = event.params.memo;
+  useAllowanceEvent.netDistributedamount = event.params.netDistributedamount;
+  useAllowanceEvent.projectId = event.params.projectId.toI32();
+  useAllowanceEvent.save();
+
+  saveNewProjectEvent(
+    event,
+    event.params.projectId,
+    useAllowanceEvent.id,
+    cv,
+    ProjectEventKey.useAllowanceEvent
+  );
+}
+
+export function handleMigrate(event: Migrate): void {}

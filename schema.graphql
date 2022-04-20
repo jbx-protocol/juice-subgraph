@@ -60,7 +60,7 @@ type Project @entity {
   currentBalance: BigInt!
   participants: [Participant!]! @derivedFrom(field: "project")
   payEvents: [PayEvent!]! @derivedFrom(field: "project")
-  printPremineEvents: [PrintPremineEvent!]! @derivedFrom(field: "project")
+  mintTokensEvents: [MintTokensEvent!]! @derivedFrom(field: "project")
   tapEvents: [TapEvent!]! @derivedFrom(field: "project")
   redeemEvents: [RedeemEvent!]! @derivedFrom(field: "project")
   printReservesEvents: [PrintReservesEvent!]! @derivedFrom(field: "project")
@@ -97,7 +97,7 @@ type ProjectEvent @entity {
   cv: Int!
   timestamp: BigInt!
   payEvent: PayEvent 
-  printPremineEvent: PrintPremineEvent 
+  mintTokensEvent: MintTokensEvent 
   tapEvent: TapEvent 
   redeemEvent: RedeemEvent 
   printReservesEvent: PrintReservesEvent 
@@ -105,6 +105,10 @@ type ProjectEvent @entity {
   distributeToTicketModEvent: DistributeToTicketModEvent 
   deployedERC20Event: DeployedERC20Event
   projectCreateEvent: ProjectCreateEvent
+  distributePayoutsEvent: DistributePayoutsEvent
+  distributeReservedTokensEvent: DistributeReservedTokensEvent
+  distributeToReservedTokenSplitEvent: DistributeToReservedTokenSplitEvent
+  useAllowanceEvent: UseAllowanceEvent
 }
 
 type PayEvent @entity {
@@ -118,9 +122,10 @@ type PayEvent @entity {
   txHash: Bytes!
 }
 
-type PrintPremineEvent @entity {
+type MintTokensEvent @entity {
   id: ID!
   project: Project!
+  projectId: Int!
   beneficiary: Bytes!
   amount: BigInt!
   memo: String
@@ -143,6 +148,39 @@ type TapEvent @entity {
   timestamp: BigInt!
   txHash: Bytes!
   distributions: [DistributeToPayoutModEvent!]! @derivedFrom(field: "tapEvent")
+}
+
+type DistributePayoutsEvent @entity {
+  id: ID!
+  project: Project!
+  fundingCycleConfiguration: BigInt!
+  fundingCycleNumber: Int!
+  projectId: Int!
+  beneficiary: Bytes!
+  amount: BigInt!
+  distributedAmount: BigInt!
+  fee: BigInt!
+  beneficiaryDistributionAmount: BigInt!
+  memo: String!
+  caller: Bytes!
+}
+
+type DistributeToPayoutSplitEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  domain: BigInt!
+  group: BigInt!
+  amount: BigInt!
+  caller: Bytes!
+  # Split struct properties below
+  preferClaimed: Boolean!
+  preferAddToBalance: Boolean!
+  percent: Int!
+  splitProjectId: Int!
+  beneficiary: Bytes!
+  lockedUntil: Int!
+  allocator: Bytes!
 }
 
 type RedeemEvent @entity {
@@ -187,6 +225,33 @@ type DistributeToPayoutModEvent @entity {
   txHash: Bytes!
 }
 
+type DistributeReservedTokensEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  fundingCycleNumber: Int!
+  beneficiary: Bytes!
+  tokenCount: BigInt!
+  beneficiaryTokenCount: BigInt!
+  memo: String!
+  caller: Bytes!
+}
+
+type DistributeToReservedTokenSplitEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  tokenCount: BigInt!
+  caller: Bytes!
+  # Split struct properties below
+  preferClaimed: Boolean!
+  percent: Int!
+  splitProjectId: Int!
+  beneficiary: Bytes!
+  lockedUntil: Int!
+  allocator: Bytes!
+}
+
 type DistributeToTicketModEvent @entity {
   id: ID!
   project: Project!
@@ -208,4 +273,18 @@ type DeployedERC20Event @entity {
   address: Bytes
   timestamp: BigInt!
   txHash: Bytes!
+}
+
+type UseAllowanceEvent @entity{
+  id: ID!
+  project: Project!
+  fundingCycleConfiguration: BigInt!
+  fundingCycleNumber: Int!
+  projectId: Int!
+  beneficiary: Bytes!
+  amount: BigInt!
+  distributedAmount: BigInt!
+  netDistributedamount: BigInt!
+  memo: String!
+  caller: Bytes!
 }

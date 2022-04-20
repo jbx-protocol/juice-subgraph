@@ -4,7 +4,6 @@ import {
   DeployedERC20Event,
   Participant,
   Project,
-  ProjectEvent,
   ProtocolV1Log,
 } from "../../../generated/schema";
 import {
@@ -20,9 +19,10 @@ import {
   erc20IsIndexed,
   idForParticipant,
   idForProject,
-  idForProjectEvent,
-  updateBalance,
+  ProjectEventKey,
   protocolId,
+  saveNewProjectEvent,
+  updateBalance,
   updateProtocolEntity,
 } from "../../utils";
 
@@ -207,32 +207,25 @@ export function handleIssue(event: Issue): void {
   let deployedERC20Event = new DeployedERC20Event(
     projectId + "-" + event.params.symbol + "-" + event.block.number.toString()
   );
-  deployedERC20Event.project = project.id;
-  deployedERC20Event.symbol = event.params.symbol;
-  deployedERC20Event.timestamp = event.block.timestamp;
-  deployedERC20Event.txHash = event.transaction.hash;
-  deployedERC20Event.save();
+  if (deployedERC20Event) {
+    deployedERC20Event.project = project.id;
+    deployedERC20Event.symbol = event.params.symbol;
+    deployedERC20Event.timestamp = event.block.timestamp;
+    deployedERC20Event.txHash = event.transaction.hash;
+    deployedERC20Event.save();
+
+    saveNewProjectEvent(
+      event,
+      event.params.projectId,
+      deployedERC20Event.id,
+      cv,
+      ProjectEventKey.deployedERC20Event
+    );
+  }
 
   let log = ProtocolV1Log.load(protocolId);
   if (!log) log = new ProtocolV1Log(protocolId);
-  if (log) {
-    log.erc20Count = log.erc20Count + 1;
-    log.save();
-  }
+  log.erc20Count = log.erc20Count + 1;
+  log.save();
   updateProtocolEntity();
-
-  let projectEvent = new ProjectEvent(
-    idForProjectEvent(
-      event.params.projectId,
-      cv,
-      event.transaction.hash,
-      event.transactionLogIndex
-    )
-  );
-  projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId.toI32();
-  projectEvent.timestamp = event.block.timestamp;
-  projectEvent.deployedERC20Event = deployedERC20Event.id;
-  projectEvent.project = projectId;
-  projectEvent.save();
 }

@@ -14,15 +14,15 @@ import {
   ProjectEvent,
   ProtocolV2Log,
 } from "../../../generated/schema";
-
 import { ERC20 } from "../../../generated/templates";
-
 import { CV } from "../../types";
 import {
   idForParticipant,
   idForProject,
   idForProjectEvent,
+  ProjectEventKey,
   protocolId,
+  saveNewProjectEvent,
   updateBalance,
   updateProtocolEntity,
 } from "../../utils";
@@ -85,27 +85,22 @@ export function handleIssue(event: Issue): void {
   let deployedERC20Event = new DeployedERC20Event(
     projectId + "-" + event.params.symbol + "-" + event.block.number.toString()
   );
-  deployedERC20Event.project = project.id;
-  deployedERC20Event.symbol = event.params.symbol;
-  deployedERC20Event.address = event.params.token;
-  deployedERC20Event.timestamp = event.block.timestamp;
-  deployedERC20Event.txHash = event.transaction.hash;
-  deployedERC20Event.save();
+  if (deployedERC20Event) {
+    deployedERC20Event.project = project.id;
+    deployedERC20Event.symbol = event.params.symbol;
+    deployedERC20Event.address = event.params.token;
+    deployedERC20Event.timestamp = event.block.timestamp;
+    deployedERC20Event.txHash = event.transaction.hash;
+    deployedERC20Event.save();
 
-  let projectEvent = new ProjectEvent(
-    idForProjectEvent(
+    saveNewProjectEvent(
+      event,
       event.params.projectId,
+      deployedERC20Event.id,
       cv,
-      event.transaction.hash,
-      event.transactionLogIndex
-    )
-  );
-  projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId.toI32();
-  projectEvent.timestamp = event.block.timestamp;
-  projectEvent.deployedERC20Event = deployedERC20Event.id;
-  projectEvent.project = projectId;
-  projectEvent.save();
+      ProjectEventKey.deployedERC20Event
+    );
+  }
 
   let log = ProtocolV2Log.load(protocolId);
   if (!log) log = new ProtocolV2Log(protocolId);
@@ -149,4 +144,47 @@ export function handleMint(event: Mint): void {
   receiver.save();
 }
 
-export function handleTransfer(event: Transfer): void {}
+export function handleTransfer(event: Transfer): void {
+  let projectId = idForProject(event.params.projectId, cv);
+  let project = Project.load(projectId);
+
+  if (!project) return;
+
+  let sender = Participant.load(
+    idForParticipant(event.params.projectId, cv, event.params.holder)
+  );
+
+  if (sender) {
+    sender.stakedBalance = sender.stakedBalance.minus(event.params.amount);
+
+    updateBalance(sender);
+
+    sender.save();
+  }
+
+  let receiverId = idForParticipant(
+    event.params.projectId,
+    cv,
+    event.params.recipient
+  );
+
+  let receiver = Participant.load(receiverId);
+
+  if (!receiver) {
+    receiver = new Participant(receiverId);
+    receiver.project = project.id;
+    receiver.wallet = event.params.recipient;
+    receiver.stakedBalance = BigInt.fromString("0");
+    receiver.unstakedBalance = BigInt.fromString("0");
+    receiver.totalPaid = BigInt.fromString("0");
+    receiver.lastPaidTimestamp = BigInt.fromString("0");
+  }
+
+  if (!receiver) return;
+
+  receiver.stakedBalance = receiver.stakedBalance.plus(event.params.amount);
+
+  updateBalance(receiver);
+
+  receiver.save();
+}

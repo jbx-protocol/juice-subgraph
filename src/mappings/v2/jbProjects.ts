@@ -11,7 +11,9 @@ import { CV } from "../../types";
 import {
   idForProject,
   idForProjectEvent,
+  ProjectEventKey,
   protocolId,
+  saveNewProjectEvent,
   updateProtocolEntity,
 } from "../../utils";
 
@@ -34,27 +36,22 @@ export function handleCreate(event: Create): void {
   project.save();
 
   let projectCreateEvent = new ProjectCreateEvent(projectId);
-  projectCreateEvent.cv = cv;
-  projectCreateEvent.projectId = event.params.projectId.toI32();
-  projectCreateEvent.timestamp = event.block.timestamp;
-  projectCreateEvent.txHash = event.transaction.hash;
-  projectCreateEvent.caller = event.params.caller;
-  projectCreateEvent.save();
+  if (projectCreateEvent) {
+    projectCreateEvent.cv = cv;
+    projectCreateEvent.projectId = event.params.projectId.toI32();
+    projectCreateEvent.timestamp = event.block.timestamp;
+    projectCreateEvent.txHash = event.transaction.hash;
+    projectCreateEvent.caller = event.params.caller;
+    projectCreateEvent.save();
 
-  let projectEvent = new ProjectEvent(
-    idForProjectEvent(
+    saveNewProjectEvent(
+      event,
       event.params.projectId,
+      projectCreateEvent.id,
       cv,
-      event.transaction.hash,
-      event.transactionLogIndex
-    )
-  );
-  projectEvent.cv = cv;
-  projectEvent.projectId = event.params.projectId.toI32();
-  projectEvent.timestamp = event.block.timestamp;
-  projectEvent.projectCreateEvent = projectCreateEvent.id;
-  projectEvent.project = projectId;
-  projectEvent.save();
+      ProjectEventKey.projectCreateEvent
+    );
+  }
 
   let log = ProtocolV2Log.load(protocolId);
   if (!log) log = new ProtocolV2Log(protocolId);
