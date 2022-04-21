@@ -44,7 +44,7 @@ export function handlePrint(event: Print): void {
     participant.unstakedBalance = BigInt.fromString("0");
     participant.wallet = event.params.holder;
     participant.totalPaid = BigInt.fromString("0");
-    participant.lastPaidTimestamp = BigInt.fromString("0");
+    participant.lastPaidTimestamp = 0;
   }
 
   if (!participant) return;
@@ -101,7 +101,7 @@ export function handleTicketTransfer(event: Transfer): void {
     receiver.stakedBalance = BigInt.fromString("0");
     receiver.unstakedBalance = BigInt.fromString("0");
     receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = BigInt.fromString("0");
+    receiver.lastPaidTimestamp = 0;
   }
 
   if (!receiver) return;
@@ -215,7 +215,7 @@ export function handleIssue(event: Issue): void {
     deployedERC20Event.projectId = project.projectId;
     deployedERC20Event.cv = cv;
     deployedERC20Event.symbol = event.params.symbol;
-    deployedERC20Event.timestamp = event.block.timestamp;
+    deployedERC20Event.timestamp = event.block.timestamp.toI32();
     deployedERC20Event.txHash = event.transaction.hash;
     deployedERC20Event.save();
 

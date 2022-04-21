@@ -109,7 +109,7 @@ export function handleProjectERC20Transfer(
     receiver.stakedBalance = BigInt.fromString("0");
     receiver.unstakedBalance = BigInt.fromString("0");
     receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = BigInt.fromString("0");
+    receiver.lastPaidTimestamp = 0;
   }
 
   if (!receiver) return;
@@ -139,7 +139,7 @@ export function saveNewProjectEvent(
   if (!projectEvent) return;
   projectEvent.cv = cv;
   projectEvent.projectId = projectId.toI32();
-  projectEvent.timestamp = event.block.timestamp;
+  projectEvent.timestamp = event.block.timestamp.toI32();
   projectEvent.project = idForProject(projectId, cv);
 
   switch (key) {

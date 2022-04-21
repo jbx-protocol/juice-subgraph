@@ -27,7 +27,7 @@ export function handleMintTokens(event: MintTokens): void {
   mintTokensEvent.caller = event.params.caller;
   mintTokensEvent.memo = event.params.memo;
   mintTokensEvent.project = projectId;
-  mintTokensEvent.timestamp = event.block.timestamp;
+  mintTokensEvent.timestamp = event.block.timestamp.toI32();
   mintTokensEvent.txHash = event.transaction.hash;
   mintTokensEvent.save();
 
@@ -52,7 +52,7 @@ export function handleDistributeReservedTokens(
   distributeReservedTokensEvent.project = projectId;
   distributeReservedTokensEvent.projectId = event.params.projectId.toI32();
   distributeReservedTokensEvent.txHash = event.transaction.hash;
-  distributeReservedTokensEvent.timestamp = event.block.timestamp;
+  distributeReservedTokensEvent.timestamp = event.block.timestamp.toI32();
   distributeReservedTokensEvent.fundingCycleNumber = event.params.fundingCycleNumber.toI32();
   distributeReservedTokensEvent.beneficiary = event.params.beneficiary;
   distributeReservedTokensEvent.tokenCount = event.params.tokenCount;
@@ -82,7 +82,7 @@ export function handleDistributeToReservedTokenSplit(
   distributeReservedTokenSplitEvent.project = projectId;
   distributeReservedTokenSplitEvent.projectId = event.params.projectId.toI32();
   distributeReservedTokenSplitEvent.txHash = event.transaction.hash;
-  distributeReservedTokenSplitEvent.timestamp = event.block.timestamp;
+  distributeReservedTokenSplitEvent.timestamp = event.block.timestamp.toI32();
   distributeReservedTokenSplitEvent.caller = event.params.caller;
   distributeReservedTokenSplitEvent.tokenCount = event.params.tokenCount;
   distributeReservedTokenSplitEvent.allocator = event.params.split.allocator;

@@ -43,7 +43,7 @@ export function handleDistributePayouts(event: DistributePayouts): void {
   );
   if (!distributePayoutsEvent) return;
   distributePayoutsEvent.projectId - event.params.projectId.toI32();
-  distributePayoutsEvent.timestamp = event.block.timestamp;
+  distributePayoutsEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutsEvent.txHash = event.transaction.hash;
   distributePayoutsEvent.amount = event.params.amount;
   distributePayoutsEvent.beneficiary = event.params.beneficiary;
@@ -79,7 +79,7 @@ export function handleDistributeToPayoutSplit(
   if (distributePayoutSplitEvent) {
     distributePayoutSplitEvent.project = projectId;
     distributePayoutSplitEvent.txHash = event.transaction.hash;
-    distributePayoutSplitEvent.timestamp = event.block.timestamp;
+    distributePayoutSplitEvent.timestamp = event.block.timestamp.toI32();
     distributePayoutSplitEvent.amount = event.params.amount;
     distributePayoutSplitEvent.caller = event.params.caller;
     distributePayoutSplitEvent.domain = event.params.domain;
@@ -98,7 +98,6 @@ export function handleDistributeToPayoutSplit(
 }
 
 export function handlePay(event: Pay): void {
-  let timestamp = event.block.timestamp;
   let caller = event.params.caller;
 
   let pay = new PayEvent(
@@ -113,7 +112,7 @@ export function handlePay(event: Pay): void {
     pay.caller = caller;
     pay.project = projectId;
     pay.note = event.params.memo;
-    pay.timestamp = timestamp;
+    pay.timestamp = event.block.timestamp.toI32();
     pay.txHash = event.transaction.hash;
     pay.save();
 
@@ -156,14 +155,13 @@ export function handlePay(event: Pay): void {
   } else {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }
-  participant.lastPaidTimestamp = event.block.timestamp;
+  participant.lastPaidTimestamp = event.block.timestamp.toI32();
 
   project.save();
   participant.save();
 }
 
 export function handleRedeemTokens(event: RedeemTokens): void {
-  let timestamp = event.block.timestamp;
   let caller = event.params.caller;
   let projectId = idForProject(event.params.projectId, cv);
 
@@ -179,7 +177,7 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     redeemEvent.holder = event.params.holder;
     redeemEvent.returnAmount = event.params.reclaimedAmount;
     redeemEvent.project = projectId;
-    redeemEvent.timestamp = timestamp;
+    redeemEvent.timestamp = event.block.timestamp.toI32();
     redeemEvent.txHash = event.transaction.hash;
     redeemEvent.save();
 
@@ -223,7 +221,7 @@ export function handleUseAllowance(event: UseAllowance): void {
 
   useAllowanceEvent.project = projectId;
   useAllowanceEvent.projectId = event.params.projectId.toI32();
-  useAllowanceEvent.timestamp = event.block.timestamp;
+  useAllowanceEvent.timestamp = event.block.timestamp.toI32();
   useAllowanceEvent.txHash = event.transaction.hash;
   useAllowanceEvent.amount = event.params.amount;
   useAllowanceEvent.beneficiary = event.params.beneficiary;

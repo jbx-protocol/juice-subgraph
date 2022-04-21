@@ -44,7 +44,7 @@ export function handleProjectCreate(event: Create): void {
     projectCreateEvent.cv = cv;
     projectCreateEvent.project = project.id;
     projectCreateEvent.projectId = event.params.projectId.toI32();
-    projectCreateEvent.timestamp = event.block.timestamp;
+    projectCreateEvent.timestamp = event.block.timestamp.toI32();
     projectCreateEvent.txHash = event.transaction.hash;
     projectCreateEvent.caller = event.params.caller;
     projectCreateEvent.save();

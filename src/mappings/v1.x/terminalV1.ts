@@ -40,7 +40,6 @@ import {
 const cv: CV = 1;
 
 export function handlePay(event: Pay): void {
-  let timestamp = event.block.timestamp;
   let caller = event.params.caller;
 
   let pay = new PayEvent(
@@ -55,7 +54,7 @@ export function handlePay(event: Pay): void {
     pay.caller = caller;
     pay.project = projectId;
     pay.note = event.params.note;
-    pay.timestamp = timestamp;
+    pay.timestamp = event.block.timestamp.toI32();
     pay.txHash = event.transaction.hash;
     pay.save();
 
@@ -98,7 +97,7 @@ export function handlePay(event: Pay): void {
   } else {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }
-  participant.lastPaidTimestamp = event.block.timestamp;
+  participant.lastPaidTimestamp = event.block.timestamp.toI32();
 
   project.save();
   participant.save();
@@ -118,7 +117,7 @@ export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
   mintTokensEvent.caller = event.params.caller;
   mintTokensEvent.memo = event.params.memo;
   mintTokensEvent.project = projectId;
-  mintTokensEvent.timestamp = event.block.timestamp;
+  mintTokensEvent.timestamp = event.block.timestamp.toI32();
   mintTokensEvent.txHash = event.transaction.hash;
   mintTokensEvent.save();
 
@@ -147,7 +146,7 @@ export function handleTap(event: Tap): void {
     tapEvent.netTransferAmount = event.params.netTransferAmount;
     tapEvent.project = projectId;
     tapEvent.projectId = event.params.projectId.toI32();
-    tapEvent.timestamp = event.block.timestamp;
+    tapEvent.timestamp = event.block.timestamp.toI32();
     tapEvent.txHash = event.transaction.hash;
     tapEvent.save();
 
@@ -170,7 +169,6 @@ export function handleTap(event: Tap): void {
 }
 
 export function handleRedeem(event: Redeem): void {
-  let timestamp = event.block.timestamp;
   let caller = event.params.caller;
   let projectId = idForProject(event.params._projectId, cv);
 
@@ -186,7 +184,7 @@ export function handleRedeem(event: Redeem): void {
     redeemEvent.holder = event.params.holder;
     redeemEvent.returnAmount = event.params.returnAmount;
     redeemEvent.project = projectId;
-    redeemEvent.timestamp = timestamp;
+    redeemEvent.timestamp = event.block.timestamp.toI32();
     redeemEvent.txHash = event.transaction.hash;
     redeemEvent.save();
 
@@ -234,7 +232,7 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
   printReserveEvent.count = event.params.count;
   printReserveEvent.fundingCycleId = event.params.fundingCycleId;
   printReserveEvent.project = projectId;
-  printReserveEvent.timestamp = event.block.timestamp;
+  printReserveEvent.timestamp = event.block.timestamp.toI32();
   printReserveEvent.txHash = event.transaction.hash;
   printReserveEvent.save();
 
@@ -276,7 +274,7 @@ export function handleDistributeToPayoutMod(
   distributeToPayoutModEvent.modPreferUnstaked =
     event.params.mod.preferUnstaked;
   distributeToPayoutModEvent.modCut = event.params.modCut;
-  distributeToPayoutModEvent.timestamp = event.block.timestamp;
+  distributeToPayoutModEvent.timestamp = event.block.timestamp.toI32();
   distributeToPayoutModEvent.txHash = event.transaction.hash;
 
   distributeToPayoutModEvent.save();
@@ -309,7 +307,7 @@ export function handleDistributeToTicketMod(
   distributeToTicketModEvent.projectId = event.params.projectId.toI32();
   distributeToTicketModEvent.fundingCycleId = event.params.fundingCycleId;
   distributeToTicketModEvent.txHash = event.transaction.hash;
-  distributeToTicketModEvent.timestamp = event.block.timestamp;
+  distributeToTicketModEvent.timestamp = event.block.timestamp.toI32();
   distributeToTicketModEvent.project = projectId;
 
   distributeToTicketModEvent.save();

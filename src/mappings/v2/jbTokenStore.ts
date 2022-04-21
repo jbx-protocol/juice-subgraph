@@ -88,7 +88,7 @@ export function handleIssue(event: Issue): void {
     deployedERC20Event.cv = cv;
     deployedERC20Event.symbol = event.params.symbol;
     deployedERC20Event.address = event.params.token;
-    deployedERC20Event.timestamp = event.block.timestamp;
+    deployedERC20Event.timestamp = event.block.timestamp.toI32();
     deployedERC20Event.txHash = event.transaction.hash;
     deployedERC20Event.save();
 
@@ -135,7 +135,7 @@ export function handleMint(event: Mint): void {
     receiver.stakedBalance = BigInt.fromString("0");
     receiver.unstakedBalance = BigInt.fromString("0");
     receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = BigInt.fromString("0");
+    receiver.lastPaidTimestamp = 0;
   }
 
   receiver.stakedBalance = receiver.stakedBalance.plus(event.params.amount);
@@ -180,7 +180,7 @@ export function handleTransfer(event: Transfer): void {
     receiver.stakedBalance = BigInt.fromString("0");
     receiver.unstakedBalance = BigInt.fromString("0");
     receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = BigInt.fromString("0");
+    receiver.lastPaidTimestamp = 0;
   }
 
   if (!receiver) return;
