@@ -119,24 +119,6 @@ export function handleProjectERC20Transfer(
   receiver.save();
 }
 
-// TODO should be able to use this type for `key` argument in `saveNewProjectEvent` below. But Graph compiler does not like it.
-// type ProjectEventKey = keyof Pick<
-//   ProjectEvent,
-//   | "deployedERC20Event"
-//   | "distributeReservedTokensEvent"
-//   | "distributeToPayoutModEvent"
-//   | "distributeToReservedTokenSplitEvent"
-//   | "distributeToTicketModEvent"
-//   | "mintTokensEvent"
-//   | "payEvent"
-//   | "printReservesEvent"
-//   | "projectCreateEvent"
-//   | "tapEvent"
-//   | "distributePayoutsEvent"
-//   | "redeemEvent"
-//   | "useAllowanceEvent"
-// >;
-
 export enum ProjectEventKey {
   deployedERC20Event,
   distributeReservedTokensEvent,
@@ -158,7 +140,7 @@ export function saveNewProjectEvent(
   projectId: BigInt,
   id: string,
   cv: CV,
-  key: ProjectEventKey // TODO see ProjectEventKey type above
+  key: ProjectEventKey
 ): void {
   let projectEvent = new ProjectEvent(
     idForProjectEvent(
@@ -174,30 +156,47 @@ export function saveNewProjectEvent(
   projectEvent.timestamp = event.block.timestamp;
   projectEvent.project = idForProject(projectId, cv);
 
-  // Do this annoying dance because graph compiler is needy with setter types
-  if (key === ProjectEventKey.deployedERC20Event)
-    projectEvent.deployedERC20Event = id;
-  else if (key === ProjectEventKey.distributePayoutsEvent)
-    projectEvent.distributePayoutsEvent = id;
-  else if (key === ProjectEventKey.distributeReservedTokensEvent)
-    projectEvent.distributeReservedTokensEvent = id;
-  else if (key === ProjectEventKey.distributeToPayoutModEvent)
-    projectEvent.distributeToPayoutModEvent = id;
-  else if (key === ProjectEventKey.distributeToReservedTokenSplitEvent)
-    projectEvent.distributeToReservedTokenSplitEvent = id;
-  else if (key === ProjectEventKey.distributeToTicketModEvent)
-    projectEvent.distributeToTicketModEvent = id;
-  else if (key === ProjectEventKey.mintTokensEvent)
-    projectEvent.mintTokensEvent = id;
-  else if (key === ProjectEventKey.payEvent) projectEvent.payEvent = id;
-  else if (key === ProjectEventKey.printReservesEvent)
-    projectEvent.printReservesEvent = id;
-  else if (key === ProjectEventKey.projectCreateEvent)
-    projectEvent.projectCreateEvent = id;
-  else if (key === ProjectEventKey.redeemEvent) projectEvent.redeemEvent = id;
-  else if (key === ProjectEventKey.tapEvent) projectEvent.tapEvent = id;
-  else if (key === ProjectEventKey.useAllowanceEvent)
-    projectEvent.useAllowanceEvent = id;
+  switch (key) {
+    case ProjectEventKey.deployedERC20Event:
+      projectEvent.deployedERC20Event = id;
+      break;
+    case ProjectEventKey.distributePayoutsEvent:
+      projectEvent.distributePayoutsEvent = id;
+      break;
+    case ProjectEventKey.distributeReservedTokensEvent:
+      projectEvent.distributeReservedTokensEvent = id;
+      break;
+    case ProjectEventKey.distributeToPayoutModEvent:
+      projectEvent.distributeToPayoutModEvent = id;
+      break;
+    case ProjectEventKey.distributeToReservedTokenSplitEvent:
+      projectEvent.distributeToReservedTokenSplitEvent = id;
+      break;
+    case ProjectEventKey.distributeToTicketModEvent:
+      projectEvent.distributeToTicketModEvent = id;
+      break;
+    case ProjectEventKey.mintTokensEvent:
+      projectEvent.mintTokensEvent = id;
+      break;
+    case ProjectEventKey.payEvent:
+      projectEvent.payEvent = id;
+      break;
+    case ProjectEventKey.printReservesEvent:
+      projectEvent.printReservesEvent = id;
+      break;
+    case ProjectEventKey.projectCreateEvent:
+      projectEvent.projectCreateEvent = id;
+      break;
+    case ProjectEventKey.redeemEvent:
+      projectEvent.redeemEvent = id;
+      break;
+    case ProjectEventKey.tapEvent:
+      projectEvent.tapEvent = id;
+      break;
+    case ProjectEventKey.useAllowanceEvent:
+      projectEvent.useAllowanceEvent = id;
+      break;
+  }
 
   projectEvent.save();
 }
