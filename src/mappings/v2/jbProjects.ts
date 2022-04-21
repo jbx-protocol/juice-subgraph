@@ -4,14 +4,11 @@ import { Create, SetMetadata } from "../../../generated/JBProjects/JBProjects";
 import {
   Project,
   ProjectCreateEvent,
-  ProjectEvent,
   ProtocolV2Log,
 } from "../../../generated/schema";
-import { CV } from "../../types";
+import { CV, ProjectEventKey } from "../../types";
 import {
   idForProject,
-  idForProjectEvent,
-  ProjectEventKey,
   protocolId,
   saveNewProjectEvent,
   updateProtocolEntity,

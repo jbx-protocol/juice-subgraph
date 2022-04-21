@@ -1,12 +1,10 @@
 import {
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
-  MintTokensEvent,
   Participant,
   PayEvent,
   PrintReservesEvent,
   Project,
-  ProjectEvent,
   ProtocolV1Log,
   RedeemEvent,
   TapEvent,
@@ -21,7 +19,6 @@ import {
   EnsureTargetLocalWei,
   Migrate,
   Pay,
-  PrintPreminedTickets,
   PrintReserveTickets,
   Redeem,
   SetFee,
@@ -29,15 +26,13 @@ import {
   SetYielder,
   Tap,
 } from "../../../generated/TerminalV1/TerminalV1";
-import { CV } from "../../types";
+import { CV, ProjectEventKey } from "../../types";
 import {
-  saveNewProjectEvent,
   idForParticipant,
   idForProject,
-  idForProjectEvent,
   protocolId,
+  saveNewProjectEvent,
   updateProtocolEntity,
-  ProjectEventKey,
 } from "../../utils";
 
 const cv: CV = 1;

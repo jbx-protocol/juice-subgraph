@@ -8,12 +8,8 @@ import {
   DistributeToReservedTokenSplitEvent,
   MintTokensEvent,
 } from "../../../generated/schema";
-import { CV } from "../../types";
-import {
-  saveNewProjectEvent,
-  idForProject,
-  ProjectEventKey,
-} from "../../utils";
+import { CV, ProjectEventKey } from "../../types";
+import { idForProject, saveNewProjectEvent } from "../../utils";
 
 const cv: CV = 2;
 

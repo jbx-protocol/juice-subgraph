@@ -14,12 +14,11 @@ import {
   Transfer,
   Unstake,
 } from "../../../generated/TicketBooth/TicketBooth";
-import { CV } from "../../types";
+import { CV, ProjectEventKey } from "../../types";
 import {
   erc20IsIndexed,
   idForParticipant,
   idForProject,
-  ProjectEventKey,
   protocolId,
   saveNewProjectEvent,
   updateBalance,

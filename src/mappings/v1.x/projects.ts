@@ -11,13 +11,12 @@ import {
   ProtocolLog,
   ProtocolV1Log,
 } from "../../../generated/schema";
-import { CV } from "../../types";
+import { CV, ProjectEventKey } from "../../types";
 import {
   saveNewProjectEvent,
   idForProject,
   protocolId,
   updateProtocolEntity,
-  ProjectEventKey,
 } from "../../utils";
 
 const cv: CV = 1;

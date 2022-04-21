@@ -10,7 +10,7 @@ import {
 } from "../generated/schema";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
 import { indexedERC20s } from "./erc20/v1.x/indexedERC20s";
-import { CV } from "./types";
+import { CV, ProjectEventKey } from "./types";
 
 export const protocolId = "1";
 
@@ -117,22 +117,6 @@ export function handleProjectERC20Transfer(
   updateBalance(receiver);
 
   receiver.save();
-}
-
-export enum ProjectEventKey {
-  deployedERC20Event,
-  distributeReservedTokensEvent,
-  distributeToPayoutModEvent,
-  distributeToReservedTokenSplitEvent,
-  distributeToTicketModEvent,
-  mintTokensEvent,
-  payEvent,
-  printReservesEvent,
-  projectCreateEvent,
-  tapEvent,
-  distributePayoutsEvent,
-  redeemEvent,
-  useAllowanceEvent,
 }
 
 export function saveNewProjectEvent(

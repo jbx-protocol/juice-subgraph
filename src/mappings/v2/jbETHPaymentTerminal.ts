@@ -17,14 +17,13 @@ import {
   RedeemEvent,
   UseAllowanceEvent,
 } from "../../../generated/schema";
-import { CV } from "../../types";
+import { CV, ProjectEventKey } from "../../types";
 import {
-  saveNewProjectEvent,
   idForParticipant,
   idForProject,
   protocolId,
+  saveNewProjectEvent,
   updateProtocolEntity,
-  ProjectEventKey,
 } from "../../utils";
 
 const cv: CV = 2;

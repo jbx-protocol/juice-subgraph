@@ -11,16 +11,13 @@ import {
   DeployedERC20Event,
   Participant,
   Project,
-  ProjectEvent,
   ProtocolV2Log,
 } from "../../../generated/schema";
 import { ERC20 } from "../../../generated/templates";
-import { CV } from "../../types";
+import { CV, ProjectEventKey } from "../../types";
 import {
   idForParticipant,
   idForProject,
-  idForProjectEvent,
-  ProjectEventKey,
   protocolId,
   saveNewProjectEvent,
   updateBalance,
