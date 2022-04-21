@@ -43,6 +43,8 @@ export function handleDistributePayouts(event: DistributePayouts): void {
   );
   if (!distributePayoutsEvent) return;
   distributePayoutsEvent.projectId - event.params.projectId.toI32();
+  distributePayoutsEvent.timestamp = event.block.timestamp;
+  distributePayoutsEvent.txHash = event.transaction.hash;
   distributePayoutsEvent.amount = event.params.amount;
   distributePayoutsEvent.beneficiary = event.params.beneficiary;
   distributePayoutsEvent.beneficiaryDistributionAmount =
@@ -76,6 +78,8 @@ export function handleDistributeToPayoutSplit(
 
   if (distributePayoutSplitEvent) {
     distributePayoutSplitEvent.project = projectId;
+    distributePayoutSplitEvent.txHash = event.transaction.hash;
+    distributePayoutSplitEvent.timestamp = event.block.timestamp;
     distributePayoutSplitEvent.amount = event.params.amount;
     distributePayoutSplitEvent.caller = event.params.caller;
     distributePayoutSplitEvent.domain = event.params.domain;
@@ -219,6 +223,8 @@ export function handleUseAllowance(event: UseAllowance): void {
 
   useAllowanceEvent.project = projectId;
   useAllowanceEvent.projectId = event.params.projectId.toI32();
+  useAllowanceEvent.timestamp = event.block.timestamp;
+  useAllowanceEvent.txHash = event.transaction.hash;
   useAllowanceEvent.amount = event.params.amount;
   useAllowanceEvent.beneficiary = event.params.beneficiary;
   useAllowanceEvent.caller = event.params.caller;

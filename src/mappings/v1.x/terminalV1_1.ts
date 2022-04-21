@@ -145,6 +145,7 @@ export function handleTap(event: Tap): void {
     tapEvent.govFeeAmount = event.params.govFeeAmount;
     tapEvent.netTransferAmount = event.params.netTransferAmount;
     tapEvent.project = projectId;
+    tapEvent.projectId = event.params.projectId.toI32();
     tapEvent.timestamp = event.block.timestamp;
     tapEvent.txHash = event.transaction.hash;
     tapEvent.save();

@@ -51,6 +51,8 @@ export function handleDistributeReservedTokens(
   if (!distributeReservedTokensEvent) return;
   distributeReservedTokensEvent.project = projectId;
   distributeReservedTokensEvent.projectId = event.params.projectId.toI32();
+  distributeReservedTokensEvent.txHash = event.transaction.hash;
+  distributeReservedTokensEvent.timestamp = event.block.timestamp;
   distributeReservedTokensEvent.fundingCycleNumber = event.params.fundingCycleNumber.toI32();
   distributeReservedTokensEvent.beneficiary = event.params.beneficiary;
   distributeReservedTokensEvent.tokenCount = event.params.tokenCount;
@@ -79,6 +81,8 @@ export function handleDistributeToReservedTokenSplit(
   if (!distributeReservedTokenSplitEvent) return;
   distributeReservedTokenSplitEvent.project = projectId;
   distributeReservedTokenSplitEvent.projectId = event.params.projectId.toI32();
+  distributeReservedTokenSplitEvent.txHash = event.transaction.hash;
+  distributeReservedTokenSplitEvent.timestamp = event.block.timestamp;
   distributeReservedTokenSplitEvent.caller = event.params.caller;
   distributeReservedTokenSplitEvent.tokenCount = event.params.tokenCount;
   distributeReservedTokenSplitEvent.allocator = event.params.split.allocator;
