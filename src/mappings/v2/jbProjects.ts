@@ -35,6 +35,7 @@ export function handleCreate(event: Create): void {
   let projectCreateEvent = new ProjectCreateEvent(projectId);
   if (projectCreateEvent) {
     projectCreateEvent.cv = cv;
+    projectCreateEvent.project = project.id;
     projectCreateEvent.projectId = event.params.projectId.toI32();
     projectCreateEvent.timestamp = event.block.timestamp;
     projectCreateEvent.txHash = event.transaction.hash;

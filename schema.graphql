@@ -1,3 +1,6 @@
+# Any event used for both v1 and v2 contracts includes a `cv` property, which allows for querying events for a specific contracts version.
+
+# v1.0, v1.1, v2
 type ProtocolLog @entity {
   id: ID!
   v1: ProtocolV1Log @derivedFrom(field: "log")
@@ -11,17 +14,7 @@ type ProtocolLog @entity {
   erc20Count: Int!
 }
 
-type ProtocolV1Log @entity {
-  id: ID!
-  log: ProtocolLog!
-  projectsCount: Int!
-  volumePaid: BigInt!
-  volumeRedeemed: BigInt!
-  paymentsCount: Int!
-  redeemCount: Int!
-  erc20Count: Int!
-}
-
+# v2
 type ProtocolV2Log @entity {
   id: ID!
   log: ProtocolLog!
@@ -33,15 +26,18 @@ type ProtocolV2Log @entity {
   erc20Count: Int!
 }
 
+# v1.0, v1.1, v2
 type ProjectCreateEvent @entity {
   id: ID!
   cv: Int!
   projectId: Int!
+  project: Project!
   timestamp: BigInt!
   txHash: Bytes!
   caller: Bytes!
 }
 
+# v1.0, v1.1, v2
 type Project @entity {
   id: ID!
   projectId: Int!
@@ -58,6 +54,8 @@ type Project @entity {
   totalPaid: BigInt!
   totalRedeemed: BigInt!
   currentBalance: BigInt!
+
+  # Derived fields
   participants: [Participant!]! @derivedFrom(field: "project")
   payEvents: [PayEvent!]! @derivedFrom(field: "project")
   mintTokensEvents: [MintTokensEvent!]! @derivedFrom(field: "project")
@@ -69,8 +67,16 @@ type Project @entity {
   distributeToTicketModEvents: [DistributeToTicketModEvent!]!
     @derivedFrom(field: "project")
   deployedERC20s: [DeployedERC20Event!]! @derivedFrom(field: "project")
+  distributePayoutsEvents: [DistributePayoutsEvent!]! @derivedFrom(field: "project")
+  distributeToPayoutSplitEvents: [DistributeToPayoutSplitEvent!]! @derivedFrom(field: "project")
+  distributeReservedTokensEvents: [DistributeReservedTokensEvent!]! @derivedFrom(field: "project")
+  distributeToReservedTokenSplitEvents: [DistributeToReservedTokenSplitEvent!]! @derivedFrom(field: "project")
+  deployedERC20Events: [DeployedERC20Event!]! @derivedFrom(field: "project")
+  useAllowanceEvents: [UseAllowanceEvent!]! @derivedFrom(field: "project")
+  projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
 }
 
+# v1.0, v1.1, v2
 type _Schema_
   @fulltext(
     name: "projectSearch"
@@ -79,9 +85,12 @@ type _Schema_
     include: [{ entity: "Project", fields: [{ name: "handle" }] }]
   )
 
+# v1.0, v1.1, v2
 type Participant @entity {
   id: ID!
   project: Project!
+  projectId: Int!
+  cv: Int!
   wallet: Bytes!
   totalPaid: BigInt!
   lastPaidTimestamp: BigInt!
@@ -90,13 +99,14 @@ type Participant @entity {
   unstakedBalance: BigInt!
 }
 
+# v1.0, v1.1, v2
 type ProjectEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
   cv: Int!
   timestamp: BigInt!
-  payEvent: PayEvent 
+  payEvent: PayEvent
   mintTokensEvent: MintTokensEvent 
   tapEvent: TapEvent 
   redeemEvent: RedeemEvent 
@@ -111,9 +121,12 @@ type ProjectEvent @entity {
   useAllowanceEvent: UseAllowanceEvent
 }
 
+# v1.0, v1.1, v2
 type PayEvent @entity {
   id: ID!
   project: Project!
+  projectId: Int!
+  cv: Int!
   caller: Bytes!
   beneficiary: Bytes!
   amount: BigInt!
@@ -122,10 +135,12 @@ type PayEvent @entity {
   txHash: Bytes!
 }
 
+# v1.0, v1.1, v2
 type MintTokensEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
+  cv: Int!
   beneficiary: Bytes!
   amount: BigInt!
   memo: String
@@ -134,6 +149,7 @@ type MintTokensEvent @entity {
   txHash: Bytes!
 }
 
+# v1.0, v1.1
 type TapEvent @entity {
   id: ID!
   project: Project!
@@ -150,12 +166,14 @@ type TapEvent @entity {
   distributions: [DistributeToPayoutModEvent!]! @derivedFrom(field: "tapEvent")
 }
 
+# v2
 type DistributePayoutsEvent @entity {
   id: ID!
   project: Project!
+  projectId: Int!
+  cv: Int!
   fundingCycleConfiguration: BigInt!
   fundingCycleNumber: Int!
-  projectId: Int!
   beneficiary: Bytes!
   amount: BigInt!
   distributedAmount: BigInt!
@@ -165,6 +183,7 @@ type DistributePayoutsEvent @entity {
   caller: Bytes!
 }
 
+# v2
 type DistributeToPayoutSplitEvent @entity {
   id: ID!
   project: Project!
@@ -183,9 +202,12 @@ type DistributeToPayoutSplitEvent @entity {
   allocator: Bytes!
 }
 
+# v1.0, v1.1, v2
 type RedeemEvent @entity {
   id: ID!
   project: Project!
+  projectId: Int!
+  cv: Int!
   holder: Bytes!
   beneficiary: Bytes!
   amount: BigInt!
@@ -195,9 +217,11 @@ type RedeemEvent @entity {
   txHash: Bytes!
 }
 
+# v1.0, v1.1
 type PrintReservesEvent @entity {
   id: ID!
   project: Project!
+  projectId: Int!
   fundingCycleId: BigInt!
   beneficiary: Bytes!
   count: BigInt!
@@ -209,11 +233,12 @@ type PrintReservesEvent @entity {
     @derivedFrom(field: "printReservesEvent")
 }
 
+# v1.0, v1.1
 type DistributeToPayoutModEvent @entity {
   id: ID!
   project: Project!
-  fundingCycleId: BigInt!
   projectId: Int!
+  fundingCycleId: BigInt!
   modProjectId: Int!
   modAllocator: Bytes!
   modBeneficiary: Bytes!
@@ -225,6 +250,7 @@ type DistributeToPayoutModEvent @entity {
   txHash: Bytes!
 }
 
+# v2
 type DistributeReservedTokensEvent @entity {
   id: ID!
   project: Project!
@@ -237,6 +263,7 @@ type DistributeReservedTokensEvent @entity {
   caller: Bytes!
 }
 
+# v2
 type DistributeToReservedTokenSplitEvent @entity {
   id: ID!
   project: Project!
@@ -252,6 +279,7 @@ type DistributeToReservedTokenSplitEvent @entity {
   allocator: Bytes!
 }
 
+# v1.0, v1.1
 type DistributeToTicketModEvent @entity {
   id: ID!
   project: Project!
@@ -266,15 +294,19 @@ type DistributeToTicketModEvent @entity {
   txHash: Bytes!
 }
 
+# v1.1, v2
 type DeployedERC20Event @entity {
   id: ID!
   project: Project!
+  projectId: Int!
+  cv: Int!
   symbol: String!
   address: Bytes
   timestamp: BigInt!
   txHash: Bytes!
 }
 
+# v2
 type UseAllowanceEvent @entity{
   id: ID!
   project: Project!

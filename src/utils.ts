@@ -102,6 +102,8 @@ export function handleProjectERC20Transfer(
 
   if (!receiver) {
     receiver = new Participant(receiverId);
+    receiver.cv = 1;
+    receiver.projectId = project.projectId;
     receiver.project = project.id;
     receiver.wallet = event.params.to;
     receiver.stakedBalance = BigInt.fromString("0");

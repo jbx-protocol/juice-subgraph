@@ -42,6 +42,8 @@ export function handleDistributePayouts(event: DistributePayouts): void {
     projectId + "-" + event.transaction.hash.toHexString()
   );
   if (!distributePayoutsEvent) return;
+  distributePayoutsEvent.projectId - event.params.projectId.toI32();
+  distributePayoutsEvent.cv = cv;
   distributePayoutsEvent.amount = event.params.amount;
   distributePayoutsEvent.beneficiary = event.params.beneficiary;
   distributePayoutsEvent.beneficiaryDistributionAmount =
@@ -101,6 +103,8 @@ export function handlePay(event: Pay): void {
   );
   let projectId = idForProject(event.params.projectId, cv);
   if (pay) {
+    pay.cv = cv;
+    pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
     pay.caller = caller;
@@ -141,6 +145,8 @@ export function handlePay(event: Pay): void {
   let participant = Participant.load(participantId);
   if (participant === null) {
     participant = new Participant(participantId);
+    participant.cv = cv;
+    participant.projectId = project.projectId;
     participant.wallet = event.params.beneficiary;
     participant.totalPaid = event.params.amount;
     participant.project = project.id;
@@ -162,6 +168,8 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
   if (redeemEvent) {
+    redeemEvent.projectId = event.params.projectId.toI32();
+    redeemEvent.cv = cv;
     redeemEvent.amount = event.params.tokenCount;
     redeemEvent.beneficiary = event.params.beneficiary;
     redeemEvent.caller = caller;

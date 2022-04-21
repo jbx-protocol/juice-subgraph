@@ -38,6 +38,8 @@ export function handlePrint(event: Print): void {
   if (!participant) {
     participant = new Participant(id);
     participant.project = project.id;
+    participant.cv = cv;
+    participant.projectId = project.projectId;
     participant.stakedBalance = BigInt.fromString("0");
     participant.unstakedBalance = BigInt.fromString("0");
     participant.wallet = event.params.holder;
@@ -93,6 +95,8 @@ export function handleTicketTransfer(event: Transfer): void {
   if (!receiver) {
     receiver = new Participant(receiverId);
     receiver.project = project.id;
+    receiver.cv = cv;
+    receiver.projectId = project.projectId;
     receiver.wallet = event.params.recipient;
     receiver.stakedBalance = BigInt.fromString("0");
     receiver.unstakedBalance = BigInt.fromString("0");
@@ -208,6 +212,8 @@ export function handleIssue(event: Issue): void {
   );
   if (deployedERC20Event) {
     deployedERC20Event.project = project.id;
+    deployedERC20Event.projectId = project.projectId;
+    deployedERC20Event.cv = cv;
     deployedERC20Event.symbol = event.params.symbol;
     deployedERC20Event.timestamp = event.block.timestamp;
     deployedERC20Event.txHash = event.transaction.hash;

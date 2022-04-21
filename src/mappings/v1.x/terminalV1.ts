@@ -48,6 +48,8 @@ export function handlePay(event: Pay): void {
   );
   let projectId = idForProject(event.params.projectId, cv);
   if (pay) {
+    pay.cv = cv;
+    pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
     pay.caller = caller;
@@ -88,6 +90,8 @@ export function handlePay(event: Pay): void {
   let participant = Participant.load(participantId);
   if (participant === null) {
     participant = new Participant(participantId);
+    participant.cv = cv;
+    participant.projectId = project.projectId;
     participant.wallet = event.params.beneficiary;
     participant.totalPaid = event.params.amount;
     participant.project = project.id;
@@ -108,6 +112,7 @@ export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
   if (!mintTokensEvent) return;
+  mintTokensEvent.projectId = event.params.projectId.toI32();
   mintTokensEvent.amount = event.params.amount;
   mintTokensEvent.beneficiary = event.params.beneficiary;
   mintTokensEvent.caller = event.params.caller;
@@ -172,6 +177,8 @@ export function handleRedeem(event: Redeem): void {
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
   if (redeemEvent) {
+    redeemEvent.projectId = event.params._projectId.toI32();
+    redeemEvent.cv = cv;
     redeemEvent.amount = event.params.amount;
     redeemEvent.beneficiary = event.params.beneficiary;
     redeemEvent.caller = caller;
@@ -218,6 +225,7 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
     projectId + "-" + event.transaction.hash.toHexString()
   );
   if (!printReserveEvent) return;
+  printReserveEvent.projectId = event.params.projectId.toI32();
   printReserveEvent.beneficiary = event.params.beneficiary;
   printReserveEvent.beneficiaryTicketAmount =
     event.params.beneficiaryTicketAmount;
@@ -254,6 +262,7 @@ export function handleDistributeToPayoutMod(
   );
   let projectId = idForProject(event.params.projectId, cv);
   if (!distributeToPayoutModEvent) return;
+  distributeToPayoutModEvent.projectId = event.params.projectId.toI32();
   distributeToPayoutModEvent.tapEvent =
     projectId + "-" + event.transaction.hash.toHexString();
   distributeToPayoutModEvent.project = projectId;

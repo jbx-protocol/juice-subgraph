@@ -84,6 +84,8 @@ export function handleIssue(event: Issue): void {
   );
   if (deployedERC20Event) {
     deployedERC20Event.project = project.id;
+    deployedERC20Event.projectId = project.projectId;
+    deployedERC20Event.cv = cv;
     deployedERC20Event.symbol = event.params.symbol;
     deployedERC20Event.address = event.params.token;
     deployedERC20Event.timestamp = event.block.timestamp;
@@ -127,6 +129,8 @@ export function handleMint(event: Mint): void {
   if (!receiver) {
     receiver = new Participant(receiverId);
     receiver.project = projectId;
+    receiver.cv = cv;
+    receiver.projectId = event.params.projectId.toI32();
     receiver.wallet = event.params.holder;
     receiver.stakedBalance = BigInt.fromString("0");
     receiver.unstakedBalance = BigInt.fromString("0");
@@ -170,6 +174,8 @@ export function handleTransfer(event: Transfer): void {
   if (!receiver) {
     receiver = new Participant(receiverId);
     receiver.project = project.id;
+    receiver.cv = cv;
+    receiver.projectId = project.projectId;
     receiver.wallet = event.params.recipient;
     receiver.stakedBalance = BigInt.fromString("0");
     receiver.unstakedBalance = BigInt.fromString("0");

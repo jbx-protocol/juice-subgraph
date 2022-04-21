@@ -21,6 +21,7 @@ export function handleMintTokens(event: MintTokens): void {
   );
   let projectId = idForProject(event.params.projectId, cv);
   if (!mintTokensEvent) return;
+  mintTokensEvent.projectId = event.params.projectId.toI32();
   mintTokensEvent.amount = event.params.tokenCount;
   mintTokensEvent.beneficiary = event.params.beneficiary;
   mintTokensEvent.caller = event.params.caller;
