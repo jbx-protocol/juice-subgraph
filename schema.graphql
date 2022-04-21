@@ -1,6 +1,5 @@
-# Any event used for both v1 and v2 contracts includes a `cv` property, which allows for querying events for a specific contracts version.
+# Note: `project.id` is string concatenated from multiple properties. `projectId` represents an integer id of the project.
 
-# v1.0, v1.1, v2
 type ProtocolLog @entity {
   id: ID!
   v1: ProtocolV1Log @derivedFrom(field: "log")
@@ -14,24 +13,26 @@ type ProtocolLog @entity {
   erc20Count: Int!
 }
 
-# v2
-type ProtocolV2Log @entity {
-  id: ID!
-  log: ProtocolLog!
-  projectsCount: Int!
-  volumePaid: BigInt!
-  volumeRedeemed: BigInt!
-  paymentsCount: Int!
-  redeemCount: Int!
-  erc20Count: Int!
-}
+type _Schema_
+  @fulltext(
+    name: "projectSearch"
+    language: en
+    algorithm: rank
+    include: [{ entity: "Project", fields: [{ name: "handle" }] }]
+  )
+
+#############################################################################
+############################### vx.x entities ###############################
+#############################################################################
+
+# Note: Events used for both v1 and v2 contracts include a `cv` (contracts version) property, which allows querying events for a specific contracts version.
 
 # v1.0, v1.1, v2
 type ProjectCreateEvent @entity {
   id: ID!
-  cv: Int!
-  projectId: Int!
   project: Project!
+  projectId: Int!
+  cv: Int!
   timestamp: BigInt!
   txHash: Bytes!
   caller: Bytes!
@@ -77,15 +78,6 @@ type Project @entity {
 }
 
 # v1.0, v1.1, v2
-type _Schema_
-  @fulltext(
-    name: "projectSearch"
-    language: en
-    algorithm: rank
-    include: [{ entity: "Project", fields: [{ name: "handle" }] }]
-  )
-
-# v1.0, v1.1, v2
 type Participant @entity {
   id: ID!
   project: Project!
@@ -106,6 +98,8 @@ type ProjectEvent @entity {
   projectId: Int!
   cv: Int!
   timestamp: BigInt!
+
+  # Conditional properties. Only one of these properties should exist. This is a helper entity that makes it possible to query all "project events" for a project.
   payEvent: PayEvent
   mintTokensEvent: MintTokensEvent 
   tapEvent: TapEvent 
@@ -130,7 +124,7 @@ type PayEvent @entity {
   caller: Bytes!
   beneficiary: Bytes!
   amount: BigInt!
-  note: String
+  note: String!
   timestamp: BigInt!
   txHash: Bytes!
 }
@@ -143,63 +137,10 @@ type MintTokensEvent @entity {
   cv: Int!
   beneficiary: Bytes!
   amount: BigInt!
-  memo: String
-  caller: Bytes!
-  timestamp: BigInt!
-  txHash: Bytes!
-}
-
-# v1.0, v1.1
-type TapEvent @entity {
-  id: ID!
-  project: Project!
-  fundingCycleId: BigInt!
-  beneficiary: Bytes!
-  amount: BigInt!
-  currency: BigInt!
-  netTransferAmount: BigInt!
-  beneficiaryTransferAmount: BigInt!
-  govFeeAmount: BigInt!
-  caller: Bytes!
-  timestamp: BigInt!
-  txHash: Bytes!
-  distributions: [DistributeToPayoutModEvent!]! @derivedFrom(field: "tapEvent")
-}
-
-# v2
-type DistributePayoutsEvent @entity {
-  id: ID!
-  project: Project!
-  projectId: Int!
-  cv: Int!
-  fundingCycleConfiguration: BigInt!
-  fundingCycleNumber: Int!
-  beneficiary: Bytes!
-  amount: BigInt!
-  distributedAmount: BigInt!
-  fee: BigInt!
-  beneficiaryDistributionAmount: BigInt!
   memo: String!
   caller: Bytes!
-}
-
-# v2
-type DistributeToPayoutSplitEvent @entity {
-  id: ID!
-  project: Project!
-  projectId: Int!
-  domain: BigInt!
-  group: BigInt!
-  amount: BigInt!
-  caller: Bytes!
-  # Split struct properties below
-  preferClaimed: Boolean!
-  preferAddToBalance: Boolean!
-  percent: Int!
-  splitProjectId: Int!
-  beneficiary: Bytes!
-  lockedUntil: Int!
-  allocator: Bytes!
+  timestamp: BigInt!
+  txHash: Bytes!
 }
 
 # v1.0, v1.1, v2
@@ -215,6 +156,34 @@ type RedeemEvent @entity {
   caller: Bytes!
   timestamp: BigInt!
   txHash: Bytes!
+}
+
+# v1.0, v1.1, v2
+type DeployedERC20Event @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  cv: Int!
+  symbol: String!
+  timestamp: BigInt!
+  txHash: Bytes!
+
+  address: Bytes # will be empty for v1.x events
+}
+
+#############################################################################
+############################### v1.x entities ###############################
+#############################################################################
+# v1.0, v1.1
+type ProtocolV1Log @entity {
+  id: ID!
+  log: ProtocolLog!
+  projectsCount: Int!
+  volumePaid: BigInt!
+  volumeRedeemed: BigInt!
+  paymentsCount: Int!
+  redeemCount: Int!
+  erc20Count: Int!
 }
 
 # v1.0, v1.1
@@ -250,6 +219,89 @@ type DistributeToPayoutModEvent @entity {
   txHash: Bytes!
 }
 
+# v1.0, v1.1
+type TapEvent @entity {
+  id: ID!
+  project: Project!
+  fundingCycleId: BigInt!
+  beneficiary: Bytes!
+  amount: BigInt!
+  currency: BigInt!
+  netTransferAmount: BigInt!
+  beneficiaryTransferAmount: BigInt!
+  govFeeAmount: BigInt!
+  caller: Bytes!
+  timestamp: BigInt!
+  txHash: Bytes!
+  distributions: [DistributeToPayoutModEvent!]! @derivedFrom(field: "tapEvent")
+}
+
+# v1.0, v1.1
+type DistributeToTicketModEvent @entity {
+  id: ID!
+  project: Project!
+  fundingCycleId: BigInt!
+  projectId: Int!
+  modBeneficiary: Bytes!
+  modPreferUnstaked: Boolean!
+  modCut: BigInt!
+  caller: Bytes!
+  printReservesEvent: PrintReservesEvent!
+  timestamp: BigInt!
+  txHash: Bytes!
+}
+
+#############################################################################
+############################### v2.x entities ###############################
+#############################################################################
+# v2
+type ProtocolV2Log @entity {
+  id: ID!
+  log: ProtocolLog!
+  projectsCount: Int!
+  volumePaid: BigInt!
+  volumeRedeemed: BigInt!
+  paymentsCount: Int!
+  redeemCount: Int!
+  erc20Count: Int!
+}
+
+# v2
+type DistributePayoutsEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  fundingCycleConfiguration: BigInt!
+  fundingCycleNumber: Int!
+  beneficiary: Bytes!
+  amount: BigInt!
+  distributedAmount: BigInt!
+  fee: BigInt!
+  beneficiaryDistributionAmount: BigInt!
+  memo: String!
+  caller: Bytes!
+}
+
+# v2
+type DistributeToPayoutSplitEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  domain: BigInt!
+  group: BigInt!
+  amount: BigInt!
+  caller: Bytes!
+
+  # Split struct properties below
+  preferClaimed: Boolean!
+  preferAddToBalance: Boolean!
+  percent: Int!
+  splitProjectId: Int!
+  beneficiary: Bytes!
+  lockedUntil: Int!
+  allocator: Bytes!
+}
+
 # v2
 type DistributeReservedTokensEvent @entity {
   id: ID!
@@ -270,6 +322,7 @@ type DistributeToReservedTokenSplitEvent @entity {
   projectId: Int!
   tokenCount: BigInt!
   caller: Bytes!
+
   # Split struct properties below
   preferClaimed: Boolean!
   percent: Int!
@@ -279,40 +332,13 @@ type DistributeToReservedTokenSplitEvent @entity {
   allocator: Bytes!
 }
 
-# v1.0, v1.1
-type DistributeToTicketModEvent @entity {
-  id: ID!
-  project: Project!
-  fundingCycleId: BigInt!
-  projectId: Int!
-  modBeneficiary: Bytes!
-  modPreferUnstaked: Boolean!
-  modCut: BigInt!
-  caller: Bytes!
-  printReservesEvent: PrintReservesEvent!
-  timestamp: BigInt!
-  txHash: Bytes!
-}
-
-# v1.1, v2
-type DeployedERC20Event @entity {
-  id: ID!
-  project: Project!
-  projectId: Int!
-  cv: Int!
-  symbol: String!
-  address: Bytes
-  timestamp: BigInt!
-  txHash: Bytes!
-}
-
 # v2
 type UseAllowanceEvent @entity{
   id: ID!
   project: Project!
+  projectId: Int!
   fundingCycleConfiguration: BigInt!
   fundingCycleNumber: Int!
-  projectId: Int!
   beneficiary: Bytes!
   amount: BigInt!
   distributedAmount: BigInt!

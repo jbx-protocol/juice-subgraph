@@ -43,7 +43,6 @@ export function handleDistributePayouts(event: DistributePayouts): void {
   );
   if (!distributePayoutsEvent) return;
   distributePayoutsEvent.projectId - event.params.projectId.toI32();
-  distributePayoutsEvent.cv = cv;
   distributePayoutsEvent.amount = event.params.amount;
   distributePayoutsEvent.beneficiary = event.params.beneficiary;
   distributePayoutsEvent.beneficiaryDistributionAmount =
@@ -219,6 +218,7 @@ export function handleUseAllowance(event: UseAllowance): void {
   if (!useAllowanceEvent) return;
 
   useAllowanceEvent.project = projectId;
+  useAllowanceEvent.projectId = event.params.projectId.toI32();
   useAllowanceEvent.amount = event.params.amount;
   useAllowanceEvent.beneficiary = event.params.beneficiary;
   useAllowanceEvent.caller = event.params.caller;
@@ -228,7 +228,6 @@ export function handleUseAllowance(event: UseAllowance): void {
   useAllowanceEvent.fundingCycleNumber = event.params.fundingCycleNumber.toI32();
   useAllowanceEvent.memo = event.params.memo;
   useAllowanceEvent.netDistributedamount = event.params.netDistributedamount;
-  useAllowanceEvent.projectId = event.params.projectId.toI32();
   useAllowanceEvent.save();
 
   saveNewProjectEvent(
