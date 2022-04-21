@@ -113,8 +113,8 @@ dataSources:
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,string,address)
           handler: handlePay
-        # - event: PrintPreminedTickets(indexed uint256,indexed address,uint256,uint256,string,address)
-        #   handler: handlePrintPreminedTickets
+        - event: PrintPreminedTickets(indexed uint256,indexed address,uint256,uint256,string,address)
+          handler: handlePrintPreminedTickets
         - event: PrintReserveTickets(indexed uint256,indexed uint256,indexed address,uint256,uint256,address)
           handler: handlePrintReserveTickets
         - event: Tap(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,uint256,uint256,address)
@@ -271,8 +271,8 @@ dataSources:
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,string,address)
           handler: handlePay
-        # - event: PrintTickets(indexed uint256,indexed address,uint256,string,address)
-        #   handler: handlePrintTickets
+        - event: PrintTickets(indexed uint256,indexed address,uint256,string,address)
+          handler: handlePrintTickets
         - event: PrintReserveTickets(indexed uint256,indexed uint256,indexed address,uint256,uint256,address)
           handler: handlePrintReserveTickets
         - event: Tap(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,uint256,uint256,address)

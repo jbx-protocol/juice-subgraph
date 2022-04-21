@@ -14,6 +14,8 @@ import { idForProject, saveNewProjectEvent } from "../../utils";
 const cv: CV = 2;
 
 export function handleMintTokens(event: MintTokens): void {
+  // Note: Receiver balance is updated in the jbTokenStore event handler
+
   let mintTokensEvent = new MintTokensEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );

@@ -113,7 +113,7 @@ export function handleIssue(event: Issue): void {
 }
 
 export function handleMint(event: Mint): void {
-  // Only handle updating unclaimed token balances
+  // Only handle updating unclaimed token balance
   if (event.params.preferClaimedTokens) return;
 
   let receiverId = idForParticipant(

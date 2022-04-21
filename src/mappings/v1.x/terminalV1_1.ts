@@ -1,6 +1,7 @@
 import {
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
+  MintTokensEvent,
   Participant,
   PayEvent,
   PrintReservesEvent,
@@ -19,6 +20,7 @@ import {
   Migrate,
   Pay,
   PrintReserveTickets,
+  PrintTickets,
   Redeem,
   SetFee,
   SetTargetLocalWei,
@@ -97,29 +99,31 @@ export function handlePay(event: Pay): void {
   participant.save();
 }
 
-// export function handlePrintTickets(event: PrintTickets): void {
-//   let mintTokensEvent = new MintTokensEvent(
-//     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-//   );
-//   let projectId = idForProject(event.params.projectId, cv);
-//   if (!mintTokensEvent) return;
-//   mintTokensEvent.amount = event.params.amount;
-//   mintTokensEvent.beneficiary = event.params.beneficiary;
-//   mintTokensEvent.caller = event.params.caller;
-//   mintTokensEvent.memo = event.params.memo;
-//   mintTokensEvent.project = projectId;
-//   mintTokensEvent.timestamp = event.block.timestamp;
-//   mintTokensEvent.txHash = event.transaction.hash;
-//   mintTokensEvent.save();
+export function handlePrintTickets(event: PrintTickets): void {
+  // Note: Receiver balance is updated in the ticketBooth event handler
 
-//   saveNewProjectEvent(
-//     event,
-//     event.params.projectId,
-//     mintTokensEvent.id,
-//     cv,
-//     ProjectEventKey.mintTokensEvent
-//   );
-// }
+  let mintTokensEvent = new MintTokensEvent(
+    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
+  );
+  let projectId = idForProject(event.params.projectId, cv);
+  if (!mintTokensEvent) return;
+  mintTokensEvent.amount = event.params.amount;
+  mintTokensEvent.beneficiary = event.params.beneficiary;
+  mintTokensEvent.caller = event.params.caller;
+  mintTokensEvent.memo = event.params.memo;
+  mintTokensEvent.project = projectId;
+  mintTokensEvent.timestamp = event.block.timestamp;
+  mintTokensEvent.txHash = event.transaction.hash;
+  mintTokensEvent.save();
+
+  saveNewProjectEvent(
+    event,
+    event.params.projectId,
+    mintTokensEvent.id,
+    cv,
+    ProjectEventKey.mintTokensEvent
+  );
+}
 
 export function handleTap(event: Tap): void {
   let projectId = idForProject(event.params.projectId, cv);
