@@ -76,25 +76,32 @@ export function handleDistributeToPayoutSplit(
     projectId + "-" + event.transaction.hash.toHexString()
   );
 
-  if (distributePayoutSplitEvent) {
-    distributePayoutSplitEvent.project = projectId;
-    distributePayoutSplitEvent.txHash = event.transaction.hash;
-    distributePayoutSplitEvent.timestamp = event.block.timestamp.toI32();
-    distributePayoutSplitEvent.amount = event.params.amount;
-    distributePayoutSplitEvent.caller = event.params.caller;
-    distributePayoutSplitEvent.domain = event.params.domain;
-    distributePayoutSplitEvent.group = event.params.group;
-    distributePayoutSplitEvent.projectId = event.params.projectId.toI32();
-    distributePayoutSplitEvent.splitProjectId = event.params.split.projectId.toI32();
-    distributePayoutSplitEvent.allocator = event.params.split.allocator;
-    distributePayoutSplitEvent.beneficiary = event.params.split.beneficiary;
-    distributePayoutSplitEvent.lockedUntil = event.params.split.lockedUntil.toI32();
-    distributePayoutSplitEvent.percent = event.params.split.percent.toI32();
-    distributePayoutSplitEvent.preferClaimed = event.params.split.preferClaimed;
-    distributePayoutSplitEvent.preferAddToBalance =
-      event.params.split.preferAddToBalance;
-    distributePayoutSplitEvent.save();
-  }
+  if (!distributePayoutSplitEvent) return;
+  distributePayoutSplitEvent.project = projectId;
+  distributePayoutSplitEvent.txHash = event.transaction.hash;
+  distributePayoutSplitEvent.timestamp = event.block.timestamp.toI32();
+  distributePayoutSplitEvent.amount = event.params.amount;
+  distributePayoutSplitEvent.caller = event.params.caller;
+  distributePayoutSplitEvent.domain = event.params.domain;
+  distributePayoutSplitEvent.group = event.params.group;
+  distributePayoutSplitEvent.projectId = event.params.projectId.toI32();
+  distributePayoutSplitEvent.splitProjectId = event.params.split.projectId.toI32();
+  distributePayoutSplitEvent.allocator = event.params.split.allocator;
+  distributePayoutSplitEvent.beneficiary = event.params.split.beneficiary;
+  distributePayoutSplitEvent.lockedUntil = event.params.split.lockedUntil.toI32();
+  distributePayoutSplitEvent.percent = event.params.split.percent.toI32();
+  distributePayoutSplitEvent.preferClaimed = event.params.split.preferClaimed;
+  distributePayoutSplitEvent.preferAddToBalance =
+    event.params.split.preferAddToBalance;
+  distributePayoutSplitEvent.save();
+
+  saveNewProjectEvent(
+    event,
+    event.params.projectId,
+    distributePayoutSplitEvent.id,
+    cv,
+    ProjectEventKey.distributeToPayoutSplitEvent
+  );
 }
 
 export function handlePay(event: Pay): void {

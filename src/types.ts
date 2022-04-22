@@ -5,6 +5,7 @@ export enum ProjectEventKey {
   distributeReservedTokensEvent,
   distributeToPayoutModEvent,
   distributeToReservedTokenSplitEvent,
+  distributeToPayoutSplitEvent,
   distributeToTicketModEvent,
   mintTokensEvent,
   payEvent,

@@ -112,6 +112,7 @@ type ProjectEvent @entity {
   distributePayoutsEvent: DistributePayoutsEvent
   distributeReservedTokensEvent: DistributeReservedTokensEvent
   distributeToReservedTokenSplitEvent: DistributeToReservedTokenSplitEvent
+  distributeToPayoutSplitEvent: DistributeToPayoutSplitEvent
   useAllowanceEvent: UseAllowanceEvent
 }
 
