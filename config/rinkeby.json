@@ -8,13 +8,13 @@
   "startBlock_terminalV1_1": 9115779,
   "address_ticketBooth": "0x0d038636a670E8bd8cF7D56BC4626f2a6446cF11",
   "startBlock_ticketBooth": 9115779,
-  "address_jbProjects": "0x05ea48673d41DC75fbDC8f32fA825be69c1BD5B2",
+  "address_jbProjects": "0x981fEd011BD441D329Ec63160ce393f8b5c18af1",
   "startBlock_jbProjects": 9115779,
-  "address_jbController": "0xb6301A0DBd16F57Ca880e3088e1405505cd44622",
+  "address_jbController": "0xF49e691b3716cB0a3CeBa99F96852A2334b57924",
   "startBlock_jbController": 9115779,
-  "address_jbETHPaymentTerminal": "0x2d110f9DDa8d019B453299151631e9dfb69cfcb7",
+  "address_jbETHPaymentTerminal": "0x0E5a62BA8f946AB98c1E801Fc0a7264408f6B838",
   "startBlock_jbETHPaymentTerminal": 9115779,
-  "address_jbTokenStore": "0xBd0A8D0617eea36A4399d3d61027e338c4Faa36f",
+  "address_jbTokenStore": "0x8648c79B2b76BF04E31dcc8dcAAB703dc72A9621",
   "startBlock_jbTokenStore": 9115779,
   "erc20s": [
     {
