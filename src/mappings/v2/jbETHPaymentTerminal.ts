@@ -73,10 +73,16 @@ export function handleDistributeToPayoutSplit(
 ): void {
   let projectId = idForProject(event.params.projectId, cv);
   let distributePayoutSplitEvent = new DistributeToPayoutSplitEvent(
-    projectId + "-" + event.transaction.hash.toHexString()
+    projectId +
+      "-" +
+      event.transaction.hash.toHexString() +
+      "-" +
+      event.logIndex.toString()
   );
 
   if (!distributePayoutSplitEvent) return;
+  distributePayoutSplitEvent.distributePayoutsEvent =
+    projectId + "-" + event.transaction.hash.toHexString();
   distributePayoutSplitEvent.project = projectId;
   distributePayoutSplitEvent.txHash = event.transaction.hash;
   distributePayoutSplitEvent.timestamp = event.block.timestamp.toI32();

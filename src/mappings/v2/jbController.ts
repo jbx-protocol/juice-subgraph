@@ -43,10 +43,10 @@ export function handleMintTokens(event: MintTokens): void {
 export function handleDistributeReservedTokens(
   event: DistributeReservedTokens
 ): void {
-  let distributeReservedTokensEvent = new DistributeReservedTokensEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-  );
   let projectId = idForProject(event.params.projectId, cv);
+  let distributeReservedTokensEvent = new DistributeReservedTokensEvent(
+    projectId + "-" + event.transaction.hash.toHexString()
+  );
 
   if (!distributeReservedTokensEvent) return;
   distributeReservedTokensEvent.project = projectId;
@@ -73,12 +73,18 @@ export function handleDistributeReservedTokens(
 export function handleDistributeToReservedTokenSplit(
   event: DistributeToReservedTokenSplit
 ): void {
-  let distributeReservedTokenSplitEvent = new DistributeToReservedTokenSplitEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-  );
   let projectId = idForProject(event.params.projectId, cv);
+  let distributeReservedTokenSplitEvent = new DistributeToReservedTokenSplitEvent(
+    projectId +
+      "-" +
+      event.transaction.hash.toHexString() +
+      "-" +
+      event.logIndex.toString()
+  );
 
   if (!distributeReservedTokenSplitEvent) return;
+  distributeReservedTokenSplitEvent.distributeReservedTokensEvent =
+    projectId + "-" + event.transaction.hash.toHexString();
   distributeReservedTokenSplitEvent.project = projectId;
   distributeReservedTokenSplitEvent.projectId = event.params.projectId.toI32();
   distributeReservedTokenSplitEvent.txHash = event.transaction.hash;

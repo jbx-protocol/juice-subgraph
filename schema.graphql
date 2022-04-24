@@ -292,6 +292,8 @@ type DistributePayoutsEvent @entity {
   beneficiaryDistributionAmount: BigInt!
   memo: String!
   caller: Bytes!
+  splitDistributions: [DistributeToPayoutSplitEvent!]!
+    @derivedFrom(field: "distributePayoutsEvent")
 }
 
 # v2
@@ -306,6 +308,7 @@ type DistributeToPayoutSplitEvent @entity {
   group: BigInt!
   amount: BigInt!
   caller: Bytes!
+  distributePayoutsEvent: DistributePayoutsEvent!
 
   # Split struct properties below
   preferClaimed: Boolean!
@@ -331,6 +334,8 @@ type DistributeReservedTokensEvent @entity {
   beneficiaryTokenCount: BigInt!
   memo: String!
   caller: Bytes!
+  splitDistributions: [DistributeToReservedTokenSplitEvent!]!
+    @derivedFrom(field: "distributeReservedTokensEvent")
 }
 
 # v2
@@ -343,6 +348,7 @@ type DistributeToReservedTokenSplitEvent @entity {
 
   tokenCount: BigInt!
   caller: Bytes!
+  distributeReservedTokensEvent: DistributeReservedTokensEvent!
 
   # Split struct properties below
   preferClaimed: Boolean!
