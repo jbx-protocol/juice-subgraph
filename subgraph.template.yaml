@@ -177,9 +177,9 @@ dataSources:
         - name: JBTokenStore
           file: ./abis/JBTokenStore.json
       eventHandlers:
-        - event: Burn(indexed address,indexed uint256,uint256,uint256,bool,address)
+        - event: Burn(indexed address,indexed uint256,uint256,uint256,uint256,bool,address)
           handler: handleBurn
-        - event: Claim(indexed address,indexed uint256,uint256,address)
+        - event: Claim(indexed address,indexed uint256,uint256,uint256,address)
           handler: handleClaim
         - event: Issue(indexed uint256,indexed address,string,string,address)
           handler: handleIssue
@@ -235,11 +235,11 @@ dataSources:
         - name: JBETHPaymentTerminal
           file: ./abis/JBETHPaymentTerminal.json
       eventHandlers:
-        - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,address)
+        - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
           handler: handlePay
-        - event: RedeemTokens(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,address)
+        - event: RedeemTokens(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
           handler: handleRedeemTokens
-        - event: AddToBalance(indexed uint256,uint256,string,address)
+        - event: AddToBalance(indexed uint256,uint256,uint256,string,bytes,address)
           handler: handleAddToBalance
       file: ./src/mappings/v2/jbETHPaymentTerminal.ts
   - kind: ethereum/contract

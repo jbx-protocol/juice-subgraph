@@ -218,7 +218,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "contract IJBTokenUriResolver",
         "name": "resolver",
         "type": "address"
@@ -350,7 +350,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "projectId",
         "type": "uint256"
       }
     ],
@@ -756,7 +756,7 @@
     "inputs": [
       {
         "internalType": "bytes4",
-        "name": "interfaceId",
+        "name": "_interfaceId",
         "type": "bytes4"
       }
     ],

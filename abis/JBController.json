@@ -381,7 +381,7 @@
       },
       {
         "indexed": false,
-        "internalType": "contract IJBController",
+        "internalType": "contract IJBMigratable",
         "name": "to",
         "type": "address"
       },
@@ -455,7 +455,7 @@
       },
       {
         "indexed": false,
-        "internalType": "contract IJBController",
+        "internalType": "address",
         "name": "from",
         "type": "address"
       },
@@ -885,6 +885,174 @@
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
+        "name": "_configuration",
+        "type": "uint256"
+      }
+    ],
+    "name": "getFundingCycleOf",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "number",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "configuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "basedOn",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "start",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "duration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "weight",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "discountRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "contract IJBFundingCycleBallot",
+            "name": "ballot",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "metadata",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct JBFundingCycle",
+        "name": "fundingCycle",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "reservedRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "redemptionRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "ballotRedemptionRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "pausePay",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "pauseDistributions",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "pauseRedeem",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "pauseBurn",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowMinting",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowChangeToken",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowTerminalMigration",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowControllerMigration",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowSetTerminals",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowSetController",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "holdFees",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "useTotalOverflowForRedemptions",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "useDataSourceForPay",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "useDataSourceForRedeem",
+            "type": "bool"
+          },
+          {
+            "internalType": "contract IJBFundingCycleDataSource",
+            "name": "dataSource",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct JBFundingCycleMetadata",
+        "name": "metadata",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_projectId",
+        "type": "uint256"
+      },
+      {
         "internalType": "string",
         "name": "_name",
         "type": "string"
@@ -904,6 +1072,174 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_projectId",
+        "type": "uint256"
+      }
+    ],
+    "name": "latestConfiguredFundingCycleOf",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "number",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "configuration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "basedOn",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "start",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "duration",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "weight",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "discountRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "contract IJBFundingCycleBallot",
+            "name": "ballot",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "metadata",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct JBFundingCycle",
+        "name": "fundingCycle",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "reservedRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "redemptionRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "ballotRedemptionRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "pausePay",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "pauseDistributions",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "pauseRedeem",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "pauseBurn",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowMinting",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowChangeToken",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowTerminalMigration",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowControllerMigration",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowSetTerminals",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowSetController",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "holdFees",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "useTotalOverflowForRedemptions",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "useDataSourceForPay",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "useDataSourceForRedeem",
+            "type": "bool"
+          },
+          {
+            "internalType": "contract IJBFundingCycleDataSource",
+            "name": "dataSource",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct JBFundingCycleMetadata",
+        "name": "metadata",
+        "type": "tuple"
+      },
+      {
+        "internalType": "enum JBBallotState",
+        "name": "ballotState",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1429,7 +1765,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "contract IJBController",
+        "internalType": "contract IJBMigratable",
         "name": "_to",
         "type": "address"
       }
@@ -1543,7 +1879,7 @@
         "type": "uint256"
       },
       {
-        "internalType": "contract IJBController",
+        "internalType": "address",
         "name": "_from",
         "type": "address"
       }
@@ -2005,6 +2341,25 @@
         "internalType": "contract IJBSplitsStore",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",

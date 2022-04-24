@@ -133,9 +133,21 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "refundedFees",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "memo",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "metadata",
+        "type": "bytes"
       },
       {
         "indexed": false,
@@ -473,6 +485,49 @@
       },
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "feeDiscount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "HoldFee",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "projectId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
         "internalType": "contract IJBPaymentTerminal",
         "name": "to",
         "type": "address"
@@ -565,6 +620,12 @@
       },
       {
         "indexed": false,
+        "internalType": "bytes",
+        "name": "metadata",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "caller",
         "type": "address"
@@ -583,32 +644,22 @@
         "type": "uint256"
       },
       {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint32",
-            "name": "fee",
-            "type": "uint32"
-          },
-          {
-            "internalType": "uint32",
-            "name": "feeDiscount",
-            "type": "uint32"
-          },
-          {
-            "internalType": "address",
-            "name": "beneficiary",
-            "type": "address"
-          }
-        ],
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "bool",
+        "name": "wasHeld",
+        "type": "bool"
+      },
+      {
         "indexed": false,
-        "internalType": "struct JBFee[]",
-        "name": "fees",
-        "type": "tuple[]"
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -617,7 +668,7 @@
         "type": "address"
       }
     ],
-    "name": "ProcessFees",
+    "name": "ProcessFee",
     "type": "event"
   },
   {
@@ -673,12 +724,55 @@
       },
       {
         "indexed": false,
+        "internalType": "bytes",
+        "name": "metadata",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "caller",
         "type": "address"
       }
     ],
     "name": "RedeemTokens",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "projectId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "refundedFees",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "leftoverAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "RefundHeldFees",
     "type": "event"
   },
   {
@@ -845,6 +939,11 @@
         "internalType": "string",
         "name": "_memo",
         "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_metadata",
+        "type": "bytes"
       }
     ],
     "name": "addToBalanceOf",
@@ -977,6 +1076,11 @@
         "internalType": "uint256",
         "name": "_currency",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -1260,6 +1364,11 @@
         "type": "uint256"
       },
       {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "_minReturnedTokens",
         "type": "uint256"
@@ -1369,6 +1478,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "_interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "token",
     "outputs": [
@@ -1410,6 +1538,11 @@
         "internalType": "uint256",
         "name": "_currency",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       },
       {
         "internalType": "uint256",

@@ -22,6 +22,11 @@
   },
   {
     "inputs": [],
+    "name": "CANT_REMOVE_TOKEN_IF_ITS_REQUIRED",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "CONTROLLER_UNAUTHORIZED",
     "type": "error"
   },
@@ -47,7 +52,7 @@
   },
   {
     "inputs": [],
-    "name": "INVALID_RECIPIENT",
+    "name": "PROJECT_ALREADY_HAS_TOKEN",
     "type": "error"
   },
   {
@@ -57,12 +62,12 @@
   },
   {
     "inputs": [],
-    "name": "TOKEN_ALREADY_ISSUED",
+    "name": "TOKENS_MUST_HAVE_18_DECIMALS",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "TOKEN_AMOUNT_ZERO",
+    "name": "TOKEN_ALREADY_IN_USE",
     "type": "error"
   },
   {
@@ -99,7 +104,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "unclaimedTokenBalance",
+        "name": "initialUnclaimedBalance",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "initialClaimedBalance",
         "type": "uint256"
       },
       {
@@ -130,11 +141,17 @@
       {
         "indexed": true,
         "internalType": "contract IJBToken",
-        "name": "token",
+        "name": "newToken",
         "type": "address"
       },
       {
         "indexed": true,
+        "internalType": "contract IJBToken",
+        "name": "oldToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "owner",
         "type": "address"
@@ -162,6 +179,12 @@
         "indexed": true,
         "internalType": "uint256",
         "name": "projectId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "initialUnclaimedBalance",
         "type": "uint256"
       },
       {
@@ -393,7 +416,13 @@
       }
     ],
     "name": "changeFor",
-    "outputs": [],
+    "outputs": [
+      {
+        "internalType": "contract IJBToken",
+        "name": "oldToken",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -504,6 +533,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "contract IJBToken",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "projectOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "projects",
     "outputs": [
@@ -584,7 +632,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "supply",
+        "name": "totalSupply",
         "type": "uint256"
       }
     ],
@@ -593,11 +641,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_recipient",
-        "type": "address"
-      },
       {
         "internalType": "address",
         "name": "_holder",
@@ -609,12 +652,17 @@
         "type": "uint256"
       },
       {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "_amount",
         "type": "uint256"
       }
     ],
-    "name": "transferTo",
+    "name": "transferFrom",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
