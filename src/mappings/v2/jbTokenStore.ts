@@ -110,7 +110,7 @@ export function handleIssue(event: Issue): void {
   updateProtocolEntity();
 
   let erc20Context = new DataSourceContext();
-  erc20Context.setString("projectId", projectId);
+  erc20Context.setString("projectId", event.params.projectId.toString());
   ERC20.createWithContext(event.params.token, erc20Context);
 }
 
