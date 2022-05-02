@@ -101,16 +101,17 @@ export function handleIssue(event: Issue): void {
     );
   }
 
-  let log = ProtocolV2Log.load(protocolId);
-  if (!log) log = new ProtocolV2Log(protocolId);
-  if (log) {
-    log.erc20Count = log.erc20Count + 1;
-    log.save();
+  let protocolLog = ProtocolV2Log.load(protocolId);
+  if (!protocolLog) protocolLog = new ProtocolV2Log(protocolId);
+  if (protocolLog) {
+    protocolLog.erc20Count = protocolLog.erc20Count + 1;
+    protocolLog.save();
   }
   updateProtocolEntity();
 
   let erc20Context = new DataSourceContext();
-  erc20Context.setString("projectId", event.params.projectId.toString());
+  erc20Context.setI32("projectId", event.params.projectId.toI32());
+  erc20Context.setI32("cv", 2);
   ERC20.createWithContext(event.params.token, erc20Context);
 }
 

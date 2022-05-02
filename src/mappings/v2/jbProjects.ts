@@ -51,12 +51,12 @@ export function handleCreate(event: Create): void {
     );
   }
 
-  let log = ProtocolV2Log.load(protocolId);
-  if (!log) log = new ProtocolV2Log(protocolId);
+  let protocolLog = ProtocolV2Log.load(protocolId);
+  if (!protocolLog) protocolLog = new ProtocolV2Log(protocolId);
   // We only need to create log here, since there will only be one entity and it will be created when first project is created.
-  log.projectsCount = log.projectsCount + 1;
-  log.log = protocolId;
-  log.save();
+  protocolLog.projectsCount = protocolLog.projectsCount + 1;
+  protocolLog.log = protocolId;
+  protocolLog.save();
   updateProtocolEntity();
 }
 

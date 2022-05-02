@@ -138,12 +138,12 @@ export function handlePay(event: Pay): void {
     );
   }
 
-  let log = ProtocolV2Log.load(protocolId);
-  if (!log) log = new ProtocolV2Log(protocolId);
-  if (log) {
-    log.volumePaid = log.volumePaid.plus(event.params.amount);
-    log.paymentsCount = log.paymentsCount + 1;
-    log.save();
+  let protocolLog = ProtocolV2Log.load(protocolId);
+  if (!protocolLog) protocolLog = new ProtocolV2Log(protocolId);
+  if (protocolLog) {
+    protocolLog.volumePaid = protocolLog.volumePaid.plus(event.params.amount);
+    protocolLog.paymentsCount = protocolLog.paymentsCount + 1;
+    protocolLog.save();
   }
   updateProtocolEntity();
 
@@ -202,12 +202,14 @@ export function handleRedeemTokens(event: RedeemTokens): void {
       ProjectEventKey.redeemEvent
     );
 
-    let log = ProtocolV2Log.load(protocolId);
-    if (!log) log = new ProtocolV2Log(protocolId);
-    if (log) {
-      log.volumeRedeemed = log.volumeRedeemed.plus(event.params.tokenCount);
-      log.redeemCount = log.redeemCount + 1;
-      log.save();
+    let protocolLog = ProtocolV2Log.load(protocolId);
+    if (!protocolLog) protocolLog = new ProtocolV2Log(protocolId);
+    if (protocolLog) {
+      protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
+        event.params.tokenCount
+      );
+      protocolLog.redeemCount = protocolLog.redeemCount + 1;
+      protocolLog.save();
     }
     updateProtocolEntity();
   }

@@ -9,7 +9,6 @@ import {
   ProtocolV2Log,
 } from "../generated/schema";
 import { Transfer } from "../generated/templates/ERC20/ERC20";
-import { indexedERC20s } from "./erc20/v1.x/indexedERC20s";
 import { CV, ProjectEventKey } from "./types";
 
 export const protocolId = "1";
@@ -68,10 +67,6 @@ export function idForProject(projectId: BigInt, cv: CV): string {
   return `${cv.toString().split(".")[0]}-${projectId.toString()}`;
 }
 
-export function erc20IsIndexed(projectId: BigInt): boolean {
-  return indexedERC20s.includes(projectId.toString());
-}
-
 export function updateBalance(participant: Participant): void {
   participant.balance = participant.unstakedBalance.plus(
     participant.stakedBalance
@@ -80,12 +75,13 @@ export function updateBalance(participant: Participant): void {
 
 export function handleProjectERC20Transfer(
   projectId: BigInt,
-  event: Transfer
+  event: Transfer,
+  cv: CV
 ): void {
   let sender = Participant.load(
-    idForParticipant(projectId, 1, event.params.from)
+    idForParticipant(projectId, cv, event.params.from)
   );
-  let project = Project.load(idForProject(projectId, 1));
+  let project = Project.load(idForProject(projectId, cv));
 
   if (!project) return;
 
@@ -102,7 +98,7 @@ export function handleProjectERC20Transfer(
 
   if (!receiver) {
     receiver = new Participant(receiverId);
-    receiver.cv = 1;
+    receiver.cv = cv;
     receiver.projectId = project.projectId;
     receiver.project = project.id;
     receiver.wallet = event.params.to;

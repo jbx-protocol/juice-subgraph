@@ -1,4 +1,9 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import {
+  Address,
+  BigInt,
+  DataSourceContext,
+  log,
+} from "@graphprotocol/graph-ts";
 
 import {
   DeployedERC20Event,
@@ -11,12 +16,14 @@ import {
   Print,
   Redeem,
   Stake,
+  TicketBooth,
   Transfer,
   Unstake,
 } from "../../../generated/TicketBooth/TicketBooth";
 import { CV, ProjectEventKey } from "../../types";
+import { ERC20 } from "../../../generated/templates";
+import { address_ticketBooth } from "../../contractAddresses";
 import {
-  erc20IsIndexed,
   idForParticipant,
   idForProject,
   protocolId,
@@ -49,13 +56,7 @@ export function handlePrint(event: Print): void {
 
   if (!participant) return;
 
-  if (event.params.preferUnstakedTickets) {
-    if (!erc20IsIndexed(event.params.projectId)) {
-      participant.unstakedBalance = participant.unstakedBalance.plus(
-        event.params.amount
-      );
-    }
-  } else {
+  if (!event.params.preferUnstakedTickets) {
     participant.stakedBalance = participant.stakedBalance.plus(
       event.params.amount
     );
@@ -123,12 +124,6 @@ export function handleUnstake(event: Unstake): void {
       event.params.amount
     );
 
-    if (!erc20IsIndexed(event.params.projectId)) {
-      participant.unstakedBalance = participant.unstakedBalance.plus(
-        event.params.amount
-      );
-    }
-
     updateBalance(participant);
 
     participant.save();
@@ -145,12 +140,6 @@ export function handleStake(event: Stake): void {
       event.params.amount
     );
 
-    if (!erc20IsIndexed(event.params.projectId)) {
-      participant.unstakedBalance = participant.unstakedBalance.minus(
-        event.params.amount
-      );
-    }
-
     updateBalance(participant);
 
     participant.save();
@@ -165,17 +154,7 @@ export function handleRedeem(event: Redeem): void {
   if (!participant) return;
 
   if (event.params.preferUnstaked) {
-    if (participant.unstakedBalance.gt(event.params.amount)) {
-      if (!erc20IsIndexed(event.params.projectId)) {
-        participant.unstakedBalance = participant.unstakedBalance.minus(
-          event.params.amount
-        );
-      }
-    } else {
-      if (!erc20IsIndexed(event.params.projectId)) {
-        participant.unstakedBalance = BigInt.fromString("0");
-      }
-
+    if (!participant.unstakedBalance.gt(event.params.amount)) {
       participant.stakedBalance = participant.stakedBalance.minus(
         event.params.amount.minus(participant.unstakedBalance)
       );
@@ -187,12 +166,6 @@ export function handleRedeem(event: Redeem): void {
       );
     } else {
       participant.stakedBalance = BigInt.fromString("0");
-
-      if (!erc20IsIndexed(event.params.projectId)) {
-        participant.unstakedBalance = participant.unstakedBalance.minus(
-          event.params.amount.minus(participant.stakedBalance)
-        );
-      }
     }
   }
 
@@ -228,9 +201,24 @@ export function handleIssue(event: Issue): void {
     );
   }
 
-  let log = ProtocolV1Log.load(protocolId);
-  if (!log) log = new ProtocolV1Log(protocolId);
-  log.erc20Count = log.erc20Count + 1;
-  log.save();
+  let protocolLog = ProtocolV1Log.load(protocolId);
+  if (!protocolLog) protocolLog = new ProtocolV1Log(protocolId);
+  protocolLog.erc20Count = protocolLog.erc20Count + 1;
+  protocolLog.save();
   updateProtocolEntity();
+
+  let ticketBooth = TicketBooth.bind(Address.fromString(address_ticketBooth));
+  let callResult = ticketBooth.try_ticketsOf(event.params.projectId);
+  if (callResult.reverted) {
+    log.error("ticketsOf reverted", [
+      event.params.projectId.toString(),
+      address_ticketBooth,
+    ]);
+  } else {
+    let erc20Address = callResult.value;
+    let erc20Context = new DataSourceContext();
+    erc20Context.setI32("projectId", event.params.projectId.toI32());
+    erc20Context.setI32("cv", 1);
+    ERC20.createWithContext(erc20Address, erc20Context);
+  }
 }

@@ -14,7 +14,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/erc20/v2/mapping.ts
+      file: ./src/mappings/erc20.ts
       entities:
         - Participant
       abis:
@@ -22,7 +22,7 @@ templates:
           file: ./abis/ERC20.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleV2Transfer
+          handler: handleTransfer
 dataSources:
   - kind: ethereum/contract
     name: Projects
@@ -286,25 +286,3 @@ dataSources:
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
       file: ./src/mappings/v1.x/terminalV1_1.ts
-  {{ #erc20s }}
-  - kind: ethereum/contract
-    name: erc20_{{symbol}}_{{projectId}}
-    network: {{network}}
-    source:
-      address: '{{address}}'
-      abi: ERC20
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Participant
-      abis:
-        - name: ERC20
-          file: ./abis/ERC20.json
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handle{{symbol}}{{projectId}}Transfer
-      file: ./src/erc20/v1.x/mapping.ts
-  {{ /erc20s }}
