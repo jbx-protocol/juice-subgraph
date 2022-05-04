@@ -68,7 +68,7 @@ export function idForParticipant(
 }
 
 export function idForProject(projectId: BigInt, cv: CV): string {
-  return `${cv.toString().split(".")[0]}-${projectId.toString()}`;
+  return `${cv[0]}-${projectId.toString()}`;
 }
 
 export function updateBalance(participant: Participant): void {
