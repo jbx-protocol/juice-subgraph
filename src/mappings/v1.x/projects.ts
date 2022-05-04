@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 
 import {
   Create,
@@ -11,17 +11,19 @@ import {
   ProtocolLog,
   ProtocolV1Log,
 } from "../../../generated/schema";
-import { CV, ProjectEventKey } from "../../types";
+import { ProjectEventKey } from "../../types";
 import {
-  saveNewProjectEvent,
+  cvForTerminal,
+  cvForV1Project,
   idForProject,
   protocolId,
+  saveNewProjectEvent,
   updateProtocolEntity,
 } from "../../utils";
 
-const cv: CV = 1;
-
 export function handleProjectCreate(event: Create): void {
+  let cv = cvForTerminal(event.params.terminal);
+
   let projectId = idForProject(event.params.projectId, cv);
 
   let project = new Project(projectId);
@@ -71,6 +73,7 @@ export function handleProjectCreate(event: Create): void {
 }
 
 export function handleSetHandle(event: SetHandle): void {
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
   if (!project) return;
@@ -79,6 +82,7 @@ export function handleSetHandle(event: SetHandle): void {
 }
 
 export function handleSetUri(event: SetUri): void {
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
   if (!project) return;

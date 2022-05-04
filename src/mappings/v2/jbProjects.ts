@@ -14,7 +14,7 @@ import {
   updateProtocolEntity,
 } from "../../utils";
 
-const cv: CV = 2;
+const cv: CV = "2";
 
 export function handleCreate(event: Create): void {
   let projectId = idForProject(event.params.projectId, cv);

@@ -24,6 +24,7 @@ import { CV, ProjectEventKey } from "../../types";
 import { ERC20 } from "../../../generated/templates";
 import { address_ticketBooth } from "../../contractAddresses";
 import {
+  cvForV1Project,
   idForParticipant,
   idForProject,
   protocolId,
@@ -32,9 +33,8 @@ import {
   updateProtocolEntity,
 } from "../../utils";
 
-const cv: CV = 1;
-
 export function handlePrint(event: Print): void {
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let id = idForParticipant(event.params.projectId, cv, event.params.holder);
   let participant = Participant.load(id);
@@ -68,6 +68,7 @@ export function handlePrint(event: Print): void {
 }
 
 export function handleTicketTransfer(event: Transfer): void {
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
 
@@ -115,6 +116,7 @@ export function handleTicketTransfer(event: Transfer): void {
 }
 
 export function handleUnstake(event: Unstake): void {
+  let cv = cvForV1Project(event.params.projectId);
   let participant = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
@@ -131,6 +133,7 @@ export function handleUnstake(event: Unstake): void {
 }
 
 export function handleStake(event: Stake): void {
+  let cv = cvForV1Project(event.params.projectId);
   let participant = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
@@ -147,6 +150,7 @@ export function handleStake(event: Stake): void {
 }
 
 export function handleRedeem(event: Redeem): void {
+  let cv = cvForV1Project(event.params.projectId);
   let participant = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
@@ -175,6 +179,7 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handleIssue(event: Issue): void {
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
 
@@ -218,7 +223,7 @@ export function handleIssue(event: Issue): void {
     let erc20Address = callResult.value;
     let erc20Context = new DataSourceContext();
     erc20Context.setI32("projectId", event.params.projectId.toI32());
-    erc20Context.setI32("cv", 1);
+    erc20Context.setString("cv", cv);
     ERC20.createWithContext(erc20Address, erc20Context);
   }
 }

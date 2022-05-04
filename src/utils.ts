@@ -1,14 +1,18 @@
-import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 
+import { TerminalDirectory } from "../generated/Projects/TerminalDirectory";
 import {
   Participant,
-  Project,
   ProjectEvent,
   ProtocolLog,
   ProtocolV1Log,
   ProtocolV2Log,
 } from "../generated/schema";
-import { Transfer } from "../generated/templates/ERC20/ERC20";
+import {
+  address_terminalDirectory,
+  address_terminalV1,
+  address_terminalV1_1,
+} from "./contractAddresses";
 import { CV, ProjectEventKey } from "./types";
 
 export const protocolId = "1";
@@ -40,7 +44,7 @@ export function updateProtocolEntity(): void {
   }
 }
 
-export function idForProjectEvent(
+function idForProjectEvent(
   projectId: BigInt,
   cv: CV,
   txHash: Bytes,
@@ -71,50 +75,6 @@ export function updateBalance(participant: Participant): void {
   participant.balance = participant.unstakedBalance.plus(
     participant.stakedBalance
   );
-}
-
-export function handleProjectERC20Transfer(
-  projectId: BigInt,
-  event: Transfer,
-  cv: CV
-): void {
-  let sender = Participant.load(
-    idForParticipant(projectId, cv, event.params.from)
-  );
-  let project = Project.load(idForProject(projectId, cv));
-
-  if (!project) return;
-
-  if (sender) {
-    sender.unstakedBalance = sender.unstakedBalance.minus(event.params.value);
-
-    updateBalance(sender);
-
-    sender.save();
-  }
-
-  let receiverId = idForParticipant(projectId, 1, event.params.to);
-  let receiver = Participant.load(receiverId);
-
-  if (!receiver) {
-    receiver = new Participant(receiverId);
-    receiver.cv = cv;
-    receiver.projectId = project.projectId;
-    receiver.project = project.id;
-    receiver.wallet = event.params.to;
-    receiver.stakedBalance = BigInt.fromString("0");
-    receiver.unstakedBalance = BigInt.fromString("0");
-    receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = 0;
-  }
-
-  if (!receiver) return;
-
-  receiver.unstakedBalance = receiver.unstakedBalance.plus(event.params.value);
-
-  updateBalance(receiver);
-
-  receiver.save();
 }
 
 export function saveNewProjectEvent(
@@ -181,4 +141,33 @@ export function saveNewProjectEvent(
   }
 
   projectEvent.save();
+}
+
+export function cvForV1Project(projectId: BigInt): CV {
+  let terminal = TerminalDirectory.bind(
+    Address.fromString(address_terminalDirectory)
+  );
+  let callResult = terminal.try_terminalOf(projectId);
+
+  if (callResult.reverted) {
+    log.error("terminalOf reverted", [
+      "project: " + projectId.toHexString(),
+      address_terminalDirectory,
+    ]);
+  }
+
+  return cvForTerminal(callResult.value);
+}
+
+export function cvForTerminal(terminal: Address): CV {
+  let _terminal = terminal.toHexString().toLowerCase();
+
+  if (_terminal == address_terminalV1.toLowerCase()) {
+    return "1";
+  }
+  if (_terminal == address_terminalV1_1.toLowerCase()) {
+    return "1.1";
+  }
+  // 0 will always indicate an error
+  return "0";
 }

@@ -24,7 +24,7 @@ import {
   updateProtocolEntity,
 } from "../../utils";
 
-const cv: CV = 2;
+const cv: CV = "2";
 
 export function handleBurn(event: Burn): void {
   let holderId = idForParticipant(

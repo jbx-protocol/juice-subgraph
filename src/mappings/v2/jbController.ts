@@ -11,7 +11,7 @@ import {
 import { CV, ProjectEventKey } from "../../types";
 import { idForProject, saveNewProjectEvent } from "../../utils";
 
-const cv: CV = 2;
+const cv: CV = "2";
 
 export function handleMintTokens(event: MintTokens): void {
   // Note: Receiver balance is updated in the jbTokenStore event handler

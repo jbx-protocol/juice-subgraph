@@ -32,7 +32,7 @@ type ProjectCreateEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: Int!
+  cv: String!
   timestamp: Int!
   txHash: Bytes!
   caller: Bytes!
@@ -42,7 +42,7 @@ type ProjectCreateEvent @entity {
 type Project @entity {
   id: ID!
   projectId: Int!
-  cv: Int!
+  cv: String!
 
   # Conditional on if using v1.x or v2 contracts
   handle: String
@@ -82,7 +82,7 @@ type Participant @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: Int!
+  cv: String!
   wallet: Bytes!
   totalPaid: BigInt!
   lastPaidTimestamp: Int!
@@ -96,7 +96,7 @@ type ProjectEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: Int!
+  cv: String!
   timestamp: Int!
 
   # Conditional properties. Only one of these properties should exist. This is a helper entity that makes it possible to query all "project events" for a project.
@@ -121,7 +121,7 @@ type PayEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: Int!
+  cv: String!
   timestamp: Int!
   txHash: Bytes!
 
@@ -136,7 +136,7 @@ type MintTokensEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: Int!
+  cv: String!
   timestamp: Int!
   txHash: Bytes!
 
@@ -151,7 +151,7 @@ type RedeemEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: Int!
+  cv: String!
   timestamp: Int!
   txHash: Bytes!
 
@@ -167,7 +167,7 @@ type DeployedERC20Event @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: Int!
+  cv: String!
   timestamp: Int!
   txHash: Bytes!
 

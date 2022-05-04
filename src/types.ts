@@ -1,4 +1,4 @@
-export type CV = i32;
+export type CV = string;
 
 export enum ProjectEventKey {
   deployedERC20Event,

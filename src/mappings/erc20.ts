@@ -1,12 +1,46 @@
 import { BigInt, dataSource } from "@graphprotocol/graph-ts";
 
+import { Participant } from "../../generated/schema";
 import { Transfer } from "../../generated/templates/ERC20/ERC20";
-import { handleProjectERC20Transfer } from "../utils";
+import { idForParticipant, idForProject, updateBalance } from "../utils";
 
 export function handleTransfer(event: Transfer): void {
   let context = dataSource.context();
-  let projectId = context.getI32("projectId");
-  let cv = context.getI32("cv");
+  let projectId = BigInt.fromI32(context.getI32("projectId"));
+  let cv = context.getString("cv");
 
-  handleProjectERC20Transfer(BigInt.fromI32(projectId), event, cv);
+  let sender = Participant.load(
+    idForParticipant(projectId, cv, event.params.from)
+  );
+
+  if (sender) {
+    sender.unstakedBalance = sender.unstakedBalance.minus(event.params.value);
+
+    updateBalance(sender);
+
+    sender.save();
+  }
+
+  let receiverId = idForParticipant(projectId, cv, event.params.to);
+  let receiver = Participant.load(receiverId);
+
+  if (!receiver) {
+    receiver = new Participant(receiverId);
+    receiver.cv = cv;
+    receiver.projectId = projectId.toI32();
+    receiver.project = idForProject(projectId, cv);
+    receiver.wallet = event.params.to;
+    receiver.stakedBalance = BigInt.fromString("0");
+    receiver.unstakedBalance = BigInt.fromString("0");
+    receiver.totalPaid = BigInt.fromString("0");
+    receiver.lastPaidTimestamp = 0;
+  }
+
+  if (!receiver) return;
+
+  receiver.unstakedBalance = receiver.unstakedBalance.plus(event.params.value);
+
+  updateBalance(receiver);
+
+  receiver.save();
 }

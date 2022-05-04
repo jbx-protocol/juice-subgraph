@@ -1,19 +1,21 @@
 {
   "network": "mainnet",
   "address_projects": "0x9b5a4053FfBB11cA9cd858AAEE43cc95ab435418",
-  "startBlock_projects": 12833319,
+  "startBlock_projects": 12833329,
   "address_terminalV1": "0xd569D3CCE55b71a8a3f3C418c329A66e5f714431",
-  "startBlock_terminalV1": 12833319,
+  "startBlock_terminalV1": 12833343,
   "address_terminalV1_1": "0x981c8ECD009E3E84eE1fF99266BF1461a12e5c68",
   "startBlock_terminalV1_1": 13979856,
+  "address_terminalDirectory": "0x46C9999A2EDCD5aA177ed7E8af90c68b7d75Ba46",
+  "startBlock_terminalDirectory": 12833337,
   "address_ticketBooth": "0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc",
-  "startBlock_ticketBooth": 12833319,
+  "startBlock_ticketBooth": 12833339,
   "address_jbProjects": "0x9afc7156d8034A6Bbd4297D450f17cB4027BF9F5",
-  "startBlock_jbProjects": 14592506,
+  "startBlock_jbProjects": 14637371,
   "address_jbController": "0x75cf85dB9a918220D1609483a90Ab9A47Ba8c539",
-  "startBlock_jbController": 14592515,
+  "startBlock_jbController": 14637425,
   "address_jbETHPaymentTerminal": "0xacD28185AE65adc711481c0aECB0B99Ac8608698",
-  "startBlock_jbETHPaymentTerminal": 14592519,
+  "startBlock_jbETHPaymentTerminal": 14637437,
   "address_jbTokenStore": "0xD5ad0bD38db22E021549EA31dFd79244c0cFe60b",
-  "startBlock_jbTokenStore": 14592512
+  "startBlock_jbTokenStore": 14637407
 }

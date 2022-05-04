@@ -28,8 +28,10 @@ import {
   SetYielder,
   Tap,
 } from "../../../generated/TerminalV1/TerminalV1";
-import { CV, ProjectEventKey } from "../../types";
+import { ProjectEventKey } from "../../types";
 import {
+  cvForTerminal,
+  cvForV1Project,
   idForParticipant,
   idForProject,
   protocolId,
@@ -37,14 +39,13 @@ import {
   updateProtocolEntity,
 } from "../../utils";
 
-const cv: CV = 1;
-
 export function handlePay(event: Pay): void {
   let caller = event.params.caller;
 
   let pay = new PayEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   if (pay) {
     pay.cv = cv;
@@ -106,6 +107,7 @@ export function handlePay(event: Pay): void {
 export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
   // Note: Receiver balance is updated in the ticketBooth event handler
 
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let mintTokensEvent = new MintTokensEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
@@ -131,6 +133,7 @@ export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
 }
 
 export function handleTap(event: Tap): void {
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let tapEvent = new TapEvent(
     projectId + "-" + event.transaction.hash.toHexString()
@@ -170,6 +173,7 @@ export function handleTap(event: Tap): void {
 
 export function handleRedeem(event: Redeem): void {
   let caller = event.params.caller;
+  let cv = cvForV1Project(event.params._projectId);
   let projectId = idForProject(event.params._projectId, cv);
 
   let redeemEvent = new RedeemEvent(
@@ -221,6 +225,7 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handlePrintReserveTickets(event: PrintReserveTickets): void {
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let printReserveEvent = new PrintReservesEvent(
     projectId + "-" + event.transaction.hash.toHexString()
@@ -248,6 +253,7 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
 }
 
 export function handleAddToBalance(event: AddToBalance): void {
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
   if (!project) return;
@@ -261,6 +267,7 @@ export function handleDistributeToPayoutMod(
   let distributeToPayoutModEvent = new DistributeToPayoutModEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   if (!distributeToPayoutModEvent) return;
   distributeToPayoutModEvent.projectId = event.params.projectId.toI32();
@@ -296,6 +303,7 @@ export function handleDistributeToTicketMod(
   let distributeToTicketModEvent = new DistributeToTicketModEvent(
     event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
   );
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
 
   if (!distributeToTicketModEvent) return;
@@ -332,10 +340,12 @@ export function handleDeposit(event: Deposit): void {}
 export function handleEnsureTargetLocalWei(event: EnsureTargetLocalWei): void {}
 
 export function handleMigrate(event: Migrate): void {
+  let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
   if (!project) return;
   project.terminal = event.params.to;
+  project.cv = cvForTerminal(event.params.to);
   project.save();
 }
 

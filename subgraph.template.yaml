@@ -43,6 +43,8 @@ dataSources:
       abis:
         - name: Projects
           file: ./abis/Projects.json
+        - name: TerminalDirectory
+          file: ./abis/TerminalDirectory.json
       eventHandlers:
         - event: Create(indexed uint256,indexed address,indexed bytes32,string,address,address)
           handler: handleProjectCreate
@@ -70,6 +72,8 @@ dataSources:
       abis:
         - name: TicketBooth
           file: ./abis/TicketBooth.json
+        - name: TerminalDirectory
+          file: ./abis/TerminalDirectory.json
       eventHandlers:
         - event: Print(indexed address,indexed uint256,uint256,bool,bool,address)
           handler: handlePrint
@@ -110,6 +114,8 @@ dataSources:
       abis:
         - name: TerminalV1
           file: ./abis/TerminalV1.json
+        - name: TerminalDirectory
+          file: ./abis/TerminalDirectory.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,string,address)
           handler: handlePay
@@ -130,6 +136,52 @@ dataSources:
         - event: Migrate(indexed uint256,indexed address,uint256,address)
           handler: handleMigrate
       file: ./src/mappings/v1.x/terminalV1.ts
+  - kind: ethereum/contract
+    name: TerminalV1_1
+    network: {{network}}
+    source:
+      address: '{{address_terminalV1_1}}'
+      abi: TerminalV1_1
+      startBlock: {{startBlock_terminalV1_1}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - DistributeToPayoutModEvent
+        - DistributeToTicketModEvent
+        - Participant
+        - PayEvent
+        - MintTokensEvent
+        - PrintReservesEvent
+        - Project
+        - ProjectEvent
+        - ProtocolV1Log
+        - RedeemEvent
+        - TapEvent
+      abis:
+        - name: TerminalV1_1
+          file: ./abis/TerminalV1_1.json
+        - name: TerminalDirectory
+          file: ./abis/TerminalDirectory.json
+      eventHandlers:
+        - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,string,address)
+          handler: handlePay
+        - event: PrintTickets(indexed uint256,indexed address,uint256,string,address)
+          handler: handlePrintTickets
+        - event: PrintReserveTickets(indexed uint256,indexed uint256,indexed address,uint256,uint256,address)
+          handler: handlePrintReserveTickets
+        - event: Tap(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,uint256,uint256,address)
+          handler: handleTap
+        - event: Redeem(indexed address,indexed address,indexed uint256,uint256,uint256,address)
+          handler: handleRedeem
+        - event: AddToBalance(indexed uint256,uint256,address)
+          handler: handleAddToBalance
+        - event: DistributeToPayoutMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address,address,uint56),uint256,address)
+          handler: handleDistributeToPayoutMod
+        - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
+          handler: handleDistributeToTicketMod
+      file: ./src/mappings/v1.x/terminalV1_1.ts
   - kind: ethereum/contract
     name: JBController
     network: {{network}}
@@ -242,47 +294,3 @@ dataSources:
         - event: AddToBalance(indexed uint256,uint256,uint256,string,bytes,address)
           handler: handleAddToBalance
       file: ./src/mappings/v2/jbETHPaymentTerminal.ts
-  - kind: ethereum/contract
-    name: TerminalV1_1
-    network: {{network}}
-    source:
-      address: '{{address_terminalV1_1}}'
-      abi: TerminalV1_1
-      startBlock: {{startBlock_terminalV1_1}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - DistributeToPayoutModEvent
-        - DistributeToTicketModEvent
-        - Participant
-        - PayEvent
-        - MintTokensEvent
-        - PrintReservesEvent
-        - Project
-        - ProjectEvent
-        - ProtocolV1Log
-        - RedeemEvent
-        - TapEvent
-      abis:
-        - name: TerminalV1_1
-          file: ./abis/TerminalV1_1.json
-      eventHandlers:
-        - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,string,address)
-          handler: handlePay
-        - event: PrintTickets(indexed uint256,indexed address,uint256,string,address)
-          handler: handlePrintTickets
-        - event: PrintReserveTickets(indexed uint256,indexed uint256,indexed address,uint256,uint256,address)
-          handler: handlePrintReserveTickets
-        - event: Tap(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,uint256,uint256,address)
-          handler: handleTap
-        - event: Redeem(indexed address,indexed address,indexed uint256,uint256,uint256,address)
-          handler: handleRedeem
-        - event: AddToBalance(indexed uint256,uint256,address)
-          handler: handleAddToBalance
-        - event: DistributeToPayoutMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address,address,uint56),uint256,address)
-          handler: handleDistributeToPayoutMod
-        - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
-          handler: handleDistributeToTicketMod
-      file: ./src/mappings/v1.x/terminalV1_1.ts
