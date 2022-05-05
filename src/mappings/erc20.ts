@@ -1,13 +1,18 @@
-import { BigInt, dataSource } from "@graphprotocol/graph-ts";
+import { BigInt, dataSource, log } from "@graphprotocol/graph-ts";
 
 import { Participant } from "../../generated/schema";
 import { Transfer } from "../../generated/templates/ERC20/ERC20";
 import { idForParticipant, idForProject, updateBalance } from "../utils";
 
-export function handleTransfer(event: Transfer): void {
+export function handleERC20Transfer(event: Transfer): void {
   let context = dataSource.context();
   let projectId = BigInt.fromI32(context.getI32("projectId"));
   let cv = context.getString("cv");
+
+  log.debug("handling ERC20 transfer. projectId: {}, cv: {}", [
+    projectId.toString(),
+    cv,
+  ]);
 
   let sender = Participant.load(
     idForParticipant(projectId, cv, event.params.from)
