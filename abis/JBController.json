@@ -690,6 +690,23 @@
       {
         "components": [
           {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "allowSetTerminals",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowSetController",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct JBGlobalFundingCycleMetadata",
+            "name": "global",
+            "type": "tuple"
+          },
+          {
             "internalType": "uint256",
             "name": "reservedRate",
             "type": "uint256"
@@ -746,16 +763,6 @@
           },
           {
             "internalType": "bool",
-            "name": "allowSetTerminals",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "allowSetController",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "holdFees",
             "type": "bool"
           },
@@ -775,7 +782,7 @@
             "type": "bool"
           },
           {
-            "internalType": "contract IJBFundingCycleDataSource",
+            "internalType": "address",
             "name": "dataSource",
             "type": "address"
           }
@@ -947,6 +954,23 @@
       {
         "components": [
           {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "allowSetTerminals",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowSetController",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct JBGlobalFundingCycleMetadata",
+            "name": "global",
+            "type": "tuple"
+          },
+          {
             "internalType": "uint256",
             "name": "reservedRate",
             "type": "uint256"
@@ -1003,16 +1027,6 @@
           },
           {
             "internalType": "bool",
-            "name": "allowSetTerminals",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "allowSetController",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "holdFees",
             "type": "bool"
           },
@@ -1032,7 +1046,7 @@
             "type": "bool"
           },
           {
-            "internalType": "contract IJBFundingCycleDataSource",
+            "internalType": "address",
             "name": "dataSource",
             "type": "address"
           }
@@ -1139,6 +1153,23 @@
       {
         "components": [
           {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "allowSetTerminals",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowSetController",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct JBGlobalFundingCycleMetadata",
+            "name": "global",
+            "type": "tuple"
+          },
+          {
             "internalType": "uint256",
             "name": "reservedRate",
             "type": "uint256"
@@ -1195,16 +1226,6 @@
           },
           {
             "internalType": "bool",
-            "name": "allowSetTerminals",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "allowSetController",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "holdFees",
             "type": "bool"
           },
@@ -1224,7 +1245,7 @@
             "type": "bool"
           },
           {
-            "internalType": "contract IJBFundingCycleDataSource",
+            "internalType": "address",
             "name": "dataSource",
             "type": "address"
           }
@@ -1279,6 +1300,23 @@
       {
         "components": [
           {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "allowSetTerminals",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowSetController",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct JBGlobalFundingCycleMetadata",
+            "name": "global",
+            "type": "tuple"
+          },
+          {
             "internalType": "uint256",
             "name": "reservedRate",
             "type": "uint256"
@@ -1335,16 +1373,6 @@
           },
           {
             "internalType": "bool",
-            "name": "allowSetTerminals",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "allowSetController",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "holdFees",
             "type": "bool"
           },
@@ -1364,7 +1392,7 @@
             "type": "bool"
           },
           {
-            "internalType": "contract IJBFundingCycleDataSource",
+            "internalType": "address",
             "name": "dataSource",
             "type": "address"
           }
@@ -1545,6 +1573,23 @@
       {
         "components": [
           {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "allowSetTerminals",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowSetController",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct JBGlobalFundingCycleMetadata",
+            "name": "global",
+            "type": "tuple"
+          },
+          {
             "internalType": "uint256",
             "name": "reservedRate",
             "type": "uint256"
@@ -1601,16 +1646,6 @@
           },
           {
             "internalType": "bool",
-            "name": "allowSetTerminals",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "allowSetController",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "holdFees",
             "type": "bool"
           },
@@ -1630,7 +1665,7 @@
             "type": "bool"
           },
           {
-            "internalType": "contract IJBFundingCycleDataSource",
+            "internalType": "address",
             "name": "dataSource",
             "type": "address"
           }
@@ -1967,6 +2002,23 @@
       {
         "components": [
           {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "allowSetTerminals",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowSetController",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct JBGlobalFundingCycleMetadata",
+            "name": "global",
+            "type": "tuple"
+          },
+          {
             "internalType": "uint256",
             "name": "reservedRate",
             "type": "uint256"
@@ -2023,16 +2075,6 @@
           },
           {
             "internalType": "bool",
-            "name": "allowSetTerminals",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "allowSetController",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "holdFees",
             "type": "bool"
           },
@@ -2052,7 +2094,7 @@
             "type": "bool"
           },
           {
-            "internalType": "contract IJBFundingCycleDataSource",
+            "internalType": "address",
             "name": "dataSource",
             "type": "address"
           }
@@ -2102,6 +2144,23 @@
       {
         "components": [
           {
+            "components": [
+              {
+                "internalType": "bool",
+                "name": "allowSetTerminals",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowSetController",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct JBGlobalFundingCycleMetadata",
+            "name": "global",
+            "type": "tuple"
+          },
+          {
             "internalType": "uint256",
             "name": "reservedRate",
             "type": "uint256"
@@ -2158,16 +2217,6 @@
           },
           {
             "internalType": "bool",
-            "name": "allowSetTerminals",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "allowSetController",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
             "name": "holdFees",
             "type": "bool"
           },
@@ -2187,7 +2236,7 @@
             "type": "bool"
           },
           {
-            "internalType": "contract IJBFundingCycleDataSource",
+            "internalType": "address",
             "name": "dataSource",
             "type": "address"
           }

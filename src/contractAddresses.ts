@@ -1,10 +1,10 @@
-export const address_projects = "0x34A1d33e49907ADFE05fb4E21411a06a8c4300eE";
-export const address_terminalV1 = "0x9A5EbE744DF7B66E8Bdd41DB8d6C52073556eD93";
-export const address_terminalV1_1 = "0xE7432E80A75F957121Cb523BA842Db27C6C25F69";
-export const address_terminalDirectory = "0x88d8c9E98E6EdE75252c2473abc9724965fe7474";
-export const address_ticketBooth = "0x0d038636a670E8bd8cF7D56BC4626f2a6446cF11";
-export const address_jbProjects = "0x981fEd011BD441D329Ec63160ce393f8b5c18af1";
-export const address_jbController = "0xF49e691b3716cB0a3CeBa99F96852A2334b57924";
-export const address_jbETHPaymentTerminal = "0x0E5a62BA8f946AB98c1E801Fc0a7264408f6B838";
-export const address_jbTokenStore = "0x8648c79B2b76BF04E31dcc8dcAAB703dc72A9621";
+export const address_projects = "0x9b5a4053FfBB11cA9cd858AAEE43cc95ab435418";
+export const address_terminalV1 = "0xd569D3CCE55b71a8a3f3C418c329A66e5f714431";
+export const address_terminalV1_1 = "0x981c8ECD009E3E84eE1fF99266BF1461a12e5c68";
+export const address_terminalDirectory = "0x46C9999A2EDCD5aA177ed7E8af90c68b7d75Ba46";
+export const address_ticketBooth = "0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc";
+export const address_jbProjects = "0x892a6159e6EB452B270eeDd9A46BE660E0Fe8EC1";
+export const address_jbController = "0x53C0CE78b61B29816b548C705dAc4cD4839693b6";
+export const address_jbETHPaymentTerminal = "0x6de07872A1732040d26506d84F8B4f0D4869742e";
+export const address_jbTokenStore = "0x6B0bD488c2122Ad61513437f2e0619d53d128895";
 

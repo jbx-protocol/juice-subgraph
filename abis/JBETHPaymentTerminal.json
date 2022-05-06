@@ -181,6 +181,11 @@
             "type": "uint256"
           },
           {
+            "internalType": "uint256",
+            "name": "currentFundingCycleConfiguration",
+            "type": "uint256"
+          },
+          {
             "components": [
               {
                 "internalType": "address",
@@ -216,6 +221,11 @@
             "internalType": "address",
             "name": "beneficiary",
             "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "preferClaimedTokens",
+            "type": "bool"
           },
           {
             "internalType": "string",
@@ -262,6 +272,11 @@
           {
             "internalType": "uint256",
             "name": "projectId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "currentFundingCycleConfiguration",
             "type": "uint256"
           },
           {
@@ -818,8 +833,8 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "contract IJBPaymentTerminal",
-        "name": "terminal",
+        "internalType": "address",
+        "name": "addrs",
         "type": "address"
       },
       {
@@ -835,7 +850,7 @@
         "type": "address"
       }
     ],
-    "name": "SetFeelessTerminal",
+    "name": "SetFeelessAddress",
     "type": "event"
   },
   {
@@ -932,7 +947,7 @@
       },
       {
         "internalType": "address",
-        "name": "",
+        "name": "_token",
         "type": "address"
       },
       {
@@ -981,7 +996,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "_token",
         "type": "address"
       }
     ],
@@ -1032,7 +1047,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "_token",
         "type": "address"
       }
     ],
@@ -1079,7 +1094,7 @@
       },
       {
         "internalType": "address",
-        "name": "",
+        "name": "_token",
         "type": "address"
       },
       {
@@ -1174,12 +1189,12 @@
   {
     "inputs": [
       {
-        "internalType": "contract IJBPaymentTerminal",
+        "internalType": "address",
         "name": "",
         "type": "address"
       }
     ],
-    "name": "isFeelessTerminal",
+    "name": "isFeelessAddress",
     "outputs": [
       {
         "internalType": "bool",
@@ -1254,7 +1269,7 @@
       },
       {
         "internalType": "address",
-        "name": "",
+        "name": "_token",
         "type": "address"
       },
       {
@@ -1365,7 +1380,7 @@
       },
       {
         "internalType": "address",
-        "name": "",
+        "name": "_token",
         "type": "address"
       },
       {
@@ -1436,8 +1451,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract IJBPaymentTerminal",
-        "name": "_terminal",
+        "internalType": "address",
+        "name": "_address",
         "type": "address"
       },
       {
@@ -1446,7 +1461,7 @@
         "type": "bool"
       }
     ],
-    "name": "setFeelessTerminal",
+    "name": "setFeelessAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1541,7 +1556,7 @@
       },
       {
         "internalType": "address",
-        "name": "",
+        "name": "_token",
         "type": "address"
       },
       {
