@@ -18,6 +18,7 @@ import { CV, ProjectEventKey } from "../../types";
 import {
   idForParticipant,
   idForProject,
+  idForProjectTx,
   protocolId,
   saveNewProjectEvent,
   updateBalance,
@@ -80,7 +81,7 @@ export function handleIssue(event: Issue): void {
   if (!project) return;
 
   let deployedERC20Event = new DeployedERC20Event(
-    projectId + "-" + event.params.symbol + "-" + event.block.number.toString()
+    idForProjectTx(event.params.projectId, cv, event)
   );
   if (deployedERC20Event) {
     deployedERC20Event.project = project.id;

@@ -1,9 +1,10 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 import {
   Create,
   SetHandle,
   SetUri,
+  Transfer,
 } from "../../../generated/Projects/Projects";
 import {
   Project,
@@ -16,6 +17,7 @@ import {
   cvForTerminal,
   cvForV1Project,
   idForProject,
+  idForProjectTx,
   protocolId,
   saveNewProjectEvent,
   updateProtocolEntity,
@@ -33,7 +35,7 @@ export function handleProjectCreate(event: Create): void {
   project.cv = cv;
   project.terminal = event.params.terminal;
   project.handle = event.params.handle.toString();
-  project.creator = event.params.owner;
+  project.owner = event.params.owner;
   project.createdAt = event.block.timestamp;
   project.metadataUri = event.params.uri;
   project.totalPaid = BigInt.fromString("0");
@@ -41,14 +43,16 @@ export function handleProjectCreate(event: Create): void {
   project.currentBalance = BigInt.fromString("0");
   project.save();
 
-  let projectCreateEvent = new ProjectCreateEvent(projectId);
+  let projectCreateEvent = new ProjectCreateEvent(
+    idForProjectTx(event.params.projectId, cv, event)
+  );
   if (projectCreateEvent) {
     projectCreateEvent.cv = cv;
     projectCreateEvent.project = project.id;
     projectCreateEvent.projectId = event.params.projectId.toI32();
     projectCreateEvent.timestamp = event.block.timestamp.toI32();
     projectCreateEvent.txHash = event.transaction.hash;
-    projectCreateEvent.caller = event.params.caller;
+    projectCreateEvent.caller = event.transaction.from;
     projectCreateEvent.save();
 
     saveNewProjectEvent(
@@ -87,5 +91,13 @@ export function handleSetUri(event: SetUri): void {
   let project = Project.load(projectId);
   if (!project) return;
   project.metadataUri = event.params.uri;
+  project.save();
+}
+
+export function handleTransferOwnership(event: Transfer): void {
+  let cv = cvForV1Project(event.params.tokenId);
+  let project = Project.load(idForProject(event.params.tokenId, cv));
+  if (!project) return;
+  project.owner = event.params.to;
   project.save();
 }

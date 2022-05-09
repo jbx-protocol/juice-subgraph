@@ -52,6 +52,8 @@ dataSources:
           handler: handleSetHandle
         - event: SetUri(indexed uint256,string,address)
           handler: handleSetUri
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransferOwnership
       file: ./src/mappings/v1.x/projects.ts
   - kind: ethereum/contract
     name: TicketBooth
@@ -262,6 +264,8 @@ dataSources:
       eventHandlers:
         - event: Create(indexed uint256,indexed address,(string,uint256),address)
           handler: handleCreate
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransferOwnership
       file: ./src/mappings/v2/JBProjects.ts
   - kind: ethereum/contract
     name: JBETHPaymentTerminal
@@ -293,4 +297,10 @@ dataSources:
           handler: handleRedeemTokens
         - event: AddToBalance(indexed uint256,uint256,uint256,string,bytes,address)
           handler: handleAddToBalance
+        - event: DistributePayouts(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,uint256,uint256,string,address)
+          handler: handleDistributePayouts
+        - event: UseAllowance(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,uint256,string,address)
+          handler: handleUseAllowance
+        - event: DistributeToPayoutSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
+          handler: handleDistributeToPayoutSplit
       file: ./src/mappings/v2/jbETHPaymentTerminal.ts

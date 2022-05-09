@@ -21,6 +21,7 @@ import { CV, ProjectEventKey } from "../../types";
 import {
   idForParticipant,
   idForProject,
+  idForProjectTx,
   protocolId,
   saveNewProjectEvent,
   updateProtocolEntity,
@@ -37,9 +38,8 @@ export function handleAddToBalance(event: AddToBalance): void {
 }
 
 export function handleDistributePayouts(event: DistributePayouts): void {
-  let projectId = idForProject(event.params.projectId, cv);
   let distributePayoutsEvent = new DistributePayoutsEvent(
-    projectId + "-" + event.transaction.hash.toHexString()
+    idForProjectTx(event.params.projectId, cv, event)
   );
   if (!distributePayoutsEvent) return;
   distributePayoutsEvent.projectId - event.params.projectId.toI32();
@@ -49,7 +49,7 @@ export function handleDistributePayouts(event: DistributePayouts): void {
   distributePayoutsEvent.beneficiary = event.params.beneficiary;
   distributePayoutsEvent.beneficiaryDistributionAmount =
     event.params.beneficiaryDistributionAmount;
-  distributePayoutsEvent.caller = event.params.caller;
+  distributePayoutsEvent.caller = event.transaction.from;
   distributePayoutsEvent.distributedAmount = event.params.distributedAmount;
   distributePayoutsEvent.fee = event.params.fee;
   distributePayoutsEvent.fundingCycleConfiguration =
@@ -73,21 +73,20 @@ export function handleDistributeToPayoutSplit(
 ): void {
   let projectId = idForProject(event.params.projectId, cv);
   let distributePayoutSplitEvent = new DistributeToPayoutSplitEvent(
-    projectId +
-      "-" +
-      event.transaction.hash.toHexString() +
-      "-" +
-      event.logIndex.toString()
+    idForProjectTx(event.params.projectId, cv, event, true)
   );
 
   if (!distributePayoutSplitEvent) return;
-  distributePayoutSplitEvent.distributePayoutsEvent =
-    projectId + "-" + event.transaction.hash.toHexString();
+  distributePayoutSplitEvent.distributePayoutsEvent = idForProjectTx(
+    event.params.projectId,
+    cv,
+    event
+  );
   distributePayoutSplitEvent.project = projectId;
   distributePayoutSplitEvent.txHash = event.transaction.hash;
   distributePayoutSplitEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutSplitEvent.amount = event.params.amount;
-  distributePayoutSplitEvent.caller = event.params.caller;
+  distributePayoutSplitEvent.caller = event.transaction.from;
   distributePayoutSplitEvent.domain = event.params.domain;
   distributePayoutSplitEvent.group = event.params.group;
   distributePayoutSplitEvent.projectId = event.params.projectId.toI32();
@@ -111,10 +110,8 @@ export function handleDistributeToPayoutSplit(
 }
 
 export function handlePay(event: Pay): void {
-  let caller = event.params.caller;
-
   let pay = new PayEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
+    idForProjectTx(event.params.projectId, cv, event, true)
   );
   let projectId = idForProject(event.params.projectId, cv);
   if (pay) {
@@ -122,7 +119,7 @@ export function handlePay(event: Pay): void {
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
-    pay.caller = caller;
+    pay.caller = event.transaction.from;
     pay.project = projectId;
     pay.note = event.params.memo;
     pay.timestamp = event.block.timestamp.toI32();
@@ -175,18 +172,17 @@ export function handlePay(event: Pay): void {
 }
 
 export function handleRedeemTokens(event: RedeemTokens): void {
-  let caller = event.params.caller;
   let projectId = idForProject(event.params.projectId, cv);
 
   let redeemEvent = new RedeemEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
+    idForProjectTx(event.params.projectId, cv, event, true)
   );
   if (redeemEvent) {
     redeemEvent.projectId = event.params.projectId.toI32();
     redeemEvent.cv = cv;
     redeemEvent.amount = event.params.tokenCount;
     redeemEvent.beneficiary = event.params.beneficiary;
-    redeemEvent.caller = caller;
+    redeemEvent.caller = event.transaction.from;
     redeemEvent.holder = event.params.holder;
     redeemEvent.returnAmount = event.params.reclaimedAmount;
     redeemEvent.project = projectId;
@@ -229,7 +225,7 @@ export function handleRedeemTokens(event: RedeemTokens): void {
 export function handleUseAllowance(event: UseAllowance): void {
   let projectId = idForProject(event.params.projectId, cv);
   let useAllowanceEvent = new UseAllowanceEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
+    idForProjectTx(event.params.projectId, cv, event, true)
   );
 
   if (!useAllowanceEvent) return;
@@ -240,7 +236,7 @@ export function handleUseAllowance(event: UseAllowance): void {
   useAllowanceEvent.txHash = event.transaction.hash;
   useAllowanceEvent.amount = event.params.amount;
   useAllowanceEvent.beneficiary = event.params.beneficiary;
-  useAllowanceEvent.caller = event.params.caller;
+  useAllowanceEvent.caller = event.transaction.from;
   useAllowanceEvent.distributedAmount = event.params.distributedAmount;
   useAllowanceEvent.fundingCycleConfiguration =
     event.params.fundingCycleConfiguration;

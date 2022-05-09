@@ -32,25 +32,24 @@ import {
   cvForV1Project,
   idForParticipant,
   idForProject,
+  idForProjectTx,
   protocolId,
   saveNewProjectEvent,
   updateProtocolEntity,
 } from "../../utils";
 
 export function handlePay(event: Pay): void {
-  let caller = event.params.caller;
-
-  let pay = new PayEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-  );
   let cv = cvForV1Project(event.params.projectId);
+  let pay = new PayEvent(
+    idForProjectTx(event.params.projectId, cv, event, true)
+  );
   let projectId = idForProject(event.params.projectId, cv);
   if (pay) {
     pay.cv = cv;
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
-    pay.caller = caller;
+    pay.caller = event.transaction.from;
     pay.project = projectId;
     pay.note = event.params.note;
     pay.timestamp = event.block.timestamp.toI32();
@@ -107,14 +106,14 @@ export function handlePrintTickets(event: PrintTickets): void {
 
   let cv = cvForV1Project(event.params.projectId);
   let mintTokensEvent = new MintTokensEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
+    idForProjectTx(event.params.projectId, cv, event, true)
   );
   let projectId = idForProject(event.params.projectId, cv);
   if (!mintTokensEvent) return;
   mintTokensEvent.projectId = event.params.projectId.toI32();
   mintTokensEvent.amount = event.params.amount;
   mintTokensEvent.beneficiary = event.params.beneficiary;
-  mintTokensEvent.caller = event.params.caller;
+  mintTokensEvent.caller = event.transaction.from;
   mintTokensEvent.memo = event.params.memo;
   mintTokensEvent.project = projectId;
   mintTokensEvent.timestamp = event.block.timestamp.toI32();
@@ -134,13 +133,13 @@ export function handleTap(event: Tap): void {
   let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let tapEvent = new TapEvent(
-    projectId + "-" + event.transaction.hash.toHexString()
+    idForProjectTx(event.params.projectId, cv, event)
   );
   if (tapEvent) {
     tapEvent.amount = event.params.amount;
     tapEvent.beneficiary = event.params.beneficiary;
     tapEvent.beneficiaryTransferAmount = event.params.beneficiaryTransferAmount;
-    tapEvent.caller = event.params.caller;
+    tapEvent.caller = event.transaction.from;
     tapEvent.currency = event.params.currency;
     tapEvent.fundingCycleId = event.params.fundingCycleId;
     tapEvent.govFeeAmount = event.params.govFeeAmount;
@@ -170,19 +169,18 @@ export function handleTap(event: Tap): void {
 }
 
 export function handleRedeem(event: Redeem): void {
-  let caller = event.params.caller;
   let cv = cvForV1Project(event.params._projectId);
   let projectId = idForProject(event.params._projectId, cv);
 
   let redeemEvent = new RedeemEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
+    idForProjectTx(event.params._projectId, cv, event, true)
   );
   if (redeemEvent) {
     redeemEvent.projectId = event.params._projectId.toI32();
     redeemEvent.cv = cv;
     redeemEvent.amount = event.params.amount;
     redeemEvent.beneficiary = event.params.beneficiary;
-    redeemEvent.caller = caller;
+    redeemEvent.caller = event.transaction.from;
     redeemEvent.holder = event.params.holder;
     redeemEvent.returnAmount = event.params.returnAmount;
     redeemEvent.project = projectId;
@@ -226,14 +224,14 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
   let cv = cvForV1Project(event.params.projectId);
   let projectId = idForProject(event.params.projectId, cv);
   let printReserveEvent = new PrintReservesEvent(
-    projectId + "-" + event.transaction.hash.toHexString()
+    idForProjectTx(event.params.projectId, cv, event)
   );
   if (!printReserveEvent) return;
   printReserveEvent.projectId = event.params.projectId.toI32();
   printReserveEvent.beneficiary = event.params.beneficiary;
   printReserveEvent.beneficiaryTicketAmount =
     event.params.beneficiaryTicketAmount;
-  printReserveEvent.caller = event.params.caller;
+  printReserveEvent.caller = event.transaction.from;
   printReserveEvent.count = event.params.count;
   printReserveEvent.fundingCycleId = event.params.fundingCycleId;
   printReserveEvent.project = projectId;
@@ -262,17 +260,20 @@ export function handleAddToBalance(event: AddToBalance): void {
 export function handleDistributeToPayoutMod(
   event: DistributeToPayoutMod
 ): void {
-  let distributeToPayoutModEvent = new DistributeToPayoutModEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-  );
   let cv = cvForV1Project(event.params.projectId);
+  let distributeToPayoutModEvent = new DistributeToPayoutModEvent(
+    idForProjectTx(event.params.projectId, cv, event, true)
+  );
   let projectId = idForProject(event.params.projectId, cv);
   if (!distributeToPayoutModEvent) return;
   distributeToPayoutModEvent.projectId = event.params.projectId.toI32();
-  distributeToPayoutModEvent.tapEvent =
-    projectId + "-" + event.transaction.hash.toHexString();
+  distributeToPayoutModEvent.tapEvent = idForProjectTx(
+    event.params.projectId,
+    cv,
+    event
+  );
   distributeToPayoutModEvent.project = projectId;
-  distributeToPayoutModEvent.caller = event.params.caller;
+  distributeToPayoutModEvent.caller = event.transaction.from;
   distributeToPayoutModEvent.projectId = event.params.projectId.toI32();
   distributeToPayoutModEvent.fundingCycleId = event.params.fundingCycleId;
   distributeToPayoutModEvent.modProjectId = event.params.mod.projectId.toI32();
@@ -298,16 +299,19 @@ export function handleDistributeToPayoutMod(
 export function handleDistributeToTicketMod(
   event: DistributeToTicketMod
 ): void {
-  let distributeToTicketModEvent = new DistributeToTicketModEvent(
-    event.transaction.hash.toHexString() + "-" + event.logIndex.toString()
-  );
   let cv = cvForV1Project(event.params.projectId);
+  let distributeToTicketModEvent = new DistributeToTicketModEvent(
+    idForProjectTx(event.params.projectId, cv, event, true)
+  );
   let projectId = idForProject(event.params.projectId, cv);
 
   if (!distributeToTicketModEvent) return;
-  distributeToTicketModEvent.printReservesEvent =
-    projectId + "-" + event.transaction.hash.toHexString();
-  distributeToTicketModEvent.caller = event.params.caller;
+  distributeToTicketModEvent.printReservesEvent = idForProjectTx(
+    event.params.projectId,
+    cv,
+    event
+  );
+  distributeToTicketModEvent.caller = event.transaction.from;
   distributeToTicketModEvent.modBeneficiary = event.params.mod.beneficiary;
   distributeToTicketModEvent.modPreferUnstaked =
     event.params.mod.preferUnstaked;

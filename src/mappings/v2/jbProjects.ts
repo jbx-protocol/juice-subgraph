@@ -1,6 +1,10 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 
-import { Create, SetMetadata } from "../../../generated/JBProjects/JBProjects";
+import {
+  Create,
+  SetMetadata,
+  Transfer,
+} from "../../../generated/JBProjects/JBProjects";
 import {
   Project,
   ProjectCreateEvent,
@@ -9,6 +13,7 @@ import {
 import { CV, ProjectEventKey } from "../../types";
 import {
   idForProject,
+  idForProjectTx,
   protocolId,
   saveNewProjectEvent,
   updateProtocolEntity,
@@ -23,7 +28,7 @@ export function handleCreate(event: Create): void {
   if (!project) return;
   project.projectId = event.params.projectId.toI32();
   project.cv = cv;
-  project.creator = event.params.owner;
+  project.owner = event.params.owner;
   project.createdAt = event.block.timestamp;
   project.metadataUri = event.params.metadata.content;
   project.metadataDomain = event.params.metadata.domain;
@@ -32,14 +37,16 @@ export function handleCreate(event: Create): void {
   project.currentBalance = BigInt.fromString("0");
   project.save();
 
-  let projectCreateEvent = new ProjectCreateEvent(projectId);
+  let projectCreateEvent = new ProjectCreateEvent(
+    idForProjectTx(event.params.projectId, cv, event)
+  );
   if (projectCreateEvent) {
     projectCreateEvent.cv = cv;
     projectCreateEvent.project = project.id;
     projectCreateEvent.projectId = event.params.projectId.toI32();
     projectCreateEvent.timestamp = event.block.timestamp.toI32();
     projectCreateEvent.txHash = event.transaction.hash;
-    projectCreateEvent.caller = event.params.caller;
+    projectCreateEvent.caller = event.transaction.from;
     projectCreateEvent.save();
 
     saveNewProjectEvent(
@@ -65,5 +72,12 @@ export function handleSetMetadata(event: SetMetadata): void {
   if (!project) return;
   project.metadataUri = event.params.metadata.content;
   project.metadataDomain = event.params.metadata.domain;
+  project.save();
+}
+
+export function handleTransferOwnership(event: Transfer): void {
+  let project = Project.load(idForProject(event.params.tokenId, cv));
+  if (!project) return;
+  project.owner = event.params.to;
   project.save();
 }

@@ -50,7 +50,7 @@ type Project @entity {
   metadataDomain: BigInt
   terminal: Bytes
 
-  creator: Bytes!
+  owner: Bytes!
   createdAt: BigInt!
   totalPaid: BigInt!
   totalRedeemed: BigInt!

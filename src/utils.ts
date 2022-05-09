@@ -44,6 +44,20 @@ export function updateProtocolEntity(): void {
   }
 }
 
+export function idForProjectTx(
+  projectId: BigInt,
+  cv: CV,
+  event: ethereum.Event,
+  useLogIndex: boolean = false // Using log index will ensure ID is unique even if event is emitted multiple times within a single tx
+): string {
+  return (
+    idForProject(projectId, cv) +
+    "-" +
+    event.transaction.hash.toHexString() +
+    (useLogIndex ? "-" + event.logIndex.toString() : "")
+  );
+}
+
 function idForProjectEvent(
   projectId: BigInt,
   cv: CV,
