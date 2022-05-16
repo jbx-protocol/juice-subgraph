@@ -1,3 +1,4 @@
+import { log } from "@graphprotocol/graph-ts";
 import {
   DistributeReservedTokens,
   DistributeToReservedTokenSplit,
@@ -20,7 +21,12 @@ export function handleMintTokens(event: MintTokens): void {
     idForProjectTx(event.params.projectId, cv, event, true)
   );
   let projectId = idForProject(event.params.projectId, cv);
-  if (!mintTokensEvent) return;
+  if (!mintTokensEvent) {
+    log.error("[handleMintTokens] Missing mintTokensEvent. ID:{}", [
+      idForProjectTx(event.params.projectId, cv, event, true),
+    ]);
+    return;
+  }
   mintTokensEvent.projectId = event.params.projectId.toI32();
   mintTokensEvent.amount = event.params.tokenCount;
   mintTokensEvent.beneficiary = event.params.beneficiary;
@@ -79,7 +85,14 @@ export function handleDistributeToReservedTokenSplit(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
 
-  if (!distributeReservedTokenSplitEvent) return;
+  if (!distributeReservedTokenSplitEvent) {
+    log.error(
+      "[handleDistributeToReservedTokenSplit] Missing distributeReservedTokenSplitEvent. ID:{}",
+      [idForProjectTx(event.params.projectId, cv, event, true)]
+    );
+    return;
+  }
+
   distributeReservedTokenSplitEvent.distributeReservedTokensEvent = idForProjectTx(
     event.params.projectId,
     cv,

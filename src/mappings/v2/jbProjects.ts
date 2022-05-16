@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 
 import {
   Create,
@@ -25,7 +25,12 @@ export function handleCreate(event: Create): void {
   let projectId = idForProject(event.params.projectId, cv);
 
   let project = new Project(projectId);
-  if (!project) return;
+  if (!project) {
+    log.error("[handleCreate] Missing project. ID:{}", [
+      idForProject(event.params.projectId, cv),
+    ]);
+    return;
+  }
   project.projectId = event.params.projectId.toI32();
   project.cv = cv;
   project.owner = event.params.owner;
@@ -69,7 +74,12 @@ export function handleCreate(event: Create): void {
 
 export function handleSetMetadata(event: SetMetadata): void {
   let project = Project.load(idForProject(event.params.projectId, cv));
-  if (!project) return;
+  if (!project) {
+    log.error("[handleSetMetadata] Missing project. ID:{}", [
+      idForProject(event.params.projectId, cv),
+    ]);
+    return;
+  }
   project.metadataUri = event.params.metadata.content;
   project.metadataDomain = event.params.metadata.domain;
   project.save();
@@ -77,7 +87,12 @@ export function handleSetMetadata(event: SetMetadata): void {
 
 export function handleTransferOwnership(event: Transfer): void {
   let project = Project.load(idForProject(event.params.tokenId, cv));
-  if (!project) return;
+  if (!project) {
+    log.error("[handleTransferOwnership] Missing project. ID:{}", [
+      idForProject(event.params.tokenId, cv),
+    ]);
+    return;
+  }
   project.owner = event.params.to;
   project.save();
 }

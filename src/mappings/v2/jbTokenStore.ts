@@ -1,4 +1,4 @@
-import { BigInt, DataSourceContext } from "@graphprotocol/graph-ts";
+import { BigInt, DataSourceContext, log } from "@graphprotocol/graph-ts";
 
 import {
   Burn,
@@ -78,7 +78,12 @@ export function handleIssue(event: Issue): void {
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
 
-  if (!project) return;
+  if (!project) {
+    log.error("[handleIssue] Missing project. ID:{}", [
+      idForProject(event.params.projectId, cv),
+    ]);
+    return;
+  }
 
   let deployedERC20Event = new DeployedERC20Event(
     idForProjectTx(event.params.projectId, cv, event)
@@ -151,7 +156,12 @@ export function handleTransfer(event: Transfer): void {
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
 
-  if (!project) return;
+  if (!project) {
+    log.error("[handleTransfer] Missing project. ID:{}", [
+      idForProject(event.params.projectId, cv),
+    ]);
+    return;
+  }
 
   let sender = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)

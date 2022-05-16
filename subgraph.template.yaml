@@ -209,7 +209,7 @@ dataSources:
           handler: handleDistributeReservedTokens
         - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
           handler: handleDistributeToReservedTokenSplit
-      file: ./src/mappings/v2/JBController.ts
+      file: ./src/mappings/v2/jbController.ts
   - kind: ethereum/contract
     name: JBTokenStore
     network: {{network}}
@@ -241,7 +241,7 @@ dataSources:
           handler: handleMint
         - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
           handler: handleTransfer
-      file: ./src/mappings/v2/JBTokenStore.ts
+      file: ./src/mappings/v2/jbTokenStore.ts
   - kind: ethereum/contract
     name: JBProjects
     network: {{network}}
@@ -266,7 +266,9 @@ dataSources:
           handler: handleCreate
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransferOwnership
-      file: ./src/mappings/v2/JBProjects.ts
+        - event: SetMetadata(indexed uint256,(string,uint256),address)
+          handler: handleSetMetadata
+      file: ./src/mappings/v2/jbProjects.ts
   - kind: ethereum/contract
     name: JBETHPaymentTerminal
     network: {{network}}

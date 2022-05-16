@@ -1,3 +1,4 @@
+import { log } from "@graphprotocol/graph-ts";
 import {
   AddToBalance,
   DistributePayouts,
@@ -32,7 +33,12 @@ const cv: CV = "2";
 export function handleAddToBalance(event: AddToBalance): void {
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
-  if (!project) return;
+  if (!project) {
+    log.error("[handleAddToBalance] Missing project. ID:{}", [
+      idForProject(event.params.projectId, cv),
+    ]);
+    return;
+  }
   project.currentBalance = project.currentBalance.plus(event.params.amount);
   project.save();
 }
@@ -41,7 +47,13 @@ export function handleDistributePayouts(event: DistributePayouts): void {
   let distributePayoutsEvent = new DistributePayoutsEvent(
     idForProjectTx(event.params.projectId, cv, event)
   );
-  if (!distributePayoutsEvent) return;
+  if (!distributePayoutsEvent) {
+    log.error(
+      "[handleDistributePayouts] Missing distributePayoutsEvent. ID:{}",
+      [idForProjectTx(event.params.projectId, cv, event)]
+    );
+    return;
+  }
   distributePayoutsEvent.projectId - event.params.projectId.toI32();
   distributePayoutsEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutsEvent.txHash = event.transaction.hash;
@@ -76,7 +88,13 @@ export function handleDistributeToPayoutSplit(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
 
-  if (!distributePayoutSplitEvent) return;
+  if (!distributePayoutSplitEvent) {
+    log.error(
+      "[handleDistributeToPayoutSplit] Missing distributePayoutSplitEvent. ID:{}",
+      [idForProjectTx(event.params.projectId, cv, event, true)]
+    );
+    return;
+  }
   distributePayoutSplitEvent.distributePayoutsEvent = idForProjectTx(
     event.params.projectId,
     cv,
@@ -145,7 +163,10 @@ export function handlePay(event: Pay): void {
   updateProtocolEntity();
 
   let project = Project.load(projectId);
-  if (!project) return;
+  if (!project) {
+    log.error("[handlePay] Missing project. ID:{}", [projectId]);
+    return;
+  }
   project.totalPaid = project.totalPaid.plus(event.params.amount);
   project.currentBalance = project.currentBalance.plus(event.params.amount);
 
@@ -211,15 +232,17 @@ export function handleRedeemTokens(event: RedeemTokens): void {
   }
 
   let project = Project.load(projectId);
-  if (project) {
-    project.totalRedeemed = project.totalRedeemed.plus(
-      event.params.reclaimedAmount
-    );
-    project.currentBalance = project.currentBalance.minus(
-      event.params.reclaimedAmount
-    );
-    project.save();
+  if (!project) {
+    log.error("[handleRedeemTokens] Missing project. ID:{}", [projectId]);
+    return;
   }
+  project.totalRedeemed = project.totalRedeemed.plus(
+    event.params.reclaimedAmount
+  );
+  project.currentBalance = project.currentBalance.minus(
+    event.params.reclaimedAmount
+  );
+  project.save();
 }
 
 export function handleUseAllowance(event: UseAllowance): void {
@@ -228,7 +251,12 @@ export function handleUseAllowance(event: UseAllowance): void {
     idForProjectTx(event.params.projectId, cv, event, true)
   );
 
-  if (!useAllowanceEvent) return;
+  if (!useAllowanceEvent) {
+    log.error("[handleUseAllowance] Missing useAllowanceEvent. ID:{}", [
+      idForProjectTx(event.params.projectId, cv, event, true),
+    ]);
+    return;
+  }
 
   useAllowanceEvent.project = projectId;
   useAllowanceEvent.projectId = event.params.projectId.toI32();
@@ -254,4 +282,4 @@ export function handleUseAllowance(event: UseAllowance): void {
   );
 }
 
-export function handleMigrate(event: Migrate): void {}
+// export function handleMigrate(event: Migrate): void {}

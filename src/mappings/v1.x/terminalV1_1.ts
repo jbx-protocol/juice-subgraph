@@ -333,19 +333,19 @@ export function handleDistributeToTicketMod(
   );
 }
 
-export function handleAllowMigration(event: AllowMigration): void {}
+// export function handleAllowMigration(event: AllowMigration): void {}
 
-export function handleDeposit(event: Deposit): void {}
+// export function handleDeposit(event: Deposit): void {}
 
-export function handleEnsureTargetLocalWei(event: EnsureTargetLocalWei): void {}
+// export function handleEnsureTargetLocalWei(event: EnsureTargetLocalWei): void {}
 
-export function handleMigrate(event: Migrate): void {}
+// export function handleMigrate(event: Migrate): void {}
 
-export function handleSetFee(event: SetFee): void {}
+// export function handleSetFee(event: SetFee): void {}
 
-export function handleSetTargetLocalWei(event: SetTargetLocalWei): void {}
+// export function handleSetTargetLocalWei(event: SetTargetLocalWei): void {}
 
-export function handleSetYielder(event: SetYielder): void {}
+// export function handleSetYielder(event: SetYielder): void {}
 
 // export function handleAcceptGovernance(event: AcceptGovernance): void {
 //   // Entities can be loaded from the store using a string ID; this ID

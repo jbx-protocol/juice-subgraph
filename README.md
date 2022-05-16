@@ -15,9 +15,9 @@ yarn install
 yarn prepare:${network} (mainnet, rinkeby)
 ```
 
-- Runs a script to generate handlers for projects' ERC20 tokens, defined in the `erc20s` property of `config/**.json`.
 - Compiles subgraph.yaml from subgraph.template.yaml
 - Generates types from schema.graphql
+- Checks for missing eventHandler references. `scripts/checkHandlers.js` will warn if a handler function has been written in a mapping file, but not referenced in the subgraph.template.yaml)
 
 ### Deploy
 
