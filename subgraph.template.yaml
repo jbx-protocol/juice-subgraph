@@ -306,3 +306,43 @@ dataSources:
         - event: DistributeToPayoutSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
           handler: handleDistributeToPayoutSplit
       file: ./src/mappings/v2/jbETHPaymentTerminal.ts
+  - kind: ethereum/contract
+    name: JBProjectHandles
+    network: {{network}}
+    source:
+      address: '{{address_jbProjectHandles}}'
+      abi: JBProjectHandles
+      startBlock: {{startBlock_jbProjectHandles}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Project
+      abis:
+        - name: JBProjectHandles
+          file: ./abis/JBProjectHandles.json
+      eventHandlers:
+        - event: SetReverseRecord(indexed uint256,indexed bytes32)
+          handler: handleSetReverseRecord
+      file: ./src/mappings/v2/jbProjectHandles.ts
+  - kind: ethereum/contract
+    name: TextResolver
+    network: {{network}}
+    source:
+      address: '{{address_textResolver}}'
+      abi: TextResolver
+      startBlock: {{startBlock_textResolver}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Project
+      abis:
+        - name: TextResolver
+          file: ./abis/TextResolver.json
+      eventHandlers:
+        - event: TextChanged(indexed bytes32,string,string)
+          handler: handleTextChanged
+      file: ./src/mappings/v2/textResolver.ts

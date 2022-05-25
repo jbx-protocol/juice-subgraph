@@ -213,7 +213,6 @@ export function handleIssue(event: Issue): void {
   protocolLog.save();
   updateProtocolEntity();
 
-  log.debug("TicketBooth address {}", [address_ticketBooth]);
   let ticketBooth = TicketBooth.bind(Address.fromString(address_ticketBooth));
   let callResult = ticketBooth.try_ticketsOf(event.params.projectId);
   if (callResult.reverted) {

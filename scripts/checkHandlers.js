@@ -17,7 +17,7 @@ function recursiveReadDirSync(dir) {
 
 recursiveReadDirSync("./src/mappings");
 
-const subgraph = fs.readFileSync("subgraph.template.yaml").toString();
+const subgraph = fs.readFileSync("subgraph.yaml").toString();
 
 const tofind = "\nexport function";
 const mappingHandlers = {};

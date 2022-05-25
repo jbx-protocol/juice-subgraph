@@ -9,11 +9,6 @@ export function handleERC20Transfer(event: Transfer): void {
   let projectId = BigInt.fromI32(context.getI32("projectId"));
   let cv = context.getString("cv");
 
-  log.debug("handling ERC20 transfer. projectId: {}, cv: {}", [
-    projectId.toString(),
-    cv,
-  ]);
-
   let sender = Participant.load(
     idForParticipant(projectId, cv, event.params.from)
   );

@@ -9,25 +9,18 @@ import {
   ProtocolV1Log,
   RedeemEvent,
   TapEvent,
-} from "../../../generated/schema";
+} from '../../../generated/schema';
 import {
   AddToBalance,
-  AllowMigration,
-  Deposit,
   DistributeToPayoutMod,
   DistributeToTicketMod,
-  EnsureTargetLocalWei,
-  Migrate,
   Pay,
   PrintReserveTickets,
   PrintTickets,
   Redeem,
-  SetFee,
-  SetTargetLocalWei,
-  SetYielder,
   Tap,
-} from "../../../generated/TerminalV1_1/TerminalV1_1";
-import { ProjectEventKey } from "../../types";
+} from '../../../generated/TerminalV1_1/TerminalV1_1';
+import { ProjectEventKey } from '../../types';
 import {
   cvForV1Project,
   idForParticipant,
@@ -36,7 +29,7 @@ import {
   protocolId,
   saveNewProjectEvent,
   updateProtocolEntity,
-} from "../../utils";
+} from '../../utils';
 
 export function handlePay(event: Pay): void {
   let cv = cvForV1Project(event.params.projectId);

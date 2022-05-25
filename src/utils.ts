@@ -158,7 +158,6 @@ export function saveNewProjectEvent(
 }
 
 export function cvForV1Project(projectId: BigInt): CV {
-  log.debug("TerminalDirectory address {}", [address_terminalDirectory]);
   let terminal = TerminalDirectory.bind(
     Address.fromString(address_terminalDirectory)
   );
