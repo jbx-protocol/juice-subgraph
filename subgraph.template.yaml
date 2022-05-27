@@ -323,8 +323,8 @@ dataSources:
         - name: JBProjectHandles
           file: ./abis/JBProjectHandles.json
       eventHandlers:
-        - event: SetReverseRecord(indexed uint256,indexed bytes32)
-          handler: handleSetReverseRecord
+        - event: SetEnsName(indexed uint256,indexed string)
+          handler: handleSetEnsName
       file: ./src/mappings/v2/jbProjectHandles.ts
   - kind: ethereum/contract
     name: TextResolver

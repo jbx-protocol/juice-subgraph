@@ -26,28 +26,22 @@
       },
       {
         "indexed": true,
-        "internalType": "bytes32",
-        "name": "record",
-        "type": "bytes32"
+        "internalType": "string",
+        "name": "ensName",
+        "type": "string"
       }
     ],
-    "name": "SetReverseRecord",
+    "name": "SetEnsName",
     "type": "event"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "projectId",
-        "type": "uint256"
-      }
-    ],
-    "name": "handleOf",
+    "inputs": [],
+    "name": "KEY",
     "outputs": [
       {
-        "internalType": "bytes32",
+        "internalType": "string",
         "name": "",
-        "type": "bytes32"
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -61,12 +55,57 @@
         "type": "uint256"
       }
     ],
-    "name": "reverseRecordOf",
+    "name": "ensNameOf",
     "outputs": [
       {
-        "internalType": "bytes32",
-        "name": "reverseRecord",
-        "type": "bytes32"
+        "internalType": "string",
+        "name": "ensName",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ensTextResolver",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "projectId",
+        "type": "uint256"
+      }
+    ],
+    "name": "handleOf",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "jbProjects",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -80,12 +119,12 @@
         "type": "uint256"
       },
       {
-        "internalType": "bytes32",
-        "name": "record",
-        "type": "bytes32"
+        "internalType": "string",
+        "name": "ensName",
+        "type": "string"
       }
     ],
-    "name": "setReverseRecord",
+    "name": "setEnsNameFor",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

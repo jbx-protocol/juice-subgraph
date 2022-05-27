@@ -1,4 +1,4 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
 import {
   Create,
@@ -88,6 +88,7 @@ export function handleSetMetadata(event: SetMetadata): void {
 export function handleTransferOwnership(event: Transfer): void {
   let project = Project.load(idForProject(event.params.tokenId, cv));
   if (!project) {
+    // Error will throw on mint
     log.error("[handleTransferOwnership] Missing project. ID:{}", [
       idForProject(event.params.tokenId, cv),
     ]);

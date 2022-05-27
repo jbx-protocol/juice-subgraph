@@ -7,6 +7,6 @@ export const address_jbProjects = "0xD8B4359143eda5B2d763E127Ed27c77addBc47d3";
 export const address_jbController = "0x833d3996D3EF1b34320F56ac97c899065A3Cb2EF";
 export const address_jbETHPaymentTerminal = "0x5a92f8aa0d3e656aE209E99C5B77B1ca464Ae1a9";
 export const address_jbTokenStore = "0xC42f85261aEbd06edd0615005954063B4Fd032aB";
-export const address_jbProjectHandles = "0x812dC61A4aD3D6eB47ec92dF712b52c12E6A9B93";
+export const address_jbProjectHandles = "0xb8DD4BE4409F800f5A8E0789D1b8834C6E34572c";
 export const address_textResolver = "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41";
 

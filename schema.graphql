@@ -77,6 +77,12 @@ type Project @entity {
   projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
 }
 
+# v2
+type V2ProjectHandleNode @entity {
+  id: ID!
+  projectId: Int!
+}
+
 # v1.0, v1.1, v2
 type Participant @entity {
   id: ID!

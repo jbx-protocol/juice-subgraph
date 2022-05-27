@@ -1,14 +1,24 @@
-import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+import {
+  Address,
+  BigInt,
+  Bytes,
+  ens,
+  ethereum,
+  log,
+} from "@graphprotocol/graph-ts";
+import { JBProjectHandles } from "../generated/JBProjectHandles/JBProjectHandles";
 
 import { TerminalDirectory } from "../generated/Projects/TerminalDirectory";
 import {
   Participant,
+  Project,
   ProjectEvent,
   ProtocolLog,
   ProtocolV1Log,
   ProtocolV2Log,
 } from "../generated/schema";
 import {
+  address_jbProjectHandles,
   address_terminalDirectory,
   address_terminalV1,
   address_terminalV1_1,
@@ -188,4 +198,30 @@ export function cvForTerminal(terminal: Address): CV {
   log.error("Invalid terminal address {}", [_terminal]);
   // 0 will always indicate an error
   return "0";
+}
+
+export function updateV2ProjectHandle(projectId: BigInt): void {
+  let jbProjectHandles = JBProjectHandles.bind(
+    Address.fromString(address_jbProjectHandles)
+  );
+  let handleCallResult = jbProjectHandles.try_handleOf(projectId);
+  if (handleCallResult.reverted) {
+    log.error(
+      "JBProjectHandles.handleOf reverted, projectId: {}, jbProjectHandles: {}",
+      [projectId.toString(), address_jbProjectHandles]
+    );
+    return;
+  }
+
+  let cv = "2";
+  let _projectId = idForProject(projectId, cv);
+  let project = Project.load(_projectId);
+  if (!project) {
+    log.error("[handleSetReverseRecord] Missing project. ID:{}", [
+      projectId.toString(),
+    ]);
+    return;
+  }
+  project.handle = handleCallResult.value;
+  project.save();
 }

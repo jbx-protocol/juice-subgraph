@@ -1,24 +1,16 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 
-import { JBProjectHandles } from "../../../generated/JBProjectHandles/JBProjectHandles";
-import { Project } from "../../../generated/schema";
+import { V2ProjectHandleNode } from "../../../generated/schema";
 import {
   TextChanged,
   TextResolver,
 } from "../../../generated/TextResolver/TextResolver";
-import {
-  address_jbProjectHandles,
-  address_textResolver,
-} from "../../contractAddresses";
-import { CV } from "../../types";
-import { idForProject } from "../../utils";
-
-const cv: CV = "2";
+import { address_textResolver } from "../../contractAddresses";
+import { updateV2ProjectHandle } from "../../utils";
 
 const key = "juicebox";
 
 export function handleTextChanged(event: TextChanged): void {
-  log.info("Handling text record changed, {}", [event.params.key]);
   if (event.params.key !== key) return;
 
   // Get projectId value of text record
@@ -34,27 +26,21 @@ export function handleTextChanged(event: TextChanged): void {
     return;
   }
 
-  // Get project handle
-  let projectBigInt = BigInt.fromString(textCallResult.value);
-  let jbProjectHandles = JBProjectHandles.bind(
-    Address.fromString(address_jbProjectHandles)
+  let projectHandleNode = V2ProjectHandleNode.load(
+    event.params.node.toHexString()
   );
-  let handleCallResult = jbProjectHandles.try_handleOf(projectBigInt);
-  if (handleCallResult.reverted) {
-    log.error(
-      "JBProjectHandles.handleOf reverted, projectId: {}, jbProjectHandles: {}",
-      [projectBigInt.toString(), address_jbProjectHandles]
+  if (projectHandleNode) {
+    // If this ens node has already been mapped to a Project, update handle for previously mapped Project
+    updateV2ProjectHandle(BigInt.fromI32(projectHandleNode.projectId));
+  } else {
+    projectHandleNode = new V2ProjectHandleNode(
+      event.params.node.toHexString()
     );
-    return;
   }
+  // Store a mapping from this ens node to Project with matching projectId
+  let projectBigInt = BigInt.fromString(textCallResult.value);
+  projectHandleNode.projectId = projectBigInt.toI32();
+  projectHandleNode.save();
 
-  // Update project entity
-  let projectId = idForProject(projectBigInt, cv);
-  let project = Project.load(projectId);
-  if (!project) {
-    log.error("[handleTextChanged] Missing project. ID:{}", [projectId]);
-    return;
-  }
-  project.handle = handleCallResult.value.toString();
-  project.save();
+  updateV2ProjectHandle(projectBigInt);
 }
