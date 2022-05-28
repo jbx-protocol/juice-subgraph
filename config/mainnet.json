@@ -12,10 +12,10 @@
   "startBlock_ticketBooth": 12833339,
   "address_jbProjects": "0xD8B4359143eda5B2d763E127Ed27c77addBc47d3",
   "startBlock_jbProjects": 14730693,
-  "address_jbController": "0x833d3996D3EF1b34320F56ac97c899065A3Cb2EF",
-  "startBlock_jbController": 14844438,
-  "address_jbETHPaymentTerminal": "0x5a92f8aa0d3e656aE209E99C5B77B1ca464Ae1a9",
-  "startBlock_jbETHPaymentTerminal": 14844459,
-  "address_jbTokenStore": "0xC42f85261aEbd06edd0615005954063B4Fd032aB",
-  "startBlock_jbTokenStore": 14844435
+  "address_jbController": "0x869034F16049580335981095690c33239d4cCa80",
+  "startBlock_jbController": 14862438,
+  "address_jbETHPaymentTerminal": "0x7E14A45bbe8BbcbadC0f8A3EFAbE6563a00aB720",
+  "startBlock_jbETHPaymentTerminal": 14862448,
+  "address_jbTokenStore": "0x0E7714Ec817F07B792df62b4BE186c0F49bE67e9",
+  "startBlock_jbTokenStore": 14862436
 }
