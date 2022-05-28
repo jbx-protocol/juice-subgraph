@@ -1,11 +1,11 @@
 specVersion: 0.0.4
 description: Juicebox protocol on {{network}}
-graft:
-  base: QmR42w2QvLLYmCmrBahUhCJ2D8JH4NGafNxxFUYvQRPgQT
-  block: 14855494
+# graft:
+#   base: QmR42w2QvLLYmCmrBahUhCJ2D8JH4NGafNxxFUYvQRPgQT
+#   block: 14855494
 features:
   - fullTextSearch
-  - grafting
+  # - grafting
 schema:
   file: ./schema.graphql
 templates:
@@ -323,6 +323,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Project
+        - V2ProjectHandleNode
       abis:
         - name: JBProjectHandles
           file: ./abis/JBProjectHandles.json
@@ -343,6 +344,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Project
+        - V2ProjectHandleNode
       abis:
         - name: TextResolver
           file: ./abis/TextResolver.json

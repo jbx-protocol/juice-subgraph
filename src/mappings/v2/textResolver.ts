@@ -13,6 +13,24 @@ const key = "juicebox";
 export function handleTextChanged(event: TextChanged): void {
   if (event.params.key !== key) return;
 
+  log.error("AAA Handling text changed, node: {}, key: {}", [
+    event.params.node.toHexString(),
+    event.params.key,
+  ]);
+
+  let projectHandleNodeId = event.params.node.toHexString();
+  let projectHandleNode = V2ProjectHandleNode.load(projectHandleNodeId);
+  if (projectHandleNode) {
+    log.error("AAA projectHandleNode found, {}", [projectHandleNodeId]);
+
+    // If this ens node has already been mapped to a Project, update handle for previously mapped Project
+    updateV2ProjectHandle(BigInt.fromI32(projectHandleNode.projectId));
+  } else {
+    log.error("AAA Creating projectHandleNode, {}", [projectHandleNodeId]);
+
+    projectHandleNode = new V2ProjectHandleNode(projectHandleNodeId);
+  }
+
   // Get projectId value of text record
   let textResolver = TextResolver.bind(
     Address.fromString(address_textResolver)
@@ -25,22 +43,12 @@ export function handleTextChanged(event: TextChanged): void {
     ]);
     return;
   }
-
-  let projectHandleNode = V2ProjectHandleNode.load(
-    event.params.node.toHexString()
-  );
-  if (projectHandleNode) {
-    // If this ens node has already been mapped to a Project, update handle for previously mapped Project
-    updateV2ProjectHandle(BigInt.fromI32(projectHandleNode.projectId));
-  } else {
-    projectHandleNode = new V2ProjectHandleNode(
-      event.params.node.toHexString()
-    );
-  }
-  // Store a mapping from this ens node to Project with matching projectId
   let projectBigInt = BigInt.fromString(textCallResult.value);
+
+  // Update projectId mapping for this ens node
   projectHandleNode.projectId = projectBigInt.toI32();
   projectHandleNode.save();
+  log.error("AAA Saved projectHandleNode, {}", [projectHandleNodeId]);
 
   updateV2ProjectHandle(projectBigInt);
 }

@@ -205,13 +205,6 @@ export function updateV2ProjectHandle(projectId: BigInt): void {
     Address.fromString(address_jbProjectHandles)
   );
   let handleCallResult = jbProjectHandles.try_handleOf(projectId);
-  if (handleCallResult.reverted) {
-    log.error(
-      "JBProjectHandles.handleOf reverted, projectId: {}, jbProjectHandles: {}",
-      [projectId.toString(), address_jbProjectHandles]
-    );
-    return;
-  }
 
   let cv = "2";
   let _projectId = idForProject(projectId, cv);
@@ -222,6 +215,12 @@ export function updateV2ProjectHandle(projectId: BigInt): void {
     ]);
     return;
   }
-  project.handle = handleCallResult.value;
+
+  if (handleCallResult.reverted) {
+    project.handle = null;
+  } else {
+    project.handle = handleCallResult.value;
+  }
+
   project.save();
 }
