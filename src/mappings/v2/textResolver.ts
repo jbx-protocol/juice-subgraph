@@ -11,9 +11,13 @@ import { updateV2ProjectHandle } from "../../utils";
 const key = "juicebox";
 
 export function handleTextChanged(event: TextChanged): void {
+  log.warning("textchanged key, {}, {}", [
+    event.params.key,
+    event.params.indexedKey.toString(),
+  ]);
   if (event.params.key !== key) return;
 
-  log.error("AAA Handling text changed, node: {}, key: {}", [
+  log.warning("AAA Handling text changed, node: {}, key: {}", [
     event.params.node.toHexString(),
     event.params.key,
   ]);
@@ -21,12 +25,12 @@ export function handleTextChanged(event: TextChanged): void {
   let projectHandleNodeId = event.params.node.toHexString();
   let projectHandleNode = V2ProjectHandleNode.load(projectHandleNodeId);
   if (projectHandleNode) {
-    log.error("AAA projectHandleNode found, {}", [projectHandleNodeId]);
+    log.warning("AAA projectHandleNode found, {}", [projectHandleNodeId]);
 
     // If this ens node has already been mapped to a Project, update handle for previously mapped Project
     updateV2ProjectHandle(BigInt.fromI32(projectHandleNode.projectId));
   } else {
-    log.error("AAA Creating projectHandleNode, {}", [projectHandleNodeId]);
+    log.warning("AAA Creating projectHandleNode, {}", [projectHandleNodeId]);
 
     projectHandleNode = new V2ProjectHandleNode(projectHandleNodeId);
   }
@@ -37,7 +41,7 @@ export function handleTextChanged(event: TextChanged): void {
   );
   let textCallResult = textResolver.try_text(event.params.node, key);
   if (textCallResult.reverted) {
-    log.error("TextResolver.text reverted, node: {}, textResolver: {}", [
+    log.warning("TextResolver.text reverted, node: {}, textResolver: {}", [
       event.params.node.toHexString(),
       address_textResolver,
     ]);
@@ -48,7 +52,7 @@ export function handleTextChanged(event: TextChanged): void {
   // Update projectId mapping for this ens node
   projectHandleNode.projectId = projectBigInt.toI32();
   projectHandleNode.save();
-  log.error("AAA Saved projectHandleNode, {}", [projectHandleNodeId]);
+  log.warning("AAA Saved projectHandleNode, {}", [projectHandleNodeId]);
 
   updateV2ProjectHandle(projectBigInt);
 }

@@ -1,11 +1,11 @@
 specVersion: 0.0.4
 description: Juicebox protocol on {{network}}
-# graft:
-#   base: QmR42w2QvLLYmCmrBahUhCJ2D8JH4NGafNxxFUYvQRPgQT
-#   block: 14855494
+graft:
+  base: QmR42w2QvLLYmCmrBahUhCJ2D8JH4NGafNxxFUYvQRPgQT
+  block: 14855494
 features:
   - fullTextSearch
-  # - grafting
+  - grafting
 schema:
   file: ./schema.graphql
 templates:
@@ -349,6 +349,6 @@ dataSources:
         - name: TextResolver
           file: ./abis/TextResolver.json
       eventHandlers:
-        - event: TextChanged(indexed bytes32,string,string)
+        - event: TextChanged(indexed bytes32,indexed string,string)
           handler: handleTextChanged
       file: ./src/mappings/v2/textResolver.ts
