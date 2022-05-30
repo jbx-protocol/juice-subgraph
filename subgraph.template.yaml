@@ -1,7 +1,7 @@
 specVersion: 0.0.4
 description: Juicebox protocol on {{network}}
 graft:
-  base: QmR42w2QvLLYmCmrBahUhCJ2D8JH4NGafNxxFUYvQRPgQT
+  base: QmWxrwc5vYQwqVTbKDKC6s38nhMmpGAhj9bDBX6rJAbQ4b
   block: 14855494
 features:
   - fullTextSearch
@@ -323,7 +323,6 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Project
-        - V2ProjectHandleNode
       abis:
         - name: JBProjectHandles
           file: ./abis/JBProjectHandles.json
@@ -344,10 +343,12 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Project
-        - V2ProjectHandleNode
+        - ENSNode
       abis:
         - name: TextResolver
           file: ./abis/TextResolver.json
+        - name: JBProjectHandles
+          file: ./abis/JBProjectHandles.json
       eventHandlers:
         - event: TextChanged(indexed bytes32,indexed string,string)
           handler: handleTextChanged

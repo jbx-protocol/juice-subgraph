@@ -207,8 +207,7 @@ export function updateV2ProjectHandle(projectId: BigInt): void {
   let handleCallResult = jbProjectHandles.try_handleOf(projectId);
 
   let cv = "2";
-  let _projectId = idForProject(projectId, cv);
-  let project = Project.load(_projectId);
+  let project = Project.load(idForProject(projectId, cv));
   if (!project) {
     log.error("[handleSetReverseRecord] Missing project. ID:{}", [
       projectId.toString(),
@@ -223,4 +222,13 @@ export function updateV2ProjectHandle(projectId: BigInt): void {
   }
 
   project.save();
+}
+
+export function isNumberString(str: string): boolean {
+  return str
+    .trim()
+    .split("")
+    .every((char) =>
+      ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(char)
+    );
 }

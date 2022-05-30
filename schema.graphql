@@ -78,7 +78,7 @@ type Project @entity {
 }
 
 # v2
-type V2ProjectHandleNode @entity {
+type ENSNode @entity {
   id: ID!
   projectId: Int!
 }
