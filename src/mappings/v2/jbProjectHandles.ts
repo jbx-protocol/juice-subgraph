@@ -1,6 +1,6 @@
-import { SetEnsName } from "../../../generated/JBProjectHandles/JBProjectHandles";
+import { SetEnsNameParts } from "../../../generated/JBProjectHandles/JBProjectHandles";
 import { updateV2ProjectHandle } from "../../utils";
 
-export function handleSetEnsName(event: SetEnsName): void {
+export function handleSetEnsNameParts(event: SetEnsNameParts): void {
   updateV2ProjectHandle(event.params.projectId);
 }

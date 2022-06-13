@@ -80,7 +80,7 @@ type Project @entity {
 # v2
 type ENSNode @entity {
   id: ID!
-  projectId: Int!
+  projectId: Int
 }
 
 # v1.0, v1.1, v2

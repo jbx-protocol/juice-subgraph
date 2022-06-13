@@ -3,7 +3,6 @@ import {
   AddToBalance,
   DistributePayouts,
   DistributeToPayoutSplit,
-  Migrate,
   Pay,
   RedeemTokens,
   UseAllowance,

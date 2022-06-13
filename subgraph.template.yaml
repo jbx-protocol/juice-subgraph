@@ -1,8 +1,8 @@
 specVersion: 0.0.4
 description: Juicebox protocol on {{network}}
 graft:
-  base: QmWxrwc5vYQwqVTbKDKC6s38nhMmpGAhj9bDBX6rJAbQ4b
-  block: 14855494
+  base: QmRFiCChCVwbSJ7VuEYiesEb5wHo89CuKyYS2digs9mZRL
+  block: 14837264
 features:
   - fullTextSearch
   - grafting
@@ -327,8 +327,8 @@ dataSources:
         - name: JBProjectHandles
           file: ./abis/JBProjectHandles.json
       eventHandlers:
-        - event: SetEnsName(indexed uint256,indexed string)
-          handler: handleSetEnsName
+        - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
+          handler: handleSetEnsNameParts
       file: ./src/mappings/v2/jbProjectHandles.ts
   - kind: ethereum/contract
     name: TextResolver

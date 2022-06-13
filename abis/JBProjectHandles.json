@@ -2,18 +2,38 @@
   {
     "inputs": [
       {
-        "internalType": "address",
+        "internalType": "contract IJBProjects",
         "name": "_jbProjects",
         "type": "address"
       },
       {
-        "internalType": "address",
+        "internalType": "contract IJBOperatorStore",
+        "name": "_jbOperatorStore",
+        "type": "address"
+      },
+      {
+        "internalType": "contract ITextResolver",
         "name": "_ensTextResolver",
         "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "EMPTY_NAME_PART",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NO_PARTS",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "UNAUTHORIZED",
+    "type": "error"
   },
   {
     "anonymous": false,
@@ -27,16 +47,28 @@
       {
         "indexed": true,
         "internalType": "string",
-        "name": "ensName",
+        "name": "handle",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string[]",
+        "name": "parts",
+        "type": "string[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
       }
     ],
-    "name": "SetEnsName",
+    "name": "SetEnsNameParts",
     "type": "event"
   },
   {
     "inputs": [],
-    "name": "KEY",
+    "name": "TEXT_KEY",
     "outputs": [
       {
         "internalType": "string",
@@ -51,16 +83,16 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "projectId",
+        "name": "_projectId",
         "type": "uint256"
       }
     ],
-    "name": "ensNameOf",
+    "name": "ensNamePartsOf",
     "outputs": [
       {
-        "internalType": "string",
-        "name": "ensName",
-        "type": "string"
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
       }
     ],
     "stateMutability": "view",
@@ -71,7 +103,7 @@
     "name": "ensTextResolver",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "contract ITextResolver",
         "name": "",
         "type": "address"
       }
@@ -83,7 +115,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "projectId",
+        "name": "_projectId",
         "type": "uint256"
       }
     ],
@@ -103,7 +135,20 @@
     "name": "jbProjects",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "contract IJBProjects",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "operatorStore",
+    "outputs": [
+      {
+        "internalType": "contract IJBOperatorStore",
         "name": "",
         "type": "address"
       }
@@ -115,16 +160,16 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "projectId",
+        "name": "_projectId",
         "type": "uint256"
       },
       {
-        "internalType": "string",
-        "name": "ensName",
-        "type": "string"
+        "internalType": "string[]",
+        "name": "_parts",
+        "type": "string[]"
       }
     ],
-    "name": "setEnsNameFor",
+    "name": "setEnsNamePartsFor",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
