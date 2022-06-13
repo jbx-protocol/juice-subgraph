@@ -9,4 +9,5 @@ export const address_jbETHPaymentTerminal = "0x7E14A45bbe8BbcbadC0f8A3EFAbE6563a
 export const address_jbTokenStore = "0x0E7714Ec817F07B792df62b4BE186c0F49bE67e9";
 export const address_jbProjectHandles = "0x61d8e2685aed3ce3ef9ddf3e47d5656d5ec50742";
 export const address_textResolver = "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41";
+export const address_jbETHERC20ProjectPayerDeployer = "0x9E84bEcA3E4d3cfE5C3b5E1b534363E8D7468ABc";
 

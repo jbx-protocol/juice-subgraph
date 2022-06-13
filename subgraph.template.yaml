@@ -27,6 +27,26 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleERC20Transfer
+  - name: JBETHERC20ProjectPayer
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: JBETHERC20ProjectPayer
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/v2/jbETHERC20ProjectPayer.ts
+      entities:
+        - ETHERC20ProjectPayer
+      abis:
+        - name: JBETHERC20ProjectPayer
+          file: ./abis/JBETHERC20ProjectPayer.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: SetDefaultValues(indexed uint256,indexed address,bool,string,bytes,bool,address)
+          handler: handleSetDefaultValues
 dataSources:
   - kind: ethereum/contract
     name: Projects
@@ -330,6 +350,28 @@ dataSources:
         - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
           handler: handleSetEnsNameParts
       file: ./src/mappings/v2/jbProjectHandles.ts
+  - kind: ethereum/contract
+    name: JBETHERC20ProjectPayerDeployer
+    network: {{network}}
+    source:
+      address: '{{address_jbETHERC20ProjectPayerDeployer}}'
+      abi: JBETHERC20ProjectPayerDeployer
+      startBlock: {{startBlock_jbETHERC20ProjectPayerDeployer}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ProjectPayer
+      abis:
+        - name: JBETHERC20ProjectPayerDeployer
+          file: ./abis/JBETHERC20ProjectPayerDeployer.json
+        - name: JBETHERC20ProjectPayer
+          file: ./abis/JBETHERC20ProjectPayer.json
+      eventHandlers:
+        - event: DeployProjectPayer(indexed address,uint256,address,bool,string,bytes,bool,address,address,address)
+          handler: handleDeployProjectPayer
+      file: ./src/mappings/v2/jbETHERC20ProjectPayerDeployer.ts
   - kind: ethereum/contract
     name: TextResolver
     network: {{network}}

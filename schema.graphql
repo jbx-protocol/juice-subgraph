@@ -75,6 +75,7 @@ type Project @entity {
   deployedERC20Events: [DeployedERC20Event!]! @derivedFrom(field: "project")
   useAllowanceEvents: [UseAllowanceEvent!]! @derivedFrom(field: "project")
   projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
+  ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
 }
 
 # v2
@@ -381,4 +382,19 @@ type UseAllowanceEvent @entity{
   netDistributedamount: BigInt!
   memo: String!
   caller: Bytes!
+}
+
+# v2
+type ETHERC20ProjectPayer @entity{
+  id: ID!
+  project: Project!
+  projectId: Int!
+  address: Bytes!
+  beneficiary: Bytes!
+  preferClaimedTokens: Boolean!
+  preferAddToBalance: Boolean!
+  directory: Bytes!
+  owner: Bytes!
+  memo: String
+  metadata: Bytes
 }
