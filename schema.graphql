@@ -121,6 +121,7 @@ type ProjectEvent @entity {
   distributeToReservedTokenSplitEvent: DistributeToReservedTokenSplitEvent
   distributeToPayoutSplitEvent: DistributeToPayoutSplitEvent
   useAllowanceEvent: UseAllowanceEvent
+  deployProjectPayerEvent: DeployProjectPayerEvent
 }
 
 # v1.0, v1.1, v2
@@ -382,6 +383,24 @@ type UseAllowanceEvent @entity{
   netDistributedamount: BigInt!
   memo: String!
   caller: Bytes!
+}
+
+# v2
+type DeployProjectPayerEvent @entity{
+  id: ID!
+  project: Project!
+  projectId: Int!
+  timestamp: Int!
+  txHash: Bytes!
+
+  address: Bytes!
+  beneficiary: Bytes!
+  preferClaimedTokens: Boolean!
+  preferAddToBalance: Boolean!
+  directory: Bytes!
+  owner: Bytes!
+  memo: String
+  metadata: Bytes
 }
 
 # v2

@@ -14,6 +14,7 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   let context = dataSource.context();
   let address = context.getBytes("address").toHexString();
   let projectPayer = ETHERC20ProjectPayer.load(address);
+  if (!projectPayer) return;
   projectPayer.owner = event.params.newOwner;
   projectPayer.save();
 }
@@ -22,12 +23,13 @@ export function handleSetDefaultValues(event: SetDefaultValues): void {
   let context = dataSource.context();
   let address = context.getBytes("address").toHexString();
   let projectPayer = ETHERC20ProjectPayer.load(address);
+  if (!projectPayer) return;
   projectPayer.beneficiary = event.params.beneficiary;
   projectPayer.memo = event.params.memo;
   projectPayer.metadata = event.params.metadata;
   projectPayer.preferAddToBalance = event.params.preferAddToBalance;
   projectPayer.preferClaimedTokens = event.params.preferClaimedTokens;
   projectPayer.project = idForProject(event.params.projectId, cv);
-  projectPayer.projectId = event.params.projectId;
+  projectPayer.projectId = event.params.projectId.toI32();
   projectPayer.save();
 }

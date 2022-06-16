@@ -15,4 +15,5 @@ export enum ProjectEventKey {
   distributePayoutsEvent,
   redeemEvent,
   useAllowanceEvent,
+  deployProjectPayerEvent
 }

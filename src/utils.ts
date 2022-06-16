@@ -162,6 +162,9 @@ export function saveNewProjectEvent(
     case ProjectEventKey.useAllowanceEvent:
       projectEvent.useAllowanceEvent = id;
       break;
+    case ProjectEventKey.deployProjectPayerEvent:
+      projectEvent.deployedERC20Event = id;
+      break;
   }
 
   projectEvent.save();

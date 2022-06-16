@@ -1,10 +1,13 @@
 import { DataSourceContext } from "@graphprotocol/graph-ts";
 
 import { DeployProjectPayer } from "../../../generated/JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
-import { ETHERC20ProjectPayer } from "../../../generated/schema";
+import {
+  DeployProjectPayerEvent,
+  ETHERC20ProjectPayer,
+} from "../../../generated/schema";
 import { JBETHERC20ProjectPayer } from "../../../generated/templates";
-import { CV } from "../../types";
-import { idForProject } from "../../utils";
+import { CV, ProjectEventKey } from "../../types";
+import { idForProject, saveNewProjectEvent } from "../../utils";
 
 const cv: CV = "2";
 
@@ -21,6 +24,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   let projectPayer = new ETHERC20ProjectPayer(
     event.params.projectPayer.toHexString()
   );
+  if (!projectPayer) return;
   projectPayer.address = event.params.projectPayer;
   projectPayer.beneficiary = event.params.defaultBeneficiary;
   projectPayer.directory = event.params.directory;
@@ -32,4 +36,30 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   projectPayer.project = idForProject(event.params.defaultProjectId, cv);
   projectPayer.projectId = event.params.defaultProjectId.toI32();
   projectPayer.save();
+
+  let deployProjectPayerEvent = new DeployProjectPayerEvent(
+    projectPayer.address.toHexString()
+  );
+  if (!deployProjectPayerEvent) return;
+  deployProjectPayerEvent.address = projectPayer.address;
+  deployProjectPayerEvent.beneficiary = projectPayer.beneficiary;
+  deployProjectPayerEvent.directory = projectPayer.directory;
+  deployProjectPayerEvent.memo = projectPayer.memo;
+  deployProjectPayerEvent.metadata = projectPayer.metadata;
+  deployProjectPayerEvent.owner = projectPayer.owner;
+  deployProjectPayerEvent.preferAddToBalance = projectPayer.preferAddToBalance;
+  deployProjectPayerEvent.preferClaimedTokens =
+    projectPayer.preferClaimedTokens;
+  deployProjectPayerEvent.projectId = projectPayer.projectId;
+  deployProjectPayerEvent.project = projectPayer.project;
+  deployProjectPayerEvent.timestamp = event.block.timestamp;
+  deployProjectPayerEvent.txHash = event.transaction.hash;
+  deployProjectPayerEvent.save();
+  saveNewProjectEvent(
+    event,
+    event.params.defaultProjectId.toI32(),
+    deployProjectPayerEvent.id,
+    cv,
+    ProjectEventKey.deployProjectPayerEvent
+  );
 }
