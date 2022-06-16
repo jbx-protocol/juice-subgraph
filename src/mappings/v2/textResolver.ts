@@ -14,11 +14,6 @@ const TEXT_KEY = "juicebox_project_id";
 export function handleTextChanged(event: TextChanged): void {
   if (event.params.key != TEXT_KEY) return;
 
-  log.warning("AAA Handling text changed, node: {}, key: {}", [
-    event.params.node.toHexString(),
-    event.params.key,
-  ]);
-
   // Get value of text record
   let textResolver = TextResolver.bind(
     Address.fromString(address_textResolver)
@@ -31,10 +26,11 @@ export function handleTextChanged(event: TextChanged): void {
     ]);
     return;
   }
-  let projectId: BigInt;
+
+  let projectIdFromTextRecord: BigInt;
   if (isNumberString(textCallResult.value)) {
-    projectId = BigInt.fromString(textCallResult.value);
-    updateV2ProjectHandle(projectId);
+    projectIdFromTextRecord = BigInt.fromString(textCallResult.value);
+    updateV2ProjectHandle(projectIdFromTextRecord);
   }
 
   let ensNodeId = event.params.node.toHexString();
@@ -42,15 +38,14 @@ export function handleTextChanged(event: TextChanged): void {
   if (ensNode) {
     // If this ens node has already been mapped to a Project, update handle for previously mapped Project
     updateV2ProjectHandle(BigInt.fromI32(ensNode.projectId));
-    log.warning("AAA ensNode found, {}", [ensNodeId]);
   } else {
     ensNode = new ENSNode(ensNodeId);
-    log.warning("AAA Created ensNode, {}", [ensNodeId]);
   }
 
-  ensNode.projectId = projectId.gt(BigInt.fromI32(0))
-    ? projectId.toI32()
-    : null;
+  // Set ensNode.projectId to null if no projectId
+  ensNode.projectId =
+    projectIdFromTextRecord && projectIdFromTextRecord.gt(BigInt.fromI32(0))
+      ? projectIdFromTextRecord.toI32()
+      : null;
   ensNode.save();
-  log.warning("AAA Saved ensNode, {}", [ensNodeId]);
 }

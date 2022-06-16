@@ -88,10 +88,7 @@ export function handleSetMetadata(event: SetMetadata): void {
 export function handleTransferOwnership(event: Transfer): void {
   let project = Project.load(idForProject(event.params.tokenId, cv));
   if (!project) {
-    // Error will throw on mint
-    log.error("[handleTransferOwnership] Missing project. ID:{}", [
-      idForProject(event.params.tokenId, cv),
-    ]);
+    // Project will be missing on initial mint transfer
     return;
   }
   project.owner = event.params.to;
