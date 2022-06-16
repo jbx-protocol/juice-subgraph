@@ -52,12 +52,12 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
     projectPayer.preferClaimedTokens;
   deployProjectPayerEvent.projectId = projectPayer.projectId;
   deployProjectPayerEvent.project = projectPayer.project;
-  deployProjectPayerEvent.timestamp = event.block.timestamp;
+  deployProjectPayerEvent.timestamp = event.block.timestamp.toI32();
   deployProjectPayerEvent.txHash = event.transaction.hash;
   deployProjectPayerEvent.save();
   saveNewProjectEvent(
     event,
-    event.params.defaultProjectId.toI32(),
+    event.params.defaultProjectId,
     deployProjectPayerEvent.id,
     cv,
     ProjectEventKey.deployProjectPayerEvent
