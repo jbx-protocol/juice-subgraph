@@ -2,7 +2,7 @@ import { DataSourceContext } from "@graphprotocol/graph-ts";
 
 import { DeployProjectPayer } from "../../../generated/JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
 import {
-  DeployProjectPayerEvent,
+  DeployETHERC20ProjectPayerEvent,
   ETHERC20ProjectPayer,
 } from "../../../generated/schema";
 import { JBETHERC20ProjectPayer } from "../../../generated/templates";
@@ -37,7 +37,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   projectPayer.projectId = event.params.defaultProjectId.toI32();
   projectPayer.save();
 
-  let deployProjectPayerEvent = new DeployProjectPayerEvent(
+  let deployProjectPayerEvent = new DeployETHERC20ProjectPayerEvent(
     projectPayer.address.toHexString()
   );
   if (!deployProjectPayerEvent) return;
@@ -60,6 +60,6 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
     event.params.defaultProjectId,
     deployProjectPayerEvent.id,
     cv,
-    ProjectEventKey.deployProjectPayerEvent
+    ProjectEventKey.deployETHERC20ProjectPayerEvent
   );
 }

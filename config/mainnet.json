@@ -18,10 +18,10 @@
   "startBlock_jbETHPaymentTerminal": 14862448,
   "address_jbTokenStore": "0x0E7714Ec817F07B792df62b4BE186c0F49bE67e9",
   "startBlock_jbTokenStore": 14862436,
-  "address_jbProjectHandles": "0x61d8e2685aed3ce3ef9ddf3e47d5656d5ec50742",
-  "startBlock_jbProjectHandles": 14970031,
+  "address_jbProjectHandles": "0xe3c01e9fd2a1dcc6edf0b1058b5757138ef9ffb6",
+  "startBlock_jbProjectHandles": 14975701,
   "address_textResolver": "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41",
-  "startBlock_textResolver": 14837264,
+  "startBlock_textResolver": 14975701,
   "address_jbETHERC20ProjectPayerDeployer": "0x9E84bEcA3E4d3cfE5C3b5E1b534363E8D7468ABc",
   "startBlock_jbETHERC20ProjectPayerDeployer": 14730683
 }

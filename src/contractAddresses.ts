@@ -7,7 +7,7 @@ export const address_jbProjects = "0x2d8e361f8F1B5daF33fDb2C99971b33503E60EEE";
 export const address_jbController = "0x418d8199F96F7c65b5b716f8E2c6327dbA266B26";
 export const address_jbETHPaymentTerminal = "0xe59707E9413e5FB6905017981B2815940e87e5fd";
 export const address_jbTokenStore = "0x1c4bC800c303cEB202944eDdB1cE8e88357284b8";
-export const address_jbProjectHandles = "0xd2d56f0419cc1482bf846f979f64d21cc4b45e47";
+export const address_jbProjectHandles = "0xd0b970348dfc7ae57e81b4f069ed0e06127be85d";
 export const address_textResolver = "0xf6305c19e814d2a75429Fd637d01F7ee0E77d615";
 export const address_jbETHERC20ProjectPayerDeployer = "0x3247df1bdC849f69Ba7dA4faf71d1e5850A6Fbb8";
 

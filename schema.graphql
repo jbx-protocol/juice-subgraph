@@ -121,7 +121,7 @@ type ProjectEvent @entity {
   distributeToReservedTokenSplitEvent: DistributeToReservedTokenSplitEvent
   distributeToPayoutSplitEvent: DistributeToPayoutSplitEvent
   useAllowanceEvent: UseAllowanceEvent
-  deployProjectPayerEvent: DeployProjectPayerEvent
+  deployETHERC20ProjectPayerEvent: DeployETHERC20ProjectPayerEvent
 }
 
 # v1.0, v1.1, v2
@@ -386,7 +386,7 @@ type UseAllowanceEvent @entity{
 }
 
 # v2
-type DeployProjectPayerEvent @entity{
+type DeployETHERC20ProjectPayerEvent @entity{
   id: ID!
   project: Project!
   projectId: Int!

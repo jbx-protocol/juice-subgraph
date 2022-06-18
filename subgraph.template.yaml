@@ -362,7 +362,8 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - ProjectPayer
+        - ETHERC20ProjectPayer
+        - DeployETHERC20ProjectPayerEvent
       abis:
         - name: JBETHERC20ProjectPayerDeployer
           file: ./abis/JBETHERC20ProjectPayerDeployer.json
