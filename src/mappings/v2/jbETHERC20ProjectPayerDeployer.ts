@@ -54,6 +54,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   deployProjectPayerEvent.project = projectPayer.project;
   deployProjectPayerEvent.timestamp = event.block.timestamp.toI32();
   deployProjectPayerEvent.txHash = event.transaction.hash;
+  deployProjectPayerEvent.caller = event.params.caller;
   deployProjectPayerEvent.save();
   saveNewProjectEvent(
     event,

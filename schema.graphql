@@ -401,6 +401,7 @@ type DeployETHERC20ProjectPayerEvent @entity{
   owner: Bytes!
   memo: String
   metadata: Bytes
+  caller: Bytes!
 }
 
 # v2
