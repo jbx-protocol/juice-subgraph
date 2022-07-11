@@ -1,9 +1,10 @@
-import { log } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   AddToBalance,
   DistributePayouts,
   DistributeToPayoutSplit,
   Pay,
+  ProcessFee,
   RedeemTokens,
   UseAllowance,
 } from "../../../generated/JBETHPaymentTerminal/JBETHPaymentTerminal";
@@ -281,4 +282,19 @@ export function handleUseAllowance(event: UseAllowance): void {
   );
 }
 
-// export function handleMigrate(event: Migrate): void {}
+export function handleProcessFee(event: ProcessFee): void {
+  // Load pay event to juicebox project (id: 1)
+  // Requires pay event has logIndex preceding that of this tx
+  let id = `${idForProjectTx(
+    BigInt.fromString("1"),
+    cv,
+    event
+  )}-${event.transactionLogIndex.minus(BigInt.fromString("1"))}`;
+  let pay = PayEvent.load(id);
+  if (!pay) {
+    log.error("[handleProcessFee] Missing PayEvent. ID:{}", [id]);
+    return;
+  }
+  pay.feeFromV2Project = event.params.projectId.toI32();
+  pay.save();
+}

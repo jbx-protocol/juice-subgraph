@@ -137,6 +137,7 @@ type PayEvent @entity {
   beneficiary: Bytes!
   amount: BigInt!
   note: String!
+  feeFromV2Project: Int # Indicates payment is a fee from project with this ID
 }
 
 # v1.0, v1.1, v2

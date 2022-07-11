@@ -22,7 +22,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
 
   // Create entity
   let projectPayer = new ETHERC20ProjectPayer(
-    event.params.projectPayer.toHexString()
+    event.params.projectPayer.toHexString().toLowerCase()
   );
   if (!projectPayer) return;
   projectPayer.address = event.params.projectPayer;
@@ -38,7 +38,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   projectPayer.save();
 
   let deployProjectPayerEvent = new DeployETHERC20ProjectPayerEvent(
-    projectPayer.address.toHexString()
+    projectPayer.address.toHexString().toLowerCase()
   );
   if (!deployProjectPayerEvent) return;
   deployProjectPayerEvent.address = projectPayer.address;

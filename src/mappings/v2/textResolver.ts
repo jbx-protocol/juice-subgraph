@@ -33,7 +33,7 @@ export function handleTextChanged(event: TextChanged): void {
     updateV2ProjectHandle(projectIdFromTextRecord);
   }
 
-  let ensNodeId = event.params.node.toHexString();
+  let ensNodeId = event.params.node.toHexString().toLowerCase();
   let ensNode = ENSNode.load(ensNodeId);
   if (ensNode) {
     // If this ens node has already been mapped to a Project, update handle for previously mapped Project

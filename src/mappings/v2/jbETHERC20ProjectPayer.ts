@@ -12,7 +12,10 @@ const cv: CV = "2";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   let context = dataSource.context();
-  let address = context.getBytes("address").toHexString();
+  let address = context
+    .getBytes("address")
+    .toHexString()
+    .toLowerCase();
   let projectPayer = ETHERC20ProjectPayer.load(address);
   if (!projectPayer) return;
   projectPayer.owner = event.params.newOwner;
@@ -21,7 +24,10 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 
 export function handleSetDefaultValues(event: SetDefaultValues): void {
   let context = dataSource.context();
-  let address = context.getBytes("address").toHexString();
+  let address = context
+    .getBytes("address")
+    .toHexString()
+    .toLowerCase();
   let projectPayer = ETHERC20ProjectPayer.load(address);
   if (!projectPayer) return;
   projectPayer.beneficiary = event.params.beneficiary;

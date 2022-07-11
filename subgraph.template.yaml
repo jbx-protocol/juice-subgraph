@@ -1,6 +1,9 @@
 specVersion: 0.0.4
 description: Juicebox protocol on {{network}}
 # graft:
+#   base: QmV37C7hKimDno8Qhdzfg6fH2HjZJJDoAuRjaNUvfSPdtr
+#   block: 14874371
+# graft:
 #   base: QmQfWacsGk23QiwH2eH1SNSVrYB9o1jfyhrCWakeYiZ8Ku
 #   block: 10635479
 features:
@@ -313,6 +316,7 @@ dataSources:
         - ProtocolV2Log
         - RedeemEvent
         - UseAllowanceEvent
+        # - V2FeePaymentEvent
       abis:
         - name: JBETHPaymentTerminal
           file: ./abis/JBETHPaymentTerminal.json
@@ -329,6 +333,8 @@ dataSources:
           handler: handleUseAllowance
         - event: DistributeToPayoutSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
           handler: handleDistributeToPayoutSplit
+        - event: ProcessFee(indexed uint256,indexed uint256,indexed bool,address,address)
+          handler: handleProcessFee
       file: ./src/mappings/v2/jbETHPaymentTerminal.ts
   - kind: ethereum/contract
     name: JBProjectHandles

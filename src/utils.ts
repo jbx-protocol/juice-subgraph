@@ -2,7 +2,6 @@ import {
   Address,
   BigInt,
   Bytes,
-  ens,
   ethereum,
   log,
 } from "@graphprotocol/graph-ts";
@@ -63,7 +62,7 @@ export function idForProjectTx(
   return (
     idForProject(projectId, cv) +
     "-" +
-    event.transaction.hash.toHexString() +
+    event.transaction.hash.toHexString().toLowerCase() +
     (useLogIndex ? "-" + event.logIndex.toString() : "")
   );
 }
