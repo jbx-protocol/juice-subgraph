@@ -419,3 +419,20 @@ type ETHERC20ProjectPayer @entity{
   memo: String
   metadata: Bytes
 }
+
+# v2
+type VeNftToken @entity {
+  id: ID!
+  tokenId: Int!
+  tokenUri: String!
+  createdAt: Int!
+  redeemedAt: Int
+  owner: Bytes!
+  participant: Participant!
+  lockAmount: BigInt!
+  lockEnd: Int!
+  lockDuration: Int!
+  lockUseJbToken: Boolean!
+  lockAllowPublicExtension: Boolean!
+  isUnlocked: Boolean!
+}

@@ -23,5 +23,7 @@
   "address_textResolver": "0xf6305c19e814d2a75429Fd637d01F7ee0E77d615",
   "startBlock_textResolver": 10864427,
   "address_jbETHERC20ProjectPayerDeployer": "0x3247df1bdC849f69Ba7dA4faf71d1e5850A6Fbb8",
-  "startBlock_jbETHERC20ProjectPayerDeployer": 10635479
+  "startBlock_jbETHERC20ProjectPayerDeployer": 10635479,
+  "address_jVeBanny": "0x8fa9b9dd07f08f04e96cfe6dcb729265c8de5f32",
+  "startBlock_jVeBanny": 10795747
 }
