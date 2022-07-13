@@ -420,7 +420,6 @@ type ETHERC20ProjectPayer @entity{
   metadata: Bytes
 }
 
-# v2
 type VeNftToken @entity {
   id: ID!
   tokenId: Int!
