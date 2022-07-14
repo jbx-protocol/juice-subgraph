@@ -1,3 +1,4 @@
+import { log } from "@graphprotocol/graph-ts";
 import {
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
@@ -9,7 +10,7 @@ import {
   ProtocolV1Log,
   RedeemEvent,
   TapEvent,
-} from '../../../generated/schema';
+} from "../../../generated/schema";
 import {
   AddToBalance,
   DistributeToPayoutMod,
@@ -19,8 +20,8 @@ import {
   PrintTickets,
   Redeem,
   Tap,
-} from '../../../generated/TerminalV1_1/TerminalV1_1';
-import { ProjectEventKey } from '../../types';
+} from "../../../generated/TerminalV1_1/TerminalV1_1";
+import { ProjectEventKey } from "../../types";
 import {
   cvForV1Project,
   idForParticipant,
@@ -29,7 +30,7 @@ import {
   protocolId,
   saveNewProjectEvent,
   updateProtocolEntity,
-} from '../../utils';
+} from "../../utils";
 
 export function handlePay(event: Pay): void {
   let cv = cvForV1Project(event.params.projectId);
@@ -37,6 +38,18 @@ export function handlePay(event: Pay): void {
     idForProjectTx(event.params.projectId, cv, event, true)
   );
   let projectId = idForProject(event.params.projectId, cv);
+  let project = Project.load(projectId);
+
+  // Safety check: fail if project doesn't exist
+  if (!project) {
+    log.error("[handlePay] Missing project. ID:{}", [projectId]);
+    return;
+  }
+
+  project.totalPaid = project.totalPaid.plus(event.params.amount);
+  project.currentBalance = project.currentBalance.plus(event.params.amount);
+  project.save();
+
   if (pay) {
     pay.cv = cv;
     pay.projectId = event.params.projectId.toI32();
@@ -67,11 +80,6 @@ export function handlePay(event: Pay): void {
   }
   updateProtocolEntity();
 
-  let project = Project.load(projectId);
-  if (!project) return;
-  project.totalPaid = project.totalPaid.plus(event.params.amount);
-  project.currentBalance = project.currentBalance.plus(event.params.amount);
-
   let participantId = idForParticipant(
     event.params.projectId,
     cv,
@@ -89,8 +97,6 @@ export function handlePay(event: Pay): void {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }
   participant.lastPaidTimestamp = event.block.timestamp.toI32();
-
-  project.save();
   participant.save();
 }
 
