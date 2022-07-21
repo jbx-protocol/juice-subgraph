@@ -433,5 +433,5 @@ type VeNftToken @entity {
   lockDuration: Int!
   lockUseJbToken: Boolean!
   lockAllowPublicExtension: Boolean!
-  isUnlocked: Boolean!
+  unlockedAt: Int!
 }

@@ -10,5 +10,5 @@ export const address_jbTokenStore = "0x220468762c6cE4C05E8fda5cc68Ffaf0CC0B2A85"
 export const address_jbProjectHandles = "0xd0b970348dfc7ae57e81b4f069ed0e06127be85d";
 export const address_textResolver = "0xf6305c19e814d2a75429Fd637d01F7ee0E77d615";
 export const address_jbETHERC20ProjectPayerDeployer = "0x3247df1bdC849f69Ba7dA4faf71d1e5850A6Fbb8";
-export const address_jVeBanny = "0x8fa9b9dd07f08f04e96cfe6dcb729265c8de5f32";
+export const address_jVeBanny = "0xce37f0fc9315153516d1a4f165fe28559c719a01";
 

@@ -41,7 +41,6 @@ export function handleLock(event: Lock): void {
     token.lockDuration = lockInfoData.value2.toI32();
     token.lockUseJbToken = lockInfoData.value3;
     token.lockAllowPublicExtension = lockInfoData.value4;
-    token.isUnlocked = false;
     token.save();
   }
 }
@@ -73,7 +72,7 @@ export function handleUnlock(event: Unlock): void {
   let token = VeNftToken.load(event.params.tokenId.toHexString().toLowerCase());
   if (!token) return;
 
-  token.isUnlocked = true;
+  token.unlockedAt = event.block.timestamp.toI32();
   token.save();
 }
 
