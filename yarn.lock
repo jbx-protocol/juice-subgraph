@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@graphprotocol/graph-cli@^0.22.1":
-  version "0.22.4"
-  resolved "https://registry.yarnpkg.com/@graphprotocol/graph-cli/-/graph-cli-0.22.4.tgz#dc7aec114a49fe2579e0098a465bbabe88298aed"
-  integrity sha512-+2OcByjz0k9F2guz6hQ6lRiWBrRj/Pc5ShIZjK69P1w3eICQtFn/F1j5zTbeWkr/tL//e2byf0MIxxMBo2xToQ==
+"@graphprotocol/graph-cli@^0.25.0":
+  version "0.25.3"
+  resolved "https://registry.yarnpkg.com/@graphprotocol/graph-cli/-/graph-cli-0.25.3.tgz#cc929e831d44f88e2936ebf049d962a6fc5a4094"
+  integrity sha512-18soTrGClEVOPmsTwknrjrzEITjc817l0btyRExE8nsxCcaJFHbDZEyLJJqFHfHxI9OyW0p8h8t3PuYxC2S84g==
   dependencies:
     assemblyscript "0.19.10"
     binary-install-raw "0.0.13"
@@ -37,7 +37,7 @@
     dockerode "^2.5.8"
     fs-extra "^9.0.0"
     glob "^7.1.2"
-    gluegun "^4.3.1"
+    gluegun "https://github.com/edgeandnode/gluegun#v4.3.1-pin-colors-dep"
     graphql "^15.5.0"
     immutable "^3.8.2"
     ipfs-http-client "^34.0.0"
@@ -52,10 +52,10 @@
     which "2.0.2"
     yaml "^1.5.1"
 
-"@graphprotocol/graph-ts@^0.22.1":
-  version "0.22.1"
-  resolved "https://registry.yarnpkg.com/@graphprotocol/graph-ts/-/graph-ts-0.22.1.tgz#3189b2495b33497280f617316cce68074d48e236"
-  integrity sha512-T5xrHN0tHJwd7ZnSTLhk5hAL3rCIp6rJ40kBCrETnv1mfK9hVyoojJK6VtBQXTbLsYtKe4SYjjD0cdOsAR9QiA==
+"@graphprotocol/graph-ts@^0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@graphprotocol/graph-ts/-/graph-ts-0.25.0.tgz#74b11effe1d96957004b3f5f0361562ba2b80019"
+  integrity sha512-/R++19dAtqPhd/Bv3l09ubcc8SWrm+akeyYG4yqkg5fk+b5Bm2Bi4Y+CK8B4l3C9mcc2mzJ7s7YisDMmGclqzw==
   dependencies:
     assemblyscript "0.19.10"
 
@@ -182,12 +182,13 @@ anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-apisauce@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/apisauce/-/apisauce-2.1.5.tgz#546229f8f145711b3b022065afb0f43bd304ecb3"
-  integrity sha512-bkMlz0ZUnyS8vDigej9UBYo5dne9/bQrkgIiIkGaiDHF6e5OxhYRLJDYu65V/Ox86tmWVwepIntAoTmk4Db0Hg==
+apisauce@^1.0.1:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/apisauce/-/apisauce-1.1.5.tgz#31d41a5cf805e401266cec67faf1a50f4aeae234"
+  integrity sha512-gKC8qb/bDJsPsnEXLZnXJ7gVx7dh87CEVNeIwv1dvaffnXoh5GHwac5pWR1P2broLiVj/fqFMQvLDDt/RhjiqA==
   dependencies:
-    axios "^0.21.4"
+    axios "^0.21.2"
+    ramda "^0.25.0"
 
 app-module-path@^2.2.0:
   version "2.2.0"
@@ -268,7 +269,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axios@^0.21.1, axios@^0.21.4:
+axios@^0.21.1, axios@^0.21.2:
   version "0.21.4"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
   integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
@@ -623,7 +624,12 @@ color-name@~1.1.4:
   resolved "https://registry.yarnpkg.com/color-name/-/color-name-1.1.4.tgz#c2a09a87acbde69543de6f63fa3995c826c536a2"
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
-colors@^1.1.2, colors@^1.3.3:
+colors@1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-1.3.3.tgz#39e005d546afe01e01f9c4ca8fa50f686a01205d"
+  integrity sha512-mmGt/1pZqYRjMxB1axhTo16/snVZ5krrKkcmMeVKxzECMMXoCgnvTPp10QgHfcbQZw8Dq2jMNG6je4JlWU0gWg==
+
+colors@^1.1.2:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
   integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
@@ -1081,15 +1087,14 @@ glob@^7.1.2, glob@^7.1.3:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-gluegun@^4.3.1:
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/gluegun/-/gluegun-4.7.1.tgz#89477f155b79c16e63e7386819b01943942a7993"
-  integrity sha512-5iLbLCU+jCf34zHrl+AKC39mDIpVKn/Z5B2uIS8TjHVaPBaDPnRD/VspiHy9dyF5mjr7Ogg1/gOt8yeWo7MEug==
+"gluegun@git+https://github.com/edgeandnode/gluegun.git#v4.3.1-pin-colors-dep":
+  version "4.3.1"
+  resolved "git+https://github.com/edgeandnode/gluegun.git#b34b9003d7bf556836da41b57ef36eb21570620a"
   dependencies:
-    apisauce "^2.1.5"
+    apisauce "^1.0.1"
     app-module-path "^2.2.0"
     cli-table3 "~0.5.0"
-    colors "^1.3.3"
+    colors "1.3.3"
     cosmiconfig "6.0.0"
     cross-spawn "^7.0.0"
     ejs "^2.6.1"
@@ -1113,6 +1118,7 @@ gluegun@^4.3.1:
     lodash.upperfirst "^4.3.1"
     ora "^4.0.0"
     pluralize "^8.0.0"
+    ramdasauce "^2.1.0"
     semver "^7.0.0"
     which "^2.0.0"
     yargs-parser "^16.1.0"
@@ -2335,6 +2341,23 @@ qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
+
+ramda@^0.24.1:
+  version "0.24.1"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.24.1.tgz#c3b7755197f35b8dc3502228262c4c91ddb6b857"
+  integrity sha512-HEm619G8PaZMfkqCa23qiOe7r3R0brPu7ZgOsgKUsnvLhd0qhc/vTjkUovomgPWa5ECBa08fJZixth9LaoBo5w==
+
+ramda@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.25.0.tgz#8fdf68231cffa90bc2f9460390a0cb74a29b29a9"
+  integrity sha512-GXpfrYVPwx3K7RQ6aYT8KPS8XViSXUVJT1ONhoKPE9VAleW42YE+U+8VEyGWt41EnEQW7gwecYJriTI0pKoecQ==
+
+ramdasauce@^2.1.0:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/ramdasauce/-/ramdasauce-2.1.3.tgz#acb45ecc7e4fc4d6f39e19989b4a16dff383e9c2"
+  integrity sha512-Ml3CPim4SKwmg5g9UI77lnRSeKr/kQw7YhQ6rfdMcBYy6DMlwmkEwQqjygJ3OhxPR+NfFfpjKl3Tf8GXckaqqg==
+  dependencies:
+    ramda "^0.24.1"
 
 "readable-stream@2 || 3", readable-stream@^3.0.0, readable-stream@^3.0.1, readable-stream@^3.0.2, readable-stream@^3.1.1, readable-stream@^3.4.0, readable-stream@^3.6.0:
   version "3.6.0"
