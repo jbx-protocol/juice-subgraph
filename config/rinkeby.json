@@ -11,7 +11,7 @@
   "address_ticketBooth": "0x0d038636a670E8bd8cF7D56BC4626f2a6446cF11",
   "startBlock_ticketBooth": 9115775,
   "address_jbProjects": "0x2d8e361f8F1B5daF33fDb2C99971b33503E60EEE",
-  "startBlock_jbProjects": 10762797,
+  "startBlock_jbProjects": 10635483,
   "address_jbController": "0xd96ecf0E07eB197587Ad4A897933f78A00B21c9a",
   "startBlock_jbController": 10762795,
   "address_jbETHPaymentTerminal": "0x765A8b9a23F58Db6c8849315C04ACf32b2D55cF8",
