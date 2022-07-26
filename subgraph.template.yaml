@@ -402,3 +402,31 @@ dataSources:
         - event: TextChanged(indexed bytes32,indexed string,string)
           handler: handleTextChanged
       file: ./src/mappings/v2/textResolver.ts
+  - kind: ethereum/contract
+    name: JVeBanny
+    network: {{network}}
+    source:
+      address: '{{address_jVeBanny}}'
+      abi: JVeBanny
+      startBlock: {{startBlock_jVeBanny}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - VeNftToken
+      abis:
+        - name: JVeBanny
+          file: ./abis/JVeBanny.json
+      eventHandlers:
+        - event: Lock(indexed uint256,indexed address,uint256,uint256,address,uint256,address)
+          handler: handleLock
+        - event: ExtendLock(indexed uint256,indexed uint256,uint256,uint256,address)
+          handler: handleExtendLock
+        - event: Unlock(indexed uint256,address,uint256,address)
+          handler: handleUnlock
+        - event: Redeem(indexed uint256,address,address,uint256,uint256,string,address)
+          handler: handleRedeem
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/mappings/veBanny.ts
