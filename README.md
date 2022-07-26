@@ -1,10 +1,18 @@
 # Juicebox Subgraph
 
+## Overview
+
 Multiple subgraphs are maintained by [Peel](https://discord.gg/b4rpjgGPHX) in a Graph Studio owned by the [Peel Gnosis safe](https://gnosis-safe.io/app/eth:0x0e9D15e28e3De9bB3CF64FFbC2f2F49Da9Ac545B).
 
 Juicebox mainnet subgraph is published here: https://thegraph.com/explorer/subgraph?id=FVmuv3TndQDNd2BWARV8Y27yuKKukryKXPzvAS5E7htC&view=Overview
 
-## Install
+Contract addresses and startBlocks are defined in `config/<network>.json`
+
+Subgraph data sources (contract definitions and event handlers) are defined in `subgraph.template.yaml`
+
+*`subgraph.yaml` is gitignored and should not be edited.*
+
+## Getting started
 
 ```bash
 yarn install
@@ -12,7 +20,7 @@ yarn install
 yarn global add @graphprotocol/graph-cli
 ```
 
-## Deploy
+## Deploying
 
 To deploy a new subgraph version, first prepare the subgraph for the intended network:
 
@@ -20,7 +28,7 @@ To deploy a new subgraph version, first prepare the subgraph for the intended ne
 yarn prepare <network-name> # mainnet, rinkeby
 ```
 
-- Compiles subgraph.yaml from subgraph.template.yaml, using data defined in `config/<network>.json`
+- Compiles new gitignored `subgraph.yaml` from `subgraph.template.yaml`, using data defined in `config/<network>.json`
 - Generates TS types for the schema defined in `schema.graphql`
 - Checks for missing event handler references. Will error if a handler function has been written in a mapping file, but not referenced in the subgraph.template.yaml
 
