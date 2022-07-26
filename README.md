@@ -43,6 +43,8 @@ Once authenticated:
 graph deploy --studio <subgraph-name>
 ```
 
+> Note: previous subgraph versions will be automatically archived when new versions are deployed, and must be manually unarchived if needed.
+
 To check health of a deployed subgraph: 
 
 ```
