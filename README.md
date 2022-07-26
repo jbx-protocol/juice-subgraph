@@ -1,42 +1,38 @@
 # Juicebox Subgraph
 
-- Mainnet: https://thegraph.com/explorer/subgraph?id=0x63a2368f4b509438ca90186cb1c15156713d5834-0&view=Overview
-- Rinkeby: [unpublished]
+Multiple subgraphs are maintained by [Peel](https://discord.gg/b4rpjgGPHX) in a Graph Studio owned by the [Peel Gnosis safe](https://gnosis-safe.io/app/eth:0x0e9D15e28e3De9bB3CF64FFbC2f2F49Da9Ac545B).
 
-### Install
+Juicebox mainnet subgraph is published here: https://thegraph.com/explorer/subgraph?id=FVmuv3TndQDNd2BWARV8Y27yuKKukryKXPzvAS5E7htC&view=Overview
+
+## Install
 
 ```bash
 yarn install
+
+yarn global add @graphprotocol/graph-cli
 ```
 
-### Prepare
+## Deploy
+
+To deploy a new subgraph version, first prepare the subgraph for the intended network:
 
 ```bash
-yarn prepare:${network} (mainnet, rinkeby)
+yarn prepare <network-name> # mainnet, rinkeby
 ```
 
-- Compiles subgraph.yaml from subgraph.template.yaml
-- Generates types from schema.graphql
-- Checks for missing eventHandler references. `scripts/checkHandlers.js` will warn if a handler function has been written in a mapping file, but not referenced in the subgraph.template.yaml)
+- Compiles subgraph.yaml from subgraph.template.yaml, using data defined in `config/<network>.json`
+- Generates TS types for the schema defined in `schema.graphql`
+- Checks for missing event handler references. Will error if a handler function has been written in a mapping file, but not referenced in the subgraph.template.yaml
 
-### Deploy
-
-First you will need to authenticate with the proper deploy key for the given network. Or you can create your own Subgraph and deploy key for testing:
+First you will need to authenticate with the proper deploy key for the given network (you'll only need to do this once).
 
 ```bash
 graph auth  --studio ${your-key}
 ```
-
-If you are deploying one of the official Juicebox subgraphs:
-
-```bash
-yarn deploy:${network}
-```
-
-If you are deploying your own Subgraph for testing:
+Once authenticated:
 
 ```bash
-graph deploy --node https://api.studio.thegraph.com/deploy/${project}
+graph deploy --studio <subgraph-name>
 ```
 
 To check health of a deployed subgraph: 
