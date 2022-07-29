@@ -25,7 +25,7 @@ yarn global add @graphprotocol/graph-cli
 To deploy a new subgraph version, first prepare the subgraph for the intended network:
 
 ```bash
-yarn prepare <network-name> # mainnet, rinkeby
+yarn prep <network-name> # mainnet, rinkeby
 ```
 
 - Compiles new gitignored `subgraph.yaml` from `subgraph.template.yaml`, using data defined in `config/<network>.json`

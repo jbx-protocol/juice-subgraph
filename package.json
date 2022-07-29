@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
-    "prepare": "node scripts/prepare.js"
+    "prep": "node scripts/prepare.js"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.25.0",
