@@ -1,13 +1,13 @@
 import { log, store } from "@graphprotocol/graph-ts";
 import {
   ExtendLock,
-  JVeBanny,
-  JVeBanny__lockedResult,
+  JBVeNft,
+  JBVeNft__lockedResult,
   Lock,
   Redeem,
   Transfer,
   Unlock,
-} from "../../generated/JVeBanny/JVeBanny";
+} from "../../generated/JBVeNft/JBVeNft";
 import { Participant, VeNftToken } from "../../generated/schema";
 
 export function handleLock(event: Lock): void {
@@ -18,7 +18,7 @@ export function handleLock(event: Lock): void {
   token.tokenId = event.params.tokenId.toI32();
   token.owner = event.params.beneficiary;
 
-  let tokenContract = JVeBanny.bind(event.address);
+  let tokenContract = JBVeNft.bind(event.address);
   let tokenUriCall = tokenContract.try_tokenURI(event.params.tokenId);
   if (tokenUriCall.reverted) {
     log.error("[handleLock] tokenUri call reverted. tokenId:{}", [
@@ -29,7 +29,7 @@ export function handleLock(event: Lock): void {
   }
 
   let lockInfoDataCall = tokenContract.try_locked(event.params.tokenId);
-  let lockInfoData: JVeBanny__lockedResult | null = null;
+  let lockInfoData: JBVeNft__lockedResult | null = null;
   if (lockInfoDataCall.reverted) {
     log.error("[handleLock] locked call reverted. tokenId:{}", [
       event.params.tokenId.toString(),
@@ -54,9 +54,9 @@ export function handleExtendLock(event: ExtendLock): void {
   token.lockDuration = event.params.updatedDuration.toI32();
 
   // TODO: Fix when updatedLockEnd is fixed
-  let tokenContract = JVeBanny.bind(event.address);
+  let tokenContract = JBVeNft.bind(event.address);
   let lockInfoDataCall = tokenContract.try_locked(event.params.oldTokenID);
-  let lockInfoData: JVeBanny__lockedResult | null = null;
+  let lockInfoData: JBVeNft__lockedResult | null = null;
   if (lockInfoDataCall.reverted) {
     log.error("[handleExtendLock] locked call reverted. tokenId:{}", [
       event.params.oldTokenID.toString(),
