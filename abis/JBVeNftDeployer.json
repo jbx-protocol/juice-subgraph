@@ -1,0 +1,170 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract IJBProjects",
+        "name": "_projects",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IJBOperatorStore",
+        "name": "_operatorStore",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "UNAUTHORIZED",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "jbVeNft",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "projectId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IJBVeTokenUriResolver",
+        "name": "uriResolver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IJBTokenStore",
+        "name": "tokenStore",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IJBOperatorStore",
+        "name": "operatorStore",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256[]",
+        "name": "lockDurationOptions",
+        "type": "uint256[]"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "DeployVeNft",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_projectId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_symbol",
+        "type": "string"
+      },
+      {
+        "internalType": "contract IJBVeTokenUriResolver",
+        "name": "_uriResolver",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IJBTokenStore",
+        "name": "_tokenStore",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IJBOperatorStore",
+        "name": "_operatorStore",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_lockDurationOptions",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "deployVeNFT",
+    "outputs": [
+      {
+        "internalType": "contract IJBVeNft",
+        "name": "veNft",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "operatorStore",
+    "outputs": [
+      {
+        "internalType": "contract IJBOperatorStore",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "projects",
+    "outputs": [
+      {
+        "internalType": "contract IJBProjects",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
