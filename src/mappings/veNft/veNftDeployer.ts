@@ -16,6 +16,7 @@ export function handleDeployVeNft(event: DeployVeNft): void {
     deployedVeNftEvent.symbol = event.params.symbol;
     deployedVeNftEvent.timestamp = event.block.timestamp.toI32();
     deployedVeNftEvent.txHash = event.transaction.hash;
+    deployedVeNftEvent.address = event.address;
     deployedVeNftEvent.save();
   }
 }

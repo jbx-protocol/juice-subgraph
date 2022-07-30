@@ -34,7 +34,6 @@ function replaceStartBlock(config) {
 
 const config = JSON.parse(fs.readFileSync(`config/${network}.json`));
 replaceStartBlock(config);
-console.log(config);
 
 if (!config) {
   console.log("Error: missing config file");
