@@ -1,4 +1,4 @@
-import { log, store } from "@graphprotocol/graph-ts";
+import { log } from "@graphprotocol/graph-ts";
 import {
   ExtendLock,
   JBVeNft,
@@ -7,8 +7,8 @@ import {
   Redeem,
   Transfer,
   Unlock,
-} from "../../generated/JBVeNft/JBVeNft";
-import { Participant, VeNftToken } from "../../generated/schema";
+} from "../../../generated/JBVeNft/JBVeNft";
+import { VeNftToken } from "../../../generated/schema";
 
 export function handleLock(event: Lock): void {
   let token = new VeNftToken(event.params.tokenId.toHexString().toLowerCase());

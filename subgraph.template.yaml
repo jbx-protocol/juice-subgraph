@@ -429,4 +429,24 @@ dataSources:
           handler: handleRedeem
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-      file: ./src/mappings/veNft.ts
+      file: ./src/mappings/veNft/veNft.ts
+  - kind: ethereum/contract
+    name: JBVeNftDeployer
+    network: {{network}}
+    source:
+      address: '{{address_jbVeNftDeployer}}'
+      abi: JBVeNftDeployer
+      startBlock: {{startBlock_jbVeNftDeployer}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - DeployedVeNftEvent
+      abis:
+        - name: JBVeNftDeployer
+          file: ./abis/JBVeNftDeployer.json
+      eventHandlers:
+        - event: DeployVeNft(address,indexed uint256,string,string,address,address,address,uint256[],address,address)
+          handler: handleDeployVeNft
+      file: ./src/mappings/veNft/veNftDeployer.ts
