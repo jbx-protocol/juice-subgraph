@@ -2,8 +2,19 @@ const fs = require("fs");
 const jsyaml = require("js-yaml");
 const mustache = require("mustache");
 const graph = require("@graphprotocol/graph-cli/src/cli");
+const commander = require("commander");
 
-const network = process.argv.slice(2)[0];
+commander
+  .option("-n, --network <network>", "Network")
+  .option("-s, --startBlock <startBlock>", "Start Block")
+  .parse(process.argv);
+const options = commander.opts();
+console.log(options);
+
+const network = options.network || undefined;
+const startBlock = parseInt(options.startBlock) || undefined;
+
+console.log(network, startBlock);
 
 if (!network) {
   console.log("Error: network undefined");
@@ -12,7 +23,18 @@ if (!network) {
 
 console.log("Network:", network);
 
+// For each key in config, if it starts with "startBlock_", replace it with the value of the startBlock option
+function replaceStartBlock(config) {
+  for (const key in config) {
+    if (key.startsWith("startBlock_")) {
+      config[key] = startBlock ? startBlock : config[key];
+    }
+  }
+}
+
 const config = JSON.parse(fs.readFileSync(`config/${network}.json`));
+replaceStartBlock(config);
+console.log(config);
 
 if (!config) {
   console.log("Error: missing config file");
