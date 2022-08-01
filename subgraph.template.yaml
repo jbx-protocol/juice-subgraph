@@ -1,16 +1,14 @@
 specVersion: 0.0.4
 description: Juicebox protocol on {{network}}
-# graft:
-#   base: QmV37C7hKimDno8Qhdzfg6fH2HjZJJDoAuRjaNUvfSPdtr
-#   block: 14874371
-# graft:
-#   base: QmQfWacsGk23QiwH2eH1SNSVrYB9o1jfyhrCWakeYiZ8Ku
-#   block: 10635479
 features:
   - fullTextSearch
-  # - grafting
+  - grafting
+graft:
+  base: QmcZRMx3QaYoMB6NHzq5AnSbAMKqJmsboPjKgjzV3zu4hY
+  block: {{startBlock_jbVeNftDeployer}}
 schema:
   file: ./schema.graphql
+
 templates:
   - name: ERC20
     kind: ethereum/contract
@@ -50,6 +48,33 @@ templates:
           handler: handleOwnershipTransferred
         - event: SetDefaultValues(indexed uint256,indexed address,bool,string,bytes,bool,address)
           handler: handleSetDefaultValues
+  - name: JBVeNft
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: JBVeNft
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/veNft/veNft.ts
+      entities:
+        - VeNftToken
+      abis:
+        - name: JBVeNft
+          file: ./abis/JBVeNft.json
+      eventHandlers:
+        - event: Lock(indexed uint256,indexed address,uint256,uint256,address,uint256,address)
+          handler: handleLock
+        - event: ExtendLock(indexed uint256,indexed uint256,uint256,uint256,address)
+          handler: handleExtendLock
+        - event: Unlock(indexed uint256,address,uint256,address)
+          handler: handleUnlock
+        - event: Redeem(indexed uint256,address,address,uint256,uint256,string,address)
+          handler: handleRedeem
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+          
 dataSources:
   - kind: ethereum/contract
     name: Projects
@@ -402,34 +427,6 @@ dataSources:
         - event: TextChanged(indexed bytes32,indexed string,string)
           handler: handleTextChanged
       file: ./src/mappings/v2/textResolver.ts
-  - kind: ethereum/contract
-    name: JBVeNft
-    network: {{network}}
-    source:
-      address: '{{address_jbVeNft}}'
-      abi: JBVeNft
-      startBlock: {{startBlock_jbVeNft}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - VeNftToken
-      abis:
-        - name: JBVeNft
-          file: ./abis/JBVeNft.json
-      eventHandlers:
-        - event: Lock(indexed uint256,indexed address,uint256,uint256,address,uint256,address)
-          handler: handleLock
-        - event: ExtendLock(indexed uint256,indexed uint256,uint256,uint256,address)
-          handler: handleExtendLock
-        - event: Unlock(indexed uint256,address,uint256,address)
-          handler: handleUnlock
-        - event: Redeem(indexed uint256,address,address,uint256,uint256,string,address)
-          handler: handleRedeem
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-      file: ./src/mappings/veNft/veNft.ts
   - kind: ethereum/contract
     name: JBVeNftDeployer
     network: {{network}}

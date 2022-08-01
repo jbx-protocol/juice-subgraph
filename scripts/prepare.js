@@ -7,14 +7,13 @@ const commander = require("commander");
 commander
   .option("-n, --network <network>", "Network")
   .option("-s, --startBlock <startBlock>", "Start Block")
+  .option("-f, --filename <filename>", "Filename")
   .parse(process.argv);
 const options = commander.opts();
-console.log(options);
 
 const network = options.network || undefined;
 const startBlock = parseInt(options.startBlock) || undefined;
-
-console.log(network, startBlock);
+const filename = options.filename || "subgraph";
 
 if (!network) {
   console.log("Error: network undefined");
@@ -64,7 +63,7 @@ function writeContractAddresses() {
 }
 
 function writeSubgraph() {
-  const subgraphPath = "subgraph.yaml";
+  const subgraphPath = `${filename}.yaml`;
 
   // Delete subgraph.yaml if exists
   fs.rmSync(subgraphPath, { force: true });
@@ -74,14 +73,14 @@ function writeSubgraph() {
     fs.writeFileSync(
       subgraphPath,
       mustache
-        .render(fs.readFileSync("subgraph.template.yaml").toString(), config)
+        .render(fs.readFileSync(`${filename}.template.yaml`).toString(), config)
         .toString()
     );
   } catch (e) {
-    console.log("Error writing subgraph.yaml", e);
+    console.log(`Error writing ${filename}.yaml`, e);
   }
 
-  console.log("Wrote subgraph.yaml ✅");
+  console.log(`Wrote ${filename}.yaml ✅`);
 }
 
 // Sanity check to ensure that all functions exported from mapping files are defined in subgraph.yaml
@@ -100,7 +99,7 @@ function checkHandlers() {
 
   recursiveReadDirSync("./src/mappings");
 
-  const subgraph = fs.readFileSync("subgraph.yaml").toString();
+  const subgraph = fs.readFileSync(`${filename}.yaml`).toString();
 
   const tofind = "\nexport function";
   const mappingHandlers = {};
@@ -162,6 +161,6 @@ writeContractAddresses();
 
 writeSubgraph();
 
-checkHandlers();
+// checkHandlers();
 
 graph.run("codegen");

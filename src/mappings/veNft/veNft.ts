@@ -17,6 +17,7 @@ export function handleLock(event: Lock): void {
   token.createdAt = event.block.timestamp.toI32();
   token.tokenId = event.params.tokenId.toI32();
   token.owner = event.params.beneficiary;
+  token.contractAddress = event.address;
 
   let tokenContract = JBVeNft.bind(event.address);
   let tokenUriCall = tokenContract.try_tokenURI(event.params.tokenId);

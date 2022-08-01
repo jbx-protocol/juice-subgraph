@@ -1,6 +1,7 @@
 import { DeployVeNft } from "../../../generated/JBVeNftDeployer/JBVeNftDeployer";
 import { Project, DeployedVeNftEvent } from "../../../generated/schema";
 import { idForProject, idForProjectTx } from "../../utils";
+import { JBVeNft } from "../../../generated/templates";
 
 export function handleDeployVeNft(event: DeployVeNft): void {
   let cv = "2";
@@ -18,5 +19,7 @@ export function handleDeployVeNft(event: DeployVeNft): void {
     deployedVeNftEvent.txHash = event.transaction.hash;
     deployedVeNftEvent.address = event.address;
     deployedVeNftEvent.save();
+
+    JBVeNft.create(event.params.jbVeNft);
   }
 }
