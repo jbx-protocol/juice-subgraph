@@ -12,7 +12,6 @@
     "mustache": "^4.0.1"
   },
   "devDependencies": {
-    "commander": "^9.4.0",
     "fs": "^0.0.1-security",
     "js-yaml": "^4.1.0"
   }

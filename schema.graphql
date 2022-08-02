@@ -80,7 +80,7 @@ type Project @entity {
   useAllowanceEvents: [UseAllowanceEvent!]! @derivedFrom(field: "project")
   projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
   ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
-  deployedVeNftEvents: [DeployedVeNftEvent!]! @derivedFrom(field: "project")
+  deployVeNftEvents: [DeployVeNftEvent!]! @derivedFrom(field: "project")
   veNftContract: VeNftContract! @derivedFrom(field: "project")
 }
 
@@ -128,7 +128,7 @@ type ProjectEvent @entity {
   distributeToPayoutSplitEvent: DistributeToPayoutSplitEvent
   useAllowanceEvent: UseAllowanceEvent
   deployETHERC20ProjectPayerEvent: DeployETHERC20ProjectPayerEvent
-  deployedVeNftEvent: DeployedVeNftEvent
+  deployVeNftEvent: DeployVeNftEvent
 }
 
 # v1.0, v1.1, v2
@@ -432,7 +432,8 @@ type VeNftToken @entity {
   tokenId: Int!
   tokenUri: String!
   createdAt: Int!
-  redeemedAt: Int!
+  redeemedAt: Int
+  unlockedAt: Int
   owner: Bytes!
   participant: Participant!
   lockAmount: BigInt!
@@ -440,7 +441,6 @@ type VeNftToken @entity {
   lockDuration: Int!
   lockUseJbToken: Boolean!
   lockAllowPublicExtension: Boolean!
-  unlockedAt: Int!
   contract: VeNftContract!
 }
 
@@ -454,12 +454,12 @@ type VeNftContract @entity {
   tokens: [VeNftToken!]! @derivedFrom(field: "contract")
 }
 
-type DeployedVeNftEvent @entity {
+type DeployVeNftEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
 
-  VeNftContract: VeNftContract!
+  veNftContract: VeNftContract!
 }

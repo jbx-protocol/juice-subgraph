@@ -171,6 +171,9 @@ export function saveNewProjectEvent(
     case ProjectEventKey.deployETHERC20ProjectPayerEvent:
       projectEvent.deployETHERC20ProjectPayerEvent = id;
       break;
+    case ProjectEventKey.deployVeNftEvent:
+      projectEvent.deployVeNftEvent = id;
+      break;
   }
 
   projectEvent.save();

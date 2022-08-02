@@ -1,7 +1,7 @@
 import { DeployVeNft } from "../../../generated/JBVeNftDeployer/JBVeNftDeployer";
 import {
   Project,
-  DeployedVeNftEvent,
+  DeployVeNftEvent,
   VeNftContract,
 } from "../../../generated/schema";
 import { idForProject, idForProjectTx, idForVeNftContract } from "../../utils";
@@ -12,15 +12,15 @@ export function handleDeployVeNft(event: DeployVeNft): void {
   let projectId = idForProject(event.params.projectId, cv);
   let project = Project.load(projectId);
   if (!project) return;
-  let deployedVeNftEvent = new DeployedVeNftEvent(
+  let deployVeNftEvent = new DeployVeNftEvent(
     idForProjectTx(event.params.projectId, cv, event)
   );
-  if (deployedVeNftEvent) {
-    deployedVeNftEvent.project = project.id;
-    deployedVeNftEvent.projectId = project.projectId;
-    deployedVeNftEvent.timestamp = event.block.timestamp.toI32();
-    deployedVeNftEvent.txHash = event.transaction.hash;
-    deployedVeNftEvent.save();
+  if (deployVeNftEvent) {
+    deployVeNftEvent.project = project.id;
+    deployVeNftEvent.projectId = project.projectId;
+    deployVeNftEvent.timestamp = event.block.timestamp.toI32();
+    deployVeNftEvent.txHash = event.transaction.hash;
+    deployVeNftEvent.save();
 
     JBVeNft.create(event.params.jbVeNft);
   }

@@ -2,18 +2,8 @@ const fs = require("fs");
 const jsyaml = require("js-yaml");
 const mustache = require("mustache");
 const graph = require("@graphprotocol/graph-cli/src/cli");
-const commander = require("commander");
 
-commander
-  .option("-n, --network <network>", "Network")
-  .option("-s, --startBlock <startBlock>", "Start Block")
-  .option("-f, --filename <filename>", "Filename")
-  .parse(process.argv);
-const options = commander.opts();
-
-const network = options.network || undefined;
-const startBlock = parseInt(options.startBlock) || undefined;
-const filename = options.filename || "subgraph";
+const network = process.argv.slice(2)[0];
 
 if (!network) {
   console.log("Error: network undefined");
@@ -22,17 +12,7 @@ if (!network) {
 
 console.log("Network:", network);
 
-// For each key in config, if it starts with "startBlock_", replace it with the value of the startBlock option
-function replaceStartBlock(config) {
-  for (const key in config) {
-    if (key.startsWith("startBlock_")) {
-      config[key] = startBlock ? startBlock : config[key];
-    }
-  }
-}
-
 const config = JSON.parse(fs.readFileSync(`config/${network}.json`));
-replaceStartBlock(config);
 
 if (!config) {
   console.log("Error: missing config file");
@@ -63,7 +43,7 @@ function writeContractAddresses() {
 }
 
 function writeSubgraph() {
-  const subgraphPath = `${filename}.yaml`;
+  const subgraphPath = "subgraph.yaml";
 
   // Delete subgraph.yaml if exists
   fs.rmSync(subgraphPath, { force: true });
@@ -73,14 +53,14 @@ function writeSubgraph() {
     fs.writeFileSync(
       subgraphPath,
       mustache
-        .render(fs.readFileSync(`${filename}.template.yaml`).toString(), config)
+        .render(fs.readFileSync("subgraph.template.yaml").toString(), config)
         .toString()
     );
   } catch (e) {
-    console.log(`Error writing ${filename}.yaml`, e);
+    console.log("Error writing subgraph.yaml", e);
   }
 
-  console.log(`Wrote ${filename}.yaml ✅`);
+  console.log("Wrote subgraph.yaml ✅");
 }
 
 // Sanity check to ensure that all functions exported from mapping files are defined in subgraph.yaml
@@ -99,7 +79,7 @@ function checkHandlers() {
 
   recursiveReadDirSync("./src/mappings");
 
-  const subgraph = fs.readFileSync(`${filename}.yaml`).toString();
+  const subgraph = fs.readFileSync("subgraph.yaml").toString();
 
   const tofind = "\nexport function";
   const mappingHandlers = {};
@@ -161,6 +141,6 @@ writeContractAddresses();
 
 writeSubgraph();
 
-// checkHandlers();
+checkHandlers();
 
 graph.run("codegen");

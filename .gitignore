@@ -15,7 +15,6 @@ yarn-error.log*
 .vscode/
 public/
 
-*.yaml
-!*.template.yaml
+subgraph.yaml
 
 src/contractAddresses.ts
