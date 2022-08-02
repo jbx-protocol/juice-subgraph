@@ -432,7 +432,7 @@ type VeNftToken @entity {
   tokenId: Int!
   tokenUri: String!
   createdAt: Int!
-  redeemedAt: Int
+  redeemedAt: Int!
   owner: Bytes!
   participant: Participant!
   lockAmount: BigInt!
@@ -441,7 +441,7 @@ type VeNftToken @entity {
   lockUseJbToken: Boolean!
   lockAllowPublicExtension: Boolean!
   unlockedAt: Int!
-  contract: VeNftContract
+  contract: VeNftContract!
 }
 
 type VeNftContract @entity {
@@ -461,5 +461,5 @@ type DeployedVeNftEvent @entity {
   timestamp: Int!
   txHash: Bytes!
 
-  VeNftContract: VeNftContract
+  VeNftContract: VeNftContract!
 }
