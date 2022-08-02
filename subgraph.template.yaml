@@ -3,9 +3,6 @@ description: Juicebox protocol on {{network}}
 features:
   - fullTextSearch
   - grafting
-graft:
-  base: QmcZRMx3QaYoMB6NHzq5AnSbAMKqJmsboPjKgjzV3zu4hY
-  block: {{startBlock_jbVeNftDeployer}}
 schema:
   file: ./schema.graphql
 
