@@ -1,13 +1,14 @@
-import { BigInt, dataSource, log } from "@graphprotocol/graph-ts";
+import { BigInt, dataSource } from "@graphprotocol/graph-ts";
 
 import { Participant } from "../../generated/schema";
 import { Transfer } from "../../generated/templates/ERC20/ERC20";
-import { idForParticipant, idForProject, updateBalance } from "../utils";
+import { newParticipant, updateParticipantBalance } from "../utils/entity";
+import { idForParticipant } from "../utils/ids";
 
 export function handleERC20Transfer(event: Transfer): void {
-  let context = dataSource.context();
-  let projectId = BigInt.fromI32(context.getI32("projectId"));
-  let cv = context.getString("cv");
+  const context = dataSource.context();
+  const projectId = BigInt.fromI32(context.getI32("projectId"));
+  const cv = context.getString("cv");
 
   let sender = Participant.load(
     idForParticipant(projectId, cv, event.params.from)
@@ -16,31 +17,19 @@ export function handleERC20Transfer(event: Transfer): void {
   if (sender) {
     sender.unstakedBalance = sender.unstakedBalance.minus(event.params.value);
 
-    updateBalance(sender);
+    updateParticipantBalance(sender);
 
     sender.save();
   }
 
-  let receiverId = idForParticipant(projectId, cv, event.params.to);
+  const receiverId = idForParticipant(projectId, cv, event.params.to);
   let receiver = Participant.load(receiverId);
-
-  if (!receiver) {
-    receiver = new Participant(receiverId);
-    receiver.cv = cv;
-    receiver.projectId = projectId.toI32();
-    receiver.project = idForProject(projectId, cv);
-    receiver.wallet = event.params.to;
-    receiver.stakedBalance = BigInt.fromString("0");
-    receiver.unstakedBalance = BigInt.fromString("0");
-    receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = 0;
-  }
-
+  if (!receiver) receiver = newParticipant(cv, projectId, event.params.to);
   if (!receiver) return;
 
   receiver.unstakedBalance = receiver.unstakedBalance.plus(event.params.value);
 
-  updateBalance(receiver);
+  updateParticipantBalance(receiver);
 
   receiver.save();
 }

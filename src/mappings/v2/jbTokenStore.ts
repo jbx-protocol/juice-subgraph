@@ -14,26 +14,30 @@ import {
   ProtocolV2Log,
 } from "../../../generated/schema";
 import { ERC20 } from "../../../generated/templates";
+import { PROTOCOL_ID } from "../../constants";
 import { CV, ProjectEventKey } from "../../types";
+import {
+  newParticipant,
+  newProtocolV2Log,
+  saveNewProjectEvent,
+  updateParticipantBalance,
+  updateProtocolEntity,
+} from "../../utils/entity";
 import {
   idForParticipant,
   idForProject,
   idForProjectTx,
-  protocolId,
-  saveNewProjectEvent,
-  updateBalance,
-  updateProtocolEntity,
-} from "../../utils";
+} from "../../utils/ids";
 
 const cv: CV = "2";
 
 export function handleBurn(event: Burn): void {
-  let holderId = idForParticipant(
+  const holderId = idForParticipant(
     event.params.projectId,
     cv,
     event.params.holder
   );
-  let participant = Participant.load(holderId);
+  const participant = Participant.load(holderId);
 
   if (!participant) return;
 
@@ -53,13 +57,13 @@ export function handleBurn(event: Burn): void {
     }
   }
 
-  updateBalance(participant);
+  updateParticipantBalance(participant);
 
   participant.save();
 }
 
 export function handleClaim(event: Claim): void {
-  let participant = Participant.load(
+  const participant = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
 
@@ -68,15 +72,15 @@ export function handleClaim(event: Claim): void {
       event.params.amount
     );
 
-    updateBalance(participant);
+    updateParticipantBalance(participant);
 
     participant.save();
   }
 }
 
 export function handleIssue(event: Issue): void {
-  let projectId = idForProject(event.params.projectId, cv);
-  let project = Project.load(projectId);
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = Project.load(projectId);
 
   if (!project) {
     log.error("[handleIssue] Missing project. ID:{}", [
@@ -85,7 +89,7 @@ export function handleIssue(event: Issue): void {
     return;
   }
 
-  let deployedERC20Event = new DeployedERC20Event(
+  const deployedERC20Event = new DeployedERC20Event(
     idForProjectTx(event.params.projectId, cv, event)
   );
   if (deployedERC20Event) {
@@ -107,15 +111,15 @@ export function handleIssue(event: Issue): void {
     );
   }
 
-  let protocolLog = ProtocolV2Log.load(protocolId);
-  if (!protocolLog) protocolLog = new ProtocolV2Log(protocolId);
-  if (protocolLog) {
-    protocolLog.erc20Count = protocolLog.erc20Count + 1;
-    protocolLog.save();
+  let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
+  if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
+  if (protocolV2Log) {
+    protocolV2Log.erc20Count = protocolV2Log.erc20Count + 1;
+    protocolV2Log.save();
   }
   updateProtocolEntity();
 
-  let erc20Context = new DataSourceContext();
+  const erc20Context = new DataSourceContext();
   erc20Context.setI32("projectId", event.params.projectId.toI32());
   erc20Context.setString("cv", "2");
   ERC20.createWithContext(event.params.token, erc20Context);
@@ -125,37 +129,26 @@ export function handleMint(event: Mint): void {
   // Only handle updating unclaimed token balance
   if (event.params.preferClaimedTokens) return;
 
-  let receiverId = idForParticipant(
+  const receiverId = idForParticipant(
     event.params.projectId,
     cv,
     event.params.holder
   );
-  let projectId = idForProject(event.params.projectId, cv);
   let receiver = Participant.load(receiverId);
-
   if (!receiver) {
-    receiver = new Participant(receiverId);
-    receiver.project = projectId;
-    receiver.cv = cv;
-    receiver.projectId = event.params.projectId.toI32();
-    receiver.wallet = event.params.holder;
-    receiver.stakedBalance = BigInt.fromString("0");
-    receiver.unstakedBalance = BigInt.fromString("0");
-    receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = 0;
+    receiver = newParticipant(cv, event.params.projectId, event.params.holder);
   }
 
   receiver.stakedBalance = receiver.stakedBalance.plus(event.params.amount);
 
-  updateBalance(receiver);
+  updateParticipantBalance(receiver);
 
   receiver.save();
 }
 
 export function handleTransfer(event: Transfer): void {
-  let projectId = idForProject(event.params.projectId, cv);
-  let project = Project.load(projectId);
-
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = Project.load(projectId);
   if (!project) {
     log.error("[handleTransfer] Missing project. ID:{}", [
       idForProject(event.params.projectId, cv),
@@ -163,43 +156,31 @@ export function handleTransfer(event: Transfer): void {
     return;
   }
 
-  let sender = Participant.load(
+  const sender = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
-
   if (sender) {
     sender.stakedBalance = sender.stakedBalance.minus(event.params.amount);
 
-    updateBalance(sender);
+    updateParticipantBalance(sender);
 
     sender.save();
   }
 
-  let receiverId = idForParticipant(
+  const receiverId = idForParticipant(
     event.params.projectId,
     cv,
     event.params.recipient
   );
-
   let receiver = Participant.load(receiverId);
-
   if (!receiver) {
-    receiver = new Participant(receiverId);
-    receiver.project = project.id;
-    receiver.cv = cv;
-    receiver.projectId = project.projectId;
-    receiver.wallet = event.params.recipient;
-    receiver.stakedBalance = BigInt.fromString("0");
-    receiver.unstakedBalance = BigInt.fromString("0");
-    receiver.totalPaid = BigInt.fromString("0");
-    receiver.lastPaidTimestamp = 0;
+    receiver = newParticipant(cv, event.params.projectId, event.params.holder);
   }
-
   if (!receiver) return;
 
   receiver.stakedBalance = receiver.stakedBalance.plus(event.params.amount);
 
-  updateBalance(receiver);
+  updateParticipantBalance(receiver);
 
   receiver.save();
 }

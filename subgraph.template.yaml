@@ -19,7 +19,7 @@ templates:
       abi: ERC20
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/erc20.ts
       entities:
@@ -37,7 +37,7 @@ templates:
       abi: JBETHERC20ProjectPayer
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/v2/jbETHERC20ProjectPayer.ts
       entities:
@@ -60,7 +60,7 @@ dataSources:
       startBlock: {{startBlock_projects}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Project
@@ -81,6 +81,8 @@ dataSources:
           handler: handleSetUri
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransferOwnership
+      # blockHandlers:
+      #   - handler: handleBlock
       file: ./src/mappings/v1.x/projects.ts
   - kind: ethereum/contract
     name: TicketBooth
@@ -91,7 +93,7 @@ dataSources:
       startBlock: {{startBlock_ticketBooth}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - DeployedERC20Event
@@ -126,7 +128,7 @@ dataSources:
       startBlock: {{startBlock_terminalV1}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - DistributeToPayoutModEvent
@@ -174,7 +176,7 @@ dataSources:
       startBlock: {{startBlock_terminalV1_1}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - DistributeToPayoutModEvent
@@ -220,7 +222,7 @@ dataSources:
       startBlock: {{startBlock_jbController}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - DistributeReservedTokensEvent
@@ -246,7 +248,7 @@ dataSources:
       startBlock: {{startBlock_jbTokenStore}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - DeployedERC20Event
@@ -278,7 +280,7 @@ dataSources:
       startBlock: {{startBlock_jbProjects}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Project
@@ -305,7 +307,7 @@ dataSources:
       startBlock: {{startBlock_jbETHPaymentTerminal}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - DistributePayoutsEvent
@@ -345,7 +347,7 @@ dataSources:
       startBlock: {{startBlock_jbProjectHandles}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Project
@@ -365,7 +367,7 @@ dataSources:
       startBlock: {{startBlock_jbETHERC20ProjectPayerDeployer}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - ETHERC20ProjectPayer
@@ -388,7 +390,7 @@ dataSources:
       startBlock: {{startBlock_textResolver}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Project
@@ -411,7 +413,7 @@ dataSources:
       startBlock: {{startBlock_jVeBanny}}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - VeNftToken

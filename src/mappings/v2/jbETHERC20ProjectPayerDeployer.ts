@@ -7,13 +7,14 @@ import {
 } from "../../../generated/schema";
 import { JBETHERC20ProjectPayer } from "../../../generated/templates";
 import { CV, ProjectEventKey } from "../../types";
-import { idForProject, saveNewProjectEvent } from "../../utils";
+import { saveNewProjectEvent } from "../../utils/entity";
+import { idForProject } from "../../utils/ids";
 
 const cv: CV = "2";
 
 export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   // Create dataSource context
-  let projectPayerContext = new DataSourceContext();
+  const projectPayerContext = new DataSourceContext();
   projectPayerContext.setBytes("address", event.params.projectPayer);
   JBETHERC20ProjectPayer.createWithContext(
     event.params.projectPayer,
@@ -21,7 +22,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   );
 
   // Create entity
-  let projectPayer = new ETHERC20ProjectPayer(
+  const projectPayer = new ETHERC20ProjectPayer(
     event.params.projectPayer.toHexString().toLowerCase()
   );
   if (!projectPayer) return;
@@ -37,7 +38,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   projectPayer.projectId = event.params.defaultProjectId.toI32();
   projectPayer.save();
 
-  let deployProjectPayerEvent = new DeployETHERC20ProjectPayerEvent(
+  const deployProjectPayerEvent = new DeployETHERC20ProjectPayerEvent(
     projectPayer.address.toHexString().toLowerCase()
   );
   if (!deployProjectPayerEvent) return;

@@ -18,8 +18,8 @@ export function handleLock(event: Lock): void {
   token.tokenId = event.params.tokenId.toI32();
   token.owner = event.params.beneficiary;
 
-  let tokenContract = JVeBanny.bind(event.address);
-  let tokenUriCall = tokenContract.try_tokenURI(event.params.tokenId);
+  const tokenContract = JVeBanny.bind(event.address);
+  const tokenUriCall = tokenContract.try_tokenURI(event.params.tokenId);
   if (tokenUriCall.reverted) {
     log.error("[handleLock] tokenUri call reverted. tokenId:{}", [
       event.params.tokenId.toString(),
@@ -28,7 +28,7 @@ export function handleLock(event: Lock): void {
     token.tokenUri = tokenUriCall.value;
   }
 
-  let lockInfoDataCall = tokenContract.try_locked(event.params.tokenId);
+  const lockInfoDataCall = tokenContract.try_locked(event.params.tokenId);
   let lockInfoData: JVeBanny__lockedResult | null = null;
   if (lockInfoDataCall.reverted) {
     log.error("[handleLock] locked call reverted. tokenId:{}", [
@@ -46,7 +46,7 @@ export function handleLock(event: Lock): void {
 }
 
 export function handleExtendLock(event: ExtendLock): void {
-  let token = VeNftToken.load(
+  const token = VeNftToken.load(
     event.params.oldTokenID.toHexString().toLowerCase()
   );
   if (!token) return;
@@ -54,8 +54,8 @@ export function handleExtendLock(event: ExtendLock): void {
   token.lockDuration = event.params.updatedDuration.toI32();
 
   // TODO: Fix when updatedLockEnd is fixed
-  let tokenContract = JVeBanny.bind(event.address);
-  let lockInfoDataCall = tokenContract.try_locked(event.params.oldTokenID);
+  const tokenContract = JVeBanny.bind(event.address);
+  const lockInfoDataCall = tokenContract.try_locked(event.params.oldTokenID);
   let lockInfoData: JVeBanny__lockedResult | null = null;
   if (lockInfoDataCall.reverted) {
     log.error("[handleExtendLock] locked call reverted. tokenId:{}", [
@@ -85,7 +85,9 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handleTransfer(event: Transfer): void {
-  let token = VeNftToken.load(event.params.tokenId.toHexString().toLowerCase());
+  const token = VeNftToken.load(
+    event.params.tokenId.toHexString().toLowerCase()
+  );
   if (!token) return;
 
   token.owner = event.params.to;

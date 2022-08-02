@@ -1,4 +1,4 @@
-import { log } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
@@ -21,24 +21,31 @@ import {
   Redeem,
   Tap,
 } from "../../../generated/TerminalV1_1/TerminalV1_1";
+import { PROTOCOL_ID } from "../../constants";
 import { ProjectEventKey } from "../../types";
+import { cvForV1Project } from "../../utils/cv";
 import {
-  cvForV1Project,
+  newParticipant,
+  newProtocolV1Log,
+  saveNewProjectEvent,
+  updateProtocolEntity,
+} from "../../utils/entity";
+import {
   idForParticipant,
   idForProject,
   idForProjectTx,
-  protocolId,
-  saveNewProjectEvent,
-  updateProtocolEntity,
-} from "../../utils";
+} from "../../utils/ids";
+import { addToTrendingPayments } from "../../utils/payments";
 
 export function handlePay(event: Pay): void {
-  let cv = cvForV1Project(event.params.projectId);
-  let pay = new PayEvent(
+  const cv = cvForV1Project(event.params.projectId);
+  if (cv == "0") return;
+
+  const pay = new PayEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
-  let projectId = idForProject(event.params.projectId, cv);
-  let project = Project.load(projectId);
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = Project.load(projectId);
 
   // Safety check: fail if project doesn't exist
   if (!project) {
@@ -69,30 +76,37 @@ export function handlePay(event: Pay): void {
       cv,
       ProjectEventKey.payEvent
     );
+
+    addToTrendingPayments(
+      projectId,
+      event.params.amount,
+      event.block.timestamp
+    );
   }
 
-  let protocolLog = ProtocolV1Log.load(protocolId);
-  if (!protocolLog) protocolLog = new ProtocolV1Log(protocolId);
-  if (protocolLog) {
-    protocolLog.volumePaid = protocolLog.volumePaid.plus(event.params.amount);
-    protocolLog.paymentsCount = protocolLog.paymentsCount + 1;
-    protocolLog.save();
+  let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
+  if (!protocolV1Log) protocolV1Log = newProtocolV1Log();
+  if (protocolV1Log) {
+    protocolV1Log.volumePaid = protocolV1Log.volumePaid.plus(
+      event.params.amount
+    );
+    protocolV1Log.paymentsCount = protocolV1Log.paymentsCount + 1;
+    protocolV1Log.save();
   }
   updateProtocolEntity();
 
-  let participantId = idForParticipant(
+  const participantId = idForParticipant(
     event.params.projectId,
     cv,
     event.params.beneficiary
   );
   let participant = Participant.load(participantId);
-  if (participant === null) {
-    participant = new Participant(participantId);
-    participant.cv = cv;
-    participant.projectId = project.projectId;
-    participant.wallet = event.params.beneficiary;
-    participant.totalPaid = event.params.amount;
-    participant.project = project.id;
+  if (!participant) {
+    participant = newParticipant(
+      cv,
+      event.params.projectId,
+      event.params.beneficiary
+    );
   } else {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }
@@ -103,12 +117,14 @@ export function handlePay(event: Pay): void {
 export function handlePrintTickets(event: PrintTickets): void {
   // Note: Receiver balance is updated in the ticketBooth event handler
 
-  let cv = cvForV1Project(event.params.projectId);
-  let mintTokensEvent = new MintTokensEvent(
+  const cv = cvForV1Project(event.params.projectId);
+  if (cv == "0") return;
+  const mintTokensEvent = new MintTokensEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
-  let projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, cv);
   if (!mintTokensEvent) return;
+  mintTokensEvent.cv = cv;
   mintTokensEvent.projectId = event.params.projectId.toI32();
   mintTokensEvent.amount = event.params.amount;
   mintTokensEvent.beneficiary = event.params.beneficiary;
@@ -129,9 +145,10 @@ export function handlePrintTickets(event: PrintTickets): void {
 }
 
 export function handleTap(event: Tap): void {
-  let cv = cvForV1Project(event.params.projectId);
-  let projectId = idForProject(event.params.projectId, cv);
-  let tapEvent = new TapEvent(
+  const cv = cvForV1Project(event.params.projectId);
+  if (cv == "0") return;
+  const projectId = idForProject(event.params.projectId, cv);
+  const tapEvent = new TapEvent(
     idForProjectTx(event.params.projectId, cv, event)
   );
   if (tapEvent) {
@@ -158,7 +175,7 @@ export function handleTap(event: Tap): void {
     );
   }
 
-  let project = Project.load(projectId);
+  const project = Project.load(projectId);
   if (project) {
     project.currentBalance = project.currentBalance
       .minus(event.params.govFeeAmount)
@@ -168,10 +185,11 @@ export function handleTap(event: Tap): void {
 }
 
 export function handleRedeem(event: Redeem): void {
-  let cv = cvForV1Project(event.params._projectId);
-  let projectId = idForProject(event.params._projectId, cv);
+  const cv = cvForV1Project(event.params._projectId);
+  if (cv == "0") return;
+  const projectId = idForProject(event.params._projectId, cv);
 
-  let redeemEvent = new RedeemEvent(
+  const redeemEvent = new RedeemEvent(
     idForProjectTx(event.params._projectId, cv, event, true)
   );
   if (redeemEvent) {
@@ -196,18 +214,18 @@ export function handleRedeem(event: Redeem): void {
     );
   }
 
-  let protocolLog = ProtocolV1Log.load(protocolId);
-  if (!protocolLog) protocolLog = new ProtocolV1Log(protocolId);
-  if (protocolLog) {
-    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
+  let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
+  if (!protocolV1Log) protocolV1Log = newProtocolV1Log();
+  if (protocolV1Log) {
+    protocolV1Log.volumeRedeemed = protocolV1Log.volumeRedeemed.plus(
       event.params.amount
     );
-    protocolLog.redeemCount = protocolLog.redeemCount + 1;
-    protocolLog.save();
+    protocolV1Log.redeemCount = protocolV1Log.redeemCount + 1;
+    protocolV1Log.save();
   }
   updateProtocolEntity();
 
-  let project = Project.load(projectId);
+  const project = Project.load(projectId);
   if (project) {
     project.totalRedeemed = project.totalRedeemed.plus(
       event.params.returnAmount
@@ -220,9 +238,10 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handlePrintReserveTickets(event: PrintReserveTickets): void {
-  let cv = cvForV1Project(event.params.projectId);
-  let projectId = idForProject(event.params.projectId, cv);
-  let printReserveEvent = new PrintReservesEvent(
+  const cv = cvForV1Project(event.params.projectId);
+  if (cv == "0") return;
+  const projectId = idForProject(event.params.projectId, cv);
+  const printReserveEvent = new PrintReservesEvent(
     idForProjectTx(event.params.projectId, cv, event)
   );
   if (!printReserveEvent) return;
@@ -248,9 +267,10 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
 }
 
 export function handleAddToBalance(event: AddToBalance): void {
-  let cv = cvForV1Project(event.params.projectId);
-  let projectId = idForProject(event.params.projectId, cv);
-  let project = Project.load(projectId);
+  const cv = cvForV1Project(event.params.projectId);
+  if (cv == "0") return;
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = Project.load(projectId);
   if (!project) return;
   project.currentBalance = project.currentBalance.plus(event.params.value);
   project.save();
@@ -259,11 +279,12 @@ export function handleAddToBalance(event: AddToBalance): void {
 export function handleDistributeToPayoutMod(
   event: DistributeToPayoutMod
 ): void {
-  let cv = cvForV1Project(event.params.projectId);
-  let distributeToPayoutModEvent = new DistributeToPayoutModEvent(
+  const cv = cvForV1Project(event.params.projectId);
+  if (cv == "0") return;
+  const distributeToPayoutModEvent = new DistributeToPayoutModEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
-  let projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, cv);
   if (!distributeToPayoutModEvent) return;
   distributeToPayoutModEvent.projectId = event.params.projectId.toI32();
   distributeToPayoutModEvent.tapEvent = idForProjectTx(
@@ -298,11 +319,12 @@ export function handleDistributeToPayoutMod(
 export function handleDistributeToTicketMod(
   event: DistributeToTicketMod
 ): void {
-  let cv = cvForV1Project(event.params.projectId);
-  let distributeToTicketModEvent = new DistributeToTicketModEvent(
+  const cv = cvForV1Project(event.params.projectId);
+  if (cv == "0") return;
+  const distributeToTicketModEvent = new DistributeToTicketModEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
-  let projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, cv);
 
   if (!distributeToTicketModEvent) return;
   distributeToTicketModEvent.printReservesEvent = idForProjectTx(
