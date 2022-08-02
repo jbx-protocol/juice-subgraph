@@ -94,6 +94,13 @@ export function idForProject(projectId: BigInt, cv: CV): string {
   return `${cv[0]}-${projectId.toString()}`;
 }
 
+export function idForVeNftContract(
+  projectId: BigInt,
+  address: Address
+): string {
+  return `${idForProject(projectId, '2')}-${address.toHexString()}`;
+}
+
 export function updateBalance(participant: Participant): void {
   participant.balance = participant.unstakedBalance.plus(
     participant.stakedBalance

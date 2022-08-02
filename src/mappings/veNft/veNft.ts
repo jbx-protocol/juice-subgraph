@@ -8,8 +8,8 @@ import {
   Transfer,
   Unlock,
 } from "../../../generated/JBVeNft/JBVeNft";
-import { Project, VeNftToken } from "../../../generated/schema";
-import { idForProject } from "../../utils";
+import { VeNftContract, VeNftToken } from "../../../generated/schema";
+import { idForVeNftContract } from "../../utils";
 
 export function handleLock(event: Lock): void {
   let token = new VeNftToken(event.params.tokenId.toHexString().toLowerCase());
@@ -18,7 +18,6 @@ export function handleLock(event: Lock): void {
   token.createdAt = event.block.timestamp.toI32();
   token.tokenId = event.params.tokenId.toI32();
   token.owner = event.params.beneficiary;
-  const cv = "2";
 
   let tokenContract = JBVeNft.bind(event.address);
   let projectIdCall = tokenContract.try_projectId();
@@ -26,8 +25,13 @@ export function handleLock(event: Lock): void {
     log.warning("ProjectId not found", []);
     return;
   } else {
-    let projectId = idForProject(projectIdCall.value, cv);
-    token.project = projectId;
+    let contractId = idForVeNftContract(projectIdCall.value, event.address);
+    let contract = VeNftContract.load(contractId);
+    if (!contract) {
+      log.warning("Contract not found", []);
+      return;
+    }
+    token.contract = contract.id;
   }
 
   let tokenUriCall = tokenContract.try_tokenURI(event.params.tokenId);
