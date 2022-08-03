@@ -31,7 +31,7 @@ import {
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
-import { addToTrendingPayments } from "../../utils/payments";
+import { handleTrendingPayment } from "../../utils/payments";
 
 const cv: CV = "2";
 
@@ -59,6 +59,7 @@ export function handleDistributePayouts(event: DistributePayouts): void {
     );
     return;
   }
+  distributePayoutsEvent.project = idForProject(event.params.projectId, cv);
   distributePayoutsEvent.projectId = event.params.projectId.toI32();
   distributePayoutsEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutsEvent.txHash = event.transaction.hash;
@@ -168,7 +169,11 @@ export function handlePay(event: Pay): void {
       ProjectEventKey.payEvent
     );
 
-    addToTrendingPayments(projectId, event.params.amount, event.block.timestamp);
+    handleTrendingPayment(
+      projectId,
+      event.params.amount,
+      event.block.timestamp
+    );
   }
 
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);

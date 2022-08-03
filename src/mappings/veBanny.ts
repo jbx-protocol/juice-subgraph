@@ -1,4 +1,4 @@
-import { log, store } from "@graphprotocol/graph-ts";
+import { log } from "@graphprotocol/graph-ts";
 import {
   ExtendLock,
   JVeBanny,
@@ -8,7 +8,7 @@ import {
   Transfer,
   Unlock,
 } from "../../generated/JVeBanny/JVeBanny";
-import { Participant, VeNftToken } from "../../generated/schema";
+import { VeNftToken } from "../../generated/schema";
 
 export function handleLock(event: Lock): void {
   let token = new VeNftToken(event.params.tokenId.toHexString().toLowerCase());
@@ -17,6 +17,8 @@ export function handleLock(event: Lock): void {
   token.createdAt = event.block.timestamp.toI32();
   token.tokenId = event.params.tokenId.toI32();
   token.owner = event.params.beneficiary;
+  token.participant = event.params.beneficiary.toHexString();
+  token.unlockedAt = 0;
 
   const tokenContract = JVeBanny.bind(event.address);
   const tokenUriCall = tokenContract.try_tokenURI(event.params.tokenId);

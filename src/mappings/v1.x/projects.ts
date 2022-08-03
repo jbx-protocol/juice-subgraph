@@ -13,8 +13,7 @@ import {
   ProtocolV1Log,
 } from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
-import { ProjectEventKey } from "../../types";
-import { cvForTerminal, cvForV1Project } from "../../utils/cv";
+import { CV, ProjectEventKey } from "../../types";
 import {
   newProtocolV1Log,
   saveNewProjectEvent,
@@ -22,10 +21,9 @@ import {
 } from "../../utils/entity";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
-export function handleProjectCreate(event: Create): void {
-  const cv = cvForTerminal(event.params.terminal);
-  if (cv == "0") return;
+const cv: CV = "1";
 
+export function handleProjectCreate(event: Create): void {
   const projectId = idForProject(event.params.projectId, cv);
 
   const project = new Project(projectId);
@@ -77,6 +75,7 @@ export function handleProjectCreate(event: Create): void {
     protocolLog.redeemCount = 0;
     protocolLog.erc20Count = 0;
     protocolLog.trendingPayments = "";
+    protocolLog.trendingLastUpdatedTimestamp = 0;
     protocolLog.save();
   }
 
@@ -91,8 +90,6 @@ export function handleProjectCreate(event: Create): void {
 }
 
 export function handleSetHandle(event: SetHandle): void {
-  const cv = cvForV1Project(event.params.projectId);
-  if (cv == "0") return;
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
   if (!project) return;
@@ -101,8 +98,6 @@ export function handleSetHandle(event: SetHandle): void {
 }
 
 export function handleSetUri(event: SetUri): void {
-  const cv = cvForV1Project(event.params.projectId);
-  if (cv == "0") return;
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
   if (!project) return;
@@ -111,17 +106,8 @@ export function handleSetUri(event: SetUri): void {
 }
 
 export function handleTransferOwnership(event: Transfer): void {
-  const cv = cvForV1Project(event.params.tokenId);
-  if (cv == "0") return;
   const project = Project.load(idForProject(event.params.tokenId, cv));
   if (!project) return;
   project.owner = event.params.to;
   project.save();
 }
-
-// export function handleBlock(block: ethereum.Block): void {
-//   // Only run once every 50 blocks
-//   if (!block.number.mod(BigInt.fromString("50")).isZero()) return;
-
-//   updateTrendingProjects(block.timestamp);
-// }

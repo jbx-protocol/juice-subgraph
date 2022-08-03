@@ -404,6 +404,7 @@ dataSources:
         - event: TextChanged(indexed bytes32,indexed string,string)
           handler: handleTextChanged
       file: ./src/mappings/v2/textResolver.ts
+  {{ #address_jVeBanny }}
   - kind: ethereum/contract
     name: JVeBanny
     network: {{network}}
@@ -432,3 +433,4 @@ dataSources:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/mappings/veBanny.ts
+  {{ /address_jVeBanny }}

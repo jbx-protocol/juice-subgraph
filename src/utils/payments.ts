@@ -3,7 +3,7 @@ import { BigInt } from "@graphprotocol/graph-ts";
 import { PayEventObj, Project, ProtocolLog } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
 
-export function addToTrendingPayments(
+export function handleTrendingPayment(
   project: string,
   amount: BigInt,
   timestamp: BigInt
@@ -11,6 +11,29 @@ export function addToTrendingPayments(
   const protocolLog = ProtocolLog.load(PROTOCOL_ID);
   if (!protocolLog) return;
 
+  const newPayEventObj = new PayEventObj(
+    idForPayEventObj(project, amount, timestamp)
+  );
+  newPayEventObj.timestamp = timestamp;
+  newPayEventObj.project = project;
+  newPayEventObj.amount = amount;
+
+  // Only perform intensive computation at most every 5 min
+  const SECS_5_MIN = 5 * 60;
+  if (
+    protocolLog.trendingLastUpdatedTimestamp <
+    timestamp.toI32() - SECS_5_MIN
+  ) {
+    addTrendingPaymentAndUpdateScores(protocolLog, newPayEventObj);
+  } else {
+    addTrendingPayment(protocolLog, newPayEventObj);
+  }
+}
+
+function addTrendingPaymentAndUpdateScores(
+  protocolLog: ProtocolLog,
+  newPayEventObj: PayEventObj
+): void {
   const payEvents = payEventsFromString(protocolLog.trendingPayments);
 
   // Reset trending stats for all previously trending projects
@@ -24,24 +47,18 @@ export function addToTrendingPayments(
     }
   }
 
-  const newPayEventObj = new PayEventObj(
-    idForPayEventObj(project, amount, timestamp)
-  );
-  newPayEventObj.timestamp = timestamp;
-  newPayEventObj.project = project;
-  newPayEventObj.amount = amount;
-
   const currentPayEvents: PayEventObj[] = [newPayEventObj];
 
   // Filter out payments older than 7 days
   // Note: using for loop as map() is not supported
   for (let i = 0; i < payEvents.length; i++) {
     const SECS_7_DAYS = 7 * 24 * 60 * 60;
-    const e = payEvents[i];
+    const event = payEvents[i];
     if (
-      e.timestamp.ge(timestamp.minus(BigInt.fromString(SECS_7_DAYS.toString())))
+      event.timestamp >=
+      BigInt.fromI32(newPayEventObj.timestamp.toI32() - SECS_7_DAYS)
     ) {
-      currentPayEvents.push(e);
+      currentPayEvents.push(event);
     }
   }
 
@@ -60,7 +77,18 @@ export function addToTrendingPayments(
     }
   }
 
+  protocolLog.trendingLastUpdatedTimestamp = newPayEventObj.timestamp.toI32();
   protocolLog.trendingPayments = payEventsToString(currentPayEvents);
+  protocolLog.save();
+}
+
+function addTrendingPayment(
+  protocolLog: ProtocolLog,
+  newPayEventObj: PayEventObj
+): void {
+  const payEvents = payEventsFromString(protocolLog.trendingPayments);
+  payEvents.unshift(newPayEventObj);
+  protocolLog.trendingPayments = payEventsToString(payEvents);
   protocolLog.save();
 }
 

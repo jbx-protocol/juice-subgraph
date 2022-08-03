@@ -1,6 +1,4 @@
 import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
-import { ProtocolLog } from "../../generated/schema";
-import { PROTOCOL_ID } from "../constants";
 import { CV } from "../types";
 
 export function idForProjectTx(

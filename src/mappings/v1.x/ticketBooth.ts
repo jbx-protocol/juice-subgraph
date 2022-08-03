@@ -22,9 +22,8 @@ import {
   Unstake,
 } from "../../../generated/TicketBooth/TicketBooth";
 import { address_ticketBooth } from "../../contractAddresses";
-import { ProjectEventKey } from "../../types";
+import { CV, ProjectEventKey } from "../../types";
 import { PROTOCOL_ID } from "../../constants";
-import { cvForV1Project } from "../../utils/cv";
 import {
   idForParticipant,
   idForProject,
@@ -38,10 +37,9 @@ import {
   updateProtocolEntity,
 } from "../../utils/entity";
 
-export function handlePrint(event: Print): void {
-  const cv = cvForV1Project(event.params.projectId);
-  if (cv == "0") return;
+const cv: CV = "1";
 
+export function handlePrint(event: Print): void {
   const participantId = idForParticipant(
     event.params.projectId,
     cv,
@@ -70,9 +68,6 @@ export function handlePrint(event: Print): void {
 }
 
 export function handleTicketTransfer(event: Transfer): void {
-  const cv = cvForV1Project(event.params.projectId);
-  if (cv == "0") return;
-
   const sender = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
@@ -106,9 +101,6 @@ export function handleTicketTransfer(event: Transfer): void {
 }
 
 export function handleUnstake(event: Unstake): void {
-  const cv = cvForV1Project(event.params.projectId);
-  if (cv == "0") return;
-
   const participant = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
@@ -125,9 +117,6 @@ export function handleUnstake(event: Unstake): void {
 }
 
 export function handleStake(event: Stake): void {
-  const cv = cvForV1Project(event.params.projectId);
-  if (cv == "0") return;
-
   const participant = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
@@ -144,9 +133,6 @@ export function handleStake(event: Stake): void {
 }
 
 export function handleRedeem(event: Redeem): void {
-  const cv = cvForV1Project(event.params.projectId);
-  if (cv == "0") return;
-
   const participant = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
@@ -175,9 +161,6 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handleIssue(event: Issue): void {
-  const cv = cvForV1Project(event.params.projectId);
-  if (cv == "0") return;
-
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
 
