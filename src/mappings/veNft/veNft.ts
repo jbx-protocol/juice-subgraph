@@ -32,6 +32,7 @@ export function handleLock(event: Lock): void {
       return;
     }
     token.contract = contract.id;
+    token.contractAddress = contract.address;
   }
 
   let tokenUriCall = tokenContract.try_tokenURI(event.params.tokenId);
