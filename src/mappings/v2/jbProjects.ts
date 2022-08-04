@@ -1,5 +1,4 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
-
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   Create,
   SetMetadata,
@@ -35,8 +34,9 @@ export function handleCreate(event: Create): void {
   project.trendingScore = BigInt.fromString("0");
   project.trendingVolume = BigInt.fromString("0");
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
+  project.createdWithinTrendingWindow = true;
   project.owner = event.params.owner;
-  project.createdAt = event.block.timestamp;
+  project.createdAt = event.block.timestamp.toI32();
   project.metadataUri = event.params.metadata.content;
   project.metadataDomain = event.params.metadata.domain;
   project.totalPaid = BigInt.fromString("0");

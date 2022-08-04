@@ -23,7 +23,8 @@ import {
   Tap,
 } from "../../../generated/TerminalV1/TerminalV1";
 import { PROTOCOL_ID } from "../../constants";
-import { CV, ProjectEventKey } from "../../types";
+import { ProjectEventKey } from "../../types";
+import { cvForV1Project } from "../../utils/cv";
 import {
   newParticipant,
   newProtocolV1Log,
@@ -32,17 +33,15 @@ import {
 } from "../../utils/entity";
 import {
   idForParticipant,
+  idForPayEvent,
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
-import { handleTrendingPayment } from "../../utils/payments";
-
-const cv: CV = "1";
+import { handleTrendingPayment } from "../../utils/trending";
 
 export function handlePay(event: Pay): void {
-  const pay = new PayEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
-  );
+  const cv = cvForV1Project(event.params.projectId);
+  const pay = new PayEvent(idForPayEvent());
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
 
@@ -76,11 +75,7 @@ export function handlePay(event: Pay): void {
       ProjectEventKey.payEvent
     );
 
-    handleTrendingPayment(
-      projectId,
-      event.params.amount,
-      event.block.timestamp
-    );
+    handleTrendingPayment(event.block.timestamp);
   }
 
   let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
@@ -115,6 +110,7 @@ export function handlePay(event: Pay): void {
 
 export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
   // Note: Receiver balance is updated in the ticketBooth event handler
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const mintTokensEvent = new MintTokensEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
@@ -141,6 +137,7 @@ export function handlePrintPreminedTickets(event: PrintPreminedTickets): void {
 }
 
 export function handleTap(event: Tap): void {
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const tapEvent = new TapEvent(
     idForProjectTx(event.params.projectId, cv, event)
@@ -179,6 +176,7 @@ export function handleTap(event: Tap): void {
 }
 
 export function handleRedeem(event: Redeem): void {
+  const cv = cvForV1Project(event.params._projectId);
   const projectId = idForProject(event.params._projectId, cv);
 
   const redeemEvent = new RedeemEvent(
@@ -230,6 +228,7 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handlePrintReserveTickets(event: PrintReserveTickets): void {
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const printReserveEvent = new PrintReservesEvent(
     idForProjectTx(event.params.projectId, cv, event)
@@ -257,6 +256,7 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
 }
 
 export function handleAddToBalance(event: AddToBalance): void {
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
   if (!project) return;
@@ -267,6 +267,7 @@ export function handleAddToBalance(event: AddToBalance): void {
 export function handleDistributeToPayoutMod(
   event: DistributeToPayoutMod
 ): void {
+  const cv = cvForV1Project(event.params.projectId);
   const distributeToPayoutModEvent = new DistributeToPayoutModEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
@@ -305,6 +306,7 @@ export function handleDistributeToPayoutMod(
 export function handleDistributeToTicketMod(
   event: DistributeToTicketMod
 ): void {
+  const cv = cvForV1Project(event.params.projectId);
   const distributeToTicketModEvent = new DistributeToTicketModEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
@@ -339,6 +341,7 @@ export function handleDistributeToTicketMod(
 }
 
 export function handleMigrate(event: Migrate): void {
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
   if (!project) return;

@@ -1,4 +1,4 @@
-import { BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 import {
   Create,
@@ -13,7 +13,8 @@ import {
   ProtocolV1Log,
 } from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
-import { CV, ProjectEventKey } from "../../types";
+import { ProjectEventKey } from "../../types";
+import { cvForTerminal, cvForV1Project } from "../../utils/cv";
 import {
   newProtocolV1Log,
   saveNewProjectEvent,
@@ -21,11 +22,9 @@ import {
 } from "../../utils/entity";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
-const cv: CV = "1";
-
 export function handleProjectCreate(event: Create): void {
+  const cv = cvForTerminal(event.params.terminal);
   const projectId = idForProject(event.params.projectId, cv);
-
   const project = new Project(projectId);
   if (!project) return;
   project.projectId = event.params.projectId.toI32();
@@ -34,10 +33,11 @@ export function handleProjectCreate(event: Create): void {
   project.trendingScore = BigInt.fromString("0");
   project.trendingVolume = BigInt.fromString("0");
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
+  project.createdWithinTrendingWindow = true;
   project.terminal = event.params.terminal;
   project.handle = event.params.handle.toString();
   project.owner = event.params.owner;
-  project.createdAt = event.block.timestamp;
+  project.createdAt = event.block.timestamp.toI32();
   project.metadataUri = event.params.uri;
   project.totalPaid = BigInt.fromString("0");
   project.totalRedeemed = BigInt.fromString("0");
@@ -74,7 +74,6 @@ export function handleProjectCreate(event: Create): void {
     protocolLog.paymentsCount = 0;
     protocolLog.redeemCount = 0;
     protocolLog.erc20Count = 0;
-    protocolLog.trendingPayments = "";
     protocolLog.trendingLastUpdatedTimestamp = 0;
     protocolLog.save();
   }
@@ -90,6 +89,7 @@ export function handleProjectCreate(event: Create): void {
 }
 
 export function handleSetHandle(event: SetHandle): void {
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
   if (!project) return;
@@ -98,6 +98,7 @@ export function handleSetHandle(event: SetHandle): void {
 }
 
 export function handleSetUri(event: SetUri): void {
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
   if (!project) return;
@@ -106,6 +107,7 @@ export function handleSetUri(event: SetUri): void {
 }
 
 export function handleTransferOwnership(event: Transfer): void {
+  const cv = cvForV1Project(event.params.tokenId);
   const project = Project.load(idForProject(event.params.tokenId, cv));
   if (!project) return;
   project.owner = event.params.to;

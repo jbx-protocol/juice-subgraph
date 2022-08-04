@@ -1,5 +1,7 @@
-import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { CV } from "../types";
+import { ProtocolLog } from "../../generated/schema";
+import { PROTOCOL_ID } from "../constants";
 
 export function idForProjectTx(
   projectId: BigInt,
@@ -39,5 +41,16 @@ export function idForParticipant(
 }
 
 export function idForProject(projectId: BigInt, cv: CV): string {
-  return `${cv}-${projectId.toString()}`;
+  // Only use first character of CV since project IDs are unique across v1 and v1.1
+  return `${cv[0]}-${projectId.toString()}`;
+}
+
+// Use incrementing integers for PayEvent IDs
+export function idForPayEvent(): string {
+  const protocolLog = ProtocolLog.load(PROTOCOL_ID);
+  if (!protocolLog) {
+    log.error("[idForPayEvent] Failed to load protocolLog", []);
+    return "0";
+  }
+  return (protocolLog.paymentsCount + 1).toString();
 }

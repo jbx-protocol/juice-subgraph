@@ -28,10 +28,11 @@ import {
 } from "../../utils/entity";
 import {
   idForParticipant,
+  idForPayEvent,
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
-import { handleTrendingPayment } from "../../utils/payments";
+import { handleTrendingPayment } from "../../utils/trending";
 
 const cv: CV = "2";
 
@@ -133,9 +134,7 @@ export function handleDistributeToPayoutSplit(
 }
 
 export function handlePay(event: Pay): void {
-  const pay = new PayEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
-  );
+  const pay = new PayEvent(idForPayEvent());
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
 
@@ -169,11 +168,7 @@ export function handlePay(event: Pay): void {
       ProjectEventKey.payEvent
     );
 
-    handleTrendingPayment(
-      projectId,
-      event.params.amount,
-      event.block.timestamp
-    );
+    handleTrendingPayment(event.block.timestamp);
   }
 
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);

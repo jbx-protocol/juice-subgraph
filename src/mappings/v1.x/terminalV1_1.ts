@@ -1,4 +1,4 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { log } from "@graphprotocol/graph-ts";
 import {
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
@@ -22,7 +22,8 @@ import {
   Tap,
 } from "../../../generated/TerminalV1_1/TerminalV1_1";
 import { PROTOCOL_ID } from "../../constants";
-import { CV, ProjectEventKey } from "../../types";
+import { ProjectEventKey } from "../../types";
+import { cvForV1Project } from "../../utils/cv";
 import {
   newParticipant,
   newProtocolV1Log,
@@ -31,17 +32,15 @@ import {
 } from "../../utils/entity";
 import {
   idForParticipant,
+  idForPayEvent,
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
-import { handleTrendingPayment } from "../../utils/payments";
-
-const cv: CV = "1";
+import { handleTrendingPayment } from "../../utils/trending";
 
 export function handlePay(event: Pay): void {
-  const pay = new PayEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
-  );
+  const cv = cvForV1Project(event.params.projectId);
+  const pay = new PayEvent(idForPayEvent());
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
 
@@ -75,11 +74,7 @@ export function handlePay(event: Pay): void {
       ProjectEventKey.payEvent
     );
 
-    handleTrendingPayment(
-      projectId,
-      event.params.amount,
-      event.block.timestamp
-    );
+    handleTrendingPayment(event.block.timestamp);
   }
 
   let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
@@ -114,6 +109,8 @@ export function handlePay(event: Pay): void {
 
 export function handlePrintTickets(event: PrintTickets): void {
   // Note: Receiver balance is updated in the ticketBooth event handler
+
+  const cv = cvForV1Project(event.params.projectId);
   const mintTokensEvent = new MintTokensEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
@@ -140,6 +137,7 @@ export function handlePrintTickets(event: PrintTickets): void {
 }
 
 export function handleTap(event: Tap): void {
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const tapEvent = new TapEvent(
     idForProjectTx(event.params.projectId, cv, event)
@@ -178,6 +176,7 @@ export function handleTap(event: Tap): void {
 }
 
 export function handleRedeem(event: Redeem): void {
+  const cv = cvForV1Project(event.params._projectId);
   const projectId = idForProject(event.params._projectId, cv);
 
   const redeemEvent = new RedeemEvent(
@@ -229,6 +228,7 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handlePrintReserveTickets(event: PrintReserveTickets): void {
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const printReserveEvent = new PrintReservesEvent(
     idForProjectTx(event.params.projectId, cv, event)
@@ -256,6 +256,7 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
 }
 
 export function handleAddToBalance(event: AddToBalance): void {
+  const cv = cvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
   if (!project) return;
@@ -266,6 +267,7 @@ export function handleAddToBalance(event: AddToBalance): void {
 export function handleDistributeToPayoutMod(
   event: DistributeToPayoutMod
 ): void {
+  const cv = cvForV1Project(event.params.projectId);
   const distributeToPayoutModEvent = new DistributeToPayoutModEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
@@ -304,6 +306,7 @@ export function handleDistributeToPayoutMod(
 export function handleDistributeToTicketMod(
   event: DistributeToTicketMod
 ): void {
+  const cv = cvForV1Project(event.params.projectId);
   const distributeToTicketModEvent = new DistributeToTicketModEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
@@ -336,77 +339,3 @@ export function handleDistributeToTicketMod(
     ProjectEventKey.distributeToTicketModEvent
   );
 }
-
-// export function handleAllowMigration(event: AllowMigration): void {}
-
-// export function handleDeposit(event: Deposit): void {}
-
-// export function handleEnsureTargetLocalWei(event: EnsureTargetLocalWei): void {}
-
-// export function handleMigrate(event: Migrate): void {}
-
-// export function handleSetFee(event: SetFee): void {}
-
-// export function handleSetTargetLocalWei(event: SetTargetLocalWei): void {}
-
-// export function handleSetYielder(event: SetYielder): void {}
-
-// export function handleAcceptGovernance(event: AcceptGovernance): void {
-//   // Entities can be loaded from the store using a string ID; this ID
-//   // needs to be unique across all entities of the same type
-//   let entity = ExampleEntity.load(event.transaction.from.toHex())
-
-//   // Entities only exist after they have been saved to the store;
-//   // `null` checks allow to create entities on demand
-//   if (entity == null) {
-//     entity = new ExampleEntity(event.transaction.from.toHex())
-
-//     // Entity fields can be set using simple assignments
-//     entity.count = BigInt.fromI32(0)
-//   }
-
-//   // BigInt and BigDecimal math are supported
-//   entity.count = entity.count + BigInt.fromI32(1)
-
-//   // Entity fields can be set based on event parameters
-//   entity.governance = event.params.governance
-
-//   // Entities can be written to the store with `.save()`
-//   entity.save()
-
-//   // Note: If a handler doesn't require existing field values, it is faster
-//   // _not_ to load the entity from the store. Instead, create it fresh with
-//   // `new Entity(...)`, set the fields that should be updated and save the
-//   // entity back to the store. Fields that were not set or unset remain
-//   // unchanged, allowing for partial updates to be applied.
-
-//   // It is also possible to access smart contracts from mappings. For
-//   // example, the contract that has emitted the event can be connected to
-//   // with:
-//   //
-//   // let contract = Contract.bind(event.address)
-//   //
-//   // The following functions can then be called on this contract to access
-//   // state variables and other data:
-//   //
-//   // - contract.balanceOf(...)
-//   // - contract.canPrintPreminedTickets(...)
-//   // - contract.claimableOverflowOf(...)
-//   // - contract.configure(...)
-//   // - contract.currentOverflowOf(...)
-//   // - contract.fee(...)
-//   // - contract.fundingCycles(...)
-//   // - contract.governance(...)
-//   // - contract.migrationIsAllowed(...)
-//   // - contract.modStore(...)
-//   // - contract.operatorStore(...)
-//   // - contract.pendingGovernance(...)
-//   // - contract.prices(...)
-//   // - contract.printReservedTickets(...)
-//   // - contract.projects(...)
-//   // - contract.redeem(...)
-//   // - contract.reservedTicketBalanceOf(...)
-//   // - contract.tap(...)
-//   // - contract.terminalDirectory(...)
-//   // - contract.ticketBooth(...)
-// }

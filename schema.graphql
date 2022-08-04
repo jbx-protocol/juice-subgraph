@@ -11,8 +11,8 @@ type ProtocolLog @entity {
   paymentsCount: Int!
   redeemCount: Int!
   erc20Count: Int!
-  trendingPayments: String!
   trendingLastUpdatedTimestamp: Int!
+  oldestTrendingPayEvent: PayEvent
 }
 
 type _Schema_
@@ -53,13 +53,14 @@ type Project @entity {
   terminal: Bytes
 
   owner: Bytes!
-  createdAt: BigInt!
+  createdAt: Int!
   totalPaid: BigInt!
   totalRedeemed: BigInt!
   currentBalance: BigInt!
   trendingScore: BigInt!
   trendingVolume: BigInt!
   trendingPaymentsCount: Int!
+  createdWithinTrendingWindow: Boolean!
 
   # Derived fields
   participants: [Participant!]! @derivedFrom(field: "project")
@@ -439,11 +440,4 @@ type VeNftToken @entity {
   lockUseJbToken: Boolean!
   lockAllowPublicExtension: Boolean!
   unlockedAt: Int!
-}
-
-type PayEventObj @entity {
-  id: ID!
-  project: String!
-  timestamp: BigInt!
-  amount: BigInt!
 }
