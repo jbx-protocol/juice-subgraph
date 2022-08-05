@@ -8,11 +8,11 @@ export function handleTrendingPayment(timestamp: BigInt): void {
   const protocolLog = ProtocolLog.load(PROTOCOL_ID);
   if (!protocolLog) return;
 
-  // Only perform intensive computation at most every 10 min
-  const SECS_10_MIN = 10 * 60;
+  // Only perform intensive computation at most every 5 min
+  const SECS_5_MIN = 5 * 60;
   if (
     protocolLog.trendingLastUpdatedTimestamp >=
-    timestamp.toI32() - SECS_10_MIN
+    timestamp.toI32() - SECS_5_MIN
   ) {
     return;
   }
