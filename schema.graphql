@@ -469,3 +469,21 @@ type VeNftContract @entity {
   projectId: Int!
   tokens: [VeNftToken!]! @derivedFrom(field: "contract")
 }
+
+type JB721Delegate @entity {
+  id: ID!
+  address: Bytes!
+  project: Project!
+  projectId: Int!
+  directory: Bytes!
+  name: String!
+  symbol: String!
+  tokenUri: String!
+  baseUri: String!
+}
+
+type JB721DelegateToken @entity {
+  id: ID!
+  jb721Delegate: JB721Delegate!
+  owner: Bytes!
+}
