@@ -1,17 +1,19 @@
 import { log } from "@graphprotocol/graph-ts";
+import { VeNftContract, VeNftToken } from "../../../generated/schema";
+import { JBVeNft } from "../../../generated/templates";
 import {
   ExtendLock,
-  JVeBanny,
-  JVeBanny__lockedResult,
   Lock,
   Redeem,
   Transfer,
   Unlock,
-} from "../../generated/JVeBanny/JVeBanny";
-import { VeNftToken } from "../../generated/schema";
+} from "../../../generated/templates/JBVeNft/JBVeNft";
+import { idForVeNftContract } from "../../utils/ids";
 
 export function handleLock(event: Lock): void {
-  let token = new VeNftToken(event.params.tokenId.toHexString().toLowerCase());
+  const token = new VeNftToken(
+    event.params.tokenId.toHexString().toLowerCase()
+  );
   if (!token) return;
 
   token.createdAt = event.block.timestamp.toI32();
@@ -20,7 +22,23 @@ export function handleLock(event: Lock): void {
   token.participant = event.params.beneficiary.toHexString();
   token.unlockedAt = 0;
 
-  const tokenContract = JVeBanny.bind(event.address);
+  const tokenContract = JBVeNft.bind(event.address);
+
+  const projectIdCall = tokenContract.try_projectId();
+  if (projectIdCall.reverted) {
+    log.warning("ProjectId not found", []);
+    return;
+  } else {
+    const contractId = idForVeNftContract(event.address);
+    const contract = VeNftContract.load(contractId);
+    if (!contract) {
+      log.warning("Contract not found", []);
+      return;
+    }
+    token.contract = contract.id;
+    token.contractAddress = contract.address;
+  }
+
   const tokenUriCall = tokenContract.try_tokenURI(event.params.tokenId);
   if (tokenUriCall.reverted) {
     log.error("[handleLock] tokenUri call reverted. tokenId:{}", [
@@ -31,13 +49,12 @@ export function handleLock(event: Lock): void {
   }
 
   const lockInfoDataCall = tokenContract.try_locked(event.params.tokenId);
-  let lockInfoData: JVeBanny__lockedResult | null = null;
   if (lockInfoDataCall.reverted) {
     log.error("[handleLock] locked call reverted. tokenId:{}", [
       event.params.tokenId.toString(),
     ]);
   } else {
-    lockInfoData = lockInfoDataCall.value;
+    const lockInfoData = lockInfoDataCall.value;
     token.lockAmount = lockInfoData.value0;
     token.lockEnd = lockInfoData.value1.toI32();
     token.lockDuration = lockInfoData.value2.toI32();
@@ -56,16 +73,14 @@ export function handleExtendLock(event: ExtendLock): void {
   token.lockDuration = event.params.updatedDuration.toI32();
 
   // TODO: Fix when updatedLockEnd is fixed
-  const tokenContract = JVeBanny.bind(event.address);
+  const tokenContract = JBVeNft.bind(event.address);
   const lockInfoDataCall = tokenContract.try_locked(event.params.oldTokenID);
-  let lockInfoData: JVeBanny__lockedResult | null = null;
   if (lockInfoDataCall.reverted) {
     log.error("[handleExtendLock] locked call reverted. tokenId:{}", [
       event.params.oldTokenID.toString(),
     ]);
   } else {
-    lockInfoData = lockInfoDataCall.value;
-    token.lockEnd = lockInfoData.value1.toI32();
+    token.lockEnd = lockInfoDataCall.value.value1.toI32();
     token.save();
   }
 }

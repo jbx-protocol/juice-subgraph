@@ -50,6 +50,32 @@ templates:
           handler: handleOwnershipTransferred
         - event: SetDefaultValues(indexed uint256,indexed address,bool,string,bytes,bool,address)
           handler: handleSetDefaultValues
+  - name: JBVeNft
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: JBVeNft
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/veNft/veNft.ts
+      entities:
+        - VeNftToken
+      abis:
+        - name: JBVeNft
+          file: ./abis/JBVeNft.json
+      eventHandlers:
+        - event: Lock(indexed uint256,indexed address,uint256,uint256,address,uint256,address)
+          handler: handleLock
+        - event: ExtendLock(indexed uint256,indexed uint256,uint256,uint256,address)
+          handler: handleExtendLock
+        - event: Unlock(indexed uint256,address,uint256,address)
+          handler: handleUnlock
+        - event: Redeem(indexed uint256,address,address,uint256,uint256,string,address)
+          handler: handleRedeem
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
 dataSources:
   - kind: ethereum/contract
     name: Projects
@@ -404,14 +430,14 @@ dataSources:
         - event: TextChanged(indexed bytes32,indexed string,string)
           handler: handleTextChanged
       file: ./src/mappings/v2/textResolver.ts
-  {{ #address_jVeBanny }}
+  {{ #address_jbVeNftDeployer }}
   - kind: ethereum/contract
-    name: JVeBanny
+    name: JBVeNftDeployer
     network: {{network}}
     source:
-      address: '{{address_jVeBanny}}'
-      abi: JVeBanny
-      startBlock: {{startBlock_jVeBanny}}
+      address: '{{address_jbVeNftDeployer}}'
+      abi: JBVeNftDeployer
+      startBlock: {{startBlock_jbVeNftDeployer}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -419,18 +445,10 @@ dataSources:
       entities:
         - VeNftToken
       abis:
-        - name: JVeBanny
-          file: ./abis/JVeBanny.json
+        - name: JBVeNftDeployer
+          file: ./abis/JBVeNftDeployer.json
       eventHandlers:
-        - event: Lock(indexed uint256,indexed address,uint256,uint256,address,uint256,address)
-          handler: handleLock
-        - event: ExtendLock(indexed uint256,indexed uint256,uint256,uint256,address)
-          handler: handleExtendLock
-        - event: Unlock(indexed uint256,address,uint256,address)
-          handler: handleUnlock
-        - event: Redeem(indexed uint256,address,address,uint256,uint256,string,address)
-          handler: handleRedeem
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-      file: ./src/mappings/veBanny.ts
-  {{ /address_jVeBanny }}
+        - event: DeployVeNft(address,indexed uint256,string,string,address,address,address,uint256[],address,address)
+          handler: handleDeployVeNft
+      file: ./src/mappings/veNft/veNftDeployer.ts
+  {{ /address_jbVeNftDeployer }}

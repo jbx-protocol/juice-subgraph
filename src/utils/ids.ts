@@ -1,4 +1,4 @@
-import { BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { CV } from "../types";
 import { ProtocolLog } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
@@ -53,4 +53,8 @@ export function idForPayEvent(): string {
     return "0";
   }
   return (protocolLog.paymentsCount + 1).toString();
+}
+
+export function idForVeNftContract(address: Address): string {
+  return `${address.toHexString()}`;
 }
