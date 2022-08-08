@@ -24,6 +24,6 @@
   "startBlock_textResolver": 10864427,
   "address_jbETHERC20ProjectPayerDeployer": "0x3247df1bdC849f69Ba7dA4faf71d1e5850A6Fbb8",
   "startBlock_jbETHERC20ProjectPayerDeployer": 10635479,
-  "address_jVeBanny": "0xce37f0fc9315153516d1a4f165fe28559c719a01",
-  "startBlock_jVeBanny": 11059262
+  "address_jbVeNftDeployer": "0xfb2E79DbE773985949Ae17f5866aFD20f0BB4C0c",
+  "startBlock_jbVeNftDeployer": 11059200
 }
