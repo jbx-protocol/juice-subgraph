@@ -12,38 +12,39 @@ import {
   ProtocolLog,
   ProtocolV1Log,
 } from "../../../generated/schema";
+import { PROTOCOL_ID } from "../../constants";
 import { ProjectEventKey } from "../../types";
+import { cvForTerminal, cvForV1Project } from "../../utils/cv";
 import {
-  cvForTerminal,
-  cvForV1Project,
-  idForProject,
-  idForProjectTx,
-  protocolId,
+  newProtocolV1Log,
   saveNewProjectEvent,
   updateProtocolEntity,
-} from "../../utils";
+} from "../../utils/entity";
+import { idForProject, idForProjectTx } from "../../utils/ids";
 
 export function handleProjectCreate(event: Create): void {
-  let cv = cvForTerminal(event.params.terminal);
-
-  let projectId = idForProject(event.params.projectId, cv);
-
-  let project = new Project(projectId);
+  const cv = cvForTerminal(event.params.terminal);
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = new Project(projectId);
   if (!project) return;
   project.projectId = event.params.projectId.toI32();
   project.projectId = event.params.projectId.toI32();
   project.cv = cv;
+  project.trendingScore = BigInt.fromString("0");
+  project.trendingVolume = BigInt.fromString("0");
+  project.trendingPaymentsCount = BigInt.fromString("0").toI32();
+  project.createdWithinTrendingWindow = true;
   project.terminal = event.params.terminal;
   project.handle = event.params.handle.toString();
   project.owner = event.params.owner;
-  project.createdAt = event.block.timestamp;
+  project.createdAt = event.block.timestamp.toI32();
   project.metadataUri = event.params.uri;
   project.totalPaid = BigInt.fromString("0");
   project.totalRedeemed = BigInt.fromString("0");
   project.currentBalance = BigInt.fromString("0");
   project.save();
 
-  let projectCreateEvent = new ProjectCreateEvent(
+  const projectCreateEvent = new ProjectCreateEvent(
     idForProjectTx(event.params.projectId, cv, event)
   );
   if (projectCreateEvent) {
@@ -64,39 +65,50 @@ export function handleProjectCreate(event: Create): void {
     );
   }
 
-  if (!ProtocolLog.load(protocolId)) new ProtocolLog(protocolId).save();
+  if (!ProtocolLog.load(PROTOCOL_ID)) {
+    // We only need to create this entity in one place, since there will only ever be one.
+    const protocolLog = new ProtocolLog(PROTOCOL_ID);
+    protocolLog.projectsCount = 0;
+    protocolLog.volumePaid = BigInt.fromString("0");
+    protocolLog.volumeRedeemed = BigInt.fromString("0");
+    protocolLog.paymentsCount = 0;
+    protocolLog.redeemCount = 0;
+    protocolLog.erc20Count = 0;
+    protocolLog.trendingLastUpdatedTimestamp = 0;
+    protocolLog.save();
+  }
 
-  let protocolLog = ProtocolV1Log.load(protocolId);
-  if (!protocolLog) protocolLog = new ProtocolV1Log(protocolId);
-  // We only need to create log here, since there will only be one entity and it will be created when first project is created.
-  protocolLog.projectsCount = protocolLog.projectsCount + 1;
-  protocolLog.log = protocolId;
-  protocolLog.save();
+  let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
+  if (!protocolV1Log) protocolV1Log = newProtocolV1Log();
+  if (protocolV1Log) {
+    protocolV1Log.projectsCount = protocolV1Log.projectsCount + 1;
+    protocolV1Log.save();
+  }
 
   updateProtocolEntity();
 }
 
 export function handleSetHandle(event: SetHandle): void {
-  let cv = cvForV1Project(event.params.projectId);
-  let projectId = idForProject(event.params.projectId, cv);
-  let project = Project.load(projectId);
+  const cv = cvForV1Project(event.params.projectId);
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = Project.load(projectId);
   if (!project) return;
   project.handle = event.params.handle.toString();
   project.save();
 }
 
 export function handleSetUri(event: SetUri): void {
-  let cv = cvForV1Project(event.params.projectId);
-  let projectId = idForProject(event.params.projectId, cv);
-  let project = Project.load(projectId);
+  const cv = cvForV1Project(event.params.projectId);
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = Project.load(projectId);
   if (!project) return;
   project.metadataUri = event.params.uri;
   project.save();
 }
 
 export function handleTransferOwnership(event: Transfer): void {
-  let cv = cvForV1Project(event.params.tokenId);
-  let project = Project.load(idForProject(event.params.tokenId, cv));
+  const cv = cvForV1Project(event.params.tokenId);
+  const project = Project.load(idForProject(event.params.tokenId, cv));
   if (!project) return;
   project.owner = event.params.to;
   project.save();

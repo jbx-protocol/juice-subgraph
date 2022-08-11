@@ -6,29 +6,29 @@ import {
   SetDefaultValues,
 } from "../../../generated/templates/JBETHERC20ProjectPayer/JBETHERC20ProjectPayer";
 import { CV } from "../../types";
-import { idForProject } from "../../utils";
+import { idForProject } from "../../utils/ids";
 
 const cv: CV = "2";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
-  let context = dataSource.context();
-  let address = context
+  const context = dataSource.context();
+  const address = context
     .getBytes("address")
     .toHexString()
     .toLowerCase();
-  let projectPayer = ETHERC20ProjectPayer.load(address);
+  const projectPayer = ETHERC20ProjectPayer.load(address);
   if (!projectPayer) return;
   projectPayer.owner = event.params.newOwner;
   projectPayer.save();
 }
 
 export function handleSetDefaultValues(event: SetDefaultValues): void {
-  let context = dataSource.context();
-  let address = context
+  const context = dataSource.context();
+  const address = context
     .getBytes("address")
     .toHexString()
     .toLowerCase();
-  let projectPayer = ETHERC20ProjectPayer.load(address);
+  const projectPayer = ETHERC20ProjectPayer.load(address);
   if (!projectPayer) return;
   projectPayer.beneficiary = event.params.beneficiary;
   projectPayer.memo = event.params.memo;

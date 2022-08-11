@@ -111,7 +111,13 @@ function checkHandlers() {
 
     const handlerNames = [];
 
-    src.mapping.eventHandlers.forEach((h) => handlerNames.push(h.handler));
+    if (!src) {
+      console.log(`🟡 Missing in yaml 🟡`)
+      return;
+    }
+
+    src.mapping.eventHandlers?.forEach((h) => handlerNames.push(h.handler));
+    src.mapping.blockHandlers?.forEach((h) => handlerNames.push(h.handler));
 
     const missingHandlers = [];
 

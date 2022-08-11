@@ -18,21 +18,27 @@ import {
   RedeemEvent,
   UseAllowanceEvent,
 } from "../../../generated/schema";
+import { PROTOCOL_ID } from "../../constants";
 import { CV, ProjectEventKey } from "../../types";
 import {
-  idForParticipant,
-  idForProject,
-  idForProjectTx,
-  protocolId,
+  newParticipant,
+  newProtocolV2Log,
   saveNewProjectEvent,
   updateProtocolEntity,
-} from "../../utils";
+} from "../../utils/entity";
+import {
+  idForParticipant,
+  idForPayEvent,
+  idForProject,
+  idForProjectTx,
+} from "../../utils/ids";
+import { handleTrendingPayment } from "../../utils/trending";
 
 const cv: CV = "2";
 
 export function handleAddToBalance(event: AddToBalance): void {
-  let projectId = idForProject(event.params.projectId, cv);
-  let project = Project.load(projectId);
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = Project.load(projectId);
   if (!project) {
     log.error("[handleAddToBalance] Missing project. ID:{}", [
       idForProject(event.params.projectId, cv),
@@ -44,7 +50,7 @@ export function handleAddToBalance(event: AddToBalance): void {
 }
 
 export function handleDistributePayouts(event: DistributePayouts): void {
-  let distributePayoutsEvent = new DistributePayoutsEvent(
+  const distributePayoutsEvent = new DistributePayoutsEvent(
     idForProjectTx(event.params.projectId, cv, event)
   );
   if (!distributePayoutsEvent) {
@@ -54,7 +60,8 @@ export function handleDistributePayouts(event: DistributePayouts): void {
     );
     return;
   }
-  distributePayoutsEvent.projectId - event.params.projectId.toI32();
+  distributePayoutsEvent.project = idForProject(event.params.projectId, cv);
+  distributePayoutsEvent.projectId = event.params.projectId.toI32();
   distributePayoutsEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutsEvent.txHash = event.transaction.hash;
   distributePayoutsEvent.amount = event.params.amount;
@@ -68,7 +75,6 @@ export function handleDistributePayouts(event: DistributePayouts): void {
     event.params.fundingCycleConfiguration;
   distributePayoutsEvent.fundingCycleNumber = event.params.fundingCycleNumber.toI32();
   distributePayoutsEvent.memo = event.params.memo;
-  distributePayoutsEvent.projectId = event.params.projectId.toI32();
   distributePayoutsEvent.save();
 
   saveNewProjectEvent(
@@ -83,8 +89,8 @@ export function handleDistributePayouts(event: DistributePayouts): void {
 export function handleDistributeToPayoutSplit(
   event: DistributeToPayoutSplit
 ): void {
-  let projectId = idForProject(event.params.projectId, cv);
-  let distributePayoutSplitEvent = new DistributeToPayoutSplitEvent(
+  const projectId = idForProject(event.params.projectId, cv);
+  const distributePayoutSplitEvent = new DistributeToPayoutSplitEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
 
@@ -128,11 +134,9 @@ export function handleDistributeToPayoutSplit(
 }
 
 export function handlePay(event: Pay): void {
-  let pay = new PayEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
-  );
-  let projectId = idForProject(event.params.projectId, cv);
-  let project = Project.load(projectId);
+  const pay = new PayEvent(idForPayEvent());
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = Project.load(projectId);
 
   // Safety check: fail if project doesn't exist
   if (!project) {
@@ -163,30 +167,33 @@ export function handlePay(event: Pay): void {
       cv,
       ProjectEventKey.payEvent
     );
+
+    handleTrendingPayment(event.block.timestamp);
   }
 
-  let protocolLog = ProtocolV2Log.load(protocolId);
-  if (!protocolLog) protocolLog = new ProtocolV2Log(protocolId);
-  if (protocolLog) {
-    protocolLog.volumePaid = protocolLog.volumePaid.plus(event.params.amount);
-    protocolLog.paymentsCount = protocolLog.paymentsCount + 1;
-    protocolLog.save();
+  let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
+  if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
+  if (protocolV2Log) {
+    protocolV2Log.volumePaid = protocolV2Log.volumePaid.plus(
+      event.params.amount
+    );
+    protocolV2Log.paymentsCount = protocolV2Log.paymentsCount + 1;
+    protocolV2Log.save();
   }
   updateProtocolEntity();
 
-  let participantId = idForParticipant(
+  const participantId = idForParticipant(
     event.params.projectId,
     cv,
     event.params.beneficiary
   );
   let participant = Participant.load(participantId);
-  if (participant === null) {
-    participant = new Participant(participantId);
-    participant.cv = cv;
-    participant.projectId = project.projectId;
-    participant.wallet = event.params.beneficiary;
-    participant.totalPaid = event.params.amount;
-    participant.project = project.id;
+  if (!participant) {
+    participant = newParticipant(
+      cv,
+      event.params.projectId,
+      event.params.beneficiary
+    );
   } else {
     participant.totalPaid = event.params.amount.plus(participant.totalPaid);
   }
@@ -195,9 +202,9 @@ export function handlePay(event: Pay): void {
 }
 
 export function handleRedeemTokens(event: RedeemTokens): void {
-  let projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, cv);
 
-  let redeemEvent = new RedeemEvent(
+  const redeemEvent = new RedeemEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
   if (redeemEvent) {
@@ -221,19 +228,19 @@ export function handleRedeemTokens(event: RedeemTokens): void {
       ProjectEventKey.redeemEvent
     );
 
-    let protocolLog = ProtocolV2Log.load(protocolId);
-    if (!protocolLog) protocolLog = new ProtocolV2Log(protocolId);
-    if (protocolLog) {
-      protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
+    let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
+    if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
+    if (protocolV2Log) {
+      protocolV2Log.volumeRedeemed = protocolV2Log.volumeRedeemed.plus(
         event.params.tokenCount
       );
-      protocolLog.redeemCount = protocolLog.redeemCount + 1;
-      protocolLog.save();
+      protocolV2Log.redeemCount = protocolV2Log.redeemCount + 1;
+      protocolV2Log.save();
     }
     updateProtocolEntity();
   }
 
-  let project = Project.load(projectId);
+  const project = Project.load(projectId);
   if (!project) {
     log.error("[handleRedeemTokens] Missing project. ID:{}", [projectId]);
     return;
@@ -248,8 +255,8 @@ export function handleRedeemTokens(event: RedeemTokens): void {
 }
 
 export function handleUseAllowance(event: UseAllowance): void {
-  let projectId = idForProject(event.params.projectId, cv);
-  let useAllowanceEvent = new UseAllowanceEvent(
+  const projectId = idForProject(event.params.projectId, cv);
+  const useAllowanceEvent = new UseAllowanceEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
   );
 
@@ -287,12 +294,12 @@ export function handleUseAllowance(event: UseAllowance): void {
 export function handleProcessFee(event: ProcessFee): void {
   // Load pay event to juicebox project (id: 1)
   // Requires pay event has logIndex preceding that of this tx
-  let id = `${idForProjectTx(
+  const id = `${idForProjectTx(
     BigInt.fromString("1"),
     cv,
     event
   )}-${event.transactionLogIndex.minus(BigInt.fromString("1"))}`;
-  let pay = PayEvent.load(id);
+  const pay = PayEvent.load(id);
   if (!pay) {
     log.error("[handleProcessFee] Missing PayEvent. ID:{}", [id]);
     return;

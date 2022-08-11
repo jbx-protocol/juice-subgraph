@@ -1,13 +1,5 @@
-import {
-  Address,
-  BigInt,
-  Bytes,
-  ethereum,
-  log,
-} from "@graphprotocol/graph-ts";
-import { JBProjectHandles } from "../generated/JBProjectHandles/JBProjectHandles";
-
-import { TerminalDirectory } from "../generated/Projects/TerminalDirectory";
+import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+import { JBProjectHandles } from "../../generated/JBProjectHandles/JBProjectHandles";
 import {
   Participant,
   Project,
@@ -15,21 +7,16 @@ import {
   ProtocolLog,
   ProtocolV1Log,
   ProtocolV2Log,
-} from "../generated/schema";
-import {
-  address_jbProjectHandles,
-  address_terminalDirectory,
-  address_terminalV1,
-  address_terminalV1_1,
-} from "./contractAddresses";
-import { CV, ProjectEventKey } from "./types";
-
-export const protocolId = "1";
+} from "../../generated/schema";
+import { PROTOCOL_ID } from "../constants";
+import { address_jbProjectHandles } from "../contractAddresses";
+import { CV, ProjectEventKey } from "../types";
+import { idForParticipant, idForProject, idForProjectEvent } from "./ids";
 
 export function updateProtocolEntity(): void {
-  const protocol = ProtocolLog.load(protocolId);
-  const protocolV1Log = ProtocolV1Log.load(protocolId);
-  const protocolV2Log = ProtocolV2Log.load(protocolId);
+  const protocol = ProtocolLog.load(PROTOCOL_ID);
+  const protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
+  const protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
 
   if (protocol && protocolV1Log) {
     protocol.erc20Count =
@@ -51,53 +38,6 @@ export function updateProtocolEntity(): void {
       : protocolV1Log.volumeRedeemed;
     protocol.save();
   }
-}
-
-export function idForProjectTx(
-  projectId: BigInt,
-  cv: CV,
-  event: ethereum.Event,
-  useLogIndex: boolean = false // Using log index will ensure ID is unique even if event is emitted multiple times within a single tx
-): string {
-  return (
-    idForProject(projectId, cv) +
-    "-" +
-    event.transaction.hash.toHexString().toLowerCase() +
-    (useLogIndex ? "-" + event.logIndex.toString() : "")
-  );
-}
-
-function idForProjectEvent(
-  projectId: BigInt,
-  cv: CV,
-  txHash: Bytes,
-  logIndex: BigInt
-): string {
-  return `${idForProject(
-    projectId,
-    cv
-  )}-${txHash.toHexString().toLowerCase()}-${logIndex.toString()}`;
-}
-
-export function idForParticipant(
-  projectId: BigInt,
-  cv: CV,
-  walletAddress: Bytes
-): string {
-  return `${idForProject(
-    projectId,
-    cv
-  )}-${walletAddress.toHexString().toLowerCase()}`;
-}
-
-export function idForProject(projectId: BigInt, cv: CV): string {
-  return `${cv[0]}-${projectId.toString()}`;
-}
-
-export function updateBalance(participant: Participant): void {
-  participant.balance = participant.unstakedBalance.plus(
-    participant.stakedBalance
-  );
 }
 
 export function saveNewProjectEvent(
@@ -169,45 +109,59 @@ export function saveNewProjectEvent(
   projectEvent.save();
 }
 
-export function cvForV1Project(projectId: BigInt): CV {
-  let terminal = TerminalDirectory.bind(
-    Address.fromString(address_terminalDirectory)
-  );
-  let callResult = terminal.try_terminalOf(projectId);
-
-  if (callResult.reverted) {
-    log.error("terminalOf reverted, project: {}, terminalDirectory: {}", [
-      projectId.toHexString(),
-      address_terminalDirectory,
-    ]);
-    // 0 will always indicate an error
-    return "0";
-  } else {
-    return cvForTerminal(callResult.value);
-  }
+export function newProtocolV1Log(): ProtocolV1Log {
+  const protocolV1Log = new ProtocolV1Log(PROTOCOL_ID);
+  protocolV1Log.log = PROTOCOL_ID;
+  protocolV1Log.projectsCount = 0;
+  protocolV1Log.volumePaid = BigInt.fromString("0");
+  protocolV1Log.volumeRedeemed = BigInt.fromString("0");
+  protocolV1Log.paymentsCount = 0;
+  protocolV1Log.redeemCount = 0;
+  protocolV1Log.erc20Count = 0;
+  return protocolV1Log;
 }
 
-export function cvForTerminal(terminal: Address): CV {
-  let _terminal = terminal.toHexString().toLowerCase();
+export function newProtocolV2Log(): ProtocolV2Log {
+  const protocolV2Log = new ProtocolV2Log(PROTOCOL_ID);
+  protocolV2Log.log = PROTOCOL_ID;
+  protocolV2Log.projectsCount = 0;
+  protocolV2Log.volumePaid = BigInt.fromString("0");
+  protocolV2Log.volumeRedeemed = BigInt.fromString("0");
+  protocolV2Log.paymentsCount = 0;
+  protocolV2Log.redeemCount = 0;
+  protocolV2Log.erc20Count = 0;
+  return protocolV2Log;
+}
 
-  // Switch statement throws unclear type error in graph compiler, so we use if statements instead
-  if (_terminal == address_terminalV1.toLowerCase()) {
-    return "1";
-  }
-  if (_terminal == address_terminalV1_1.toLowerCase()) {
-    return "1.1";
-  }
-  log.error("Invalid terminal address {}", [_terminal]);
-  // 0 will always indicate an error
-  return "0";
+export function newParticipant(
+  cv: CV,
+  projectId: BigInt,
+  wallet: Bytes
+): Participant {
+  const participant = new Participant(idForParticipant(projectId, cv, wallet));
+  participant.cv = cv;
+  participant.projectId = projectId.toI32();
+  participant.project = idForProject(projectId, cv);
+  participant.wallet = wallet;
+  participant.balance = BigInt.fromString("0");
+  participant.stakedBalance = BigInt.fromString("0");
+  participant.unstakedBalance = BigInt.fromString("0");
+  participant.totalPaid = BigInt.fromString("0");
+  participant.lastPaidTimestamp = 0;
+  return participant;
+}
+
+export function updateParticipantBalance(participant: Participant): void {
+  participant.balance = participant.unstakedBalance.plus(
+    participant.stakedBalance
+  );
 }
 
 export function updateV2ProjectHandle(projectId: BigInt): void {
-  let jbProjectHandles = JBProjectHandles.bind(
+  const jbProjectHandles = JBProjectHandles.bind(
     Address.fromString(address_jbProjectHandles)
   );
-  let handleCallResult = jbProjectHandles.try_handleOf(projectId);
-
+  const handleCallResult = jbProjectHandles.try_handleOf(projectId);
   let cv = "2";
   let project = Project.load(idForProject(projectId, cv));
   if (!project) {
@@ -224,16 +178,4 @@ export function updateV2ProjectHandle(projectId: BigInt): void {
   }
 
   project.save();
-}
-
-export function isNumberString(str: string): boolean {
-  return (
-    str.length &&
-    str
-      .trim()
-      .split("")
-      .every((char) =>
-        ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(char)
-      )
-  );
 }
