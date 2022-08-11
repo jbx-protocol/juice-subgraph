@@ -18,6 +18,8 @@
   "startBlock_jbETHPaymentTerminal": 14868869,
   "address_jbTokenStore": "0xCBB8e16d998161AdB20465830107ca298995f371",
   "startBlock_jbTokenStore": 14868848,
+  "address_jbFundingCycleStore": "0x6B8e01DAA8A61b544F96d2738893E05D04BF1D12",
+  "startBlock_jbFundingCycleStore": 14868844,
   "address_jbProjectHandles": "0xe3c01e9fd2a1dcc6edf0b1058b5757138ef9ffb6",
   "startBlock_jbProjectHandles": 14975701,
   "address_textResolver": "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41",

@@ -84,6 +84,7 @@ type Project @entity {
   ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
   deployVeNftEvents: [DeployVeNftEvent!]! @derivedFrom(field: "project")
   veNftContract: VeNftContract @derivedFrom(field: "project")
+  jb721Delegate: JB721Delegate @derivedFrom(field: "project")
 }
 
 # v2
@@ -104,6 +105,7 @@ type Participant @entity {
   balance: BigInt!
   stakedBalance: BigInt!
   unstakedBalance: BigInt!
+  jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "owner")
 }
 
 # v1.0, v1.1, v2
@@ -422,7 +424,7 @@ type DeployVeNftEvent @entity {
   timestamp: Int!
   txHash: Bytes!
 
-  veNftContract: VeNftContract!
+  veNftContract: VeNftContract
 }
 
 # v2
@@ -455,7 +457,7 @@ type VeNftToken @entity {
   lockDuration: Int!
   lockUseJbToken: Boolean!
   lockAllowPublicExtension: Boolean!
-  contract: VeNftContract!
+  contract: VeNftContract
   contractAddress: Bytes!
 }
 
@@ -473,17 +475,18 @@ type VeNftContract @entity {
 type JB721Delegate @entity {
   id: ID!
   address: Bytes!
-  project: Project!
-  projectId: Int!
+  project: Project
+  projectId: Int
   directory: Bytes!
   name: String!
   symbol: String!
-  tokenUri: String!
-  baseUri: String!
 }
 
 type JB721DelegateToken @entity {
   id: ID!
   jb721Delegate: JB721Delegate!
-  owner: Bytes!
+  owner: Participant!
+  tokenUri: String!
+  project: Project
+  projectId: Int
 }

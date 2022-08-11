@@ -57,7 +57,7 @@ templates:
       abi: JBVeNft
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/veNft/veNft.ts
       entities:
@@ -74,6 +74,27 @@ templates:
           handler: handleUnlock
         - event: Redeem(indexed uint256,address,address,uint256,uint256,string,address)
           handler: handleRedeem
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+  - name: JB721Delegate
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: JB721Delegate
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/jb721Delegate.ts
+      entities:
+        - JB721Delegate
+        - JB721DelegateToken
+      abis:
+        - name: JB721Delegate
+          file: ./abis/JB721Delegate.json
+      eventHandlers:
+        - event: SetBaseUri(indexed string,address)
+          handler: handleSetBaseUri
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
 dataSources:
@@ -298,6 +319,30 @@ dataSources:
           handler: handleTransfer
       file: ./src/mappings/v2/jbTokenStore.ts
   - kind: ethereum/contract
+    name: JBFundingCycleStore
+    network: {{network}}
+    source:
+      address: '{{address_jbFundingCycleStore}}'
+      abi: JBFundingCycleStore
+      startBlock: {{startBlock_jbFundingCycleStore}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - JB721Delegate
+      abis:
+        - name: JBFundingCycleStore
+          file: ./abis/JBFundingCycleStore.json
+        - name: JBController
+          file: ./abis/JBController.json
+        - name: JB721Delegate
+          file: ./abis/JB721Delegate.json
+      eventHandlers:
+        - event: Configure(indexed uint256,indexed uint256,(uint256,uint256,uint256,address),uint256,uint256,address)
+          handler: handleConfigure
+      file: ./src/mappings/v2/jbFundingCycleStore.ts
+  - kind: ethereum/contract
     name: JBProjects
     network: {{network}}
     source:
@@ -348,6 +393,10 @@ dataSources:
       abis:
         - name: JBETHPaymentTerminal
           file: ./abis/JBETHPaymentTerminal.json
+        - name: JBController
+          file: ./abis/JBController.json
+        - name: JB721Delegate
+          file: ./abis/JB721Delegate.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
           handler: handlePay

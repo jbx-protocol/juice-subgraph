@@ -32,6 +32,7 @@ import {
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
+import { updateJb721DelegateForProject } from "../../utils/jb721Delegate";
 import { handleTrendingPayment } from "../../utils/trending";
 
 const cv: CV = "2";
@@ -199,6 +200,8 @@ export function handlePay(event: Pay): void {
   }
   participant.lastPaidTimestamp = event.block.timestamp.toI32();
   participant.save();
+
+  updateJb721DelegateForProject(event.params.projectId);
 }
 
 export function handleRedeemTokens(event: RedeemTokens): void {
