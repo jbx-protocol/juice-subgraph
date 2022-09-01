@@ -1,0 +1,149 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "projectId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IJBTiered721Delegate",
+        "name": "newDelegate",
+        "type": "address"
+      }
+    ],
+    "name": "DelegateDeployed",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_projectId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "contract IJBDirectory",
+            "name": "directory",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "baseUri",
+            "type": "string"
+          },
+          {
+            "internalType": "contract IJBTokenUriResolver",
+            "name": "tokenUriResolver",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "contractUri",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "contributionFloor",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "lockedUntil",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "initialQuantity",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "votingUnits",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "reservedRate",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "reservedTokenBeneficiary",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "encodedIPFSUri",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bool",
+                "name": "shouldUseBeneficiaryAsDefault",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct JB721TierParams[]",
+            "name": "tiers",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "address",
+            "name": "reservedTokenBeneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IJBTiered721DelegateStore",
+            "name": "store",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "lockReservedTokenChanges",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "lockVotingUnitChanges",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct JBDeployTiered721DelegateData",
+        "name": "_deployTieredNFTRewardDelegateData",
+        "type": "tuple"
+      }
+    ],
+    "name": "deployDelegateFor",
+    "outputs": [
+      {
+        "internalType": "contract IJBTiered721Delegate",
+        "name": "dataSource",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

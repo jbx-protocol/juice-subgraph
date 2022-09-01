@@ -27,5 +27,7 @@
   "address_jbETHERC20ProjectPayerDeployer": "0x3247df1bdC849f69Ba7dA4faf71d1e5850A6Fbb8",
   "startBlock_jbETHERC20ProjectPayerDeployer": 10635479,
   "address_jbVeNftDeployer": "0xfb2E79DbE773985949Ae17f5866aFD20f0BB4C0c",
-  "startBlock_jbVeNftDeployer": 11059200
+  "startBlock_jbVeNftDeployer": 11059200,
+  "address_jbTiered721DelegateDeployer": "0x76d0ceb1e50b01918f66f6b47e283ba02f65169d",
+  "startBlock_jbTiered721DelegateDeployer": 11215697
 }

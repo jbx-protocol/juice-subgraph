@@ -76,22 +76,22 @@ templates:
           handler: handleRedeem
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-  - name: JB721Delegate
+  - name: JBTiered721Delegate
     kind: ethereum/contract
     network: {{network}}
     source:
-      abi: JB721Delegate
+      abi: JBTiered721Delegate
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings/jb721Delegate.ts
+      file: ./src/mappings/v2/jbTiered721Delegate.ts
       entities:
         - JB721Delegate
         - JB721DelegateToken
       abis:
-        - name: JB721Delegate
-          file: ./abis/JB721Delegate.json
+        - name: JBTiered721Delegate
+          file: ./abis/JBTiered721Delegate.json
       eventHandlers:
         - event: SetBaseUri(indexed string,address)
           handler: handleSetBaseUri
@@ -337,7 +337,7 @@ dataSources:
         - name: JBController
           file: ./abis/JBController.json
         - name: JB721Delegate
-          file: ./abis/JB721Delegate.json
+          file: ./abis/JBTiered721Delegate.json
       eventHandlers:
         - event: Configure(indexed uint256,indexed uint256,(uint256,uint256,uint256,address),uint256,uint256,address)
           handler: handleConfigure
@@ -396,7 +396,7 @@ dataSources:
         - name: JBController
           file: ./abis/JBController.json
         - name: JB721Delegate
-          file: ./abis/JB721Delegate.json
+          file: ./abis/JBTiered721Delegate.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
           handler: handlePay
@@ -501,3 +501,25 @@ dataSources:
           handler: handleDeployVeNft
       file: ./src/mappings/veNft/veNftDeployer.ts
   {{ /address_jbVeNftDeployer }}
+  {{ #address_jbTiered721DelegateDeployer }}
+  - kind: ethereum/contract
+    name: JBTiered721DelegateDeployer
+    network: {{network}}
+    source:
+      address: '{{address_jbTiered721DelegateDeployer}}'
+      abi: JBTiered721DelegateDeployer
+      startBlock: {{startBlock_jbTiered721DelegateDeployer}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - JBTiered721Delegate
+      abis:
+        - name: JBTiered721DelegateDeployer
+          file: ./abis/JBTiered721DelegateDeployer.json
+      eventHandlers:
+        - event: DelegateDeployed(indexed uint256,address)
+          handler: handleDelegateDeployed
+      file: ./src/mappings/v2/jbTiered721DelegateDeployer.ts
+  {{ /address_jbTiered721DelegateDeployer }}
