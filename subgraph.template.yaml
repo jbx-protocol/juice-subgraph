@@ -518,6 +518,8 @@ dataSources:
       abis:
         - name: JBTiered721DelegateDeployer
           file: ./abis/JBTiered721DelegateDeployer.json
+        - name: JBTiered721Delegate
+          file: ./abis/JBTiered721Delegate.json
       eventHandlers:
         - event: DelegateDeployed(indexed uint256,address)
           handler: handleDelegateDeployed
