@@ -1,12 +1,12 @@
 import { log } from "@graphprotocol/graph-ts";
 import { VeNftContract, VeNftToken } from "../../../generated/schema";
-import { JBVeNft } from "../../../generated/templates";
 import {
   ExtendLock,
   Lock,
   Redeem,
   Transfer,
   Unlock,
+  JBVeNft
 } from "../../../generated/templates/JBVeNft/JBVeNft";
 import { idForVeNftContract } from "../../utils/ids";
 

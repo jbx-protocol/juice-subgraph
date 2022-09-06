@@ -25,6 +25,7 @@ export function handleDeployVeNft(event: DeployVeNft): void {
     deployVeNftEvent.projectId = project.projectId;
     deployVeNftEvent.timestamp = event.block.timestamp.toI32();
     deployVeNftEvent.txHash = event.transaction.hash;
+    deployVeNftEvent.veNftContract = idForVeNftContract(event.params.jbVeNft);
     deployVeNftEvent.save();
 
     JBVeNft.create(event.params.jbVeNft);

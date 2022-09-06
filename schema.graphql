@@ -83,7 +83,7 @@ type Project @entity {
   projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
   ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
   deployVeNftEvents: [DeployVeNftEvent!]! @derivedFrom(field: "project")
-  veNftContract: VeNftContract! @derivedFrom(field: "project")
+  veNftContract: VeNftContract @derivedFrom(field: "project")
 }
 
 # v2
