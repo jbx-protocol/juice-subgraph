@@ -1,14 +1,11 @@
 specVersion: 0.0.4
 description: Juicebox protocol on {{network}}
-# graft:
-#   base: QmV37C7hKimDno8Qhdzfg6fH2HjZJJDoAuRjaNUvfSPdtr
-#   block: 14874371
-# graft:
-#   base: QmQfWacsGk23QiwH2eH1SNSVrYB9o1jfyhrCWakeYiZ8Ku
-#   block: 10635479
+graft:
+  base: QmYGocdeV9NRnQyjE6RJj5Ap75kup7YEKn1YBymwCutbyJ
+  block: 11215697
 features:
   - fullTextSearch
-  # - grafting
+  - grafting
 schema:
   file: ./schema.graphql
 templates:

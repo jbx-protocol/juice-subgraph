@@ -22,7 +22,7 @@ export function handleTransfer(event: TransferFromCall): void {
     .toHexString()
     .toLowerCase();
 
-  // Load jb721Delegate contract entity to get project details
+  // Load jb721Delegate contract entity to get projectId
   const jb721Delegate = JB721Delegate.load(address);
   if (!jb721Delegate) {
     log.error("[handleTransfer] Missing jb721Delegate. Address:{}", [address]);
@@ -54,7 +54,7 @@ export function handleTransfer(event: TransferFromCall): void {
   participant.save();
 
   jb721DelegateToken.owner = participant.id;
-  jb721DelegateToken.projectId = projectId.toI32();
+  jb721DelegateToken.projectId = jb721Delegate.projectId;
   jb721DelegateToken.project = jb721Delegate.project;
   jb721DelegateToken.save();
 }

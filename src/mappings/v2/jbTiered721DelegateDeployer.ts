@@ -51,6 +51,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   }
   delegate.symbol = symbolCall.value;
 
+  delegate.address = address;
   delegate.projectId = event.params.projectId.toI32();
   delegate.project = idForProject(event.params.projectId, cv);
 
