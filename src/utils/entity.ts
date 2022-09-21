@@ -7,9 +7,10 @@ import {
   ProtocolLog,
   ProtocolV1Log,
   ProtocolV2Log,
+  ProtocolV3Log,
 } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
-import { address_jbProjectHandles } from "../contractAddresses";
+import { address_shared_jbProjectHandles } from "../contractAddresses";
 import { CV, ProjectEventKey } from "../types";
 import { idForParticipant, idForProject, idForProjectEvent } from "./ids";
 
@@ -112,6 +113,18 @@ export function saveNewProjectEvent(
   projectEvent.save();
 }
 
+export function newProtocolLog(): ProtocolLog {
+  const protocolLog = new ProtocolLog(PROTOCOL_ID);
+  protocolLog.projectsCount = 0;
+  protocolLog.volumePaid = BigInt.fromString("0");
+  protocolLog.volumeRedeemed = BigInt.fromString("0");
+  protocolLog.paymentsCount = 0;
+  protocolLog.redeemCount = 0;
+  protocolLog.erc20Count = 0;
+  protocolLog.trendingLastUpdatedTimestamp = 0;
+  return protocolLog;
+}
+
 export function newProtocolV1Log(): ProtocolV1Log {
   const protocolV1Log = new ProtocolV1Log(PROTOCOL_ID);
   protocolV1Log.log = PROTOCOL_ID;
@@ -134,6 +147,18 @@ export function newProtocolV2Log(): ProtocolV2Log {
   protocolV2Log.redeemCount = 0;
   protocolV2Log.erc20Count = 0;
   return protocolV2Log;
+}
+
+export function newProtocolV3Log(): ProtocolV3Log {
+  const protocolV3Log = new ProtocolV3Log(PROTOCOL_ID);
+  protocolV3Log.log = PROTOCOL_ID;
+  protocolV3Log.projectsCount = 0;
+  protocolV3Log.volumePaid = BigInt.fromString("0");
+  protocolV3Log.volumeRedeemed = BigInt.fromString("0");
+  protocolV3Log.paymentsCount = 0;
+  protocolV3Log.redeemCount = 0;
+  protocolV3Log.erc20Count = 0;
+  return protocolV3Log;
 }
 
 export function newParticipant(
@@ -161,8 +186,10 @@ export function updateParticipantBalance(participant: Participant): void {
 }
 
 export function updateV2ProjectHandle(projectId: BigInt): void {
+  if (!address_shared_jbProjectHandles) return;
+
   const jbProjectHandles = JBProjectHandles.bind(
-    Address.fromString(address_jbProjectHandles)
+    Address.fromString(address_shared_jbProjectHandles!)
   );
   const handleCallResult = jbProjectHandles.try_handleOf(projectId);
   let cv = "2";

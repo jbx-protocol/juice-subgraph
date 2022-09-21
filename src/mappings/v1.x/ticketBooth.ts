@@ -22,7 +22,7 @@ import {
   Unstake,
 } from "../../../generated/TicketBooth/TicketBooth";
 import { PROTOCOL_ID } from "../../constants";
-import { address_ticketBooth } from "../../contractAddresses";
+import { address_v1_ticketBooth } from "../../contractAddresses";
 import { ProjectEventKey } from "../../types";
 import { cvForV1Project } from "../../utils/cv";
 import {
@@ -200,17 +200,21 @@ export function handleIssue(event: Issue): void {
     updateProtocolEntity();
   }
 
-  const ticketBooth = TicketBooth.bind(Address.fromString(address_ticketBooth));
-  const ticketsOfCall = ticketBooth.try_ticketsOf(event.params.projectId);
-  if (ticketsOfCall.reverted) {
-    log.error("ticketsOf reverted, project: {}, ticketBooth: {}", [
-      event.params.projectId.toString(),
-      address_ticketBooth,
-    ]);
-  } else {
-    const erc20Context = new DataSourceContext();
-    erc20Context.setI32("projectId", event.params.projectId.toI32());
-    erc20Context.setString("cv", cv);
-    ERC20.createWithContext(ticketsOfCall.value, erc20Context);
+  if (address_v1_ticketBooth) {
+    const ticketBooth = TicketBooth.bind(
+      Address.fromString(address_v1_ticketBooth)
+    );
+    const ticketsOfCall = ticketBooth.try_ticketsOf(event.params.projectId);
+    if (ticketsOfCall.reverted) {
+      log.error("ticketsOf reverted, project: {}, ticketBooth: {}", [
+        event.params.projectId.toString(),
+        address_v1_ticketBooth,
+      ]);
+    } else {
+      const erc20Context = new DataSourceContext();
+      erc20Context.setI32("projectId", event.params.projectId.toI32());
+      erc20Context.setString("cv", cv);
+      ERC20.createWithContext(ticketsOfCall.value, erc20Context);
+    }
   }
 }

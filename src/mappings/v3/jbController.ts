@@ -3,7 +3,7 @@ import {
   DistributeReservedTokens,
   DistributeToReservedTokenSplit,
   MintTokens,
-} from "../../../generated/V2JBController/JBController";
+} from "../../../generated/V3JBController/JBController";
 import {
   DistributeReservedTokensEvent,
   DistributeToReservedTokenSplitEvent,
@@ -13,7 +13,7 @@ import { CV, ProjectEventKey } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entity";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
-const cv: CV = "2";
+const cv: CV = "3";
 
 export function handleMintTokens(event: MintTokens): void {
   // Note: Receiver balance is updated in the jbTokenStore event handler

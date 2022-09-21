@@ -4,6 +4,7 @@ type ProtocolLog @entity {
   id: ID!
   v1: ProtocolV1Log @derivedFrom(field: "log")
   v2: ProtocolV2Log @derivedFrom(field: "log")
+  v3: ProtocolV3Log @derivedFrom(field: "log")
 
   projectsCount: Int!
   volumePaid: BigInt!
@@ -468,4 +469,19 @@ type VeNftContract @entity {
   project: Project!
   projectId: Int!
   tokens: [VeNftToken!]! @derivedFrom(field: "contract")
+}
+
+#############################################################################
+############################### v3 entities ###############################
+#############################################################################
+# v3
+type ProtocolV3Log @entity {
+  id: ID!
+  log: ProtocolLog!
+  projectsCount: Int!
+  volumePaid: BigInt!
+  volumeRedeemed: BigInt!
+  paymentsCount: Int!
+  redeemCount: Int!
+  erc20Count: Int!
 }

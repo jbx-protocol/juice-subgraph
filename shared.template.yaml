@@ -1,0 +1,65 @@
+  - kind: ethereum/contract
+    name: JBProjectHandles
+    network: {{network}}
+    source:
+      address: '{{shared.address_jbProjectHandles}}'
+      abi: JBProjectHandles
+      startBlock: {{shared.startBlock_jbProjectHandles}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Project
+      abis:
+        - name: JBProjectHandles
+          file: ./abis/shared/JBProjectHandles.json
+      eventHandlers:
+        - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
+          handler: handleSetEnsNameParts
+      file: ./src/mappings/v2/jbProjectHandles.ts
+  - kind: ethereum/contract
+    name: TextResolver
+    network: {{network}}
+    source:
+      address: '{{shared.address_textResolver}}'
+      abi: TextResolver
+      startBlock: {{shared.startBlock_textResolver}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Project
+        - ENSNode
+      abis:
+        - name: TextResolver
+          file: ./abis/shared/TextResolver.json
+        - name: JBProjectHandles
+          file: ./abis/shared/JBProjectHandles.json
+      eventHandlers:
+        - event: TextChanged(indexed bytes32,indexed string,string)
+          handler: handleTextChanged
+      file: ./src/mappings/v2/textResolver.ts
+  {{ #shared.address_jbVeNftDeployer }}
+  - kind: ethereum/contract
+    name: JBVeNftDeployer
+    network: {{network}}
+    source:
+      address: '{{shared.address_jbVeNftDeployer}}'
+      abi: JBVeNftDeployer
+      startBlock: {{shared.startBlock_jbVeNftDeployer}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - VeNftToken
+      abis:
+        - name: JBVeNftDeployer
+          file: ./abis/shared/JBVeNftDeployer.json
+      eventHandlers:
+        - event: DeployVeNft(address,indexed uint256,string,string,address,address,address,uint256[],address,address)
+          handler: handleDeployVeNft
+      file: ./src/mappings/veNft/veNftDeployer.ts
+  {{ /shared.address_jbVeNftDeployer }}

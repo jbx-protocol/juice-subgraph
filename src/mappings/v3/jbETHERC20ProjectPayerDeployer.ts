@@ -1,6 +1,6 @@
 import { DataSourceContext } from "@graphprotocol/graph-ts";
 
-import { DeployProjectPayer } from "../../../generated/V2JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
+import { DeployProjectPayer } from "../../../generated/V3JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
 import {
   DeployETHERC20ProjectPayerEvent,
   ETHERC20ProjectPayer,
@@ -10,7 +10,7 @@ import { CV, ProjectEventKey } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entity";
 import { idForProject } from "../../utils/ids";
 
-const cv: CV = "2";
+const cv: CV = "3";
 
 export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   // Create dataSource context

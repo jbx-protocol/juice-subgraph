@@ -1,27 +1,33 @@
 {
   "network": "mainnet",
-  "address_projects": "0x9b5a4053FfBB11cA9cd858AAEE43cc95ab435418",
-  "startBlock_projects": 12833329,
-  "address_terminalV1": "0xd569D3CCE55b71a8a3f3C418c329A66e5f714431",
-  "startBlock_terminalV1": 12833343,
-  "address_terminalV1_1": "0x981c8ECD009E3E84eE1fF99266BF1461a12e5c68",
-  "startBlock_terminalV1_1": 13979856,
-  "address_terminalDirectory": "0x46C9999A2EDCD5aA177ed7E8af90c68b7d75Ba46",
-  "startBlock_terminalDirectory": 12833337,
-  "address_ticketBooth": "0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc",
-  "startBlock_ticketBooth": 12833339,
-  "address_jbProjects": "0xD8B4359143eda5B2d763E127Ed27c77addBc47d3",
-  "startBlock_jbProjects": 14730693,
-  "address_jbController": "0x4e3ef8AFCC2B52E4e704f4c8d9B7E7948F651351",
-  "startBlock_jbController": 14868852,
-  "address_jbETHPaymentTerminal": "0x7Ae63FBa045Fec7CaE1a75cF7Aa14183483b8397",
-  "startBlock_jbETHPaymentTerminal": 14868869,
-  "address_jbTokenStore": "0xCBB8e16d998161AdB20465830107ca298995f371",
-  "startBlock_jbTokenStore": 14868848,
-  "address_jbProjectHandles": "0xe3c01e9fd2a1dcc6edf0b1058b5757138ef9ffb6",
-  "startBlock_jbProjectHandles": 14975701,
-  "address_textResolver": "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41",
-  "startBlock_textResolver": 14975701,
-  "address_jbETHERC20ProjectPayerDeployer": "0x9E84bEcA3E4d3cfE5C3b5E1b534363E8D7468ABc",
-  "startBlock_jbETHERC20ProjectPayerDeployer": 14730683
+  "v1": {
+    "address_projects": "0x9b5a4053FfBB11cA9cd858AAEE43cc95ab435418",
+    "startBlock_projects": 12833329,
+    "address_terminalV1": "0xd569D3CCE55b71a8a3f3C418c329A66e5f714431",
+    "startBlock_terminalV1": 12833343,
+    "address_terminalV1_1": "0x981c8ECD009E3E84eE1fF99266BF1461a12e5c68",
+    "startBlock_terminalV1_1": 13979856,
+    "address_terminalDirectory": "0x46C9999A2EDCD5aA177ed7E8af90c68b7d75Ba46",
+    "startBlock_terminalDirectory": 12833337,
+    "address_ticketBooth": "0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc",
+    "startBlock_ticketBooth": 12833339
+  },
+  "v2": {
+    "address_jbProjects": "0xD8B4359143eda5B2d763E127Ed27c77addBc47d3",
+    "startBlock_jbProjects": 14730693,
+    "address_jbController": "0x4e3ef8AFCC2B52E4e704f4c8d9B7E7948F651351",
+    "startBlock_jbController": 14868852,
+    "address_jbETHPaymentTerminal": "0x7Ae63FBa045Fec7CaE1a75cF7Aa14183483b8397",
+    "startBlock_jbETHPaymentTerminal": 14868869,
+    "address_jbTokenStore": "0xCBB8e16d998161AdB20465830107ca298995f371",
+    "startBlock_jbTokenStore": 14868848,
+    "address_jbETHERC20ProjectPayerDeployer": "0x9E84bEcA3E4d3cfE5C3b5E1b534363E8D7468ABc",
+    "startBlock_jbETHERC20ProjectPayerDeployer": 14730683
+  },
+  "shared": {
+    "address_jbProjectHandles": "0xe3c01e9fd2a1dcc6edf0b1058b5757138ef9ffb6",
+    "startBlock_jbProjectHandles": 14975701,
+    "address_textResolver": "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41",
+    "startBlock_textResolver": 14975701
+  }
 }

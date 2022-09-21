@@ -1,0 +1,149 @@
+{{ #v2 }}
+  - kind: ethereum/contract
+    name: V2JBETHERC20ProjectPayerDeployer
+    network: {{network}}
+    source:
+      address: '{{v2.address_jbETHERC20ProjectPayerDeployer}}'
+      abi: JBETHERC20ProjectPayerDeployer
+      startBlock: {{v2.startBlock_jbETHERC20ProjectPayerDeployer}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ETHERC20ProjectPayer
+        - DeployETHERC20ProjectPayerEvent
+      abis:
+        - name: JBETHERC20ProjectPayerDeployer
+          file: ./abis/v2/JBETHERC20ProjectPayerDeployer.json
+        - name: JBETHERC20ProjectPayer
+          file: ./abis/shared/JBETHERC20ProjectPayer.json
+      eventHandlers:
+        - event: DeployProjectPayer(indexed address,uint256,address,bool,string,bytes,bool,address,address,address)
+          handler: handleDeployProjectPayer
+      file: ./src/mappings/v2/jbETHERC20ProjectPayerDeployer.ts
+  - kind: ethereum/contract
+    name: V2JBController
+    network: {{network}}
+    source:
+      address: '{{v2.address_jbController}}'
+      abi: JBController
+      startBlock: {{v2.startBlock_jbController}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - DistributeReservedTokensEvent
+        - DistributeToReservedTokenSplitEvent
+        - MintTokensEvent
+      abis:
+        - name: JBController
+          file: ./abis/v2/JBController.json
+      eventHandlers:
+        - event: MintTokens(indexed address,indexed uint256,uint256,uint256,string,uint256,address)
+          handler: handleMintTokens
+        - event: DistributeReservedTokens(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,string,address)
+          handler: handleDistributeReservedTokens
+        - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
+          handler: handleDistributeToReservedTokenSplit
+      file: ./src/mappings/v2/jbController.ts
+  - kind: ethereum/contract
+    name: V2JBTokenStore
+    network: {{network}}
+    source:
+      address: '{{v2.address_jbTokenStore}}'
+      abi: JBTokenStore
+      startBlock: {{v2.startBlock_jbTokenStore}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - DeployedERC20Event
+        - Participant
+        - Project
+        - ProjectEvent
+        - ProtocolV2Log
+      abis:
+        - name: JBTokenStore
+          file: ./abis/v2/JBTokenStore.json
+      eventHandlers:
+        - event: Burn(indexed address,indexed uint256,uint256,uint256,uint256,bool,address)
+          handler: handleBurn
+        - event: Claim(indexed address,indexed uint256,uint256,uint256,address)
+          handler: handleClaim
+        - event: Issue(indexed uint256,indexed address,string,string,address)
+          handler: handleIssue
+        - event: Mint(indexed address,indexed uint256,uint256,bool,bool,address)
+          handler: handleMint
+        - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
+          handler: handleTransfer
+      file: ./src/mappings/v2/jbTokenStore.ts
+  - kind: ethereum/contract
+    name: V2JBProjects
+    network: {{network}}
+    source:
+      address: '{{v2.address_jbProjects}}'
+      abi: JBProjects
+      startBlock: {{v2.startBlock_jbProjects}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Project
+        - ProjectCreateEvent
+        - ProjectEvent
+        - ProtocolV2Log
+      abis:
+        - name: JBProjects
+          file: ./abis/v2/JBProjects.json
+      eventHandlers:
+        - event: Create(indexed uint256,indexed address,(string,uint256),address)
+          handler: handleCreate
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransferOwnership
+        - event: SetMetadata(indexed uint256,(string,uint256),address)
+          handler: handleSetMetadata
+      file: ./src/mappings/v2/jbProjects.ts
+  - kind: ethereum/contract
+    name: V2JBETHPaymentTerminal
+    network: {{network}}
+    source:
+      address: '{{v2.address_jbETHPaymentTerminal}}'
+      abi: JBETHPaymentTerminal
+      startBlock: {{v2.startBlock_jbETHPaymentTerminal}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - DistributePayoutsEvent
+        - DistributeToPayoutSplitEvent
+        - Participant
+        - PayEvent
+        - Project
+        - ProtocolV2Log
+        - RedeemEvent
+        - UseAllowanceEvent
+      abis:
+        - name: JBETHPaymentTerminal
+          file: ./abis/v2/JBETHPaymentTerminal.json
+      eventHandlers:
+        - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
+          handler: handlePay
+        - event: RedeemTokens(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
+          handler: handleRedeemTokens
+        - event: AddToBalance(indexed uint256,uint256,uint256,string,bytes,address)
+          handler: handleAddToBalance
+        - event: DistributePayouts(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,uint256,uint256,string,address)
+          handler: handleDistributePayouts
+        - event: UseAllowance(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,uint256,string,address)
+          handler: handleUseAllowance
+        - event: DistributeToPayoutSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
+          handler: handleDistributeToPayoutSplit
+        - event: ProcessFee(indexed uint256,indexed uint256,indexed bool,address,address)
+          handler: handleProcessFee
+      file: ./src/mappings/v2/jbETHPaymentTerminal.ts
+{{ /v2 }}

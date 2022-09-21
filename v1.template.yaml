@@ -1,0 +1,162 @@
+{{ #v1 }}
+  - kind: ethereum/contract
+    name: Projects
+    network: {{network}}
+    source:
+      address: '{{v1.address_projects}}'
+      abi: Projects
+      startBlock: {{v1.startBlock_projects}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Project
+        - ProjectCreateEvent
+        - ProtocolLog
+        - ProtocolV1Log
+      abis:
+        - name: Projects
+          file: ./abis/v1/Projects.json
+        - name: TerminalDirectory
+          file: ./abis/v1/TerminalDirectory.json
+      eventHandlers:
+        - event: Create(indexed uint256,indexed address,indexed bytes32,string,address,address)
+          handler: handleProjectCreate
+        - event: SetHandle(indexed uint256,indexed bytes32,address)
+          handler: handleSetHandle
+        - event: SetUri(indexed uint256,string,address)
+          handler: handleSetUri
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransferOwnership
+      file: ./src/mappings/v1.x/projects.ts
+  - kind: ethereum/contract
+    name: TicketBooth
+    network: {{network}}
+    source:
+      address: '{{v1.address_ticketBooth}}'
+      abi: TicketBooth
+      startBlock: {{v1.startBlock_ticketBooth}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - DeployedERC20Event
+        - Participant
+        - Project
+        - ProtocolV1Log
+      abis:
+        - name: TicketBooth
+          file: ./abis/v1/TicketBooth.json
+        - name: TerminalDirectory
+          file: ./abis/v1/TerminalDirectory.json
+      eventHandlers:
+        - event: Print(indexed address,indexed uint256,uint256,bool,bool,address)
+          handler: handlePrint
+        - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
+          handler: handleTicketTransfer
+        - event: Unstake(indexed address,indexed uint256,uint256,address)
+          handler: handleUnstake
+        - event: Stake(indexed address,indexed uint256,uint256,address)
+          handler: handleStake
+        - event: Redeem(indexed address,indexed uint256,uint256,uint256,bool,address)
+          handler: handleRedeem
+        - event: Issue(indexed uint256,string,string,address)
+          handler: handleIssue
+      file: ./src/mappings/v1.x/ticketBooth.ts
+  - kind: ethereum/contract
+    name: TerminalV1
+    network: {{network}}
+    source:
+      address: '{{v1.address_terminalV1}}'
+      abi: TerminalV1
+      startBlock: {{v1.startBlock_terminalV1}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - DistributeToPayoutModEvent
+        - DistributeToTicketModEvent
+        - MintTokensEvent
+        - Participant
+        - PayEvent
+        - PrintReservesEvent
+        - Project
+        - ProjectEvent
+        - ProtocolV1Log
+        - RedeemEvent
+        - TapEvent
+      abis:
+        - name: TerminalV1
+          file: ./abis/v1/TerminalV1.json
+        - name: TerminalDirectory
+          file: ./abis/v1/TerminalDirectory.json
+      eventHandlers:
+        - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,string,address)
+          handler: handlePay
+        - event: PrintPreminedTickets(indexed uint256,indexed address,uint256,uint256,string,address)
+          handler: handlePrintPreminedTickets
+        - event: PrintReserveTickets(indexed uint256,indexed uint256,indexed address,uint256,uint256,address)
+          handler: handlePrintReserveTickets
+        - event: Tap(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,uint256,uint256,address)
+          handler: handleTap
+        - event: Redeem(indexed address,indexed address,indexed uint256,uint256,uint256,address)
+          handler: handleRedeem
+        - event: AddToBalance(indexed uint256,uint256,address)
+          handler: handleAddToBalance
+        - event: DistributeToPayoutMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address,address,uint56),uint256,address)
+          handler: handleDistributeToPayoutMod
+        - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
+          handler: handleDistributeToTicketMod
+        - event: Migrate(indexed uint256,indexed address,uint256,address)
+          handler: handleMigrate
+      file: ./src/mappings/v1.x/terminalV1.ts
+  - kind: ethereum/contract
+    name: TerminalV1_1
+    network: {{network}}
+    source:
+      address: '{{v1.address_terminalV1_1}}'
+      abi: TerminalV1_1
+      startBlock: {{v1.startBlock_terminalV1_1}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - DistributeToPayoutModEvent
+        - DistributeToTicketModEvent
+        - Participant
+        - PayEvent
+        - MintTokensEvent
+        - PrintReservesEvent
+        - Project
+        - ProjectEvent
+        - ProtocolV1Log
+        - RedeemEvent
+        - TapEvent
+      abis:
+        - name: TerminalV1_1
+          file: ./abis/v1/TerminalV1_1.json
+        - name: TerminalDirectory
+          file: ./abis/v1/TerminalDirectory.json
+      eventHandlers:
+        - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,string,address)
+          handler: handlePay
+        - event: PrintTickets(indexed uint256,indexed address,uint256,string,address)
+          handler: handlePrintTickets
+        - event: PrintReserveTickets(indexed uint256,indexed uint256,indexed address,uint256,uint256,address)
+          handler: handlePrintReserveTickets
+        - event: Tap(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,uint256,uint256,address)
+          handler: handleTap
+        - event: Redeem(indexed address,indexed address,indexed uint256,uint256,uint256,address)
+          handler: handleRedeem
+        - event: AddToBalance(indexed uint256,uint256,address)
+          handler: handleAddToBalance
+        - event: DistributeToPayoutMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address,address,uint56),uint256,address)
+          handler: handleDistributeToPayoutMod
+        - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
+          handler: handleDistributeToTicketMod
+      file: ./src/mappings/v1.x/terminalV1_1.ts
+{{ /v1 }}

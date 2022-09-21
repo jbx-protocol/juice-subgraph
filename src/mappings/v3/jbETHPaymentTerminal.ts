@@ -7,14 +7,14 @@ import {
   ProcessFee,
   RedeemTokens,
   UseAllowance,
-} from "../../../generated/V2JBETHPaymentTerminal/JBETHPaymentTerminal";
+} from "../../../generated/V3JBETHPaymentTerminal/JBETHPaymentTerminal";
 import {
   DistributePayoutsEvent,
   DistributeToPayoutSplitEvent,
   Participant,
   PayEvent,
   Project,
-  ProtocolV2Log,
+  ProtocolV3Log,
   RedeemEvent,
   UseAllowanceEvent,
 } from "../../../generated/schema";
@@ -22,7 +22,7 @@ import { PROTOCOL_ID } from "../../constants";
 import { CV, ProjectEventKey } from "../../types";
 import {
   newParticipant,
-  newProtocolV2Log,
+  newProtocolV3Log,
   saveNewProjectEvent,
   updateProtocolEntity,
 } from "../../utils/entity";
@@ -34,7 +34,7 @@ import {
 } from "../../utils/ids";
 import { handleTrendingPayment } from "../../utils/trending";
 
-const cv: CV = "2";
+const cv: CV = "3";
 
 export function handleAddToBalance(event: AddToBalance): void {
   const projectId = idForProject(event.params.projectId, cv);
@@ -171,14 +171,14 @@ export function handlePay(event: Pay): void {
     handleTrendingPayment(event.block.timestamp);
   }
 
-  let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
-  if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
-  if (protocolV2Log) {
-    protocolV2Log.volumePaid = protocolV2Log.volumePaid.plus(
+  let protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
+  if (!protocolV3Log) protocolV3Log = newProtocolV3Log();
+  if (protocolV3Log) {
+    protocolV3Log.volumePaid = protocolV3Log.volumePaid.plus(
       event.params.amount
     );
-    protocolV2Log.paymentsCount = protocolV2Log.paymentsCount + 1;
-    protocolV2Log.save();
+    protocolV3Log.paymentsCount = protocolV3Log.paymentsCount + 1;
+    protocolV3Log.save();
   }
   updateProtocolEntity();
 
@@ -228,14 +228,14 @@ export function handleRedeemTokens(event: RedeemTokens): void {
       ProjectEventKey.redeemEvent
     );
 
-    let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
-    if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
-    if (protocolV2Log) {
-      protocolV2Log.volumeRedeemed = protocolV2Log.volumeRedeemed.plus(
+    let protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
+    if (!protocolV3Log) protocolV3Log = newProtocolV3Log();
+    if (protocolV3Log) {
+      protocolV3Log.volumeRedeemed = protocolV3Log.volumeRedeemed.plus(
         event.params.tokenCount
       );
-      protocolV2Log.redeemCount = protocolV2Log.redeemCount + 1;
-      protocolV2Log.save();
+      protocolV3Log.redeemCount = protocolV3Log.redeemCount + 1;
+      protocolV3Log.save();
     }
     updateProtocolEntity();
   }

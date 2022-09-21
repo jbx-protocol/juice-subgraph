@@ -25,16 +25,34 @@ function writeContractAddresses() {
   // Delete contractAddresses.ts if exists
   fs.rmSync(contractAddressesPath, { force: true });
 
+  let fileContents = "";
+
+  function varsFromAddresses(prefix) {
+    const obj = config[prefix];
+
+    return `${Object.keys(obj)
+      .filter((key) => key.startsWith("address_"))
+      .map((key) => {
+        const val =
+          obj[key] === "0x0000000000000000000000000000000000000000"
+            ? null
+            : `"${obj[key]}"`;
+        return `export const address_${prefix}_${
+          key.split("address_")[1]
+        }: string | null = ${val};\n`;
+      })
+      .join("")}
+    `;
+  }
+
+  fileContents += varsFromAddresses("shared");
+  fileContents += varsFromAddresses("v1");
+  fileContents += varsFromAddresses("v2");
+  fileContents += varsFromAddresses("v3");
+
   // Write contractAddresses file
   try {
-    fs.writeFileSync(
-      contractAddressesPath,
-      `${Object.keys(config)
-        .filter((key) => key.startsWith("address_"))
-        .map((key) => `export const ${key} = "${config[key]}";\n`)
-        .join("")}
-        `
-    );
+    fs.writeFileSync(contractAddressesPath, fileContents);
   } catch (e) {
     console.log("Error writing contractAddresses.ts", e);
   }
@@ -48,12 +66,25 @@ function writeSubgraph() {
   // Delete subgraph.yaml if exists
   fs.rmSync(subgraphPath, { force: true });
 
+  function renderTemplate(prefix) {
+    return mustache
+      .render(fs.readFileSync(prefix + ".template.yaml").toString(), config)
+      .toString();
+  }
+  const _config = {
+    ...config,
+    dataSources_v1: renderTemplate("v1"),
+    dataSources_v2: renderTemplate("v2"),
+    dataSources_v3: renderTemplate("v3"),
+    dataSources_shared: renderTemplate("shared"),
+  };
+
   // Write new subgraph.yaml from config
   try {
     fs.writeFileSync(
       subgraphPath,
       mustache
-        .render(fs.readFileSync("subgraph.template.yaml").toString(), config)
+        .render(fs.readFileSync("subgraph.template.yaml").toString(), _config)
         .toString()
     );
   } catch (e) {
@@ -112,7 +143,7 @@ function checkHandlers() {
     const handlerNames = [];
 
     if (!src) {
-      console.log(`🟡 Missing in yaml 🟡`)
+      console.log(`🟡 Missing in yaml 🟡`);
       return;
     }
 

@@ -3,15 +3,17 @@ import {
   Create,
   SetMetadata,
   Transfer,
-} from "../../../generated/JBProjects/JBProjects";
+} from "../../../generated/V2JBProjects/JBProjects";
 import {
   Project,
   ProjectCreateEvent,
+  ProtocolLog,
   ProtocolV2Log,
 } from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
 import { CV, ProjectEventKey } from "../../types";
 import {
+  newProtocolLog,
   newProtocolV2Log,
   saveNewProjectEvent,
   updateProtocolEntity,
@@ -63,6 +65,11 @@ export function handleCreate(event: Create): void {
       cv,
       ProjectEventKey.projectCreateEvent
     );
+  }
+
+  if (!ProtocolLog.load(PROTOCOL_ID)) {
+    const protocolLog = newProtocolLog();
+    protocolLog.save();
   }
 
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);

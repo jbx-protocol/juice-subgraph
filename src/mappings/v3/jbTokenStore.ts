@@ -6,19 +6,19 @@ import {
   Issue,
   Mint,
   Transfer,
-} from "../../../generated/V2JBTokenStore/JBTokenStore";
+} from "../../../generated/V3JBTokenStore/JBTokenStore";
 import {
   DeployedERC20Event,
   Participant,
   Project,
-  ProtocolV2Log,
+  ProtocolV3Log,
 } from "../../../generated/schema";
 import { ERC20 } from "../../../generated/templates";
 import { PROTOCOL_ID } from "../../constants";
 import { CV, ProjectEventKey } from "../../types";
 import {
   newParticipant,
-  newProtocolV2Log,
+  newProtocolV3Log,
   saveNewProjectEvent,
   updateParticipantBalance,
   updateProtocolEntity,
@@ -29,7 +29,7 @@ import {
   idForProjectTx,
 } from "../../utils/ids";
 
-const cv: CV = "2";
+const cv: CV = "3";
 
 export function handleBurn(event: Burn): void {
   const holderId = idForParticipant(
@@ -111,11 +111,11 @@ export function handleIssue(event: Issue): void {
     );
   }
 
-  let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
-  if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
-  if (protocolV2Log) {
-    protocolV2Log.erc20Count = protocolV2Log.erc20Count + 1;
-    protocolV2Log.save();
+  let protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
+  if (!protocolV3Log) protocolV3Log = newProtocolV3Log();
+  if (protocolV3Log) {
+    protocolV3Log.erc20Count = protocolV3Log.erc20Count + 1;
+    protocolV3Log.save();
   }
   updateProtocolEntity();
 
