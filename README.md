@@ -30,7 +30,7 @@ _`subgraph.yaml` is gitignored and should not be edited._
 
 To deploy a new subgraph version, complete the following steps:
 
-1. Prepare the subgraph for the intended network:
+1. Prepare the subgraph for the intended network.
 
    ```bash
    yarn prep <network-name> # mainnet, rinkeby
@@ -42,13 +42,13 @@ To deploy a new subgraph version, complete the following steps:
    - Generates TS types for the schema defined in `schema.graphql`.
    - Checks for missing event handler references. Will error if a handler function has been written in a mapping file, but not referenced in the subgraph.template.yaml.
 
-2. Authenticate with the proper deploy key for the given network (you'll only need to do this once):
+2. Authenticate with the Peel deploy key for the given network (you'll only need to do this once). Find the deploy key on TheGraph studio Peel when connected as the Peel multisig: https://thegraph.com/studio/.
 
    ```bash
    graph auth --studio ${your-key}
    ```
 
-3. Deploy the subgraph:
+3. Deploy the subgraph.
 
    ```bash
    graph deploy --studio <subgraph-name>
