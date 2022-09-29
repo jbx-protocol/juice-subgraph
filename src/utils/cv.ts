@@ -52,7 +52,12 @@ export function cvForTerminal(terminal: Address): CV {
 // If v2 or v3 JBDirectory controllerOf == v3 JBController, return "3"
 // Else return "2"
 export function cvForV2_V3Project(projectId: BigInt): CV {
-  if (!address_v2_jbDirectory || !address_v3_jbDirectory) return "0";
+  if (
+    !address_v2_jbDirectory ||
+    !address_v3_jbDirectory ||
+    !address_v3_jbController
+  )
+    return "0";
 
   // Check V3 directory
   let v3Directory = V3JBDirectory.bind(
@@ -69,7 +74,7 @@ export function cvForV2_V3Project(projectId: BigInt): CV {
     return "0";
   } else if (
     v3DirectoryCallResult.value.toHexString().toLowerCase() ===
-    address_v3_jbController?.toLowerCase()
+    address_v3_jbController!.toLowerCase()
   ) {
     return "3";
   }
@@ -89,7 +94,7 @@ export function cvForV2_V3Project(projectId: BigInt): CV {
     return "0";
   } else if (
     v2DirectoryCallResult.value.toHexString().toLowerCase() ===
-    address_v3_jbController?.toLowerCase()
+    address_v3_jbController!.toLowerCase()
   ) {
     return "3";
   }

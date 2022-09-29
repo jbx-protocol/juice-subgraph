@@ -40,6 +40,10 @@
       abis:
         - name: JBController
           file: ./abis/v3/JBController.json
+        - name: V2JBDirectory
+          file: ./abis/v2/JBDirectory.json
+        - name: V3JBDirectory
+          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: MintTokens(indexed address,indexed uint256,uint256,uint256,string,uint256,address)
           handler: handleMintTokens
@@ -68,6 +72,10 @@
       abis:
         - name: JBTokenStore
           file: ./abis/v3/JBTokenStore.json
+        - name: V2JBDirectory
+          file: ./abis/v2/JBDirectory.json
+        - name: V3JBDirectory
+          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: Burn(indexed address,indexed uint256,uint256,uint256,uint256,bool,address)
           handler: handleBurn
@@ -103,6 +111,10 @@
       abis:
         - name: JBETHPaymentTerminal
           file: ./abis/v3/JBETHPaymentTerminal.json
+        - name: V2JBDirectory
+          file: ./abis/v2/JBDirectory.json
+        - name: V3JBDirectory
+          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
           handler: handlePay

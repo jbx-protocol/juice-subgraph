@@ -105,6 +105,10 @@
       abis:
         - name: JBProjects
           file: ./abis/v2/JBProjects.json
+        - name: V2JBDirectory
+          file: ./abis/v2/JBDirectory.json
+        - name: V3JBDirectory
+          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: Create(indexed uint256,indexed address,(string,uint256),address)
           handler: handleCreate
