@@ -2,16 +2,19 @@ import { log } from "@graphprotocol/graph-ts";
 import {
   DistributeReservedTokens,
   DistributeToReservedTokenSplit,
+  Migrate,
   MintTokens,
 } from "../../../generated/V2JBController/JBController";
 import {
   DistributeReservedTokensEvent,
   DistributeToReservedTokenSplitEvent,
   MintTokensEvent,
+  Project,
 } from "../../../generated/schema";
 import { CV, ProjectEventKey } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entity";
 import { idForProject, idForProjectTx } from "../../utils/ids";
+import { cvForV2_V3Project } from "../../utils/cv";
 
 const cv: CV = "2";
 
@@ -123,4 +126,13 @@ export function handleDistributeToReservedTokenSplit(
     cv,
     ProjectEventKey.distributeToReservedTokenSplitEvent
   );
+}
+
+export function handleMigrate(event: Migrate): void {
+  const projectId = idForProject(event.params.projectId, cv);
+  const project = Project.load(projectId);
+  if (!project) return;
+  project.controller = event.params.to;
+  project.cv = cvForV2_V3Project(event.params.projectId);
+  project.save();
 }

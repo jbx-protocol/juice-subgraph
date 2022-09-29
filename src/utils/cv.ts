@@ -1,8 +1,14 @@
 import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import { TerminalDirectory } from "../../generated/TerminalV1/TerminalDirectory";
+import { V2JBDirectory } from "../../generated/V2JBController/V2JBDirectory";
+import { V3JBDirectory } from "../../generated/V2JBController/V3JBDirectory";
 import {
   address_v1_terminalDirectory,
   address_v1_terminalV1,
+  address_v1_terminalV1_1,
+  address_v2_jbDirectory,
+  address_v3_jbController,
+  address_v3_jbDirectory,
 } from "../contractAddresses";
 import { CV } from "../types";
 
@@ -30,19 +36,63 @@ export function cvForTerminal(terminal: Address): CV {
   let _terminal = terminal.toHexString().toLowerCase();
 
   // Switch statement throws unclear type error in graph compiler, so we use if statements instead
-  if (
-    address_v1_terminalV1 &&
-    _terminal == address_v1_terminalV1.toLowerCase()
-  ) {
+  if (!address_v1_terminalV1 || !address_v1_terminalV1_1) return "0";
+
+  if (_terminal == address_v1_terminalV1!.toLowerCase()) {
     return "1";
   }
-  if (
-    address_v1_terminalV1 &&
-    _terminal == address_v1_terminalV1.toLowerCase()
-  ) {
+  if (_terminal == address_v1_terminalV1_1!.toLowerCase()) {
     return "1.1";
   }
   log.error("Invalid terminal address {}", [_terminal]);
   // 0 will always indicate an error
   return "0";
+}
+
+// If v2 or v3 JBDirectory controllerOf == v3 JBController, return "3"
+// Else return "2"
+export function cvForV2_V3Project(projectId: BigInt): CV {
+  if (!address_v2_jbDirectory || !address_v3_jbDirectory) return "0";
+
+  // Check V3 directory
+  let v3Directory = V3JBDirectory.bind(
+    Address.fromString(address_v3_jbDirectory!)
+  );
+  let v3DirectoryCallResult = v3Directory.try_controllerOf(projectId);
+
+  if (v3DirectoryCallResult.reverted) {
+    log.error("v3 controllerOf reverted, project: {}, V3JBDirectory: {}", [
+      projectId.toHexString(),
+      address_v3_jbDirectory!,
+    ]);
+    // 0 will always indicate an error
+    return "0";
+  } else if (
+    v3DirectoryCallResult.value.toHexString().toLowerCase() ===
+    address_v3_jbController?.toLowerCase()
+  ) {
+    return "3";
+  }
+
+  // Check V2 directory
+  let v2Directory = V2JBDirectory.bind(
+    Address.fromString(address_v2_jbDirectory!)
+  );
+  let v2DirectoryCallResult = v2Directory.try_controllerOf(projectId);
+
+  if (v2DirectoryCallResult.reverted) {
+    log.error("v2 controllerOf reverted, project: {}, V2JBDirectory: {}", [
+      projectId.toHexString(),
+      address_v2_jbDirectory!,
+    ]);
+    // 0 will always indicate an error
+    return "0";
+  } else if (
+    v2DirectoryCallResult.value.toHexString().toLowerCase() ===
+    address_v3_jbController?.toLowerCase()
+  ) {
+    return "3";
+  }
+
+  return "2";
 }

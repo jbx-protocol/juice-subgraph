@@ -32,7 +32,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings/v2/jbETHERC20ProjectPayer.ts
+      file: ./src/mappings/shared/jbETHERC20ProjectPayer.ts
       entities:
         - ETHERC20ProjectPayer
       abis:

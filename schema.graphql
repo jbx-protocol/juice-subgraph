@@ -28,9 +28,9 @@ type _Schema_
 ############################### vx.x entities ###############################
 #############################################################################
 
-# Note: Events used for both v1 and v2 contracts include a `cv` (contracts version) property, which allows querying events for a specific contracts version.
+# Note: Events used for v1, v2 and v3 contracts include a `cv` (contracts version) property, which allows querying events for a specific contracts version.
 
-# v1.0, v1.1, v2
+# v1.0, v1.1, v2, v3
 type ProjectCreateEvent @entity {
   id: ID!
   project: Project!
@@ -41,17 +41,20 @@ type ProjectCreateEvent @entity {
   caller: Bytes!
 }
 
-# v1.0, v1.1, v2
+# v1.0, v1.1, v2, v3
 type Project @entity {
   id: ID!
   projectId: Int!
   cv: String!
-
-  # Conditional on if using v1.x or v2 contracts
   handle: String
   metadataUri: String
-  metadataDomain: BigInt
+
+  # Only v1.x
   terminal: Bytes
+
+  # Only v2 + v3
+  metadataDomain: BigInt
+  controller: Bytes
 
   owner: Bytes!
   createdAt: Int!
@@ -87,13 +90,7 @@ type Project @entity {
   veNftContract: VeNftContract @derivedFrom(field: "project")
 }
 
-# v2
-type ENSNode @entity {
-  id: ID!
-  projectId: Int
-}
-
-# v1.0, v1.1, v2
+# v1.0, v1.1, v2, v3
 type Participant @entity {
   id: ID!
   project: Project!
@@ -107,7 +104,7 @@ type Participant @entity {
   unstakedBalance: BigInt!
 }
 
-# v1.0, v1.1, v2
+# v1.0, v1.1, v2, v3
 type ProjectEvent @entity {
   id: ID!
   project: Project!
@@ -134,7 +131,7 @@ type ProjectEvent @entity {
   deployVeNftEvent: DeployVeNftEvent
 }
 
-# v1.0, v1.1, v2
+# v1.0, v1.1, v2, v3
 type PayEvent @entity {
   id: ID!
   project: Project!
@@ -150,7 +147,7 @@ type PayEvent @entity {
   feeFromV2Project: Int # Indicates payment is a fee from project with this ID
 }
 
-# v1.0, v1.1, v2
+# v1.0, v1.1, v2, v3
 type MintTokensEvent @entity {
   id: ID!
   project: Project!
@@ -165,7 +162,7 @@ type MintTokensEvent @entity {
   caller: Bytes!
 }
 
-# v1.0, v1.1, v2
+# v1.0, v1.1, v2, v3
 type RedeemEvent @entity {
   id: ID!
   project: Project!
@@ -181,7 +178,7 @@ type RedeemEvent @entity {
   caller: Bytes!
 }
 
-# v1.0, v1.1, v2
+# v1.0, v1.1, v2, v3
 type DeployedERC20Event @entity {
   id: ID!
   project: Project!
@@ -280,7 +277,7 @@ type DistributeToTicketModEvent @entity {
 }
 
 #############################################################################
-############################### v2.x entities ###############################
+################################ v2 entities ################################
 #############################################################################
 # v2
 type ProtocolV2Log @entity {
@@ -472,9 +469,8 @@ type VeNftContract @entity {
 }
 
 #############################################################################
-############################### v3 entities ###############################
+################################ v3 entities ################################
 #############################################################################
-# v3
 type ProtocolV3Log @entity {
   id: ID!
   log: ProtocolLog!
@@ -484,4 +480,12 @@ type ProtocolV3Log @entity {
   paymentsCount: Int!
   redeemCount: Int!
   erc20Count: Int!
+}
+
+#############################################################################
+############################## shared entities ##############################
+#############################################################################
+type ENSNode @entity {
+  id: ID!
+  projectId: Int
 }

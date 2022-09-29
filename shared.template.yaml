@@ -17,7 +17,7 @@
       eventHandlers:
         - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
           handler: handleSetEnsNameParts
-      file: ./src/mappings/v2/jbProjectHandles.ts
+      file: ./src/mappings/shared/jbProjectHandles.ts
   - kind: ethereum/contract
     name: TextResolver
     network: {{network}}
@@ -40,7 +40,7 @@
       eventHandlers:
         - event: TextChanged(indexed bytes32,indexed string,string)
           handler: handleTextChanged
-      file: ./src/mappings/v2/textResolver.ts
+      file: ./src/mappings/shared/textResolver.ts
   {{ #shared.address_jbVeNftDeployer }}
   - kind: ethereum/contract
     name: JBVeNftDeployer

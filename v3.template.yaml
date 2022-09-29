@@ -81,33 +81,6 @@
           handler: handleTransfer
       file: ./src/mappings/v3/jbTokenStore.ts
   - kind: ethereum/contract
-    name: V3JBProjects
-    network: {{network}}
-    source:
-      address: '{{v3.address_jbProjects}}'
-      abi: JBProjects
-      startBlock: {{v3.startBlock_jbProjects}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - Project
-        - ProjectCreateEvent
-        - ProjectEvent
-        - ProtocolV3Log
-      abis:
-        - name: JBProjects
-          file: ./abis/v3/JBProjects.json
-      eventHandlers:
-        - event: Create(indexed uint256,indexed address,(string,uint256),address)
-          handler: handleCreate
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransferOwnership
-        - event: SetMetadata(indexed uint256,(string,uint256),address)
-          handler: handleSetMetadata
-      file: ./src/mappings/v3/jbProjects.ts
-  - kind: ethereum/contract
     name: V3JBETHPaymentTerminal
     network: {{network}}
     source:

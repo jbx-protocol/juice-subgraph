@@ -202,13 +202,13 @@ export function handleIssue(event: Issue): void {
 
   if (address_v1_ticketBooth) {
     const ticketBooth = TicketBooth.bind(
-      Address.fromString(address_v1_ticketBooth)
+      Address.fromString(address_v1_ticketBooth!)
     );
     const ticketsOfCall = ticketBooth.try_ticketsOf(event.params.projectId);
     if (ticketsOfCall.reverted) {
       log.error("ticketsOf reverted, project: {}, ticketBooth: {}", [
         event.params.projectId.toString(),
-        address_v1_ticketBooth,
+        address_v1_ticketBooth!,
       ]);
     } else {
       const erc20Context = new DataSourceContext();

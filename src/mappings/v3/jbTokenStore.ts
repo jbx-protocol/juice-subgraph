@@ -28,10 +28,11 @@ import {
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
-
-const cv: CV = "3";
+import { cvForV2_V3Project } from "../../utils/cv";
 
 export function handleBurn(event: Burn): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const holderId = idForParticipant(
     event.params.projectId,
     cv,
@@ -63,6 +64,8 @@ export function handleBurn(event: Burn): void {
 }
 
 export function handleClaim(event: Claim): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const participant = Participant.load(
     idForParticipant(event.params.projectId, cv, event.params.holder)
   );
@@ -79,6 +82,8 @@ export function handleClaim(event: Claim): void {
 }
 
 export function handleIssue(event: Issue): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
 
@@ -126,6 +131,8 @@ export function handleIssue(event: Issue): void {
 }
 
 export function handleMint(event: Mint): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   // Only handle updating unclaimed token balance
   if (event.params.preferClaimedTokens) return;
 
@@ -147,6 +154,8 @@ export function handleMint(event: Mint): void {
 }
 
 export function handleTransfer(event: Transfer): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
   if (!project) {

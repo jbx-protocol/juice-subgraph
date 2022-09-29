@@ -40,6 +40,10 @@
       abis:
         - name: JBController
           file: ./abis/v2/JBController.json
+        - name: V2JBDirectory
+          file: ./abis/v2/JBDirectory.json
+        - name: V3JBDirectory
+          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: MintTokens(indexed address,indexed uint256,uint256,uint256,string,uint256,address)
           handler: handleMintTokens
@@ -47,6 +51,8 @@
           handler: handleDistributeReservedTokens
         - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
           handler: handleDistributeToReservedTokenSplit
+        - event: Migrate(indexed uint256,address,address)
+          handler: handleMigrate
       file: ./src/mappings/v2/jbController.ts
   - kind: ethereum/contract
     name: V2JBTokenStore

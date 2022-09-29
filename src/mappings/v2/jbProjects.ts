@@ -19,10 +19,11 @@ import {
   updateProtocolEntity,
 } from "../../utils/entity";
 import { idForProject, idForProjectTx } from "../../utils/ids";
-
-const cv: CV = "2";
+import { cvForV2_V3Project } from "../../utils/cv";
 
 export function handleCreate(event: Create): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const projectId = idForProject(event.params.projectId, cv);
   const project = new Project(projectId);
   if (!project) {
@@ -84,6 +85,8 @@ export function handleCreate(event: Create): void {
 }
 
 export function handleSetMetadata(event: SetMetadata): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const project = Project.load(idForProject(event.params.projectId, cv));
   if (!project) {
     log.error("[handleSetMetadata] Missing project. ID:{}", [
@@ -97,6 +100,8 @@ export function handleSetMetadata(event: SetMetadata): void {
 }
 
 export function handleTransferOwnership(event: Transfer): void {
+  const cv = cvForV2_V3Project(event.params.tokenId);
+
   const project = Project.load(idForProject(event.params.tokenId, cv));
   if (!project) {
     // Project will be missing on initial mint transfer

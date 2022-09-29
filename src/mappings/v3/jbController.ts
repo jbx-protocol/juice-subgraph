@@ -12,10 +12,11 @@ import {
 import { CV, ProjectEventKey } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entity";
 import { idForProject, idForProjectTx } from "../../utils/ids";
-
-const cv: CV = "3";
+import { cvForV2_V3Project } from "../../utils/cv";
 
 export function handleMintTokens(event: MintTokens): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   // Note: Receiver balance is updated in the jbTokenStore event handler
 
   const mintTokensEvent = new MintTokensEvent(
@@ -51,6 +52,8 @@ export function handleMintTokens(event: MintTokens): void {
 export function handleDistributeReservedTokens(
   event: DistributeReservedTokens
 ): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const projectId = idForProject(event.params.projectId, cv);
   const distributeReservedTokensEvent = new DistributeReservedTokensEvent(
     idForProjectTx(event.params.projectId, cv, event)
@@ -82,6 +85,8 @@ export function handleDistributeReservedTokens(
 export function handleDistributeToReservedTokenSplit(
   event: DistributeToReservedTokenSplit
 ): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const projectId = idForProject(event.params.projectId, cv);
   const distributeReservedTokenSplitEvent = new DistributeToReservedTokenSplitEvent(
     idForProjectTx(event.params.projectId, cv, event, true)

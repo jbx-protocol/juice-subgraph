@@ -33,10 +33,11 @@ import {
   idForProjectTx,
 } from "../../utils/ids";
 import { handleTrendingPayment } from "../../utils/trending";
-
-const cv: CV = "3";
+import { cvForV2_V3Project } from "../../utils/cv";
 
 export function handleAddToBalance(event: AddToBalance): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
   if (!project) {
@@ -50,6 +51,8 @@ export function handleAddToBalance(event: AddToBalance): void {
 }
 
 export function handleDistributePayouts(event: DistributePayouts): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const distributePayoutsEvent = new DistributePayoutsEvent(
     idForProjectTx(event.params.projectId, cv, event)
   );
@@ -89,6 +92,8 @@ export function handleDistributePayouts(event: DistributePayouts): void {
 export function handleDistributeToPayoutSplit(
   event: DistributeToPayoutSplit
 ): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const projectId = idForProject(event.params.projectId, cv);
   const distributePayoutSplitEvent = new DistributeToPayoutSplitEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
@@ -134,6 +139,8 @@ export function handleDistributeToPayoutSplit(
 }
 
 export function handlePay(event: Pay): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const pay = new PayEvent(idForPayEvent());
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
@@ -202,6 +209,8 @@ export function handlePay(event: Pay): void {
 }
 
 export function handleRedeemTokens(event: RedeemTokens): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const projectId = idForProject(event.params.projectId, cv);
 
   const redeemEvent = new RedeemEvent(
@@ -255,6 +264,8 @@ export function handleRedeemTokens(event: RedeemTokens): void {
 }
 
 export function handleUseAllowance(event: UseAllowance): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   const projectId = idForProject(event.params.projectId, cv);
   const useAllowanceEvent = new UseAllowanceEvent(
     idForProjectTx(event.params.projectId, cv, event, true)
@@ -292,6 +303,8 @@ export function handleUseAllowance(event: UseAllowance): void {
 }
 
 export function handleProcessFee(event: ProcessFee): void {
+  const cv = cvForV2_V3Project(event.params.projectId);
+
   // Load pay event to juicebox project (id: 1)
   // Requires pay event has logIndex preceding that of this tx
   const id = `${idForProjectTx(
