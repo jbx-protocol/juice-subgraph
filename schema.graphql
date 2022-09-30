@@ -54,7 +54,6 @@ type Project @entity {
 
   # Only v2 + v3
   metadataDomain: BigInt
-  controller: Bytes
 
   owner: Bytes!
   createdAt: Int!

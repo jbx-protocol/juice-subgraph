@@ -29,7 +29,6 @@ export function handleProjectCreate(event: Create): void {
   const project = new Project(projectId);
   if (!project) return;
   project.projectId = event.params.projectId.toI32();
-  project.projectId = event.params.projectId.toI32();
   project.cv = cv;
   project.trendingScore = BigInt.fromString("0");
   project.trendingVolume = BigInt.fromString("0");
