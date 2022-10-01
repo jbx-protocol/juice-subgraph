@@ -4,21 +4,21 @@ const jsyaml = require("js-yaml");
 const mustache = require("mustache");
 const graph = require("@graphprotocol/graph-cli/src/cli");
 
-const prefixes = ["v1", "v2", "v3", "shared"];
+const PREFIXES = ["v1", "v2", "v3", "shared"];
 
 const network = process.argv.slice(2)[0];
 
 if (!network) {
-  console.log("Error: network undefined");
+  console.log(chalk.red("Network undefined"));
   process.exit(1);
 }
 
-console.log(chalk.cyan("Network:", network));
+console.log(`Network: ${chalk.cyan.bold(network)}\n`);
 
 const config = JSON.parse(fs.readFileSync(`config/${network}.json`));
 
 if (!config) {
-  console.log("🛑 Error: missing config file");
+  console.log(chalk.red("Missing config file"));
   process.exit(1);
 }
 
@@ -35,7 +35,7 @@ function writeContractAddresses() {
 
   const configTemplate = JSON.parse(fs.readFileSync(`config/template.json`));
 
-  for (p of prefixes) {
+  for (p of PREFIXES) {
     // Iterate over all var names declared in config template
     // Add to fileContents
     fileContents += `${Object.keys(configTemplate[p])
@@ -47,8 +47,7 @@ function writeContractAddresses() {
           key.split("address_")[1]
         }: string | null = ${val};\n`;
       })
-      .join("")}
-    `;
+      .join("")}\n`;
   }
 
   // Write fileContents to file
@@ -58,125 +57,161 @@ function writeContractAddresses() {
     console.log("Error writing contractAddresses.ts", e);
   }
 
-  console.log("Wrote contractAddresses.ts ✅");
+  console.log(chalk.green("✔") + " Wrote contractAddresses.ts\n");
 }
 
+// Write subgraph.yaml file from config
 function writeSubgraph() {
   const subgraphPath = "subgraph.yaml";
 
   // Delete subgraph.yaml if exists
   fs.rmSync(subgraphPath, { force: true });
 
-  function renderTemplate(prefix) {
-    return mustache
-      .render(fs.readFileSync(prefix + ".template.yaml").toString(), config)
+  // Build dataSource snippets from configs
+  // We give this to subgraph.template.yaml to render subgraph.yaml
+  const dataSourceSnippets = {};
+  for (p of PREFIXES) {
+    dataSourceSnippets[`dataSources_${p}`] = mustache
+      .render(fs.readFileSync(`${p}.template.yaml`).toString(), config)
       .toString();
   }
-  const _config = {
-    ...config,
-    dataSources_v1: renderTemplate("v1"),
-    dataSources_v2: renderTemplate("v2"),
-    dataSources_v3: renderTemplate("v3"),
-    dataSources_shared: renderTemplate("shared"),
-  };
 
-  // Write new subgraph.yaml from config
+  // Write new subgraph.yaml
   try {
     fs.writeFileSync(
       subgraphPath,
       mustache
-        .render(fs.readFileSync("subgraph.template.yaml").toString(), _config)
+        .render(fs.readFileSync("subgraph.template.yaml").toString(), {
+          // subgraph.template.yaml also needs config.network
+          network: config.network,
+          ...dataSourceSnippets,
+        })
         .toString()
     );
   } catch (e) {
-    console.log("Error writing subgraph.yaml", e);
+    console.log(chalk.red("Error writing subgraph.yaml"), e);
   }
 
-  console.log("Wrote subgraph.yaml ✅");
+  console.log(chalk.green("✔") + " Wrote subgraph.yaml\n");
 }
 
 // Sanity check to ensure that all functions exported from mapping files are defined in subgraph.yaml
 function checkHandlers() {
-  let mappings = {};
+  /**
+   * First recursively read all mapping .ts files and
+   * save their contents by file path
+   */
+
+  let mappingFiles = {};
 
   function recursiveReadDirSync(dir) {
     const items = fs.readdirSync(dir);
     items.forEach((x) => {
       const path = dir + "/" + x;
       x.endsWith(".ts")
-        ? (mappings[path] = fs.readFileSync(path).toString())
+        ? (mappingFiles[path] = fs.readFileSync(path).toString())
         : recursiveReadDirSync(path);
     });
   }
 
   recursiveReadDirSync("./src/mappings");
 
-  const subgraph = fs.readFileSync("subgraph.yaml").toString();
-
-  const tofind = "\nexport function";
+  const fnKey = "\nexport function";
   const mappingHandlers = {};
 
-  // Map names of all handlers in mapping file to file path
-  Object.keys(mappings).forEach((key) => {
-    // Indexes of all instances of "export function"
-    const indexes = [...mappings[key].matchAll(new RegExp(tofind, "g"))].map(
+  // Iterate over file paths to mapping files
+  Object.keys(mappingFiles).forEach((key) => {
+    // Indexes of all instances of `fnKey` in mapping file
+    const indexes = [...mappingFiles[key].matchAll(new RegExp(fnKey, "g"))].map(
       (x) => x.index
     );
 
+    // Map names of all handler functions in mapping file by file path
     mappingHandlers[key] = indexes.map((i) => {
-      const startIndex = i + tofind.length + 1;
-      return mappings[key].substring(startIndex, startIndex + 50).split("(")[0];
+      const startIndex = i + fnKey.length + 1;
+      return mappingFiles[key]
+        .substring(startIndex, startIndex + 50)
+        .split("(")[0];
     });
   });
 
-  const sourcesFromSubgraphYaml = [
-    ...jsyaml.load(subgraph)["dataSources"],
-    ...jsyaml.load(subgraph)["templates"],
+  /**
+   * Next get all mapping functions referenced in the generated subgraph.yaml
+   */
+
+  // Read already generated subgraph.yaml file
+  const subgraphYaml = fs.readFileSync("subgraph.yaml").toString();
+  // Get only templates and dataSources
+  const subgraphYamlContents = [
+    ...jsyaml.load(subgraphYaml)["dataSources"],
+    ...jsyaml.load(subgraphYaml)["templates"],
   ];
 
-  let success = true;
+  /**
+   * Now we compare all function names found in mapping files
+   * to those found in the subgraph.yaml file
+   */
 
   console.log(
-    `Checking that mapping functions are referenced in subgraph.yaml...`
+    `Checking that functions defined in mapping files are referenced in subgraph.yaml...`
   );
 
-  Object.keys(mappingHandlers).forEach((key) => {
-    process.stdout.write(`${key}...`);
+  let missingHandlersCount = 0;
+  let missingSourcesCount = 0;
 
-    const src = sourcesFromSubgraphYaml.find((d) => d.mapping.file === key);
+  Object.keys(mappingHandlers).forEach((key) => {
+    process.stdout.write(chalk.gray(`  ${key}...`));
+
+    const src = subgraphYamlContents.find((d) => d.mapping.file === key);
 
     if (!src) {
-      // Contract data source or template was not generated in the subgraph.yaml
-      console.log(chalk.yellow(` Missing source`));
+      // Mapping file is not referenced in the generated in the subgraph.yaml
+      console.log(chalk.yellow(` No reference`));
+
+      missingSourcesCount++;
       return;
     }
 
-    const handlerNames = [];
+    // Get array of all function names referenced in eventHandlers and blockHandlers of subgraph.yaml source
+    const sourceFnNames = [];
+    src.mapping.eventHandlers?.forEach((h) => sourceFnNames.push(h.handler));
+    src.mapping.blockHandlers?.forEach((h) => sourceFnNames.push(h.handler));
 
-    src.mapping.eventHandlers?.forEach((h) => handlerNames.push(h.handler));
-    src.mapping.blockHandlers?.forEach((h) => handlerNames.push(h.handler));
-
+    // Get list of handler functions not referenced in subgraph.yaml source
     const missingHandlers = [];
-
-    mappingHandlers[key].forEach((h) => {
-      if (!handlerNames.includes(h)) missingHandlers.push(h);
+    mappingHandlers[key].forEach((fnName) => {
+      // Handlers is missing if its function name isn't found in the source's list of handlers
+      if (!sourceFnNames.includes(fnName)) missingHandlers.push(fnName);
     });
 
+    // Deliver the news
     if (missingHandlers.length) {
       missingHandlers.forEach((x) =>
-        process.stdout.write(
-          `\n 🛑 Missing reference in subgraph template to "${key}": ${x}\n`
-        )
+        process.stdout.write(chalk.yellow(`\nNo reference to "${x}"\n`))
       );
-      success = false;
+
+      missingHandlersCount++;
     } else {
-      process.stdout.write(` ✅ \n`);
+      process.stdout.write(" All good\n");
     }
   });
 
-  if (!success) {
-    console.log("Exiting due to missing handlers");
-    process.exit(1);
+  if (missingHandlersCount) {
+    console.log(
+      chalk.yellow(`${missingHandlersCount} missing handler functions.`) +
+        " Some handler functions defined in mapping files have no reference in the subgraph.yaml."
+    );
+  }
+
+  if (missingSourcesCount) {
+    console.log(
+      chalk.yellow(`${missingSourcesCount} missing mapping files.`) +
+        " Some mapping files have no reference in the subgraph.yaml.\n"
+    );
+  }
+
+  if (!missingHandlersCount && !missingSourcesCount) {
+    console.log(chalk.green("✔") + " All good\n");
   }
 }
 
