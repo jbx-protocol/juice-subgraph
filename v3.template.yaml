@@ -1,4 +1,5 @@
 {{ #v3 }}
+  {{ #v3.address_jbETHERC20ProjectPayerDeployer }}
   - kind: ethereum/contract
     name: V3JBETHERC20ProjectPayerDeployer
     network: {{network}}
@@ -22,6 +23,8 @@
         - event: DeployProjectPayer(indexed address,uint256,address,bool,string,bytes,bool,address,address,address)
           handler: handleDeployProjectPayer
       file: ./src/mappings/v3/jbETHERC20ProjectPayerDeployer.ts
+  {{ /v3.address_jbETHERC20ProjectPayerDeployer }}
+  {{ #v3.address_jbController }}
   - kind: ethereum/contract
     name: V3JBController
     network: {{network}}
@@ -52,6 +55,8 @@
         - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
           handler: handleDistributeToReservedTokenSplit
       file: ./src/mappings/v3/jbController.ts
+  {{ /v3.address_jbController }}
+  {{ #v3.address_jbTokenStore }}
   - kind: ethereum/contract
     name: V3JBTokenStore
     network: {{network}}
@@ -88,6 +93,8 @@
         - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
           handler: handleTransfer
       file: ./src/mappings/v3/jbTokenStore.ts
+  {{ /v3.address_jbTokenStore }}
+  {{ #v3.address_jbETHPaymentTerminal }}
   - kind: ethereum/contract
     name: V3JBETHPaymentTerminal
     network: {{network}}
@@ -131,4 +138,5 @@
         - event: ProcessFee(indexed uint256,indexed uint256,indexed bool,address,address)
           handler: handleProcessFee
       file: ./src/mappings/v3/jbETHPaymentTerminal.ts
+  {{ /v3.address_jbETHPaymentTerminal }}
 {{ /v3 }}

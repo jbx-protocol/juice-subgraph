@@ -1,4 +1,5 @@
 {{ #v1 }}
+  {{ #v1.address_projects }}
   - kind: ethereum/contract
     name: Projects
     network: {{network}}
@@ -30,6 +31,8 @@
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransferOwnership
       file: ./src/mappings/v1.x/projects.ts
+  {{ /v1.address_projects }}
+  {{ #v1.address_ticketBooth }}
   - kind: ethereum/contract
     name: TicketBooth
     network: {{network}}
@@ -65,6 +68,8 @@
         - event: Issue(indexed uint256,string,string,address)
           handler: handleIssue
       file: ./src/mappings/v1.x/ticketBooth.ts
+  {{ /v1.address_ticketBooth }}
+  {{ #v1.address_terminalV1 }}
   - kind: ethereum/contract
     name: TerminalV1
     network: {{network}}
@@ -113,6 +118,8 @@
         - event: Migrate(indexed uint256,indexed address,uint256,address)
           handler: handleMigrate
       file: ./src/mappings/v1.x/terminalV1.ts
+  {{ /v1.address_terminalV1 }}
+  {{ #v1.address_terminalV1_1 }}
   - kind: ethereum/contract
     name: TerminalV1_1
     network: {{network}}
@@ -159,4 +166,5 @@
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
       file: ./src/mappings/v1.x/terminalV1_1.ts
+  {{ /v1.address_terminalV1_1 }}
 {{ /v1 }}

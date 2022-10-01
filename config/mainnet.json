@@ -13,10 +13,10 @@
     "startBlock_ticketBooth": 12833339
   },
   "v2": {
-    "address_jbController": "0x4e3ef8AFCC2B52E4e704f4c8d9B7E7948F651351",
-    "startBlock_jbController": 14868852,
     "address_jbProjects": "0xD8B4359143eda5B2d763E127Ed27c77addBc47d3",
     "startBlock_jbProjects": 14730693,
+    "address_jbController": "0x4e3ef8AFCC2B52E4e704f4c8d9B7E7948F651351",
+    "startBlock_jbController": 14868852,
     "address_jbTokenStore": "0xCBB8e16d998161AdB20465830107ca298995f371",
     "startBlock_jbTokenStore": 14868848,
     "address_jbETHPaymentTerminal": "0x7Ae63FBa045Fec7CaE1a75cF7Aa14183483b8397",
@@ -37,9 +37,9 @@
     "address_jbDirectory": "0x65572FB928b46f9aDB7cfe5A4c41226F636161ea"
   },
   "shared": {
-    "address_jbProjectHandles": "0xe3c01e9fd2a1dcc6edf0b1058b5757138ef9ffb6",
-    "startBlock_jbProjectHandles": 14975701,
     "address_textResolver": "0x4976fb03C32e5B8cfe2b6cCB31c09Ba78EBaBa41",
-    "startBlock_textResolver": 14975701
+    "startBlock_textResolver": 14975701,
+    "address_jbProjectHandles": "0xe3c01e9fd2a1dcc6edf0b1058b5757138ef9ffb6",
+    "startBlock_jbProjectHandles": 14975701
   }
 }

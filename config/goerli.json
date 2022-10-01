@@ -1,45 +1,24 @@
 {
   "network": "goerli",
-  "v1": {
-    "address_projects": "0x0000000000000000000000000000000000000000",
-    "startBlock_projects": 0,
-    "address_terminalV1": "0x0000000000000000000000000000000000000000",
-    "startBlock_terminalV1": 0,
-    "address_terminalV1_1": "0x0000000000000000000000000000000000000000",
-    "startBlock_terminalV1_1": 0,
-    "address_terminalDirectory": "0x0000000000000000000000000000000000000000",
-    "startBlock_terminalDirectory": 0,
-    "address_ticketBooth": "0x0000000000000000000000000000000000000000",
-    "startBlock_ticketBooth": 0
-  },
   "v2": {
-    "address_jbProjects": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbProjects": 0,
-    "address_jbController": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbController": 0,
-    "address_jbETHPaymentTerminal": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbETHPaymentTerminal": 0,
-    "address_jbTokenStore": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbTokenStore": 0,
-    "address_jbETHERC20ProjectPayerDeployer": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbETHERC20ProjectPayerDeployer": 0
+    "address_jbProjects": "0x21263a042aFE4bAE34F08Bb318056C181bD96D3b",
+    "startBlock_jbProjects": 7627964
   },
   "v3": {
     "address_jbController": "0x7Cb86D43B665196BC719b6974D320bf674AFb395",
     "startBlock_jbController": 7627971,
-    "address_jbProjects": "0x21263a042aFE4bAE34F08Bb318056C181bD96D3b",
-    "startBlock_jbProjects": 7627964,
     "address_jbTokenStore": "0x1246a50e3aDaF684Ac566f0c40816fF738F309B3",
     "startBlock_jbTokenStore": 7627969,
     "address_jbETHPaymentTerminal": "0x55d4dfb578daA4d60380995ffF7a706471d7c719",
     "startBlock_jbETHPaymentTerminal": 7627976,
     "address_jbETHERC20ProjectPayerDeployer": "0x981c8ECD009E3E84eE1fF99266BF1461a12e5c68",
-    "startBlock_jbETHERC20ProjectPayerDeployer": 7627959
+    "startBlock_jbETHERC20ProjectPayerDeployer": 7627959,
+    "address_jbDirectory": "0x8E05bcD2812E1449f0EC3aE24E2C395F533d9A99"
   },
   "shared":{
     "address_textResolver": "0x4B1488B7a6B320d2D721406204aBc3eeAa9AD329",
     "startBlock_textResolver": 7586169,
-    "address_jbProjectHandles": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbProjectHandles": 7627959
+    "address_jbProjectHandles": "0x3ff1f0583a41CE8B9463F74a1227C75FC13f7C27",
+    "startBlock_jbProjectHandles": 7635076
   }
 }

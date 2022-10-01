@@ -1,7 +1,10 @@
+const chalk = require("chalk");
 const fs = require("fs");
 const jsyaml = require("js-yaml");
 const mustache = require("mustache");
 const graph = require("@graphprotocol/graph-cli/src/cli");
+
+const prefixes = ["v1", "v2", "v3", "shared"];
 
 const network = process.argv.slice(2)[0];
 
@@ -10,15 +13,18 @@ if (!network) {
   process.exit(1);
 }
 
-console.log("Network:", network);
+console.log(chalk.cyan("Network:", network));
 
 const config = JSON.parse(fs.readFileSync(`config/${network}.json`));
 
 if (!config) {
-  console.log("Error: missing config file");
+  console.log("🛑 Error: missing config file");
   process.exit(1);
 }
 
+config.network = network;
+
+// Write all contract addresses in config to a .ts file
 function writeContractAddresses() {
   const contractAddressesPath = "src/contractAddresses.ts";
 
@@ -27,17 +33,17 @@ function writeContractAddresses() {
 
   let fileContents = "";
 
-  function varsFromAddresses(prefix) {
-    const obj = config[prefix];
+  const configTemplate = JSON.parse(fs.readFileSync(`config/template.json`));
 
-    return `${Object.keys(obj)
+  for (p of prefixes) {
+    // Iterate over all var names declared in config template
+    // Add to fileContents
+    fileContents += `${Object.keys(configTemplate[p])
       .filter((key) => key.startsWith("address_"))
       .map((key) => {
-        const val =
-          obj[key] === "0x0000000000000000000000000000000000000000"
-            ? null
-            : `"${obj[key]}"`;
-        return `export const address_${prefix}_${
+        // Use `null` if key has no value in config
+        const val = config[p] && config[p][key] ? `"${config[p][key]}"` : null;
+        return `export const address_${p}_${
           key.split("address_")[1]
         }: string | null = ${val};\n`;
       })
@@ -45,12 +51,7 @@ function writeContractAddresses() {
     `;
   }
 
-  fileContents += varsFromAddresses("shared");
-  fileContents += varsFromAddresses("v1");
-  fileContents += varsFromAddresses("v2");
-  fileContents += varsFromAddresses("v3");
-
-  // Write contractAddresses file
+  // Write fileContents to file
   try {
     fs.writeFileSync(contractAddressesPath, fileContents);
   } catch (e) {
@@ -128,24 +129,29 @@ function checkHandlers() {
     });
   });
 
-  const sources = [
+  const sourcesFromSubgraphYaml = [
     ...jsyaml.load(subgraph)["dataSources"],
     ...jsyaml.load(subgraph)["templates"],
   ];
 
   let success = true;
 
+  console.log(
+    `Checking that mapping functions are referenced in subgraph.yaml...`
+  );
+
   Object.keys(mappingHandlers).forEach((key) => {
-    process.stdout.write(`Checking ${key}...`);
+    process.stdout.write(`${key}...`);
 
-    const src = sources.find((d) => d.mapping.file === key);
-
-    const handlerNames = [];
+    const src = sourcesFromSubgraphYaml.find((d) => d.mapping.file === key);
 
     if (!src) {
-      console.log(`🟡 Missing in yaml 🟡`);
+      // Contract data source or template was not generated in the subgraph.yaml
+      console.log(chalk.yellow(` Missing source`));
       return;
     }
+
+    const handlerNames = [];
 
     src.mapping.eventHandlers?.forEach((h) => handlerNames.push(h.handler));
     src.mapping.blockHandlers?.forEach((h) => handlerNames.push(h.handler));
