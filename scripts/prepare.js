@@ -198,14 +198,16 @@ function checkHandlers() {
 
   if (missingHandlersCount) {
     console.log(
-      chalk.yellow(`${missingHandlersCount} missing handler functions.`) +
+      chalk.yellow(
+        `WARNING: ${missingHandlersCount} missing handler functions.`
+      ) +
         " Some handler functions defined in mapping files have no reference in the subgraph.yaml."
     );
   }
 
   if (missingSourcesCount) {
     console.log(
-      chalk.yellow(`${missingSourcesCount} missing mapping files.`) +
+      chalk.yellow(`WARNING: ${missingSourcesCount} missing mapping files.`) +
         " Some mapping files have no reference in the subgraph.yaml.\n"
     );
   }

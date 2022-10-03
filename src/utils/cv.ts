@@ -52,40 +52,35 @@ export function cvForTerminal(terminal: Address): CV {
 // If v2 or v3 JBDirectory controllerOf == v3 JBController, return "3"
 // Else return "2"
 export function cvForV2_V3Project(projectId: BigInt): CV {
-  if (!address_v3_jbDirectory || !address_v3_jbController) return "0";
+  if (!address_v3_jbController) return "2";
 
-  // Check V3 directory
-  let v3Directory = V3JBDirectory.bind(
-    Address.fromString(address_v3_jbDirectory!)
-  );
-  let v3DirectoryCallResult = v3Directory.try_controllerOf(projectId);
+  if (address_v3_jbDirectory) {
+    // Check V3 directory
+    const v3Directory = V3JBDirectory.bind(
+      Address.fromString(address_v3_jbDirectory!)
+    );
+    const v3DirectoryCallResult = v3Directory.try_controllerOf(projectId);
 
-  if (v3DirectoryCallResult.reverted) {
-    log.error("v3 controllerOf reverted, project: {}, V3JBDirectory: {}", [
-      projectId.toString(),
-      address_v3_jbDirectory!,
-    ]);
-    // 0 will always indicate an error
-    return "0";
-  } else if (
-    v3DirectoryCallResult.value.toHexString().toLowerCase() ==
-    address_v3_jbController!.toLowerCase()
-  ) {
-    return "3";
+    if (v3DirectoryCallResult.reverted) {
+      log.error("v3 controllerOf reverted, project: {}, V3JBDirectory: {}", [
+        projectId.toString(),
+        address_v3_jbDirectory!,
+      ]);
+      return "2";
+    } else if (
+      v3DirectoryCallResult.value.toHexString().toLowerCase() ==
+      address_v3_jbController!.toLowerCase()
+    ) {
+      return "3";
+    }
   }
-
-  log.warning("v3 controllerOf, id: {}, result: {}, v3controller: {}", [
-    projectId.toString(),
-    v3DirectoryCallResult.value.toHexString(),
-    address_v3_jbController!.toLowerCase(),
-  ]);
 
   if (address_v2_jbDirectory) {
     // Check V2 directory
-    let v2Directory = V2JBDirectory.bind(
+    const v2Directory = V2JBDirectory.bind(
       Address.fromString(address_v2_jbDirectory!)
     );
-    let v2DirectoryCallResult = v2Directory.try_controllerOf(projectId);
+    const v2DirectoryCallResult = v2Directory.try_controllerOf(projectId);
 
     if (v2DirectoryCallResult.reverted) {
       log.error("v2 controllerOf reverted, project: {}, V2JBDirectory: {}", [
@@ -93,7 +88,7 @@ export function cvForV2_V3Project(projectId: BigInt): CV {
         address_v2_jbDirectory!,
       ]);
       // 0 will always indicate an error
-      return "0";
+      return "2";
     } else if (
       v2DirectoryCallResult.value.toHexString().toLowerCase() ==
       address_v3_jbController!.toLowerCase()

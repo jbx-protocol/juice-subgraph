@@ -20,22 +20,35 @@ yarn install
 yarn global add @graphprotocol/graph-cli
 ```
 
+## Config
+
+`config/*.json` files define addresses and start blocks for contracts on specific networks. Usually, a contract's start block should be the block where that contract was deployed.
+
+## Generating subgraph.yaml
+
+Subgraphs are defined by a `subgraph.yaml` file, which is generated from `*.template.yaml` files. To make it easier to support multiple contract versions, there is a template file for each version as well as "shared".
+
+Running `yarn prep <network>` will run `scripts/prepare.js` to construct a `subgraph.yaml` file for that network, using yaml template files and the contracts defined in `config/<network>.json`. 
+
+The `prepare.js` script also performs a safety check for mismatches between the generated `subgraph.yaml` and the mapping files. Warnings will be shown if:
+- a function is referenced in the `subgraph.yaml` that isn't defined in any mapping files
+- a function defined in a mapping file isn't referenced in the `subgraph.yaml`
+
 ## Deploying
 
 To deploy a new subgraph version, first prepare the subgraph for the intended network:
 
 ```bash
-yarn prep <network-name> # mainnet, rinkeby
+yarn prep <network-name> # mainnet, goerli
 ```
 
-- Compiles new gitignored `subgraph.yaml` from `subgraph.template.yaml`, using data defined in `config/<network>.json`
 - Generates TS types for the schema defined in `schema.graphql`
-- Checks for missing event handler references. Will error if a handler function has been written in a mapping file, but not referenced in the subgraph.template.yaml
+- Compiles new gitignored `subgraph.yaml`
 
 First you will need to authenticate with the proper deploy key for the given network (you'll only need to do this once).
 
 ```bash
-graph auth  --studio ${your-key}
+graph auth --studio ${your-key}
 ```
 Once authenticated:
 
