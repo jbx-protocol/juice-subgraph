@@ -5,6 +5,7 @@ import {
   MintTokensEvent,
   Participant,
   PayEvent,
+  AddToBalanceEvent,
   PrintReservesEvent,
   Project,
   ProtocolV1Log,

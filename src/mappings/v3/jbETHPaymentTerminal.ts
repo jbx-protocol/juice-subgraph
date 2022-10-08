@@ -13,6 +13,7 @@ import {
   DistributeToPayoutSplitEvent,
   Participant,
   PayEvent,
+  AddToBalanceEvent,
   Project,
   ProtocolV3Log,
   RedeemEvent,
