@@ -52,7 +52,6 @@ export function handleAddToBalance(event: AddToBalance): void {
   }
 
   project.currentBalance = project.currentBalance.plus(event.params.amount);
-  project.totalPaid = project.totalPaid.plus(event.params.amount);
   project.save();
 
   if(addToBalance) {
