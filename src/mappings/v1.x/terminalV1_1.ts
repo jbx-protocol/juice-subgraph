@@ -257,11 +257,35 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
 
 export function handleAddToBalance(event: AddToBalance): void {
   const cv = cvForV1Project(event.params.projectId);
+  const addToBalance = new AddToBalanceEvent(
+    idForProjectTx(event.params.projectId, cv, event, true);
+  );
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
+
   if (!project) return;
   project.currentBalance = project.currentBalance.plus(event.params.value);
+  project.totalPaid = project.totalPaid.plus(event.params.amount);
   project.save();
+
+  if(addToBalance) {
+    addToBalance.cv = cv;
+    addToBalance.projectId = event.params.projectId.toI32();
+    addToBalance.amount = event.params.value;
+    addToBalance.caller = event.transaction.from;
+    addToBalance.project = projectId;
+    addToBalance.timestamp = event.block.timestamp.toI32();
+    addToBalance.txHash = event.transaction.hash;
+    addToBalance.save();
+
+    saveNewProjectEvent(
+      event,
+      event.params.projectId,
+      addToBalance.id,
+      cv,
+      ProjectEventKey.addToBalanceEvent
+    );
+  }
 }
 
 export function handleDistributeToPayoutMod(
