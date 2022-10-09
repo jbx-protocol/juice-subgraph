@@ -9,6 +9,7 @@ export enum ProjectEventKey {
   distributeToTicketModEvent,
   mintTokensEvent,
   payEvent,
+  addToBalanceEvent,
   printReservesEvent,
   projectCreateEvent,
   tapEvent,

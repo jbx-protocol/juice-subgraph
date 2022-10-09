@@ -13,6 +13,7 @@ import {
   DistributeToPayoutSplitEvent,
   Participant,
   PayEvent,
+  AddToBalanceEvent,
   Project,
   ProtocolV2Log,
   RedeemEvent,
@@ -37,16 +38,41 @@ import { handleTrendingPayment } from "../../utils/trending";
 const cv: CV = "2";
 
 export function handleAddToBalance(event: AddToBalance): void {
+  const addToBalance = new AddToBalanceEvent(
+    idForProjectTx(event.params.projectId, cv, event, true);
+  );
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
+  
   if (!project) {
     log.error("[handleAddToBalance] Missing project. ID:{}", [
       idForProject(event.params.projectId, cv),
     ]);
     return;
   }
+
   project.currentBalance = project.currentBalance.plus(event.params.amount);
   project.save();
+
+  if(addToBalance) {
+    addToBalance.cv = cv;
+    addToBalance.projectId = event.params.projectId.toI32();
+    addToBalance.amount = event.params.amount;
+    addToBalance.caller = event.transaction.from;
+    addToBalance.project = projectId;
+    addToBalance.note = event.params.memo;
+    addToBalance.timestamp = event.block.timestamp.toI32();
+    addToBalance.txHash = event.transaction.hash;
+    addToBalance.save();
+
+    saveNewProjectEvent(
+      event,
+      event.params.projectId,
+      addToBalance.id,
+      cv,
+      ProjectEventKey.addToBalanceEvent
+    );
+  }
 }
 
 export function handleDistributePayouts(event: DistributePayouts): void {

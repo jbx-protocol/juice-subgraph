@@ -68,6 +68,7 @@ type Project @entity {
   # Derived fields
   participants: [Participant!]! @derivedFrom(field: "project")
   payEvents: [PayEvent!]! @derivedFrom(field: "project")
+  addToBalanceEvents: [AddToBalanceEvent!]! @derivedFrom(field: "project")
   mintTokensEvents: [MintTokensEvent!]! @derivedFrom(field: "project")
   tapEvents: [TapEvent!]! @derivedFrom(field: "project")
   redeemEvents: [RedeemEvent!]! @derivedFrom(field: "project")
@@ -113,6 +114,7 @@ type ProjectEvent @entity {
 
   # Conditional properties. Only one of these properties should exist. This is a helper entity that makes it possible to query all "project events" for a project.
   payEvent: PayEvent
+  addToBalanceEvent: AddToBalanceEvent
   mintTokensEvent: MintTokensEvent 
   tapEvent: TapEvent 
   redeemEvent: RedeemEvent 
@@ -144,6 +146,20 @@ type PayEvent @entity {
   amount: BigInt!
   note: String!
   feeFromV2Project: Int # Indicates payment is a fee from project with this ID
+}
+
+# v1.0, v1.1, v2, v3
+type AddToBalanceEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  cv: String!
+  timestamp: Int!
+  txHash: Bytes!
+
+  caller: Bytes!
+  amount: BigInt!
+  note: String
 }
 
 # v1.0, v1.1, v2, v3
