@@ -1,21 +1,22 @@
 import { BigInt, DataSourceContext, log } from "@graphprotocol/graph-ts";
 
 import {
-  Burn,
-  Claim,
-  Issue,
-  Mint,
-  Transfer,
-} from "../../../generated/V3JBTokenStore/JBTokenStore";
-import {
   DeployedERC20Event,
   Participant,
   Project,
   ProtocolV3Log,
 } from "../../../generated/schema";
 import { ERC20 } from "../../../generated/templates";
+import {
+  Burn,
+  Claim,
+  Issue,
+  Mint,
+  Transfer,
+} from "../../../generated/V3JBTokenStore/JBTokenStore";
 import { PROTOCOL_ID } from "../../constants";
-import { CV, ProjectEventKey } from "../../types";
+import { ProjectEventKey } from "../../types";
+import { cvForV2_V3Project } from "../../utils/cv";
 import {
   newParticipant,
   newProtocolV3Log,
@@ -28,7 +29,6 @@ import {
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
-import { cvForV2_V3Project } from "../../utils/cv";
 
 export function handleBurn(event: Burn): void {
   const cv = cvForV2_V3Project(event.params.projectId);
@@ -126,7 +126,7 @@ export function handleIssue(event: Issue): void {
 
   const erc20Context = new DataSourceContext();
   erc20Context.setI32("projectId", event.params.projectId.toI32());
-  erc20Context.setString("cv", "2");
+  erc20Context.setString("cv", cv);
   ERC20.createWithContext(event.params.token, erc20Context);
 }
 

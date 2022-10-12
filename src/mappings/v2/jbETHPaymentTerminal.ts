@@ -39,11 +39,11 @@ const cv: CV = "2";
 
 export function handleAddToBalance(event: AddToBalance): void {
   const addToBalance = new AddToBalanceEvent(
-    idForProjectTx(event.params.projectId, cv, event, true);
+    idForProjectTx(event.params.projectId, cv, event, true)
   );
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
-  
+
   if (!project) {
     log.error("[handleAddToBalance] Missing project. ID:{}", [
       idForProject(event.params.projectId, cv),
@@ -54,7 +54,7 @@ export function handleAddToBalance(event: AddToBalance): void {
   project.currentBalance = project.currentBalance.plus(event.params.amount);
   project.save();
 
-  if(addToBalance) {
+  if (addToBalance) {
     addToBalance.cv = cv;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.amount;

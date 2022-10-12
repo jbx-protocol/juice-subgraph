@@ -121,7 +121,7 @@ export function handleIssue(event: Issue): void {
 
   const erc20Context = new DataSourceContext();
   erc20Context.setI32("projectId", event.params.projectId.toI32());
-  erc20Context.setString("cv", "2");
+  erc20Context.setString("cv", cv);
   ERC20.createWithContext(event.params.token, erc20Context);
 }
 

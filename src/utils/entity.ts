@@ -15,30 +15,72 @@ import { CV, ProjectEventKey } from "../types";
 import { idForParticipant, idForProject, idForProjectEvent } from "./ids";
 
 export function updateProtocolEntity(): void {
-  const protocol = ProtocolLog.load(PROTOCOL_ID);
+  const protocolLog = ProtocolLog.load(PROTOCOL_ID);
+
+  if (!protocolLog) {
+    log.error("[updateProtocolEntity] Failed to load protocolLog. ID:{}", [
+      PROTOCOL_ID,
+    ]);
+    return;
+  }
+
+  resetProtocolLog(protocolLog);
+
   const protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
+
+  if (protocolV1Log) {
+    protocolLog.erc20Count = protocolLog.erc20Count + protocolV1Log.erc20Count;
+    protocolLog.paymentsCount =
+      protocolLog.paymentsCount + protocolV1Log.paymentsCount;
+    protocolLog.projectsCount =
+      protocolLog.projectsCount + protocolV1Log.projectsCount;
+    protocolLog.redeemCount =
+      protocolLog.redeemCount + protocolV1Log.redeemCount;
+    protocolLog.volumePaid = protocolLog.volumePaid.plus(
+      protocolV1Log.volumePaid
+    );
+    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
+      protocolV1Log.volumeRedeemed
+    );
+  }
+
   const protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
 
-  if (protocol && protocolV1Log) {
-    protocol.erc20Count =
-      protocolV1Log.erc20Count + (protocolV2Log ? protocolV2Log.erc20Count : 0);
-    protocol.paymentsCount =
-      protocolV1Log.paymentsCount +
-      (protocolV2Log ? protocolV2Log.paymentsCount : 0);
-    protocol.projectsCount =
-      protocolV1Log.projectsCount +
-      (protocolV2Log ? protocolV2Log.projectsCount : 0);
-    protocol.redeemCount =
-      protocolV1Log.redeemCount +
-      (protocolV2Log ? protocolV2Log.redeemCount : 0);
-    protocol.volumePaid = protocolV2Log
-      ? protocolV1Log.volumePaid.plus(protocolV2Log.volumePaid)
-      : protocolV1Log.volumePaid;
-    protocol.volumeRedeemed = protocolV2Log
-      ? protocolV1Log.volumeRedeemed.plus(protocolV2Log.volumePaid)
-      : protocolV1Log.volumeRedeemed;
-    protocol.save();
+  if (protocolV2Log) {
+    protocolLog.erc20Count = protocolLog.erc20Count + protocolV2Log.erc20Count;
+    protocolLog.paymentsCount =
+      protocolLog.paymentsCount + protocolV2Log.paymentsCount;
+    protocolLog.projectsCount =
+      protocolLog.projectsCount + protocolV2Log.projectsCount;
+    protocolLog.redeemCount =
+      protocolLog.redeemCount + protocolV2Log.redeemCount;
+    protocolLog.volumePaid = protocolLog.volumePaid.plus(
+      protocolV2Log.volumePaid
+    );
+    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
+      protocolV2Log.volumeRedeemed
+    );
   }
+
+  const protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
+
+  if (protocolV3Log) {
+    protocolLog.erc20Count = protocolLog.erc20Count + protocolV3Log.erc20Count;
+    protocolLog.paymentsCount =
+      protocolLog.paymentsCount + protocolV3Log.paymentsCount;
+    protocolLog.projectsCount =
+      protocolLog.projectsCount + protocolV3Log.projectsCount;
+    protocolLog.redeemCount =
+      protocolLog.redeemCount + protocolV3Log.redeemCount;
+    protocolLog.volumePaid = protocolLog.volumePaid.plus(
+      protocolV3Log.volumePaid
+    );
+    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
+      protocolV3Log.volumeRedeemed
+    );
+  }
+
+  protocolLog.save();
 }
 
 export function saveNewProjectEvent(
@@ -116,14 +158,18 @@ export function saveNewProjectEvent(
   projectEvent.save();
 }
 
-export function newProtocolLog(): ProtocolLog {
-  const protocolLog = new ProtocolLog(PROTOCOL_ID);
+function resetProtocolLog(protocolLog: ProtocolLog): void {
   protocolLog.projectsCount = 0;
   protocolLog.volumePaid = BigInt.fromString("0");
   protocolLog.volumeRedeemed = BigInt.fromString("0");
   protocolLog.paymentsCount = 0;
   protocolLog.redeemCount = 0;
   protocolLog.erc20Count = 0;
+}
+
+export function newProtocolLog(): ProtocolLog {
+  const protocolLog = new ProtocolLog(PROTOCOL_ID);
+  resetProtocolLog(protocolLog);
   protocolLog.trendingLastUpdatedTimestamp = 0;
   return protocolLog;
 }

@@ -1,4 +1,17 @@
 import { BigInt, log } from "@graphprotocol/graph-ts";
+
+import {
+  AddToBalanceEvent,
+  DistributePayoutsEvent,
+  DistributeToPayoutSplitEvent,
+  Participant,
+  PayEvent,
+  Project,
+  ProtocolLog,
+  ProtocolV3Log,
+  RedeemEvent,
+  UseAllowanceEvent,
+} from "../../../generated/schema";
 import {
   AddToBalance,
   DistributePayouts,
@@ -8,19 +21,9 @@ import {
   RedeemTokens,
   UseAllowance,
 } from "../../../generated/V3JBETHPaymentTerminal/JBETHPaymentTerminal";
-import {
-  DistributePayoutsEvent,
-  DistributeToPayoutSplitEvent,
-  Participant,
-  PayEvent,
-  AddToBalanceEvent,
-  Project,
-  ProtocolV3Log,
-  RedeemEvent,
-  UseAllowanceEvent,
-} from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
-import { CV, ProjectEventKey } from "../../types";
+import { ProjectEventKey } from "../../types";
+import { cvForV2_V3Project } from "../../utils/cv";
 import {
   newParticipant,
   newProtocolV3Log,
@@ -34,13 +37,12 @@ import {
   idForProjectTx,
 } from "../../utils/ids";
 import { handleTrendingPayment } from "../../utils/trending";
-import { cvForV2_V3Project } from "../../utils/cv";
 
 export function handleAddToBalance(event: AddToBalance): void {
   const cv = cvForV2_V3Project(event.params.projectId);
 
   const addToBalance = new AddToBalanceEvent(
-    idForProjectTx(event.params.projectId, cv, event, true);
+    idForProjectTx(event.params.projectId, cv, event, true)
   );
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
@@ -54,7 +56,7 @@ export function handleAddToBalance(event: AddToBalance): void {
   project.currentBalance = project.currentBalance.plus(event.params.amount);
   project.save();
 
-  if(addToBalance) {
+  if (addToBalance) {
     addToBalance.cv = cv;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.amount;
@@ -328,15 +330,14 @@ export function handleUseAllowance(event: UseAllowance): void {
 }
 
 export function handleProcessFee(event: ProcessFee): void {
-  const cv = cvForV2_V3Project(event.params.projectId);
+  const protocolLog = ProtocolLog.load(PROTOCOL_ID);
 
-  // Load pay event to juicebox project (id: 1)
-  // Requires pay event has logIndex preceding that of this tx
-  const id = `${idForProjectTx(
-    BigInt.fromString("1"),
-    cv,
-    event
-  )}-${event.transactionLogIndex.minus(BigInt.fromString("1"))}`;
+  if (!protocolLog) {
+    log.error("[handleProcessFee] Missing ProtocolLog.", []);
+    return;
+  }
+
+  const id = protocolLog.paymentsCount.toString();
   const pay = PayEvent.load(id);
   if (!pay) {
     log.error("[handleProcessFee] Missing PayEvent. ID:{}", [id]);

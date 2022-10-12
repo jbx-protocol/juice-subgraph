@@ -259,16 +259,22 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
 export function handleAddToBalance(event: AddToBalance): void {
   const cv = cvForV1Project(event.params.projectId);
   const addToBalance = new AddToBalanceEvent(
-    idForProjectTx(event.params.projectId, cv, event, true);
+    idForProjectTx(event.params.projectId, cv, event, true)
   );
   const projectId = idForProject(event.params.projectId, cv);
   const project = Project.load(projectId);
 
-  if (!project) return;
+  if (!project) {
+    log.error("[handleAddToBalance] Missing project. ID:{}", [
+      idForProject(event.params.projectId, cv),
+    ]);
+    return;
+  }
+
   project.currentBalance = project.currentBalance.plus(event.params.value);
   project.save();
 
-  if(addToBalance) {
+  if (addToBalance) {
     addToBalance.cv = cv;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.value;
