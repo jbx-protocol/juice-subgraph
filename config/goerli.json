@@ -13,7 +13,9 @@
     "startBlock_jbETHPaymentTerminal": 7627976,
     "address_jbETHERC20ProjectPayerDeployer": "0x981c8ECD009E3E84eE1fF99266BF1461a12e5c68",
     "startBlock_jbETHERC20ProjectPayerDeployer": 7627959,
-    "address_jbDirectory": "0x8E05bcD2812E1449f0EC3aE24E2C395F533d9A99"
+    "address_jbDirectory": "0x8E05bcD2812E1449f0EC3aE24E2C395F533d9A99",
+    "address_jbTiered721DelegateDeployer": "0x32802d81d94bd3e349de6c7a83c2feaea21ee68a",
+    "startBlock_jbTiered721DelegateDeployer": 7747593
   },
   "shared":{
     "address_textResolver": "0x4B1488B7a6B320d2D721406204aBc3eeAa9AD329",

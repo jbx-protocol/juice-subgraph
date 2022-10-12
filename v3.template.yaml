@@ -139,4 +139,28 @@
           handler: handleProcessFee
       file: ./src/mappings/v3/jbETHPaymentTerminal.ts
   {{ /v3.address_jbETHPaymentTerminal }}
+  {{ #v3.address_jbTiered721DelegateDeployer }}
+  - kind: ethereum/contract
+    name: JBTiered721DelegateDeployer
+    network: {{network}}
+    source:
+      address: '{{address_jbTiered721DelegateDeployer}}'
+      abi: JBTiered721DelegateDeployer
+      startBlock: {{startBlock_jbTiered721DelegateDeployer}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - JB721DelegateToken
+      abis:
+        - name: JBTiered721DelegateDeployer
+          file: ./abis/v3/JBTiered721DelegateDeployer.json
+        # - name: JBTiered721Delegate
+        #   file: ./abis/JBTiered721Delegate.json
+      eventHandlers:
+        - event: DelegateDeployed(indexed uint256,address)
+          handler: handleDelegateDeployed
+      file: ./src/mappings/v3/jbTiered721DelegateDeployer.ts
+  {{ /v3.address_jbTiered721DelegateDeployer }}
 {{ /v3 }}

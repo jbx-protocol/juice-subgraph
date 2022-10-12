@@ -33,7 +33,9 @@
     "startBlock_jbETHPaymentTerminal": 0,
     "address_jbETHERC20ProjectPayerDeployer": "0x0000000000000000000000000000000000000000",
     "startBlock_jbETHERC20ProjectPayerDeployer": 0,
-    "address_jbDirectory": "0x0000000000000000000000000000000000000000"
+    "address_jbDirectory": "0x0000000000000000000000000000000000000000",
+    "address_jbTiered721DelegateDeployer": "0x0000000000000000000000000000000000000000",
+    "startBlock_jbTiered721DelegateDeployer": 0
   },
   "shared": {
     "address_textResolver": "0x0000000000000000000000000000000000000000",

@@ -102,6 +102,7 @@ type Participant @entity {
   balance: BigInt!
   stakedBalance: BigInt!
   unstakedBalance: BigInt!
+  jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "owner")
 }
 
 # v1.0, v1.1, v2, v3
@@ -499,6 +500,16 @@ type ProtocolV3Log @entity {
   paymentsCount: Int!
   redeemCount: Int!
   erc20Count: Int!
+}
+
+type JB721DelegateToken @entity {
+  id: ID!
+  address: Bytes!
+  # jb721Delegate: JB721Delegate!
+  owner: Participant!
+  tokenUri: String!
+  project: Project
+  projectId: Int
 }
 
 #############################################################################
