@@ -11,9 +11,8 @@ import { idForProject } from "../../utils/ids";
 const pv: Version = "2";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
-  const context = dataSource.context();
-  const address = context
-    .getBytes("address")
+  const address = dataSource
+    .address()
     .toHexString()
     .toLowerCase();
   const projectPayer = ETHERC20ProjectPayer.load(address);
@@ -23,9 +22,8 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 }
 
 export function handleSetDefaultValues(event: SetDefaultValues): void {
-  const context = dataSource.context();
-  const address = context
-    .getBytes("address")
+  const address = dataSource
+    .address()
     .toHexString()
     .toLowerCase();
   const projectPayer = ETHERC20ProjectPayer.load(address);

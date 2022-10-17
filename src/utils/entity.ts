@@ -249,15 +249,17 @@ export function updateParticipantBalance(participant: Participant): void {
   );
 }
 
-export function updateV2ProjectHandle(projectId: BigInt): void {
+export function updateProjectHandle(projectId: BigInt): void {
   if (!address_shared_jbProjectHandles) return;
+
+  log.warning("updateProjectHandle id {}", [projectId.toHexString()]);
 
   const jbProjectHandles = JBProjectHandles.bind(
     Address.fromString(address_shared_jbProjectHandles!)
   );
   const handleCallResult = jbProjectHandles.try_handleOf(projectId);
-  let pv = "2";
-  let project = Project.load(idForProject(projectId, pv));
+  const pv = "2";
+  const project = Project.load(idForProject(projectId, pv));
   if (!project) {
     log.error("[handleSetReverseRecord] Missing project. ID:{}", [
       projectId.toString(),

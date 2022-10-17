@@ -38,9 +38,8 @@
     "startBlock_jbTiered721DelegateDeployer": 0
   },
   "shared": {
-    "address_textResolver": "0x0000000000000000000000000000000000000000",
-    "startBlock_textResolver": 0,
     "address_jbProjectHandles": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbProjectHandles": 0
+    "startBlock_jbProjectHandles": 0,
+    "address_ensRegistry": "0x0000000000000000000000000000000000000000"
   }
 }

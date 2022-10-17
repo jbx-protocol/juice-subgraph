@@ -2,7 +2,7 @@ import { BigInt, log } from "@graphprotocol/graph-ts";
 
 import { PayEvent, Project, ProtocolLog } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
-import { idForPayEvent } from "./ids";
+import { idForPrevPayEvent } from "./ids";
 
 export function handleTrendingPayment(timestamp: BigInt): void {
   const protocolLog = ProtocolLog.load(PROTOCOL_ID);
@@ -17,7 +17,7 @@ export function handleTrendingPayment(timestamp: BigInt): void {
     return;
   }
 
-  const latestPayEventId = parseInt(idForPayEvent()) - 1;
+  const latestPayEventId = parseInt(idForPrevPayEvent());
 
   const SECS_7_DAYS = 7 * 24 * 60 * 60;
   const oldestValidTimestamp = timestamp.toI32() - SECS_7_DAYS;

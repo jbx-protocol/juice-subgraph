@@ -1,5 +1,3 @@
-import { DataSourceContext } from "@graphprotocol/graph-ts";
-
 import {
   DeployETHERC20ProjectPayerEvent,
   ETHERC20ProjectPayer,
@@ -13,13 +11,7 @@ import { idForProject } from "../../utils/ids";
 const pv: Version = "3";
 
 export function handleDeployProjectPayer(event: DeployProjectPayer): void {
-  // Create dataSource context
-  const projectPayerContext = new DataSourceContext();
-  projectPayerContext.setBytes("address", event.params.projectPayer);
-  JBETHERC20ProjectPayer.createWithContext(
-    event.params.projectPayer,
-    projectPayerContext
-  );
+  JBETHERC20ProjectPayer.create(event.params.projectPayer);
 
   // Create entity
   const projectPayer = new ETHERC20ProjectPayer(

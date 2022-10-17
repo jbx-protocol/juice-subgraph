@@ -18,9 +18,8 @@
     "startBlock_jbTiered721DelegateDeployer": 7769824
   },
   "shared":{
-    "address_textResolver": "0x4B1488B7a6B320d2D721406204aBc3eeAa9AD329",
-    "startBlock_textResolver": 7586169,
-    "address_jbProjectHandles": "0x41126ec99f8a989feb503ac7bb4c5e5d40e06fa4",
-    "startBlock_jbProjectHandles": 7774619
+    "address_jbProjectHandles": "0x9e259442f800d981752c1359a3c7633db70bc395",
+    "startBlock_jbProjectHandles": 7784244,
+    "address_ensRegistry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
   }
 }

@@ -30,6 +30,7 @@ import {
 import {
   idForParticipant,
   idForPayEvent,
+  idForPrevPayEvent,
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
@@ -328,18 +329,14 @@ export function handleUseAllowance(event: UseAllowance): void {
 }
 
 export function handleProcessFee(event: ProcessFee): void {
-  // Load pay event to juicebox project (id: 1)
-  // Requires pay event has logIndex preceding that of this tx
-  const id = `${idForProjectTx(
-    BigInt.fromString("1"),
-    pv,
-    event
-  )}-${event.transactionLogIndex.minus(BigInt.fromString("1"))}`;
+  const id = idForPrevPayEvent();
   const pay = PayEvent.load(id);
   if (!pay) {
     log.error("[handleProcessFee] Missing PayEvent. ID:{}", [id]);
     return;
   }
+  // Sanity check to ensure pay event was to juicebox project
+  if (pay.projectId != 1) return;
   pay.feeFromV2Project = event.params.projectId.toI32();
   pay.save();
 }

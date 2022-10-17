@@ -32,6 +32,7 @@ import {
 import {
   idForParticipant,
   idForPayEvent,
+  idForPrevPayEvent,
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
@@ -329,19 +330,14 @@ export function handleUseAllowance(event: UseAllowance): void {
 }
 
 export function handleProcessFee(event: ProcessFee): void {
-  const protocolLog = ProtocolLog.load(PROTOCOL_ID);
-
-  if (!protocolLog) {
-    log.error("[handleProcessFee] Missing ProtocolLog.", []);
-    return;
-  }
-
-  const id = protocolLog.paymentsCount.toString();
+  const id = idForPrevPayEvent();
   const pay = PayEvent.load(id);
   if (!pay) {
     log.error("[handleProcessFee] Missing PayEvent. ID:{}", [id]);
     return;
   }
+  // Sanity check to ensure pay event was to juicebox project
+  if (pay.projectId != 1) return;
   pay.feeFromV2Project = event.params.projectId.toI32();
   pay.save();
 }

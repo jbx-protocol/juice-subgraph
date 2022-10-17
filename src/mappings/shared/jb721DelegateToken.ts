@@ -1,4 +1,4 @@
-import { Address, BigInt, dataSource, log } from "@graphprotocol/graph-ts";
+import { Address, dataSource, log } from "@graphprotocol/graph-ts";
 
 import { JB721DelegateToken, Participant } from "../../../generated/schema";
 import { Transfer } from "../../../generated/templates/ERC20/ERC20";
@@ -14,7 +14,7 @@ export function handleTransfer(event: Transfer): void {
   const context = dataSource.context();
   const projectId = context.getBigInt("projectId");
   const pv = context.getString("pv");
-  const address = context.getBytes("address");
+  const address = dataSource.address();
   const contract = ERC721.bind(Address.fromBytes(address));
 
   const id = idForJB721DelegateToken(Address.fromBytes(address));

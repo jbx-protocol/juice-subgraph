@@ -54,6 +54,14 @@ export function idForPayEvent(): string {
   }
   return (protocolLog.paymentsCount + 1).toString();
 }
+export function idForPrevPayEvent(): string {
+  const protocolLog = ProtocolLog.load(PROTOCOL_ID);
+  if (!protocolLog) {
+    log.error("[idForPayEvent] Failed to load protocolLog", []);
+    return "0";
+  }
+  return protocolLog.paymentsCount.toString();
+}
 
 export function idForVeNftContract(address: Address): string {
   return addressToLowercase(address);

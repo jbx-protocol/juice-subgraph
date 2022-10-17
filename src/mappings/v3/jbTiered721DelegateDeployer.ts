@@ -12,7 +12,6 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   // Create context so we can track token transfers
   const jbTiered721DelegateContext = new DataSourceContext();
   jbTiered721DelegateContext.setBigInt("projectId", event.params.projectId);
-  jbTiered721DelegateContext.setBytes("address", address);
   jbTiered721DelegateContext.setString("pv", pv);
   JB721DelegateTokenTemplate.createWithContext(
     address,
