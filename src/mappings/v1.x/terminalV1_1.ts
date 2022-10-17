@@ -58,6 +58,7 @@ export function handlePay(event: Pay): void {
   project.save();
 
   if (pay) {
+    pay.pv = pv;
     pay.tv = tv;
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;

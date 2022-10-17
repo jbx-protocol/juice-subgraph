@@ -243,6 +243,7 @@ export function handleRedeemTokens(event: RedeemTokens): void {
   );
   if (redeemEvent) {
     redeemEvent.projectId = event.params.projectId.toI32();
+    redeemEvent.pv = pv;
     redeemEvent.tv = tv;
     redeemEvent.amount = event.params.tokenCount;
     redeemEvent.beneficiary = event.params.beneficiary;

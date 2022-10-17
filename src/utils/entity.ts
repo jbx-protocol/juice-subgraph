@@ -93,7 +93,7 @@ export function saveNewProjectTerminalEvent(
   key: ProjectEventKey,
   tv: Version
 ): void {
-  return saveNewProjectEvent(event, projectId, id, pv, key, tv);
+  saveNewProjectEvent(event, projectId, id, pv, key, tv);
 }
 
 export function saveNewProjectEvent(
@@ -102,7 +102,7 @@ export function saveNewProjectEvent(
   id: string,
   pv: Version,
   key: ProjectEventKey,
-  tv?: Version
+  tv: Version | null = null
 ): void {
   let projectEvent = new ProjectEvent(
     idForProjectEvent(

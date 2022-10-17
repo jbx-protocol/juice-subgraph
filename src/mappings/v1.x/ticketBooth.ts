@@ -213,7 +213,7 @@ export function handleIssue(event: Issue): void {
     } else {
       const erc20Context = new DataSourceContext();
       erc20Context.setI32("projectId", event.params.projectId.toI32());
-      erc20Context.setString("cp", pv);
+      erc20Context.setString("pv", pv);
       ERC20.createWithContext(ticketsOfCall.value, erc20Context);
     }
   }
