@@ -25,7 +25,6 @@ export function handleERC20Transfer(event: Transfer): void {
   const receiverId = idForParticipant(projectId, pv, event.params.to);
   let receiver = Participant.load(receiverId);
   if (!receiver) receiver = newParticipant(pv, projectId, event.params.to);
-  if (!receiver) return;
 
   receiver.unstakedBalance = receiver.unstakedBalance.plus(event.params.value);
 

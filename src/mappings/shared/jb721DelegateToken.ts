@@ -12,12 +12,12 @@ import {
 
 export function handleTransfer(event: Transfer): void {
   const context = dataSource.context();
-  const projectId = BigInt.fromI32(context.getI32("projectId"));
+  const projectId = context.getBigInt("projectId");
   const pv = context.getString("pv");
-  const address = Address.fromBytes(context.getBytes("address"));
-  const contract = ERC721.bind(address);
+  const address = context.getBytes("address");
+  const contract = ERC721.bind(Address.fromBytes(address));
 
-  const id = idForJB721DelegateToken(address);
+  const id = idForJB721DelegateToken(Address.fromBytes(address));
 
   let token = JB721DelegateToken.load(id);
 
