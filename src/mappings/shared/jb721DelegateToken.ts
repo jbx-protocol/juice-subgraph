@@ -1,4 +1,4 @@
-import { BigInt, dataSource, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, dataSource, log } from "@graphprotocol/graph-ts";
 
 import { JB721DelegateToken, Participant } from "../../../generated/schema";
 import { Transfer } from "../../../generated/templates/ERC20/ERC20";
@@ -13,8 +13,8 @@ import {
 export function handleTransfer(event: Transfer): void {
   const context = dataSource.context();
   const projectId = BigInt.fromI32(context.getI32("projectId"));
-  const cv = context.getString("cv");
-  const address = context.getBytes("address");
+  const pv = context.getString("pv");
+  const address = Address.fromBytes(context.getBytes("address"));
   const contract = ERC721.bind(address);
 
   const id = idForJB721DelegateToken(address);
@@ -44,7 +44,7 @@ export function handleTransfer(event: Transfer): void {
 
     token.address = address;
     token.projectId = projectId.toI32();
-    token.project = idForProject(projectId, cv);
+    token.project = idForProject(projectId, pv);
   }
 
   // Always update dynamic fields tokenURI and owner
@@ -57,14 +57,14 @@ export function handleTransfer(event: Transfer): void {
   }
   token.tokenUri = tokenUriCall.value;
 
-  const receiverId = idForParticipant(projectId, cv, event.params.to);
+  const receiverId = idForParticipant(projectId, pv, event.params.to);
 
   token.owner = receiverId;
   token.save();
 
   // Create participant if doesn't exist
   let receiver = Participant.load(receiverId);
-  if (!receiver) receiver = newParticipant(cv, projectId, event.params.to);
+  if (!receiver) receiver = newParticipant(pv, projectId, event.params.to);
 
   receiver.save();
 }

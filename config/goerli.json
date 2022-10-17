@@ -20,7 +20,7 @@
   "shared":{
     "address_textResolver": "0x4B1488B7a6B320d2D721406204aBc3eeAa9AD329",
     "startBlock_textResolver": 7586169,
-    "address_jbProjectHandles": "0x3ff1f0583a41CE8B9463F74a1227C75FC13f7C27",
-    "startBlock_jbProjectHandles": 7635076
+    "address_jbProjectHandles": "0x41126ec99f8a989feb503ac7bb4c5e5d40e06fa4",
+    "startBlock_jbProjectHandles": 7774619
   }
 }
