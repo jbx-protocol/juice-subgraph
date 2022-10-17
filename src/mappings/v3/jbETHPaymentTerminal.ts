@@ -1,4 +1,4 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { log } from "@graphprotocol/graph-ts";
 
 import {
   AddToBalanceEvent,
@@ -22,12 +22,11 @@ import {
   UseAllowance,
 } from "../../../generated/V3JBETHPaymentTerminal/JBETHPaymentTerminal";
 import { PROTOCOL_ID } from "../../constants";
-import { ProjectEventKey } from "../../types";
-import { cvForV2_V3Project } from "../../utils/cv";
+import { ProjectEventKey, Version } from "../../types";
 import {
   newParticipant,
   newProtocolV3Log,
-  saveNewProjectEvent,
+  saveNewProjectTerminalEvent,
   updateProtocolEntity,
 } from "../../utils/entity";
 import {
@@ -38,17 +37,18 @@ import {
 } from "../../utils/ids";
 import { handleTrendingPayment } from "../../utils/trending";
 
-export function handleAddToBalance(event: AddToBalance): void {
-  const cv = cvForV2_V3Project(event.params.projectId);
+const pv: Version = "2";
+const tv: Version = "3";
 
+export function handleAddToBalance(event: AddToBalance): void {
   const addToBalance = new AddToBalanceEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
+    idForProjectTx(event.params.projectId, pv, event, true)
   );
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
   if (!project) {
     log.error("[handleAddToBalance] Missing project. ID:{}", [
-      idForProject(event.params.projectId, cv),
+      idForProject(event.params.projectId, pv),
     ]);
     return;
   }
@@ -57,7 +57,8 @@ export function handleAddToBalance(event: AddToBalance): void {
   project.save();
 
   if (addToBalance) {
-    addToBalance.cv = cv;
+    addToBalance.pv = pv;
+    addToBalance.tv = tv;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.amount;
     addToBalance.caller = event.transaction.from;
@@ -67,30 +68,29 @@ export function handleAddToBalance(event: AddToBalance): void {
     addToBalance.txHash = event.transaction.hash;
     addToBalance.save();
 
-    saveNewProjectEvent(
+    saveNewProjectTerminalEvent(
       event,
       event.params.projectId,
       addToBalance.id,
-      cv,
-      ProjectEventKey.addToBalanceEvent
+      pv,
+      ProjectEventKey.addToBalanceEvent,
+      tv
     );
   }
 }
 
 export function handleDistributePayouts(event: DistributePayouts): void {
-  const cv = cvForV2_V3Project(event.params.projectId);
-
   const distributePayoutsEvent = new DistributePayoutsEvent(
-    idForProjectTx(event.params.projectId, cv, event)
+    idForProjectTx(event.params.projectId, pv, event)
   );
   if (!distributePayoutsEvent) {
     log.error(
       "[handleDistributePayouts] Missing distributePayoutsEvent. ID:{}",
-      [idForProjectTx(event.params.projectId, cv, event)]
+      [idForProjectTx(event.params.projectId, pv, event)]
     );
     return;
   }
-  distributePayoutsEvent.project = idForProject(event.params.projectId, cv);
+  distributePayoutsEvent.project = idForProject(event.params.projectId, pv);
   distributePayoutsEvent.projectId = event.params.projectId.toI32();
   distributePayoutsEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutsEvent.txHash = event.transaction.hash;
@@ -107,35 +107,34 @@ export function handleDistributePayouts(event: DistributePayouts): void {
   distributePayoutsEvent.memo = event.params.memo;
   distributePayoutsEvent.save();
 
-  saveNewProjectEvent(
+  saveNewProjectTerminalEvent(
     event,
     event.params.projectId,
     distributePayoutsEvent.id,
-    cv,
-    ProjectEventKey.distributePayoutsEvent
+    pv,
+    ProjectEventKey.distributePayoutsEvent,
+    tv
   );
 }
 
 export function handleDistributeToPayoutSplit(
   event: DistributeToPayoutSplit
 ): void {
-  const cv = cvForV2_V3Project(event.params.projectId);
-
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
   const distributePayoutSplitEvent = new DistributeToPayoutSplitEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
+    idForProjectTx(event.params.projectId, pv, event, true)
   );
 
   if (!distributePayoutSplitEvent) {
     log.error(
       "[handleDistributeToPayoutSplit] Missing distributePayoutSplitEvent. ID:{}",
-      [idForProjectTx(event.params.projectId, cv, event, true)]
+      [idForProjectTx(event.params.projectId, pv, event, true)]
     );
     return;
   }
   distributePayoutSplitEvent.distributePayoutsEvent = idForProjectTx(
     event.params.projectId,
-    cv,
+    pv,
     event
   );
   distributePayoutSplitEvent.project = projectId;
@@ -156,20 +155,19 @@ export function handleDistributeToPayoutSplit(
     event.params.split.preferAddToBalance;
   distributePayoutSplitEvent.save();
 
-  saveNewProjectEvent(
+  saveNewProjectTerminalEvent(
     event,
     event.params.projectId,
     distributePayoutSplitEvent.id,
-    cv,
-    ProjectEventKey.distributeToPayoutSplitEvent
+    pv,
+    ProjectEventKey.distributeToPayoutSplitEvent,
+    tv
   );
 }
 
 export function handlePay(event: Pay): void {
-  const cv = cvForV2_V3Project(event.params.projectId);
-
   const pay = new PayEvent(idForPayEvent());
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
 
   // Safety check: fail if project doesn't exist
@@ -183,7 +181,8 @@ export function handlePay(event: Pay): void {
   project.save();
 
   if (pay) {
-    pay.cv = cv;
+    pay.pv = pv;
+    pay.tv = tv;
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
@@ -194,12 +193,13 @@ export function handlePay(event: Pay): void {
     pay.txHash = event.transaction.hash;
     pay.save();
 
-    saveNewProjectEvent(
+    saveNewProjectTerminalEvent(
       event,
       event.params.projectId,
       pay.id,
-      cv,
-      ProjectEventKey.payEvent
+      pv,
+      ProjectEventKey.payEvent,
+      tv
     );
 
     handleTrendingPayment(event.block.timestamp);
@@ -218,13 +218,13 @@ export function handlePay(event: Pay): void {
 
   const participantId = idForParticipant(
     event.params.projectId,
-    cv,
+    pv,
     event.params.beneficiary
   );
   let participant = Participant.load(participantId);
   if (!participant) {
     participant = newParticipant(
-      cv,
+      pv,
       event.params.projectId,
       event.params.beneficiary
     );
@@ -236,16 +236,14 @@ export function handlePay(event: Pay): void {
 }
 
 export function handleRedeemTokens(event: RedeemTokens): void {
-  const cv = cvForV2_V3Project(event.params.projectId);
-
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
 
   const redeemEvent = new RedeemEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
+    idForProjectTx(event.params.projectId, pv, event, true)
   );
   if (redeemEvent) {
     redeemEvent.projectId = event.params.projectId.toI32();
-    redeemEvent.cv = cv;
+    redeemEvent.tv = tv;
     redeemEvent.amount = event.params.tokenCount;
     redeemEvent.beneficiary = event.params.beneficiary;
     redeemEvent.caller = event.transaction.from;
@@ -256,12 +254,13 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     redeemEvent.txHash = event.transaction.hash;
     redeemEvent.save();
 
-    saveNewProjectEvent(
+    saveNewProjectTerminalEvent(
       event,
       event.params.projectId,
       redeemEvent.id,
-      cv,
-      ProjectEventKey.redeemEvent
+      pv,
+      ProjectEventKey.redeemEvent,
+      tv
     );
 
     let protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
@@ -291,16 +290,14 @@ export function handleRedeemTokens(event: RedeemTokens): void {
 }
 
 export function handleUseAllowance(event: UseAllowance): void {
-  const cv = cvForV2_V3Project(event.params.projectId);
-
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
   const useAllowanceEvent = new UseAllowanceEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
+    idForProjectTx(event.params.projectId, pv, event, true)
   );
 
   if (!useAllowanceEvent) {
     log.error("[handleUseAllowance] Missing useAllowanceEvent. ID:{}", [
-      idForProjectTx(event.params.projectId, cv, event, true),
+      idForProjectTx(event.params.projectId, pv, event, true),
     ]);
     return;
   }
@@ -320,12 +317,13 @@ export function handleUseAllowance(event: UseAllowance): void {
   useAllowanceEvent.netDistributedamount = event.params.netDistributedamount;
   useAllowanceEvent.save();
 
-  saveNewProjectEvent(
+  saveNewProjectTerminalEvent(
     event,
     event.params.projectId,
     useAllowanceEvent.id,
-    cv,
-    ProjectEventKey.useAllowanceEvent
+    pv,
+    ProjectEventKey.useAllowanceEvent,
+    tv
   );
 }
 

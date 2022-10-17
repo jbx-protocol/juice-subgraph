@@ -1,4 +1,4 @@
-export type CV = string;
+export type Version = string;
 
 export enum ProjectEventKey {
   deployedERC20Event,

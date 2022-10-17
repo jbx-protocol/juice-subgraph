@@ -5,10 +5,10 @@ import {
   OwnershipTransferred,
   SetDefaultValues,
 } from "../../../generated/templates/JBETHERC20ProjectPayer/JBETHERC20ProjectPayer";
-import { CV } from "../../types";
+import { Version } from "../../types";
 import { idForProject } from "../../utils/ids";
 
-const cv: CV = "2";
+const pv: Version = "2";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   const context = dataSource.context();
@@ -35,7 +35,7 @@ export function handleSetDefaultValues(event: SetDefaultValues): void {
   projectPayer.metadata = event.params.metadata;
   projectPayer.preferAddToBalance = event.params.preferAddToBalance;
   projectPayer.preferClaimedTokens = event.params.preferClaimedTokens;
-  projectPayer.project = idForProject(event.params.projectId, cv);
+  projectPayer.project = idForProject(event.params.projectId, pv);
   projectPayer.projectId = event.params.projectId.toI32();
   projectPayer.save();
 }

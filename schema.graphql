@@ -28,14 +28,14 @@ type _Schema_
 ############################### vx.x entities ###############################
 #############################################################################
 
-# Note: Events used for v1, v2 and v3 contracts include a `cv` (contracts version) property, which allows querying events for a specific contracts version.
+# Note: Events used for v1, v2 and v3 contracts include `pv` (projects version) and `tv` (terminal version) properties which allows querying events for specific contract versions.
 
 # v1.0, v1.1, v2, v3
 type ProjectCreateEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: String!
+  pv: String!
   timestamp: Int!
   txHash: Bytes!
   caller: Bytes!
@@ -45,7 +45,7 @@ type ProjectCreateEvent @entity {
 type Project @entity {
   id: ID!
   projectId: Int!
-  cv: String!
+  pv: String!
   handle: String
   metadataUri: String
 
@@ -95,7 +95,7 @@ type Participant @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: String!
+  pv: String!
   wallet: Bytes!
   totalPaid: BigInt!
   lastPaidTimestamp: Int!
@@ -109,7 +109,8 @@ type ProjectEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: String!
+  pv: String!
+  tv: String # Only terminal events will have a tv
   timestamp: Int!
 
   # Conditional properties. Only one of these properties should exist. This is a helper entity that makes it possible to query all "project events" for a project.
@@ -137,7 +138,8 @@ type PayEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: String!
+  pv: String!
+  tv: String!
   timestamp: Int!
   txHash: Bytes!
 
@@ -153,7 +155,8 @@ type AddToBalanceEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: String!
+  pv: String!
+  tv: String!
   timestamp: Int!
   txHash: Bytes!
 
@@ -167,7 +170,7 @@ type MintTokensEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: String!
+  pv: String!
   timestamp: Int!
   txHash: Bytes!
 
@@ -182,7 +185,8 @@ type RedeemEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: String!
+  pv: String!
+  tv: String!
   timestamp: Int!
   txHash: Bytes!
 
@@ -198,7 +202,7 @@ type DeployedERC20Event @entity {
   id: ID!
   project: Project!
   projectId: Int!
-  cv: String!
+  pv: String!
   timestamp: Int!
   txHash: Bytes!
 

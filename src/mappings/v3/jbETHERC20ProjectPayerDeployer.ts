@@ -1,16 +1,16 @@
 import { DataSourceContext } from "@graphprotocol/graph-ts";
 
-import { DeployProjectPayer } from "../../../generated/V3JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
 import {
   DeployETHERC20ProjectPayerEvent,
   ETHERC20ProjectPayer,
 } from "../../../generated/schema";
 import { JBETHERC20ProjectPayer } from "../../../generated/templates";
-import { CV, ProjectEventKey } from "../../types";
+import { DeployProjectPayer } from "../../../generated/V3JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
+import { ProjectEventKey, Version } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entity";
 import { idForProject } from "../../utils/ids";
 
-const cv: CV = "3";
+const pv: Version = "3";
 
 export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   // Create dataSource context
@@ -34,7 +34,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   projectPayer.owner = event.params.owner;
   projectPayer.preferAddToBalance = event.params.preferAddToBalance;
   projectPayer.preferClaimedTokens = event.params.defaultPreferClaimedTokens;
-  projectPayer.project = idForProject(event.params.defaultProjectId, cv);
+  projectPayer.project = idForProject(event.params.defaultProjectId, pv);
   projectPayer.projectId = event.params.defaultProjectId.toI32();
   projectPayer.save();
 
@@ -57,11 +57,12 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   deployProjectPayerEvent.txHash = event.transaction.hash;
   deployProjectPayerEvent.caller = event.params.caller;
   deployProjectPayerEvent.save();
+
   saveNewProjectEvent(
     event,
     event.params.defaultProjectId,
     deployProjectPayerEvent.id,
-    cv,
+    pv,
     ProjectEventKey.deployETHERC20ProjectPayerEvent
   );
 }

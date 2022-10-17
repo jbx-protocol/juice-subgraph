@@ -1,16 +1,16 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
-import { CV } from "../types";
+import { Version } from "../types";
 import { ProtocolLog } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
 
 export function idForProjectTx(
   projectId: BigInt,
-  cv: CV,
+  pv: Version,
   event: ethereum.Event,
   useLogIndex: boolean = false // Using log index will ensure ID is unique even if event is emitted multiple times within a single tx
 ): string {
   return (
-    idForProject(projectId, cv) +
+    idForProject(projectId, pv) +
     "-" +
     event.transaction.hash.toHexString().toLowerCase() +
     (useLogIndex ? "-" + event.logIndex.toString() : "")
@@ -19,30 +19,30 @@ export function idForProjectTx(
 
 export function idForProjectEvent(
   projectId: BigInt,
-  cv: CV,
+  pv: Version,
   txHash: Bytes,
   logIndex: BigInt
 ): string {
   return `${idForProject(
     projectId,
-    cv
+    pv
   )}-${txHash.toHexString().toLowerCase()}-${logIndex.toString()}`;
 }
 
 export function idForParticipant(
   projectId: BigInt,
-  cv: CV,
+  pv: Version,
   walletAddress: Bytes
 ): string {
   return `${idForProject(
     projectId,
-    cv
+    pv
   )}-${walletAddress.toHexString().toLowerCase()}`;
 }
 
-export function idForProject(projectId: BigInt, cv: CV): string {
-  // Only use first character of CV since project IDs are unique across v1 and v1.1
-  return `${cv[0]}-${projectId.toString()}`;
+export function idForProject(projectId: BigInt, pv: Version): string {
+  // Only use first character of PV since project IDs don't change between minor versions (i.e. 1, 1.1)
+  return `${pv[0]}-${projectId.toString()}`;
 }
 
 // Use incrementing integers for PayEvent IDs

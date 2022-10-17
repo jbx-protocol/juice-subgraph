@@ -1,4 +1,5 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+
 import { JBProjectHandles } from "../../generated/JBProjectHandles/JBProjectHandles";
 import {
   Participant,
@@ -11,7 +12,7 @@ import {
 } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
 import { address_shared_jbProjectHandles } from "../contractAddresses";
-import { CV, ProjectEventKey } from "../types";
+import { ProjectEventKey, Version } from "../types";
 import { idForParticipant, idForProject, idForProjectEvent } from "./ids";
 
 export function updateProtocolEntity(): void {
@@ -83,26 +84,40 @@ export function updateProtocolEntity(): void {
   protocolLog.save();
 }
 
+// Helper fn with non-optional tv prop
+export function saveNewProjectTerminalEvent(
+  event: ethereum.Event,
+  projectId: BigInt,
+  id: string,
+  pv: Version,
+  key: ProjectEventKey,
+  tv: Version
+): void {
+  return saveNewProjectEvent(event, projectId, id, pv, key, tv);
+}
+
 export function saveNewProjectEvent(
   event: ethereum.Event,
   projectId: BigInt,
   id: string,
-  cv: CV,
-  key: ProjectEventKey
+  pv: Version,
+  key: ProjectEventKey,
+  tv?: Version
 ): void {
   let projectEvent = new ProjectEvent(
     idForProjectEvent(
       projectId,
-      cv,
+      pv,
       event.transaction.hash,
       event.transactionLogIndex
     )
   );
   if (!projectEvent) return;
-  projectEvent.cv = cv;
+  projectEvent.pv = pv;
+  if (tv) projectEvent.tv = tv;
   projectEvent.projectId = projectId.toI32();
   projectEvent.timestamp = event.block.timestamp.toI32();
-  projectEvent.project = idForProject(projectId, cv);
+  projectEvent.project = idForProject(projectId, pv);
 
   switch (key) {
     case ProjectEventKey.deployedERC20Event:
@@ -211,14 +226,14 @@ export function newProtocolV3Log(): ProtocolV3Log {
 }
 
 export function newParticipant(
-  cv: CV,
+  pv: Version,
   projectId: BigInt,
   wallet: Bytes
 ): Participant {
-  const participant = new Participant(idForParticipant(projectId, cv, wallet));
-  participant.cv = cv;
+  const participant = new Participant(idForParticipant(projectId, pv, wallet));
+  participant.pv = pv;
   participant.projectId = projectId.toI32();
-  participant.project = idForProject(projectId, cv);
+  participant.project = idForProject(projectId, pv);
   participant.wallet = wallet;
   participant.balance = BigInt.fromString("0");
   participant.stakedBalance = BigInt.fromString("0");
@@ -241,8 +256,8 @@ export function updateV2ProjectHandle(projectId: BigInt): void {
     Address.fromString(address_shared_jbProjectHandles!)
   );
   const handleCallResult = jbProjectHandles.try_handleOf(projectId);
-  let cv = "2";
-  let project = Project.load(idForProject(projectId, cv));
+  let pv = "2";
+  let project = Project.load(idForProject(projectId, pv));
   if (!project) {
     log.error("[handleSetReverseRecord] Missing project. ID:{}", [
       projectId.toString(),
