@@ -14,7 +14,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings/erc20.ts
+      file: ./src/mappings/shared/erc20.ts
       entities:
         - Participant
       abis:
@@ -23,6 +23,25 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleERC20Transfer
+  - name: JB721DelegateToken
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: ERC721
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/shared/jb721DelegateToken.ts
+      entities:
+        - Participant
+        - JB721DelegateToken
+      abis:
+        - name: ERC721
+          file: ./abis/shared/ERC721.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
   - name: JBETHERC20ProjectPayer
     kind: ethereum/contract
     network: {{network}}

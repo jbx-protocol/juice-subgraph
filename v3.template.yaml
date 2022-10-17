@@ -156,10 +156,10 @@
       abis:
         - name: JBTiered721DelegateDeployer
           file: ./abis/v3/JBTiered721DelegateDeployer.json
-        # - name: JBTiered721Delegate
-        #   file: ./abis/JBTiered721Delegate.json
+        # - name: ERC721
+        #   file: ./abis/shared/ERC721.json
       eventHandlers:
-        - event: DelegateDeployed(indexed uint256,address)
+        - event: DelegateDeployed(indexed uint256,address,uint8)
           handler: handleDelegateDeployed
       file: ./src/mappings/v3/jbTiered721DelegateDeployer.ts
   {{ /v3.address_jbTiered721DelegateDeployer }}

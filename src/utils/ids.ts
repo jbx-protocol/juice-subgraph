@@ -56,5 +56,13 @@ export function idForPayEvent(): string {
 }
 
 export function idForVeNftContract(address: Address): string {
-  return `${address.toHexString()}`;
+  return addressToLowercase(address);
+}
+
+export function idForJB721DelegateToken(address: Address): string {
+  return addressToLowercase(address);
+}
+
+function addressToLowercase(address: Address): string {
+  return address.toHexString().toLowerCase();
 }
