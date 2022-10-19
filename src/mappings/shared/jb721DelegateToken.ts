@@ -25,7 +25,9 @@ export function handleTransfer(event: Transfer): void {
     // Create entity
     token = new JB721DelegateToken(id);
 
-    // Only get static token details when creating entity
+    /**
+     * When creating the token entity, we only get the values that we don't expect to change.
+     */
     const nameCall = contract.try_name();
     if (nameCall.reverted) {
       log.error("[handleTransfer] name() reverted for jb721Delegate:{}", [id]);
@@ -47,7 +49,10 @@ export function handleTransfer(event: Transfer): void {
     token.project = idForProject(projectId, pv);
   }
 
-  // Always update dynamic fields tokenURI and owner
+  /**
+   * Some params may change, so we update them every time the token
+   * is transferred.
+   */
   const tokenUriCall = contract.try_tokenURI(event.params.value);
   if (tokenUriCall.reverted) {
     log.error("[handleTransfer] tokenURI() reverted for jb721Delegate:{}", [

@@ -17,9 +17,12 @@ import { idForProject, idForProjectTx } from "../../utils/ids";
 const pv: Version = "3";
 
 export function handleMintTokens(event: MintTokens): void {
-  // Note: Receiver balance is updated in the jbTokenStore event handler
-
-  // We should maybe create this event in the jbTokenStore. Only reason to do it here is to get the `memo`
+  /**
+   * Note: Receiver balance is updated in the JBTokenStore event handler.
+   *
+   * TBH the only reason to do this logic here instead of JBTokenStore
+   * is to make use of the `memo` field
+   */
   const mintTokensEvent = new MintTokensEvent(
     idForProjectTx(event.params.projectId, pv, event, true)
   );

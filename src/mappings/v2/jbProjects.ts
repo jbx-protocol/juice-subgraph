@@ -73,9 +73,15 @@ export function handleCreate(event: Create): void {
   }
 
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
-  if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
+  if (!protocolV2Log) {
+    /**
+     * We only need to create the ProtocolV2Log once since there will only
+     * ever be one entity. We might as well do it here when the first
+     * project is created.
+     */
+    protocolV2Log = newProtocolV2Log();
+  }
   if (protocolV2Log) {
-    // We only need to create log here, since there will only be one entity and it will be created when first project is created.
     protocolV2Log.projectsCount = protocolV2Log.projectsCount + 1;
     protocolV2Log.log = PROTOCOL_ID;
     protocolV2Log.save();
@@ -99,7 +105,10 @@ export function handleSetMetadata(event: SetMetadata): void {
 export function handleTransferOwnership(event: Transfer): void {
   const project = Project.load(idForProject(event.params.tokenId, pv));
   if (!project) {
-    // Project will be missing on initial mint transfer
+    /**
+     * Project will be missing when project 721 token is transferred 
+     * for the first time at creation, so we don't throw any errors.
+     */
     return;
   }
   project.owner = event.params.to;

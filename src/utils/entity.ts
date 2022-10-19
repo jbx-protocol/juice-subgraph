@@ -25,75 +25,67 @@ export function updateProtocolEntity(): void {
     return;
   }
 
-  resetProtocolLog(protocolLog);
+  let projectsCount = 0;
+  let volumePaid = BigInt.fromString("0");
+  let volumeRedeemed = BigInt.fromString("0");
+  let paymentsCount = 0;
+  let redeemCount = 0;
+  let erc20Count = 0;
 
   const protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
-
   if (protocolV1Log) {
-    protocolLog.erc20Count = protocolLog.erc20Count + protocolV1Log.erc20Count;
-    protocolLog.paymentsCount =
-      protocolLog.paymentsCount + protocolV1Log.paymentsCount;
-    protocolLog.projectsCount =
-      protocolLog.projectsCount + protocolV1Log.projectsCount;
-    protocolLog.redeemCount =
-      protocolLog.redeemCount + protocolV1Log.redeemCount;
-    protocolLog.volumePaid = protocolLog.volumePaid.plus(
-      protocolV1Log.volumePaid
-    );
-    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
-      protocolV1Log.volumeRedeemed
-    );
+    erc20Count = erc20Count + protocolV1Log.erc20Count;
+    paymentsCount = paymentsCount + protocolV1Log.paymentsCount;
+    projectsCount = projectsCount + protocolV1Log.projectsCount;
+    redeemCount = redeemCount + protocolV1Log.redeemCount;
+    volumePaid = volumePaid.plus(protocolV1Log.volumePaid);
+    volumeRedeemed = volumeRedeemed.plus(protocolV1Log.volumeRedeemed);
   }
 
   const protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
-
   if (protocolV2Log) {
-    protocolLog.erc20Count = protocolLog.erc20Count + protocolV2Log.erc20Count;
-    protocolLog.paymentsCount =
-      protocolLog.paymentsCount + protocolV2Log.paymentsCount;
-    protocolLog.projectsCount =
-      protocolLog.projectsCount + protocolV2Log.projectsCount;
-    protocolLog.redeemCount =
-      protocolLog.redeemCount + protocolV2Log.redeemCount;
-    protocolLog.volumePaid = protocolLog.volumePaid.plus(
-      protocolV2Log.volumePaid
-    );
-    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
-      protocolV2Log.volumeRedeemed
-    );
+    erc20Count = erc20Count + protocolV2Log.erc20Count;
+    paymentsCount = paymentsCount + protocolV2Log.paymentsCount;
+    projectsCount = projectsCount + protocolV2Log.projectsCount;
+    redeemCount = redeemCount + protocolV2Log.redeemCount;
+    volumePaid = volumePaid.plus(protocolV2Log.volumePaid);
+    volumeRedeemed = volumeRedeemed.plus(protocolV2Log.volumeRedeemed);
   }
 
   const protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
-
   if (protocolV3Log) {
-    protocolLog.erc20Count = protocolLog.erc20Count + protocolV3Log.erc20Count;
-    protocolLog.paymentsCount =
-      protocolLog.paymentsCount + protocolV3Log.paymentsCount;
-    protocolLog.projectsCount =
-      protocolLog.projectsCount + protocolV3Log.projectsCount;
-    protocolLog.redeemCount =
-      protocolLog.redeemCount + protocolV3Log.redeemCount;
-    protocolLog.volumePaid = protocolLog.volumePaid.plus(
-      protocolV3Log.volumePaid
-    );
-    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
-      protocolV3Log.volumeRedeemed
-    );
+    erc20Count = erc20Count + protocolV3Log.erc20Count;
+    paymentsCount = paymentsCount + protocolV3Log.paymentsCount;
+    projectsCount = projectsCount + protocolV3Log.projectsCount;
+    redeemCount = redeemCount + protocolV3Log.redeemCount;
+    volumePaid = volumePaid.plus(protocolV3Log.volumePaid);
+    volumeRedeemed = volumeRedeemed.plus(protocolV3Log.volumeRedeemed);
   }
 
+  protocolLog.erc20Count = erc20Count;
+  protocolLog.paymentsCount = paymentsCount;
+  protocolLog.projectsCount = projectsCount;
+  protocolLog.redeemCount = redeemCount;
+  protocolLog.volumePaid = volumePaid;
+  protocolLog.volumeRedeemed = volumeRedeemed;
   protocolLog.save();
 }
 
-// Helper fn with non-optional tv prop
+/**
+ * Differs from next function because terminal prop isn't optional.
+ * 
+ * By only using this function in Terminal contract handlers, we can 
+ * avoid forgetting to pass the `terminal` arg.
+ */
 export function saveNewProjectTerminalEvent(
   event: ethereum.Event,
   projectId: BigInt,
   id: string,
   pv: Version,
   key: ProjectEventKey,
-  tv: Version
+  terminal: Bytes
 ): void {
-  saveNewProjectEvent(event, projectId, id, pv, key, tv);
+  saveNewProjectEvent(event, projectId, id, pv, key, terminal);
 }
 
 export function saveNewProjectEvent(
@@ -102,7 +94,7 @@ export function saveNewProjectEvent(
   id: string,
   pv: Version,
   key: ProjectEventKey,
-  tv: Version | null = null
+  terminal: Bytes | null = null
 ): void {
   let projectEvent = new ProjectEvent(
     idForProjectEvent(
@@ -114,7 +106,7 @@ export function saveNewProjectEvent(
   );
   if (!projectEvent) return;
   projectEvent.pv = pv;
-  if (tv) projectEvent.tv = tv;
+  if (terminal) projectEvent.terminal = terminal;
   projectEvent.projectId = projectId.toI32();
   projectEvent.timestamp = event.block.timestamp.toI32();
   projectEvent.project = idForProject(projectId, pv);
@@ -173,18 +165,14 @@ export function saveNewProjectEvent(
   projectEvent.save();
 }
 
-function resetProtocolLog(protocolLog: ProtocolLog): void {
+export function newProtocolLog(): ProtocolLog {
+  const protocolLog = new ProtocolLog(PROTOCOL_ID);
   protocolLog.projectsCount = 0;
   protocolLog.volumePaid = BigInt.fromString("0");
   protocolLog.volumeRedeemed = BigInt.fromString("0");
   protocolLog.paymentsCount = 0;
   protocolLog.redeemCount = 0;
   protocolLog.erc20Count = 0;
-}
-
-export function newProtocolLog(): ProtocolLog {
-  const protocolLog = new ProtocolLog(PROTOCOL_ID);
-  resetProtocolLog(protocolLog);
   protocolLog.trendingLastUpdatedTimestamp = 0;
   return protocolLog;
 }

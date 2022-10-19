@@ -28,7 +28,7 @@ type _Schema_
 ############################### vx.x entities ###############################
 #############################################################################
 
-# Note: Events used for v1, v2 and v3 contracts include `pv` (projects version) and `tv` (terminal version) properties which allows querying events for specific contract versions.
+# Note: Events used for v1, v2 and v3 contracts include `pv` (projects version) and `terminal` (terminal address) properties which allows querying events for specific contract versions.
 
 # v1.0, v1.1, v2, v3
 type ProjectCreateEvent @entity {
@@ -112,7 +112,7 @@ type ProjectEvent @entity {
   project: Project!
   projectId: Int!
   pv: String!
-  tv: String # Only terminal events will have a tv
+  terminal: Bytes # Only terminal events
   timestamp: Int!
 
   # Conditional properties. Only one of these properties should exist. This is a helper entity that makes it possible to query all "project events" for a project.
@@ -141,7 +141,7 @@ type PayEvent @entity {
   project: Project!
   projectId: Int!
   pv: String!
-  tv: String!
+  terminal: Bytes!
   timestamp: Int!
   txHash: Bytes!
 
@@ -158,7 +158,7 @@ type AddToBalanceEvent @entity {
   project: Project!
   projectId: Int!
   pv: String!
-  tv: String!
+  terminal: Bytes!
   timestamp: Int!
   txHash: Bytes!
 
@@ -188,7 +188,7 @@ type RedeemEvent @entity {
   project: Project!
   projectId: Int!
   pv: String!
-  tv: String!
+  terminal: Bytes!
   timestamp: Int!
   txHash: Bytes!
 

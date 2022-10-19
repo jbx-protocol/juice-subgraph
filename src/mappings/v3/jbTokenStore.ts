@@ -126,7 +126,10 @@ export function handleIssue(event: Issue): void {
 }
 
 export function handleMint(event: Mint): void {
-  // Only handle updating unclaimed token balance
+  /**
+   * We're only concerned with updating unclaimed token balance. 
+   * "Claimed" ERC20 tokens will be handled separately.
+   */
   if (event.params.preferClaimedTokens) return;
 
   const receiverId = idForParticipant(

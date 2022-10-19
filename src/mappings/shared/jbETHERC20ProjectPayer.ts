@@ -6,15 +6,13 @@ import {
   SetDefaultValues,
 } from "../../../generated/templates/JBETHERC20ProjectPayer/JBETHERC20ProjectPayer";
 import { Version } from "../../types";
+import { toHexLowercase } from "../../utils/format";
 import { idForProject } from "../../utils/ids";
 
 const pv: Version = "2";
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
-  const address = dataSource
-    .address()
-    .toHexString()
-    .toLowerCase();
+  const address = toHexLowercase(dataSource.address());
   const projectPayer = ETHERC20ProjectPayer.load(address);
   if (!projectPayer) return;
   projectPayer.owner = event.params.newOwner;
@@ -22,10 +20,7 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
 }
 
 export function handleSetDefaultValues(event: SetDefaultValues): void {
-  const address = dataSource
-    .address()
-    .toHexString()
-    .toLowerCase();
+  const address = toHexLowercase(dataSource.address());
   const projectPayer = ETHERC20ProjectPayer.load(address);
   if (!projectPayer) return;
   projectPayer.beneficiary = event.params.beneficiary;

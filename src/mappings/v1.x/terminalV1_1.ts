@@ -1,11 +1,12 @@
-import { log } from "@graphprotocol/graph-ts";
+import { Bytes, log } from "@graphprotocol/graph-ts";
+
 import {
+  AddToBalanceEvent,
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
   MintTokensEvent,
   Participant,
   PayEvent,
-  AddToBalanceEvent,
   PrintReservesEvent,
   Project,
   ProtocolV1Log,
@@ -23,8 +24,8 @@ import {
   Tap,
 } from "../../../generated/TerminalV1_1/TerminalV1_1";
 import { PROTOCOL_ID } from "../../constants";
-import { ProjectEventKey, Version } from "../../types";
-import { pvForV1Project } from "../../utils/pv";
+import { address_v1_terminalV1_1 } from "../../contractAddresses";
+import { ProjectEventKey } from "../../types";
 import {
   newParticipant,
   newProtocolV1Log,
@@ -37,9 +38,10 @@ import {
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
+import { pvForV1Project } from "../../utils/pv";
 import { handleTrendingPayment } from "../../utils/trending";
 
-const tv: Version = "1.1";
+const terminal: Bytes = Bytes.fromHexString(address_v1_terminalV1_1!);
 
 export function handlePay(event: Pay): void {
   const pv = pvForV1Project(event.params.projectId);
@@ -59,7 +61,7 @@ export function handlePay(event: Pay): void {
 
   if (pay) {
     pay.pv = pv;
-    pay.tv = tv;
+    pay.terminal = terminal;
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
@@ -76,7 +78,7 @@ export function handlePay(event: Pay): void {
       pay.id,
       pv,
       ProjectEventKey.payEvent,
-      tv
+      terminal
     );
 
     handleTrendingPayment(event.block.timestamp);
@@ -113,7 +115,12 @@ export function handlePay(event: Pay): void {
 }
 
 export function handlePrintTickets(event: PrintTickets): void {
-  // Note: Receiver balance is updated in the ticketBooth event handler
+  /**
+   * Note: Receiver balance is updated in the ticketBooth event handler.
+   * 
+   * TBH the only reason to do this logic here instead of ticketBooth 
+   * is to make use of the `memo` field
+   */
 
   const pv = pvForV1Project(event.params.projectId);
   const mintTokensEvent = new MintTokensEvent(
@@ -138,7 +145,7 @@ export function handlePrintTickets(event: PrintTickets): void {
     mintTokensEvent.id,
     pv,
     ProjectEventKey.mintTokensEvent,
-    tv
+    terminal
   );
 }
 
@@ -169,7 +176,7 @@ export function handleTap(event: Tap): void {
       tapEvent.id,
       pv,
       ProjectEventKey.tapEvent,
-      tv
+      terminal
     );
   }
 
@@ -192,7 +199,7 @@ export function handleRedeem(event: Redeem): void {
   if (redeemEvent) {
     redeemEvent.projectId = event.params._projectId.toI32();
     redeemEvent.pv = pv;
-    redeemEvent.tv = tv;
+    redeemEvent.terminal = terminal;
     redeemEvent.amount = event.params.amount;
     redeemEvent.beneficiary = event.params.beneficiary;
     redeemEvent.caller = event.transaction.from;
@@ -209,7 +216,7 @@ export function handleRedeem(event: Redeem): void {
       redeemEvent.id,
       pv,
       ProjectEventKey.redeemEvent,
-      tv
+      terminal
     );
   }
 
@@ -261,7 +268,7 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
     printReserveEvent.id,
     pv,
     ProjectEventKey.printReservesEvent,
-    tv
+    terminal
   );
 }
 
@@ -285,7 +292,7 @@ export function handleAddToBalance(event: AddToBalance): void {
 
   if (addToBalance) {
     addToBalance.pv = pv;
-    addToBalance.tv = tv;
+    addToBalance.terminal = terminal;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.value;
     addToBalance.caller = event.transaction.from;
@@ -300,7 +307,7 @@ export function handleAddToBalance(event: AddToBalance): void {
       addToBalance.id,
       pv,
       ProjectEventKey.addToBalanceEvent,
-      tv
+      terminal
     );
   }
 }
@@ -341,7 +348,7 @@ export function handleDistributeToPayoutMod(
     distributeToPayoutModEvent.id,
     pv,
     ProjectEventKey.distributeToPayoutModEvent,
-    tv
+    terminal
   );
 }
 
@@ -379,6 +386,6 @@ export function handleDistributeToTicketMod(
     distributeToTicketModEvent.id,
     pv,
     ProjectEventKey.distributeToTicketModEvent,
-    tv
+    terminal
   );
 }

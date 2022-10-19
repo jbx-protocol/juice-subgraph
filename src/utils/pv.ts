@@ -7,6 +7,7 @@ import {
   address_v1_terminalV1_1,
 } from "../contractAddresses";
 import { Version } from "../types";
+import { toHexLowercase } from "./format";
 
 export function pvForV1Project(projectId: BigInt): Version {
   if (!address_v1_terminalDirectory) return "0";
@@ -21,7 +22,7 @@ export function pvForV1Project(projectId: BigInt): Version {
       projectId.toHexString(),
       address_v1_terminalDirectory!,
     ]);
-    // 0 will always indicate an error
+    // 0 will indicate something very bad has happened
     return "0";
   } else {
     return pvForTerminal(callResult.value);
@@ -29,18 +30,20 @@ export function pvForV1Project(projectId: BigInt): Version {
 }
 
 export function pvForTerminal(terminal: Address): Version {
-  let _terminal = terminal.toHexString().toLowerCase();
+  let _terminal = toHexLowercase(terminal);
 
-  // Switch statement throws unclear type error in graph compiler, so we use if statements instead
+  /**
+   * Switch statement doesn't compile into assemblyScript, so we do some
+   * if statements instead
+   */
   if (!address_v1_terminalV1 || !address_v1_terminalV1_1) return "0";
 
-  if (_terminal == address_v1_terminalV1!.toLowerCase()) {
-    return "1";
-  }
-  if (_terminal == address_v1_terminalV1_1!.toLowerCase()) {
-    return "1.1";
-  }
+  if (_terminal == address_v1_terminalV1!.toLowerCase()) return "1";
+
+  if (_terminal == address_v1_terminalV1_1!.toLowerCase()) return "1.1";
+
   log.error("Invalid terminal address {}", [_terminal]);
-  // 0 will always indicate an error
+
+  // 0 will indicate something very bad has happened
   return "0";
 }

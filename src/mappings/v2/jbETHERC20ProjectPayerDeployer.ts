@@ -7,6 +7,7 @@ import { JBETHERC20ProjectPayer } from "../../../generated/templates";
 import { Version, ProjectEventKey } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entity";
 import { idForProject } from "../../utils/ids";
+import { toHexLowercase } from "../../utils/format";
 
 const pv: Version = "2";
 
@@ -15,7 +16,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
 
   // Create entity
   const projectPayer = new ETHERC20ProjectPayer(
-    event.params.projectPayer.toHexString().toLowerCase()
+    toHexLowercase(event.params.projectPayer)
   );
   if (!projectPayer) return;
   projectPayer.address = event.params.projectPayer;
@@ -31,7 +32,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   projectPayer.save();
 
   const deployProjectPayerEvent = new DeployETHERC20ProjectPayerEvent(
-    projectPayer.address.toHexString().toLowerCase()
+    toHexLowercase(projectPayer.address)
   );
   if (!deployProjectPayerEvent) return;
   deployProjectPayerEvent.address = projectPayer.address;

@@ -1,4 +1,4 @@
-import { log } from "@graphprotocol/graph-ts";
+import { Bytes, log } from "@graphprotocol/graph-ts";
 
 import {
   AddToBalanceEvent,
@@ -22,6 +22,7 @@ import {
   UseAllowance,
 } from "../../../generated/V3JBETHPaymentTerminal/JBETHPaymentTerminal";
 import { PROTOCOL_ID } from "../../constants";
+import { address_v3_jbETHPaymentTerminal } from "../../contractAddresses";
 import { ProjectEventKey, Version } from "../../types";
 import {
   newParticipant,
@@ -39,7 +40,7 @@ import {
 import { handleTrendingPayment } from "../../utils/trending";
 
 const pv: Version = "2";
-const tv: Version = "3";
+const terminal: Bytes = Bytes.fromHexString(address_v3_jbETHPaymentTerminal!);
 
 export function handleAddToBalance(event: AddToBalance): void {
   const addToBalance = new AddToBalanceEvent(
@@ -59,7 +60,7 @@ export function handleAddToBalance(event: AddToBalance): void {
 
   if (addToBalance) {
     addToBalance.pv = pv;
-    addToBalance.tv = tv;
+    addToBalance.terminal = terminal;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.amount;
     addToBalance.caller = event.transaction.from;
@@ -75,7 +76,7 @@ export function handleAddToBalance(event: AddToBalance): void {
       addToBalance.id,
       pv,
       ProjectEventKey.addToBalanceEvent,
-      tv
+      terminal
     );
   }
 }
@@ -114,7 +115,7 @@ export function handleDistributePayouts(event: DistributePayouts): void {
     distributePayoutsEvent.id,
     pv,
     ProjectEventKey.distributePayoutsEvent,
-    tv
+    terminal
   );
 }
 
@@ -162,7 +163,7 @@ export function handleDistributeToPayoutSplit(
     distributePayoutSplitEvent.id,
     pv,
     ProjectEventKey.distributeToPayoutSplitEvent,
-    tv
+    terminal
   );
 }
 
@@ -183,7 +184,7 @@ export function handlePay(event: Pay): void {
 
   if (pay) {
     pay.pv = pv;
-    pay.tv = tv;
+    pay.terminal = terminal;
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
     pay.beneficiary = event.params.beneficiary;
@@ -200,7 +201,7 @@ export function handlePay(event: Pay): void {
       pay.id,
       pv,
       ProjectEventKey.payEvent,
-      tv
+      terminal
     );
 
     handleTrendingPayment(event.block.timestamp);
@@ -245,7 +246,7 @@ export function handleRedeemTokens(event: RedeemTokens): void {
   if (redeemEvent) {
     redeemEvent.projectId = event.params.projectId.toI32();
     redeemEvent.pv = pv;
-    redeemEvent.tv = tv;
+    redeemEvent.terminal = terminal;
     redeemEvent.amount = event.params.tokenCount;
     redeemEvent.beneficiary = event.params.beneficiary;
     redeemEvent.caller = event.transaction.from;
@@ -262,7 +263,7 @@ export function handleRedeemTokens(event: RedeemTokens): void {
       redeemEvent.id,
       pv,
       ProjectEventKey.redeemEvent,
-      tv
+      terminal
     );
 
     let protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
@@ -325,7 +326,7 @@ export function handleUseAllowance(event: UseAllowance): void {
     useAllowanceEvent.id,
     pv,
     ProjectEventKey.useAllowanceEvent,
-    tv
+    terminal
   );
 }
 

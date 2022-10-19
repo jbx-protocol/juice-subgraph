@@ -6,7 +6,7 @@ import {
   Redeem,
   Transfer,
   Unlock,
-  JBVeNft
+  JBVeNft,
 } from "../../../generated/templates/JBVeNft/JBVeNft";
 import { idForVeNftContract } from "../../utils/ids";
 

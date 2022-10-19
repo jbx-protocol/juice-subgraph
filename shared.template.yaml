@@ -20,6 +20,30 @@
         - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
           handler: handleSetEnsNameParts
       file: ./src/mappings/shared/jbProjectHandles.ts
+  {{ #shared.address_legacy_jbProjectHandles }}    
+  - kind: ethereum/contract
+    name: LegacyJBProjectHandles
+    network: {{network}}
+    source:
+      address: '{{shared.address_legacy_jbProjectHandles}}'
+      abi: JBProjectHandles
+      startBlock: {{shared.startBlock_legacy_jbProjectHandles}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ENSNode
+      abis:
+        - name: JBProjectHandles
+          file: ./abis/shared/JBProjectHandles.json
+        - name: ENSRegistry
+          file: ./abis/shared/ENSRegistry.json
+      eventHandlers:
+        - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
+          handler: handleSetEnsNameParts
+      file: ./src/mappings/shared/jbProjectHandles.ts
+  {{ /shared.address_legacy_jbProjectHandles }}
   {{ #shared.address_jbVeNftDeployer }}
   - kind: ethereum/contract
     name: JBVeNftDeployer

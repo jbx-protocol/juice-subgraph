@@ -1,7 +1,9 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
-import { Version } from "../types";
+
 import { ProtocolLog } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
+import { Version } from "../types";
+import { toHexLowercase } from "./format";
 
 export function idForProjectTx(
   projectId: BigInt,
@@ -12,7 +14,7 @@ export function idForProjectTx(
   return (
     idForProject(projectId, pv) +
     "-" +
-    event.transaction.hash.toHexString().toLowerCase() +
+    toHexLowercase(event.transaction.hash) +
     (useLogIndex ? "-" + event.logIndex.toString() : "")
   );
 }
@@ -23,10 +25,9 @@ export function idForProjectEvent(
   txHash: Bytes,
   logIndex: BigInt
 ): string {
-  return `${idForProject(
-    projectId,
-    pv
-  )}-${txHash.toHexString().toLowerCase()}-${logIndex.toString()}`;
+  return `${idForProject(projectId, pv)}-${toHexLowercase(
+    txHash
+  )}-${logIndex.toString()}`;
 }
 
 export function idForParticipant(
@@ -34,18 +35,24 @@ export function idForParticipant(
   pv: Version,
   walletAddress: Bytes
 ): string {
-  return `${idForProject(
-    projectId,
-    pv
-  )}-${walletAddress.toHexString().toLowerCase()}`;
+  return `${idForProject(projectId, pv)}-${toHexLowercase(walletAddress)}`;
 }
 
 export function idForProject(projectId: BigInt, pv: Version): string {
-  // Only use first character of PV since project IDs don't change between minor versions (i.e. 1, 1.1)
+  /**
+   * We only use the first character of PV since project IDs don't change
+   * between minor Projects versions.
+   *
+   * i.e. v1 & v1.1 Projects contracts share the same projectId mappings
+   */
   return `${pv[0]}-${projectId.toString()}`;
 }
 
-// Use incrementing integers for PayEvent IDs
+/**
+ * We use incrementing integers for all pay events, regardless of which 
+ * version of the contracts being used. This helps us easily look up previous 
+ * pay events when calculating trending projects, among other things.
+ */
 export function idForPayEvent(): string {
   const protocolLog = ProtocolLog.load(PROTOCOL_ID);
   if (!protocolLog) {
@@ -54,6 +61,7 @@ export function idForPayEvent(): string {
   }
   return (protocolLog.paymentsCount + 1).toString();
 }
+
 export function idForPrevPayEvent(): string {
   const protocolLog = ProtocolLog.load(PROTOCOL_ID);
   if (!protocolLog) {
@@ -64,13 +72,9 @@ export function idForPrevPayEvent(): string {
 }
 
 export function idForVeNftContract(address: Address): string {
-  return addressToLowercase(address);
+  return toHexLowercase(address);
 }
 
 export function idForJB721DelegateToken(address: Address): string {
-  return addressToLowercase(address);
-}
-
-function addressToLowercase(address: Address): string {
-  return address.toHexString().toLowerCase();
+  return toHexLowercase(address);
 }
