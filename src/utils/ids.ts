@@ -49,8 +49,8 @@ export function idForProject(projectId: BigInt, pv: Version): string {
 }
 
 /**
- * We use incrementing integers for all pay events, regardless of which 
- * version of the contracts being used. This helps us easily look up previous 
+ * We use incrementing integers for all pay events, regardless of which
+ * version of the contracts being used. This helps us easily look up previous
  * pay events when calculating trending projects, among other things.
  */
 export function idForPayEvent(): string {
@@ -75,6 +75,9 @@ export function idForVeNftContract(address: Address): string {
   return toHexLowercase(address);
 }
 
-export function idForJB721DelegateToken(address: Address): string {
-  return toHexLowercase(address);
+export function idForJB721DelegateToken(
+  address: Address,
+  tokenId: BigInt
+): string {
+  return `${toHexLowercase(address)}-${tokenId.toString()}`;
 }

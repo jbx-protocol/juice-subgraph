@@ -17,7 +17,7 @@ export function handleTransfer(event: Transfer): void {
   const address = dataSource.address();
   const contract = ERC721.bind(Address.fromBytes(address));
 
-  const id = idForJB721DelegateToken(Address.fromBytes(address));
+  const id = idForJB721DelegateToken(Address.fromBytes(address), event.params.value);
 
   let token = JB721DelegateToken.load(id);
 
