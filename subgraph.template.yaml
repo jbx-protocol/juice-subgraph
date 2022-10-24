@@ -39,6 +39,8 @@ templates:
       abis:
         - name: ERC721
           file: ./abis/shared/ERC721.json
+        - name: JBTiered721DelegateStore
+          file: ./abis/v3/JBTiered721DelegateStore.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer

@@ -511,6 +511,8 @@ type JB721DelegateToken @entity {
   projectId: Int!
   name: String!
   symbol: String!
+  floorPrice: BigInt!
+  lockedUntil: BigInt!
 
   # dynamic fields
   owner: Participant!
