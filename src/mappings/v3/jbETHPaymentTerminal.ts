@@ -92,7 +92,8 @@ export function handleDistributePayouts(event: DistributePayouts): void {
     );
     return;
   }
-  distributePayoutsEvent.project = idForProject(event.params.projectId, pv);
+  const projectId = idForProject(event.params.projectId, pv);
+  distributePayoutsEvent.project = projectId;
   distributePayoutsEvent.projectId = event.params.projectId.toI32();
   distributePayoutsEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutsEvent.txHash = event.transaction.hash;
@@ -117,6 +118,16 @@ export function handleDistributePayouts(event: DistributePayouts): void {
     ProjectEventKey.distributePayoutsEvent,
     terminal
   );
+
+  const project = Project.load(projectId);
+  if (!project) {
+    log.error("[handleDistributePayouts] Missing project. ID:{}", [projectId]);
+    return;
+  }
+  project.currentBalance = project.currentBalance.minus(
+    event.params.distributedAmount
+  );
+  project.save();
 }
 
 export function handleDistributeToPayoutSplit(

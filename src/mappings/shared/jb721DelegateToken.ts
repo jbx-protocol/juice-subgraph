@@ -17,7 +17,10 @@ export function handleTransfer(event: Transfer): void {
   const address = dataSource.address();
   const contract = ERC721.bind(Address.fromBytes(address));
 
-  const id = idForJB721DelegateToken(Address.fromBytes(address), event.params.value);
+  const id = idForJB721DelegateToken(
+    Address.fromBytes(address),
+    event.params.value
+  );
 
   let token = JB721DelegateToken.load(id);
 
@@ -43,7 +46,7 @@ export function handleTransfer(event: Transfer): void {
       return;
     }
     token.symbol = symbolCall.value;
-
+    token.tokenId = event.params.value;
     token.address = address;
     token.projectId = projectId.toI32();
     token.project = idForProject(projectId, pv);

@@ -506,6 +506,7 @@ type ProtocolV3Log @entity {
 type JB721DelegateToken @entity {
   id: ID!
   address: Bytes!
+  tokenId: BigInt!
   project: Project!
   projectId: Int!
   name: String!
