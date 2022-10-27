@@ -319,6 +319,7 @@ type DistributePayoutsEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  terminal: Bytes!
 
   fundingCycleConfiguration: BigInt!
   fundingCycleNumber: Int!
@@ -340,6 +341,7 @@ type DistributeToPayoutSplitEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  terminal: Bytes!
 
   domain: BigInt!
   group: BigInt!

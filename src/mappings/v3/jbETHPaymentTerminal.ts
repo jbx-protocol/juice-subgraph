@@ -7,7 +7,6 @@ import {
   Participant,
   PayEvent,
   Project,
-  ProtocolLog,
   ProtocolV3Log,
   RedeemEvent,
   UseAllowanceEvent,
@@ -94,6 +93,7 @@ export function handleDistributePayouts(event: DistributePayouts): void {
   }
   const projectId = idForProject(event.params.projectId, pv);
   distributePayoutsEvent.project = projectId;
+  distributePayoutsEvent.terminal = terminal;
   distributePayoutsEvent.projectId = event.params.projectId.toI32();
   distributePayoutsEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutsEvent.txHash = event.transaction.hash;
@@ -151,6 +151,7 @@ export function handleDistributeToPayoutSplit(
     event
   );
   distributePayoutSplitEvent.project = projectId;
+  distributePayoutSplitEvent.terminal = terminal;
   distributePayoutSplitEvent.txHash = event.transaction.hash;
   distributePayoutSplitEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutSplitEvent.amount = event.params.amount;
