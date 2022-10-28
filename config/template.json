@@ -22,6 +22,8 @@
     "startBlock_jbETHPaymentTerminal": 0,
     "address_jbETHERC20ProjectPayerDeployer": "0x0000000000000000000000000000000000000000",
     "startBlock_jbETHERC20ProjectPayerDeployer": 0,
+    "address_jbFundingCycleStore": "0x0000000000000000000000000000000000000000",
+    "startBlock_jbFundingCycleStore": 0,
     "address_jbDirectory": "0x0000000000000000000000000000000000000000"
   },
   "v3": {
@@ -33,6 +35,8 @@
     "startBlock_jbETHPaymentTerminal": 0,
     "address_jbETHERC20ProjectPayerDeployer": "0x0000000000000000000000000000000000000000",
     "startBlock_jbETHERC20ProjectPayerDeployer": 0,
+    "address_jbFundingCycleStore": "0x0000000000000000000000000000000000000000",
+    "startBlock_jbFundingCycleStore": 0,
     "address_jbDirectory": "0x0000000000000000000000000000000000000000"
   },
   "shared": {

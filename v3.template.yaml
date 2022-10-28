@@ -94,6 +94,35 @@
           handler: handleTransfer
       file: ./src/mappings/v3/jbTokenStore.ts
   {{ /v3.address_jbTokenStore }}
+  {{ #v3.address_jbFundingCycleStore }}
+  - kind: ethereum/contract
+    name: V3JBFundingCycleStore
+    network: {{network}}
+    source:
+      address: '{{v3.address_jbFundingCycleStore}}'
+      abi: JBFundingCycleStore
+      startBlock: {{v3.startBlock_jbFundingCycleStore}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Configure
+        - Init
+      abis:
+        - name: JBFundingCycleStore
+          file: ./abis/v3/JBFundingCycleStore.json
+        - name: V2JBDirectory
+          file: ./abis/v2/JBDirectory.json
+        - name: V3JBDirectory
+          file: ./abis/v3/JBDirectory.json
+      eventHandlers:
+        - event: Configure(indexed uint256,indexed uint256,(uint256,uint256,uint256,address),uint256,uint256,address)
+          handler: handleConfigure
+        - event: Init(indexed uint256,indexed uint256,indexed uint256)
+          handler: handleInit
+      file: ./src/mappings/v3/jbFundingCycleStore.ts
+  {{ /v3.address_jbFundingCycleStore }}
   {{ #v3.address_jbETHPaymentTerminal }}
   - kind: ethereum/contract
     name: V3JBETHPaymentTerminal
