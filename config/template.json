@@ -37,12 +37,17 @@
     "startBlock_jbETHERC20ProjectPayerDeployer": 0,
     "address_jbFundingCycleStore": "0x0000000000000000000000000000000000000000",
     "startBlock_jbFundingCycleStore": 0,
-    "address_jbDirectory": "0x0000000000000000000000000000000000000000"
+    "address_jbDirectory": "0x0000000000000000000000000000000000000000",
+    "address_jbTiered721DelegateDeployer": "0x0000000000000000000000000000000000000000",
+    "startBlock_jbTiered721DelegateDeployer": 0,
+    "address_jbTiered721DelegateStore": "0x0000000000000000000000000000000000000000",
+    "startBlock_jbTiered721DelegateStore": 0
   },
   "shared": {
-    "address_textResolver": "0x0000000000000000000000000000000000000000",
-    "startBlock_textResolver": 0,
+    "address_legacy_jbProjectHandles": "0x0000000000000000000000000000000000000000",
+    "startBlock_legacy_jbProjectHandles": 0,
     "address_jbProjectHandles": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbProjectHandles": 0
+    "startBlock_jbProjectHandles": 0,
+    "address_ensRegistry": "0x0000000000000000000000000000000000000000"
   }
 }

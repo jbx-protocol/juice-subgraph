@@ -24,7 +24,7 @@ import {
 import { PROTOCOL_ID } from "../../constants";
 import { address_v1_ticketBooth } from "../../contractAddresses";
 import { ProjectEventKey } from "../../types";
-import { cvForV1Project } from "../../utils/cv";
+import { pvForV1Project } from "../../utils/pv";
 import {
   newParticipant,
   newProtocolV1Log,
@@ -39,17 +39,17 @@ import {
 } from "../../utils/ids";
 
 export function handlePrint(event: Print): void {
-  const cv = cvForV1Project(event.params.projectId);
+  const pv = pvForV1Project(event.params.projectId);
   const participantId = idForParticipant(
     event.params.projectId,
-    cv,
+    pv,
     event.params.holder
   );
   let participant = Participant.load(participantId);
 
   if (!participant) {
     participant = newParticipant(
-      cv,
+      pv,
       event.params.projectId,
       event.params.holder
     );
@@ -68,9 +68,9 @@ export function handlePrint(event: Print): void {
 }
 
 export function handleTicketTransfer(event: Transfer): void {
-  const cv = cvForV1Project(event.params.projectId);
+  const pv = pvForV1Project(event.params.projectId);
   const sender = Participant.load(
-    idForParticipant(event.params.projectId, cv, event.params.holder)
+    idForParticipant(event.params.projectId, pv, event.params.holder)
   );
   if (sender) {
     sender.stakedBalance = sender.stakedBalance.minus(event.params.amount);
@@ -80,14 +80,14 @@ export function handleTicketTransfer(event: Transfer): void {
 
   const receiverId = idForParticipant(
     event.params.projectId,
-    cv,
+    pv,
     event.params.recipient
   );
   let receiver = Participant.load(receiverId);
 
   if (!receiver) {
     receiver = newParticipant(
-      cv,
+      pv,
       event.params.projectId,
       event.params.recipient
     );
@@ -102,9 +102,9 @@ export function handleTicketTransfer(event: Transfer): void {
 }
 
 export function handleUnstake(event: Unstake): void {
-  const cv = cvForV1Project(event.params.projectId);
+  const pv = pvForV1Project(event.params.projectId);
   const participant = Participant.load(
-    idForParticipant(event.params.projectId, cv, event.params.holder)
+    idForParticipant(event.params.projectId, pv, event.params.holder)
   );
 
   if (!participant) return;
@@ -119,9 +119,9 @@ export function handleUnstake(event: Unstake): void {
 }
 
 export function handleStake(event: Stake): void {
-  const cv = cvForV1Project(event.params.projectId);
+  const pv = pvForV1Project(event.params.projectId);
   const participant = Participant.load(
-    idForParticipant(event.params.projectId, cv, event.params.holder)
+    idForParticipant(event.params.projectId, pv, event.params.holder)
   );
 
   if (!participant) return;
@@ -136,9 +136,9 @@ export function handleStake(event: Stake): void {
 }
 
 export function handleRedeem(event: Redeem): void {
-  const cv = cvForV1Project(event.params.projectId);
+  const pv = pvForV1Project(event.params.projectId);
   const participant = Participant.load(
-    idForParticipant(event.params.projectId, cv, event.params.holder)
+    idForParticipant(event.params.projectId, pv, event.params.holder)
   );
 
   if (!participant) return;
@@ -165,19 +165,19 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handleIssue(event: Issue): void {
-  const cv = cvForV1Project(event.params.projectId);
-  const projectId = idForProject(event.params.projectId, cv);
+  const pv = pvForV1Project(event.params.projectId);
+  const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
 
   if (!project) return;
 
   const deployedERC20Event = new DeployedERC20Event(
-    idForProjectTx(event.params.projectId, cv, event)
+    idForProjectTx(event.params.projectId, pv, event)
   );
   if (deployedERC20Event) {
     deployedERC20Event.project = project.id;
     deployedERC20Event.projectId = project.projectId;
-    deployedERC20Event.cv = cv;
+    deployedERC20Event.pv = pv;
     deployedERC20Event.symbol = event.params.symbol;
     deployedERC20Event.timestamp = event.block.timestamp.toI32();
     deployedERC20Event.txHash = event.transaction.hash;
@@ -187,7 +187,7 @@ export function handleIssue(event: Issue): void {
       event,
       event.params.projectId,
       deployedERC20Event.id,
-      cv,
+      pv,
       ProjectEventKey.deployedERC20Event
     );
   }
@@ -213,7 +213,7 @@ export function handleIssue(event: Issue): void {
     } else {
       const erc20Context = new DataSourceContext();
       erc20Context.setI32("projectId", event.params.projectId.toI32());
-      erc20Context.setString("cv", cv);
+      erc20Context.setString("pv", pv);
       ERC20.createWithContext(ticketsOfCall.value, erc20Context);
     }
   }

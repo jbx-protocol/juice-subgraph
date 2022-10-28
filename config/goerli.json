@@ -15,12 +15,15 @@
     "startBlock_jbETHERC20ProjectPayerDeployer": 7627959,
     "address_jbFundingCycleStore": "0xB9Ee9d8203467f6EC0eAC81163d210bd1a7d3b55",
     "startBlock_jbFundingCycleStore": 7627967,
-    "address_jbDirectory": "0x8E05bcD2812E1449f0EC3aE24E2C395F533d9A99"
+    "address_jbDirectory": "0x8E05bcD2812E1449f0EC3aE24E2C395F533d9A99",
+    "address_jbTiered721DelegateDeployer": "0xe7432e80a75f957121cb523ba842db27c6c25f69",
+    "startBlock_jbTiered721DelegateDeployer": 7769824,
+    "address_jbTiered721DelegateStore": "0x236d9f67587782420151225ff867044b9ccd30e3",
+    "startBlock_jbTiered721DelegateStore": 7769824
   },
   "shared":{
-    "address_textResolver": "0x4B1488B7a6B320d2D721406204aBc3eeAa9AD329",
-    "startBlock_textResolver": 7586169,
-    "address_jbProjectHandles": "0x3ff1f0583a41CE8B9463F74a1227C75FC13f7C27",
-    "startBlock_jbProjectHandles": 7635076
+    "address_jbProjectHandles": "0x9e259442f800d981752c1359a3c7633db70bc395",
+    "startBlock_jbProjectHandles": 7784244,
+    "address_ensRegistry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
   }
 }
