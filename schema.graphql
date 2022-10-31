@@ -212,6 +212,48 @@ type DeployedERC20Event @entity {
   address: Bytes # will be empty for v1.x events
 }
 
+# v2, v3
+type ConfigureEvent @entity {
+  id: ID!
+  projectId: Int!
+  pv: String!
+  timestamp: Int!
+  txHash: Bytes!
+  caller: Bytes!
+
+  duration: Int!
+  weight: BigInt!
+  discountRate: BigInt!
+  ballot: Bytes!
+
+  mustStartAtOrAfter: Int!
+  configuration: Int!
+  metadata: BigInt!
+
+  setTerminalsAllowed: Boolean!
+  setControllerAllowed: Boolean!
+  transfersPaused: Boolean!
+
+  reservedRate: Int!
+  redemptionRate: Int!
+  ballotRedemptionRate: Int!
+  payPaused: Boolean!
+  distributionsPaused: Boolean!
+  redeemPaused: Boolean!
+  burnPaused: Boolean!
+  mintingAllowed: Boolean!
+  terminalMigrationAllowed: Boolean!
+  controllerMigrationAllowed: Boolean!
+  shouldHoldFees: Boolean!
+  preferClaimedTokenOverride: Boolean!
+  useTotalOverflowForRedemptions: Boolean!
+  useDataSourceForPay: Boolean!
+  useDataSourceForRedeem: Boolean!
+
+  dataSource: Bytes!
+  metametadata = Bytes!
+}
+
 #############################################################################
 ############################### v1.x entities ###############################
 #############################################################################
