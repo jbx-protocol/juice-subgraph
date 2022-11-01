@@ -8,6 +8,7 @@ import { ConfigureEvent, InitEvent } from "../../../generated/schema"
 import { MAX_REDEMPTION_RATE } from "../../constants";
 import { ProjectEventKey, Version } from "../../types";
 import { idForProject, idForProjectTx } from "../../utils/ids";
+import { saveNewProjectEvent } from "../../utils/entity";
 
 const pv: Version = "2";
 
@@ -20,7 +21,6 @@ export function handleConfigure(event: Configure): void {
     return;
   }
 
-  const contract = Contract.bind(event.address)
   const configureEvent = new ConfigureEvent(
     idForProjectTx(event.params.projectId, pv, event)
   );
@@ -78,14 +78,49 @@ export function handleConfigure(event: Configure): void {
 
     configureEvent.save();
 
-    // saveNewProjectEvent(
-    //   event,
-    //   event.params.projectId,
-    //   configureEvent.id,
-    //   pv,
-    //   ProjectEventKey.configureEvent
-    // );
+    saveNewProjectEvent(
+      event,
+      event.params.projectId,
+      configureEvent.id,
+      pv,
+      ProjectEventKey.configureEvent
+    );
   }
 }
 
-export function handleInit(event: Init): void {}
+export function handleInit(event: Init): void {
+  const project = Project.load(idForProject(event.params.projectId, pv));
+  if (!project) {
+    log.error("[handleInit] Missing project. ID:{}", [
+      idForProject(event.params.projectId, pv),
+    ]);
+    return;
+  }
+
+  const initEvent = new InitEvent(
+    idForProjectTx(event.params.projectId, pv, event)
+  );
+
+  if(initEvent) {
+    initEvent.projectId = event.params.projectId.toI32();
+    initEvent.pv = pv;
+    initEvent.timestamp = event.block.timestamp.toI32();
+    // TODO: Check etherscan for init txHash and caller
+    initEvent.txHash = event.transaction.hash;
+    initEvent.caller = event.transaction.from;
+
+    // TODO: Check etherscan for init configuration and basedOn
+    initEvent.configuration = event.params.data.configuration.toI32();
+    initEvent.basedOn = event.params.data.basedOn.toI32();
+
+    initEvent.save();
+
+    saveNewProjectEvent(
+      event,
+      event.params.projectId,
+      initEvent.id,
+      pv,
+      ProjectEventKey.initEvent
+    );
+  }
+}

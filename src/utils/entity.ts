@@ -160,6 +160,9 @@ export function saveNewProjectEvent(
     case ProjectEventKey.deployVeNftEvent:
       projectEvent.deployVeNftEvent = id;
       break;
+    case ProjectEventKey.configureEvent:
+      projectEvent.configureEvent = id;
+      break
   }
 
   projectEvent.save();

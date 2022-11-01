@@ -133,6 +133,8 @@ type ProjectEvent @entity {
   useAllowanceEvent: UseAllowanceEvent
   deployETHERC20ProjectPayerEvent: DeployETHERC20ProjectPayerEvent
   deployVeNftEvent: DeployVeNftEvent
+  configureEvent: ConfigureEvent
+  initEvent: InitEvent
 }
 
 # v1.0, v1.1, v2, v3
@@ -252,6 +254,19 @@ type ConfigureEvent @entity {
 
   dataSource: Bytes!
   metametadata = Bytes!
+}
+
+# v2, v3
+type InitEvent @entity {
+  id: ID!
+  projectId: Int!
+  pv: String!
+  timestamp: Int!
+  txHash: Bytes!
+  caller: Bytes!
+
+  configuration: Int!
+  basedOn: Int!
 }
 
 #############################################################################
