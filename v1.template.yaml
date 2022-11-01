@@ -117,6 +117,8 @@
           handler: handleDistributeToTicketMod
         - event: Migrate(indexed uint256,indexed address,uint256,address)
           handler: handleMigrate
+        - event: Configure(indexed uint256,indexed uint256,address)
+          handler: handleConfigure
       file: ./src/mappings/v1.x/terminalV1.ts
   {{ /v1.address_terminalV1 }}
   {{ #v1.address_terminalV1_1 }}
@@ -165,6 +167,8 @@
           handler: handleDistributeToPayoutMod
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
+        - event: Configure(indexed uint256,indexed uint256,address)
+          handler: handleConfigure
       file: ./src/mappings/v1.x/terminalV1_1.ts
   {{ /v1.address_terminalV1_1 }}
 {{ /v1 }}

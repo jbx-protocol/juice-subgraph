@@ -89,6 +89,9 @@ type Project @entity {
   deployVeNftEvents: [DeployVeNftEvent!]! @derivedFrom(field: "project")
   veNftContract: VeNftContract @derivedFrom(field: "project")
   jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "project")
+  configureEvents: [ConfigureEvent!]! @derivedFrom(field: "project")
+  initEvents: [InitEvent!]! @derivedFrom(field: "project")
+  v1ConfigureEvents: [V1ConfigureEvent!]! @derivedFrom(field: "project")
 }
 
 # v1.0, v1.1, v2, v3
@@ -135,6 +138,7 @@ type ProjectEvent @entity {
   deployVeNftEvent: DeployVeNftEvent
   configureEvent: ConfigureEvent
   initEvent: InitEvent
+  v1ConfigureEvent: V1ConfigureEvent
 }
 
 # v1.0, v1.1, v2, v3
@@ -212,61 +216,6 @@ type DeployedERC20Event @entity {
 
   symbol: String!
   address: Bytes # will be empty for v1.x events
-}
-
-# v2, v3
-type ConfigureEvent @entity {
-  id: ID!
-  projectId: Int!
-  pv: String!
-  timestamp: Int!
-  txHash: Bytes!
-  caller: Bytes!
-
-  duration: Int!
-  weight: BigInt!
-  discountRate: BigInt!
-  ballot: Bytes!
-
-  mustStartAtOrAfter: Int!
-  configuration: Int!
-  metadata: BigInt!
-
-  setTerminalsAllowed: Boolean!
-  setControllerAllowed: Boolean!
-  transfersPaused: Boolean!
-
-  reservedRate: Int!
-  redemptionRate: Int!
-  ballotRedemptionRate: Int!
-  payPaused: Boolean!
-  distributionsPaused: Boolean!
-  redeemPaused: Boolean!
-  burnPaused: Boolean!
-  mintingAllowed: Boolean!
-  terminalMigrationAllowed: Boolean!
-  controllerMigrationAllowed: Boolean!
-  shouldHoldFees: Boolean!
-  preferClaimedTokenOverride: Boolean!
-  useTotalOverflowForRedemptions: Boolean!
-  useDataSourceForPay: Boolean!
-  useDataSourceForRedeem: Boolean!
-
-  dataSource: Bytes!
-  metametadata = Bytes!
-}
-
-# v2, v3
-type InitEvent @entity {
-  id: ID!
-  projectId: Int!
-  pv: String!
-  timestamp: Int!
-  txHash: Bytes!
-  caller: Bytes!
-
-  configuration: Int!
-  basedOn: Int!
 }
 
 #############################################################################
@@ -352,6 +301,17 @@ type DistributeToTicketModEvent @entity {
   modCut: BigInt!
   caller: Bytes!
   printReservesEvent: PrintReservesEvent!
+}
+
+# v1.0, v1.1
+type V1ConfigureEvent @entity{
+  id: ID!
+  project: Project!
+  projectId: Int!
+  timestamp: Int!
+  txHash: Bytes!
+  caller: Bytes!
+  fundingCycleId: Int!
 }
 
 #############################################################################
@@ -546,6 +506,61 @@ type VeNftContract @entity {
   project: Project!
   projectId: Int!
   tokens: [VeNftToken!]! @derivedFrom(field: "contract")
+}
+
+# v2, v3
+type ConfigureEvent @entity {
+  id: ID!
+  projectId: Int!
+  project: Project!
+  timestamp: Int!
+  txHash: Bytes!
+  caller: Bytes!
+
+  duration: Int!
+  weight: BigInt!
+  discountRate: BigInt!
+  ballot: Bytes!
+
+  mustStartAtOrAfter: Int!
+  configuration: Int!
+  metadata: BigInt!
+
+  setTerminalsAllowed: Boolean!
+  setControllerAllowed: Boolean!
+  transfersPaused: Boolean!
+
+  reservedRate: Int!
+  redemptionRate: Int!
+  ballotRedemptionRate: Int!
+  payPaused: Boolean!
+  distributionsPaused: Boolean!
+  redeemPaused: Boolean!
+  burnPaused: Boolean!
+  mintingAllowed: Boolean!
+  terminalMigrationAllowed: Boolean!
+  controllerMigrationAllowed: Boolean!
+  shouldHoldFees: Boolean!
+  preferClaimedTokenOverride: Boolean!
+  useTotalOverflowForRedemptions: Boolean!
+  useDataSourceForPay: Boolean!
+  useDataSourceForRedeem: Boolean!
+
+  dataSource: Bytes!
+  metametadata = Bytes!
+}
+
+# v2, v3
+type InitEvent @entity {
+  id: ID!
+  projectId: Int!
+  project: Project!
+  timestamp: Int!
+  txHash: Bytes!
+  caller: Bytes!
+
+  configuration: Int!
+  basedOn: Int!
 }
 
 #############################################################################

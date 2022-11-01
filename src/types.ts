@@ -20,4 +20,5 @@ export enum ProjectEventKey {
   deployVeNftEvent,
   configureEvent,
   initEvent,
+  v1ConfigureEvent,
 }

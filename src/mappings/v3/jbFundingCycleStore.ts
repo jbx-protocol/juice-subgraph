@@ -12,12 +12,12 @@ export function handleConfigure(event: Configure): void {
   const configureEvent = new ConfigureEvent(
     idForProjectTx(event.params.projectId, pv, event)
   );
-
+  const projectId = idForProject(event.params.projectId, pv);
   const BigIntOne = BigInt.fromString("1");
 
   if(configureEvent) {
     configureEvent.projectId = event.params.projectId.toI32();
-    configureEvent.pv = pv;
+    configureEvent.project = projectId;
     configureEvent.timestamp = event.block.timestamp.toI32();
     configureEvent.txHash = event.transaction.hash;
     configureEvent.caller = event.transaction.from;
@@ -80,10 +80,11 @@ export function handleInit(event: Init): void {
   const initEvent = new InitEvent(
     idForProjectTx(event.params.projectId, pv, event)
   );
+  const projectId = idForProject(event.params.projectId, pv);
 
   if(initEvent) {
     initEvent.projectId = event.params.projectId.toI32();
-    initEvent.pv = pv;
+    initEvent.project = projectId;
     initEvent.timestamp = event.block.timestamp.toI32();
     // TODO: Check etherscan for init txHash and caller
     initEvent.txHash = event.transaction.hash;

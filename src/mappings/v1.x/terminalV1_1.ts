@@ -12,6 +12,7 @@ import {
   ProtocolV1Log,
   RedeemEvent,
   TapEvent,
+  V1ConfigureEvent,
 } from "../../../generated/schema";
 import {
   AddToBalance,
@@ -22,6 +23,7 @@ import {
   PrintTickets,
   Redeem,
   Tap,
+  Configure,
 } from "../../../generated/TerminalV1_1/TerminalV1_1";
 import { PROTOCOL_ID } from "../../constants";
 import { address_v1_terminalV1_1 } from "../../contractAddresses";
@@ -388,4 +390,32 @@ export function handleDistributeToTicketMod(
     ProjectEventKey.distributeToTicketModEvent,
     terminal
   );
+}
+
+export function handleConfigure(event: Configure): void {
+  const pv = pvForV1Project(event.params.projectId);
+  const v1ConfigureEvent = new V1ConfigureEvent(
+    idForProjectTx(event.params.projectId, pv, event)
+  );
+  const projectId = idForProject(event.params.projectId, pv);
+
+  if(v1ConfigureEvent) {
+    v1ConfigureEvent.projectId = event.params.projectId.toI32();
+    v1ConfigureEvent.project = projectId;
+    v1ConfigureEvent.timestamp = event.block.timestamp.toI32();
+    v1ConfigureEvent.txHash = event.transaction.hash;
+    v1ConfigureEvent.caller = event.transaction.from;
+    // TODO: Check this on Etherscan
+    v1ConfigureEvent.fundingCycleId = event.params.fundingCycleId.toI32();
+    v1ConfigureEvent.save();
+
+    saveNewProjectTerminalEvent(
+      event,
+      event.params.projectId,
+      v1ConfigureEvent.id,
+      pv,
+      ProjectEventKey.v1ConfigureEvent,
+      terminal
+    );
+  }
 }
