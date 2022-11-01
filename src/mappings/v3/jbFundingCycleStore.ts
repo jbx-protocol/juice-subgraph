@@ -1,12 +1,12 @@
 import { BigInt, log } from "@graphprotocol/graph-ts"
-import { Configure, Init } from "../../../generated/V2JBFundingCycleStore/JBFundingCycleStore"
+import { Configure, Init } from "../../../generated/V3JBFundingCycleStore/JBFundingCycleStore"
 import { ConfigureEvent, InitEvent } from "../../../generated/schema"
 import { MAX_REDEMPTION_RATE } from "../../constants";
 import { ProjectEventKey, Version } from "../../types";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 import { saveNewProjectEvent } from "../../utils/entity";
 
-const pv: Version = "2";
+const pv: Version = "3";
 
 export function handleConfigure(event: Configure): void {
   const configureEvent = new ConfigureEvent(
