@@ -153,7 +153,7 @@
         - event: Init(indexed uint256,indexed uint256,indexed uint256)
           handler: handleInit
       file: ./src/mappings/v2/jbFundingCycleStore.ts
-  {{ /v2.address_jbFundingcycleStore }}
+  {{ /v2.address_jbFundingCycleStore }}
   {{ #v2.address_jbETHPaymentTerminal }}
   - kind: ethereum/contract
     name: V2JBETHPaymentTerminal
