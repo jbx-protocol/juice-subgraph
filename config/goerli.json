@@ -14,10 +14,10 @@
     "address_jbETHERC20ProjectPayerDeployer": "0x981c8ECD009E3E84eE1fF99266BF1461a12e5c68",
     "startBlock_jbETHERC20ProjectPayerDeployer": 7627959,
     "address_jbDirectory": "0x8E05bcD2812E1449f0EC3aE24E2C395F533d9A99",
-    "address_jbTiered721DelegateDeployer": "0xe7432e80a75f957121cb523ba842db27c6c25f69",
-    "startBlock_jbTiered721DelegateDeployer": 7769824,
-    "address_jbTiered721DelegateStore": "0x236d9f67587782420151225ff867044b9ccd30e3",
-    "startBlock_jbTiered721DelegateStore": 7769824
+    "address_jbTiered721DelegateDeployer": "0x6060fa6d5c5b7bd219f2bc576992c239da8f6664",
+    "startBlock_jbTiered721DelegateDeployer": 7885285,
+    "address_jbTiered721DelegateStore": "0x3ea16deff07f031e86bd13c55961eb576cd579a6",
+    "startBlock_jbTiered721DelegateStore": 7885285
   },
   "shared":{
     "address_jbProjectHandles": "0x9e259442f800d981752c1359a3c7633db70bc395",

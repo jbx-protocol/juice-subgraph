@@ -1,5 +1,31 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "contract JB721GlobalGovernance",
+        "name": "_globalGovernance",
+        "type": "address"
+      },
+      {
+        "internalType": "contract JB721TieredGovernance",
+        "name": "_tieredGovernance",
+        "type": "address"
+      },
+      {
+        "internalType": "contract JBTiered721Delegate",
+        "name": "_noGovernance",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "INVALID_GOVERNANCE_TYPE",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -78,29 +104,29 @@
               {
                 "components": [
                   {
-                    "internalType": "uint256",
+                    "internalType": "uint80",
                     "name": "contributionFloor",
-                    "type": "uint256"
+                    "type": "uint80"
                   },
                   {
-                    "internalType": "uint256",
+                    "internalType": "uint48",
                     "name": "lockedUntil",
-                    "type": "uint256"
+                    "type": "uint48"
                   },
                   {
-                    "internalType": "uint256",
+                    "internalType": "uint40",
                     "name": "initialQuantity",
-                    "type": "uint256"
+                    "type": "uint40"
                   },
                   {
-                    "internalType": "uint256",
+                    "internalType": "uint16",
                     "name": "votingUnits",
-                    "type": "uint256"
+                    "type": "uint16"
                   },
                   {
-                    "internalType": "uint256",
+                    "internalType": "uint16",
                     "name": "reservedRate",
-                    "type": "uint256"
+                    "type": "uint16"
                   },
                   {
                     "internalType": "address",
@@ -120,6 +146,11 @@
                   {
                     "internalType": "bool",
                     "name": "shouldUseBeneficiaryAsDefault",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "transfersPausable",
                     "type": "bool"
                   }
                 ],
@@ -173,11 +204,6 @@
                 "internalType": "bool",
                 "name": "lockManualMintingChanges",
                 "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "pausable",
-                "type": "bool"
               }
             ],
             "internalType": "struct JBTiered721Flags",
@@ -191,7 +217,7 @@
           }
         ],
         "internalType": "struct JBDeployTiered721DelegateData",
-        "name": "_deployTieredNFTRewardDelegateData",
+        "name": "_deployTiered721DelegateData",
         "type": "tuple"
       }
     ],
@@ -199,11 +225,50 @@
     "outputs": [
       {
         "internalType": "contract IJBTiered721Delegate",
-        "name": "delegate",
+        "name": "newDelegate",
         "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "globalGovernance",
+    "outputs": [
+      {
+        "internalType": "contract JB721GlobalGovernance",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "noGovernance",
+    "outputs": [
+      {
+        "internalType": "contract JBTiered721Delegate",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "tieredGovernance",
+    "outputs": [
+      {
+        "internalType": "contract JB721TieredGovernance",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

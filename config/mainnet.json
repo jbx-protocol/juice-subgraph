@@ -34,7 +34,11 @@
     "startBlock_jbETHPaymentTerminal": 15575464,
     "address_jbETHERC20ProjectPayerDeployer": "0x144F5F5Fdbe0fC8d4A758f33Bf14F68bdFe6feBD",
     "startBlock_jbETHERC20ProjectPayerDeployer": 15575452,
-    "address_jbDirectory": "0x65572FB928b46f9aDB7cfe5A4c41226F636161ea"
+    "address_jbDirectory": "0x65572FB928b46f9aDB7cfe5A4c41226F636161ea",
+    "address_jbTiered721DelegateDeployer": "0x748575f8aa3da88d478c331dca321282480e6038",
+    "startBlock_jbTiered721DelegateDeployer": 15890760,
+    "address_jbTiered721DelegateStore": "0xffb2cd8519439a7ddcf2c933caedd938053067d2",
+    "startBlock_jbTiered721DelegateStore": 15890768
   },
   "shared": {
     "address_legacy_jbProjectHandles": "0xe3c01e9fd2a1dcc6edf0b1058b5757138ef9ffb6",
