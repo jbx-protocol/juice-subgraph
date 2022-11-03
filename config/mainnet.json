@@ -37,8 +37,10 @@
     "address_jbDirectory": "0x65572FB928b46f9aDB7cfe5A4c41226F636161ea"
   },
   "shared": {
-    "address_jbProjectHandles": "0xe3c01e9fd2a1dcc6edf0b1058b5757138ef9ffb6",
-    "startBlock_jbProjectHandles": 14975701,
+    "address_legacy_jbProjectHandles": "0xe3c01e9fd2a1dcc6edf0b1058b5757138ef9ffb6",
+    "startBlock_legacy_jbProjectHandles": 14975701,
+    "address_jbProjectHandles": "0xD75d2EeF7Fe65Bf9f46D7ef0b21EdED98cB0a3A4",
+    "startBlock_jbProjectHandles": 15873677,
     "address_ensRegistry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
   }
 }

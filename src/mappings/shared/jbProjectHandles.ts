@@ -8,7 +8,7 @@ import { updateProjectHandle } from "../../utils/entity";
 
 /**
  * Borrowed from https://github.com/Arachnid/eth-ens-namehash/blob/d3a6cc4e3780b04fb0fb742e80f2c9702e91c41f/index.js
- * 
+ *
  * With some hacking around to make it work in assemblyscript.
  * This could prolly be improved
  */
@@ -82,13 +82,7 @@ export function handleSetEnsNameParts(event: SetEnsNameParts): void {
     return;
   }
 
-  log.warning("creating dataSource for node {}, parts {}, resolver {}", [
-    node.toHexString(),
-    parts.toString(),
-    resolverCall.value.toHexString(),
-  ]);
-
-  updateProjectHandle(event.params.projectId);
+  updateProjectHandle(event.params.projectId, event.block.number);
 
   /**
    * No worries if dataSource has already been created for the resolver,
