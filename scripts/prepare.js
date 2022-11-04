@@ -28,7 +28,7 @@ config.network = network;
 function writeContractAddresses() {
   const contractAddressesPath = "src/contractAddresses.ts";
 
-  // Delete contractAddresses.ts if exists
+  // Delete contractAddresses file if exists
   fs.rmSync(contractAddressesPath, { force: true });
 
   let fileContents = "";
@@ -54,10 +54,46 @@ function writeContractAddresses() {
   try {
     fs.writeFileSync(contractAddressesPath, fileContents);
   } catch (e) {
-    console.log("Error writing contractAddresses.ts", e);
+    console.log("Error writing" + contractAddressesPath, e);
   }
 
-  console.log(chalk.green("✔") + " Wrote contractAddresses.ts\n");
+  console.log(chalk.green("✔") + ` Wrote ${contractAddressesPath}\n`);
+}
+
+// Write all start blocks in config to a .ts file
+function writeStartBlocks() {
+  const startBlocksPath = "src/startBlocks.ts";
+
+  // Delete startBlocks file if exists
+  fs.rmSync(startBlocksPath, { force: true });
+
+  let fileContents = "";
+
+  const configTemplate = JSON.parse(fs.readFileSync(`config/template.json`));
+
+  for (p of PREFIXES) {
+    // Iterate over all var names declared in config template
+    // Add to fileContents
+    fileContents += `${Object.keys(configTemplate[p])
+      .filter((key) => key.startsWith("startBlock_"))
+      .map((key) => {
+        // Use `null` if key has no value in config
+        const val = config[p] && config[p][key] ? `${config[p][key]}` : null;
+        return `export const startBlock_${p}_${
+          key.split("startBlock_")[1]
+        }: number = ${val || 0};\n`;
+      })
+      .join("")}\n`;
+  }
+
+  // Write fileContents to file
+  try {
+    fs.writeFileSync(startBlocksPath, fileContents);
+  } catch (e) {
+    console.log("Error writing" + startBlocksPath, e);
+  }
+
+  console.log(chalk.green("✔") + ` Wrote ${startBlocksPath}\n`);
 }
 
 // Write subgraph.yaml file from config
@@ -218,6 +254,8 @@ function checkHandlers() {
 }
 
 writeContractAddresses();
+
+writeStartBlocks();
 
 writeSubgraph();
 

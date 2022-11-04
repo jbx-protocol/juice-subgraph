@@ -11,7 +11,7 @@ import {
   ProtocolV2Log,
 } from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
-import { CV, ProjectEventKey } from "../../types";
+import { ProjectEventKey, Version } from "../../types";
 import {
   newProtocolLog,
   newProtocolV2Log,
@@ -19,21 +19,20 @@ import {
   updateProtocolEntity,
 } from "../../utils/entity";
 import { idForProject, idForProjectTx } from "../../utils/ids";
-import { cvForV2_V3Project } from "../../utils/cv";
+
+const pv: Version = "2";
 
 export function handleCreate(event: Create): void {
-  const cv = cvForV2_V3Project(event.params.projectId);
-
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
   const project = new Project(projectId);
   if (!project) {
     log.error("[handleCreate] Missing project. ID:{}", [
-      idForProject(event.params.projectId, cv),
+      idForProject(event.params.projectId, pv),
     ]);
     return;
   }
   project.projectId = event.params.projectId.toI32();
-  project.cv = cv;
+  project.pv = pv;
   project.trendingScore = BigInt.fromString("0");
   project.trendingVolume = BigInt.fromString("0");
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
@@ -48,10 +47,10 @@ export function handleCreate(event: Create): void {
   project.save();
 
   const projectCreateEvent = new ProjectCreateEvent(
-    idForProjectTx(event.params.projectId, cv, event)
+    idForProjectTx(event.params.projectId, pv, event)
   );
   if (projectCreateEvent) {
-    projectCreateEvent.cv = cv;
+    projectCreateEvent.pv = pv;
     projectCreateEvent.project = project.id;
     projectCreateEvent.projectId = event.params.projectId.toI32();
     projectCreateEvent.timestamp = event.block.timestamp.toI32();
@@ -63,7 +62,7 @@ export function handleCreate(event: Create): void {
       event,
       event.params.projectId,
       projectCreateEvent.id,
-      cv,
+      pv,
       ProjectEventKey.projectCreateEvent
     );
   }
@@ -74,9 +73,15 @@ export function handleCreate(event: Create): void {
   }
 
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
-  if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
+  if (!protocolV2Log) {
+    /**
+     * We only need to create the ProtocolV2Log once since there will only
+     * ever be one entity. We might as well do it here when the first
+     * project is created.
+     */
+    protocolV2Log = newProtocolV2Log();
+  }
   if (protocolV2Log) {
-    // We only need to create log here, since there will only be one entity and it will be created when first project is created.
     protocolV2Log.projectsCount = protocolV2Log.projectsCount + 1;
     protocolV2Log.log = PROTOCOL_ID;
     protocolV2Log.save();
@@ -85,12 +90,10 @@ export function handleCreate(event: Create): void {
 }
 
 export function handleSetMetadata(event: SetMetadata): void {
-  const cv = cvForV2_V3Project(event.params.projectId);
-
-  const project = Project.load(idForProject(event.params.projectId, cv));
+  const project = Project.load(idForProject(event.params.projectId, pv));
   if (!project) {
     log.error("[handleSetMetadata] Missing project. ID:{}", [
-      idForProject(event.params.projectId, cv),
+      idForProject(event.params.projectId, pv),
     ]);
     return;
   }
@@ -100,11 +103,12 @@ export function handleSetMetadata(event: SetMetadata): void {
 }
 
 export function handleTransferOwnership(event: Transfer): void {
-  const cv = cvForV2_V3Project(event.params.tokenId);
-
-  const project = Project.load(idForProject(event.params.tokenId, cv));
+  const project = Project.load(idForProject(event.params.tokenId, pv));
   if (!project) {
-    // Project will be missing on initial mint transfer
+    /**
+     * Project will be missing when project 721 token is transferred 
+     * for the first time at creation, so we don't throw any errors.
+     */
     return;
   }
   project.owner = event.params.to;

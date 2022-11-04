@@ -12,13 +12,13 @@ import {
 import { JBVeNft } from "../../../generated/templates";
 
 export function handleDeployVeNft(event: DeployVeNft): void {
-  const cv = "2";
-  const projectId = idForProject(event.params.projectId, cv);
+  const pv = "2";
+  const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
   if (!project) return;
 
   const deployVeNftEvent = new DeployVeNftEvent(
-    idForProjectTx(event.params.projectId, cv, event)
+    idForProjectTx(event.params.projectId, pv, event)
   );
   if (deployVeNftEvent) {
     deployVeNftEvent.project = project.id;

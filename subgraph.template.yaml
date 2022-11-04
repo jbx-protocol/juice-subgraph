@@ -14,7 +14,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings/erc20.ts
+      file: ./src/mappings/shared/erc20.ts
       entities:
         - Participant
       abis:
@@ -23,6 +23,50 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleERC20Transfer
+  - name: JB721DelegateToken
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: ERC721
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/shared/jb721DelegateToken.ts
+      entities:
+        - Participant
+        - JB721DelegateToken
+      abis:
+        - name: ERC721
+          file: ./abis/shared/ERC721.json
+        - name: JBTiered721DelegateStore
+          file: ./abis/v3/JBTiered721DelegateStore.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+  - name: ENSTextResolver
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: ENSTextResolver
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/shared/ensTextResolver.ts
+      entities:
+        - Project
+        - ENSNode
+      abis:
+        - name: ENSTextResolver
+          file: ./abis/shared/ENSTextResolver.json
+        - name: JBProjectHandles
+          file: ./abis/shared/JBProjectHandles.json
+      eventHandlers:
+        - event: TextChanged(indexed bytes32,indexed string,string,string)
+          handler: handleTextChangedWithValue
+        - event: TextChanged(indexed bytes32,indexed string,string)
+          handler: handleTextChanged
   - name: JBETHERC20ProjectPayer
     kind: ethereum/contract
     network: {{network}}
@@ -50,7 +94,7 @@ templates:
       abi: JBVeNft
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/veNft/veNft.ts
       entities:

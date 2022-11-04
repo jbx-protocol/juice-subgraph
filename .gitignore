@@ -18,3 +18,4 @@ public/
 subgraph.yaml
 
 src/contractAddresses.ts
+src/startBlocks.ts

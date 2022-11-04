@@ -1,4 +1,5 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+
 import { JBProjectHandles } from "../../generated/JBProjectHandles/JBProjectHandles";
 import {
   Participant,
@@ -10,8 +11,12 @@ import {
   ProtocolV3Log,
 } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
-import { address_shared_jbProjectHandles } from "../contractAddresses";
-import { CV, ProjectEventKey } from "../types";
+import {
+  address_shared_jbProjectHandles,
+  address_shared_legacy_jbProjectHandles,
+} from "../contractAddresses";
+import { startBlock_shared_jbProjectHandles } from "../startBlocks";
+import { ProjectEventKey, Version } from "../types";
 import { idForParticipant, idForProject, idForProjectEvent } from "./ids";
 
 export function updateProtocolEntity(): void {
@@ -24,85 +29,91 @@ export function updateProtocolEntity(): void {
     return;
   }
 
-  resetProtocolLog(protocolLog);
+  let projectsCount = 0;
+  let volumePaid = BigInt.fromString("0");
+  let volumeRedeemed = BigInt.fromString("0");
+  let paymentsCount = 0;
+  let redeemCount = 0;
+  let erc20Count = 0;
 
   const protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
-
   if (protocolV1Log) {
-    protocolLog.erc20Count = protocolLog.erc20Count + protocolV1Log.erc20Count;
-    protocolLog.paymentsCount =
-      protocolLog.paymentsCount + protocolV1Log.paymentsCount;
-    protocolLog.projectsCount =
-      protocolLog.projectsCount + protocolV1Log.projectsCount;
-    protocolLog.redeemCount =
-      protocolLog.redeemCount + protocolV1Log.redeemCount;
-    protocolLog.volumePaid = protocolLog.volumePaid.plus(
-      protocolV1Log.volumePaid
-    );
-    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
-      protocolV1Log.volumeRedeemed
-    );
+    erc20Count = erc20Count + protocolV1Log.erc20Count;
+    paymentsCount = paymentsCount + protocolV1Log.paymentsCount;
+    projectsCount = projectsCount + protocolV1Log.projectsCount;
+    redeemCount = redeemCount + protocolV1Log.redeemCount;
+    volumePaid = volumePaid.plus(protocolV1Log.volumePaid);
+    volumeRedeemed = volumeRedeemed.plus(protocolV1Log.volumeRedeemed);
   }
 
   const protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
-
   if (protocolV2Log) {
-    protocolLog.erc20Count = protocolLog.erc20Count + protocolV2Log.erc20Count;
-    protocolLog.paymentsCount =
-      protocolLog.paymentsCount + protocolV2Log.paymentsCount;
-    protocolLog.projectsCount =
-      protocolLog.projectsCount + protocolV2Log.projectsCount;
-    protocolLog.redeemCount =
-      protocolLog.redeemCount + protocolV2Log.redeemCount;
-    protocolLog.volumePaid = protocolLog.volumePaid.plus(
-      protocolV2Log.volumePaid
-    );
-    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
-      protocolV2Log.volumeRedeemed
-    );
+    erc20Count = erc20Count + protocolV2Log.erc20Count;
+    paymentsCount = paymentsCount + protocolV2Log.paymentsCount;
+    projectsCount = projectsCount + protocolV2Log.projectsCount;
+    redeemCount = redeemCount + protocolV2Log.redeemCount;
+    volumePaid = volumePaid.plus(protocolV2Log.volumePaid);
+    volumeRedeemed = volumeRedeemed.plus(protocolV2Log.volumeRedeemed);
   }
 
   const protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
-
   if (protocolV3Log) {
-    protocolLog.erc20Count = protocolLog.erc20Count + protocolV3Log.erc20Count;
-    protocolLog.paymentsCount =
-      protocolLog.paymentsCount + protocolV3Log.paymentsCount;
-    protocolLog.projectsCount =
-      protocolLog.projectsCount + protocolV3Log.projectsCount;
-    protocolLog.redeemCount =
-      protocolLog.redeemCount + protocolV3Log.redeemCount;
-    protocolLog.volumePaid = protocolLog.volumePaid.plus(
-      protocolV3Log.volumePaid
-    );
-    protocolLog.volumeRedeemed = protocolLog.volumeRedeemed.plus(
-      protocolV3Log.volumeRedeemed
-    );
+    erc20Count = erc20Count + protocolV3Log.erc20Count;
+    paymentsCount = paymentsCount + protocolV3Log.paymentsCount;
+    projectsCount = projectsCount + protocolV3Log.projectsCount;
+    redeemCount = redeemCount + protocolV3Log.redeemCount;
+    volumePaid = volumePaid.plus(protocolV3Log.volumePaid);
+    volumeRedeemed = volumeRedeemed.plus(protocolV3Log.volumeRedeemed);
   }
 
+  protocolLog.erc20Count = erc20Count;
+  protocolLog.paymentsCount = paymentsCount;
+  protocolLog.projectsCount = projectsCount;
+  protocolLog.redeemCount = redeemCount;
+  protocolLog.volumePaid = volumePaid;
+  protocolLog.volumeRedeemed = volumeRedeemed;
   protocolLog.save();
+}
+
+/**
+ * Differs from next function because terminal prop isn't optional.
+ *
+ * By only using this function in Terminal contract handlers, we can
+ * avoid forgetting to pass the `terminal` arg.
+ */
+export function saveNewProjectTerminalEvent(
+  event: ethereum.Event,
+  projectId: BigInt,
+  id: string,
+  pv: Version,
+  key: ProjectEventKey,
+  terminal: Bytes
+): void {
+  saveNewProjectEvent(event, projectId, id, pv, key, terminal);
 }
 
 export function saveNewProjectEvent(
   event: ethereum.Event,
   projectId: BigInt,
   id: string,
-  cv: CV,
-  key: ProjectEventKey
+  pv: Version,
+  key: ProjectEventKey,
+  terminal: Bytes | null = null
 ): void {
   let projectEvent = new ProjectEvent(
     idForProjectEvent(
       projectId,
-      cv,
+      pv,
       event.transaction.hash,
       event.transactionLogIndex
     )
   );
   if (!projectEvent) return;
-  projectEvent.cv = cv;
+  projectEvent.pv = pv;
+  if (terminal) projectEvent.terminal = terminal;
   projectEvent.projectId = projectId.toI32();
   projectEvent.timestamp = event.block.timestamp.toI32();
-  projectEvent.project = idForProject(projectId, cv);
+  projectEvent.project = idForProject(projectId, pv);
 
   switch (key) {
     case ProjectEventKey.deployedERC20Event:
@@ -158,18 +169,14 @@ export function saveNewProjectEvent(
   projectEvent.save();
 }
 
-function resetProtocolLog(protocolLog: ProtocolLog): void {
+export function newProtocolLog(): ProtocolLog {
+  const protocolLog = new ProtocolLog(PROTOCOL_ID);
   protocolLog.projectsCount = 0;
   protocolLog.volumePaid = BigInt.fromString("0");
   protocolLog.volumeRedeemed = BigInt.fromString("0");
   protocolLog.paymentsCount = 0;
   protocolLog.redeemCount = 0;
   protocolLog.erc20Count = 0;
-}
-
-export function newProtocolLog(): ProtocolLog {
-  const protocolLog = new ProtocolLog(PROTOCOL_ID);
-  resetProtocolLog(protocolLog);
   protocolLog.trendingLastUpdatedTimestamp = 0;
   return protocolLog;
 }
@@ -211,14 +218,14 @@ export function newProtocolV3Log(): ProtocolV3Log {
 }
 
 export function newParticipant(
-  cv: CV,
+  pv: Version,
   projectId: BigInt,
   wallet: Bytes
 ): Participant {
-  const participant = new Participant(idForParticipant(projectId, cv, wallet));
-  participant.cv = cv;
+  const participant = new Participant(idForParticipant(projectId, pv, wallet));
+  participant.pv = pv;
   participant.projectId = projectId.toI32();
-  participant.project = idForProject(projectId, cv);
+  participant.project = idForProject(projectId, pv);
   participant.wallet = wallet;
   participant.balance = BigInt.fromString("0");
   participant.stakedBalance = BigInt.fromString("0");
@@ -234,15 +241,28 @@ export function updateParticipantBalance(participant: Participant): void {
   );
 }
 
-export function updateV2ProjectHandle(projectId: BigInt): void {
+export function updateProjectHandle(
+  projectId: BigInt,
+  blockNumber: BigInt
+): void {
   if (!address_shared_jbProjectHandles) return;
 
+  log.warning("updateProjectHandle id {}", [projectId.toHexString()]);
+
+  // If there is a legacy jbProjectHandles address and the block height is prior to the jbProjectHandles startBlock, use the legacy address
+  const projectHandlesAddress =
+    address_shared_legacy_jbProjectHandles &&
+    startBlock_shared_jbProjectHandles &&
+    blockNumber.toI32() < startBlock_shared_jbProjectHandles
+      ? address_shared_legacy_jbProjectHandles
+      : address_shared_jbProjectHandles;
+
   const jbProjectHandles = JBProjectHandles.bind(
-    Address.fromString(address_shared_jbProjectHandles!)
+    Address.fromString(projectHandlesAddress!)
   );
   const handleCallResult = jbProjectHandles.try_handleOf(projectId);
-  let cv = "2";
-  let project = Project.load(idForProject(projectId, cv));
+  const pv = "2";
+  const project = Project.load(idForProject(projectId, pv));
   if (!project) {
     log.error("[handleSetReverseRecord] Missing project. ID:{}", [
       projectId.toString(),

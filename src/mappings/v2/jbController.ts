@@ -11,27 +11,31 @@ import {
   MintTokensEvent,
   Project,
 } from "../../../generated/schema";
-import { CV, ProjectEventKey } from "../../types";
+import { Version, ProjectEventKey } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entity";
 import { idForProject, idForProjectTx } from "../../utils/ids";
-import { cvForV2_V3Project } from "../../utils/cv";
 
-const cv: CV = "2";
+const pv: Version = "2";
 
 export function handleMintTokens(event: MintTokens): void {
-  // Note: Receiver balance is updated in the jbTokenStore event handler
+  /**
+   * Note: Receiver balance is updated in the ticketBooth event handler.
+   *
+   * TBH the only reason to do this logic here instead of ticketBooth
+   * is to make use of the `memo` field
+   */
 
   const mintTokensEvent = new MintTokensEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
+    idForProjectTx(event.params.projectId, pv, event, true)
   );
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
   if (!mintTokensEvent) {
     log.error("[handleMintTokens] Missing mintTokensEvent. ID:{}", [
-      idForProjectTx(event.params.projectId, cv, event, true),
+      idForProjectTx(event.params.projectId, pv, event, true),
     ]);
     return;
   }
-  mintTokensEvent.cv = cv;
+  mintTokensEvent.pv = pv;
   mintTokensEvent.projectId = event.params.projectId.toI32();
   mintTokensEvent.amount = event.params.tokenCount;
   mintTokensEvent.beneficiary = event.params.beneficiary;
@@ -46,7 +50,7 @@ export function handleMintTokens(event: MintTokens): void {
     event,
     event.params.projectId,
     mintTokensEvent.id,
-    cv,
+    pv,
     ProjectEventKey.mintTokensEvent
   );
 }
@@ -54,9 +58,9 @@ export function handleMintTokens(event: MintTokens): void {
 export function handleDistributeReservedTokens(
   event: DistributeReservedTokens
 ): void {
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
   const distributeReservedTokensEvent = new DistributeReservedTokensEvent(
-    idForProjectTx(event.params.projectId, cv, event)
+    idForProjectTx(event.params.projectId, pv, event)
   );
 
   if (!distributeReservedTokensEvent) return;
@@ -77,7 +81,7 @@ export function handleDistributeReservedTokens(
     event,
     event.params.projectId,
     distributeReservedTokensEvent.id,
-    cv,
+    pv,
     ProjectEventKey.distributeReservedTokensEvent
   );
 }
@@ -85,22 +89,22 @@ export function handleDistributeReservedTokens(
 export function handleDistributeToReservedTokenSplit(
   event: DistributeToReservedTokenSplit
 ): void {
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
   const distributeReservedTokenSplitEvent = new DistributeToReservedTokenSplitEvent(
-    idForProjectTx(event.params.projectId, cv, event, true)
+    idForProjectTx(event.params.projectId, pv, event, true)
   );
 
   if (!distributeReservedTokenSplitEvent) {
     log.error(
       "[handleDistributeToReservedTokenSplit] Missing distributeReservedTokenSplitEvent. ID:{}",
-      [idForProjectTx(event.params.projectId, cv, event, true)]
+      [idForProjectTx(event.params.projectId, pv, event, true)]
     );
     return;
   }
 
   distributeReservedTokenSplitEvent.distributeReservedTokensEvent = idForProjectTx(
     event.params.projectId,
-    cv,
+    pv,
     event
   );
   distributeReservedTokenSplitEvent.project = projectId;
@@ -123,15 +127,15 @@ export function handleDistributeToReservedTokenSplit(
     event,
     event.params.projectId,
     distributeReservedTokenSplitEvent.id,
-    cv,
+    pv,
     ProjectEventKey.distributeToReservedTokenSplitEvent
   );
 }
 
 export function handleMigrate(event: Migrate): void {
-  const projectId = idForProject(event.params.projectId, cv);
+  const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
   if (!project) return;
-  project.cv = cvForV2_V3Project(event.params.projectId);
+  project.pv = pv;
   project.save();
 }

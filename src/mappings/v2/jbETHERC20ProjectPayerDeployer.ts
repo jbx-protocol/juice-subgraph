@@ -1,29 +1,22 @@
-import { DataSourceContext } from "@graphprotocol/graph-ts";
-
 import { DeployProjectPayer } from "../../../generated/V2JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
 import {
   DeployETHERC20ProjectPayerEvent,
   ETHERC20ProjectPayer,
 } from "../../../generated/schema";
 import { JBETHERC20ProjectPayer } from "../../../generated/templates";
-import { CV, ProjectEventKey } from "../../types";
+import { Version, ProjectEventKey } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entity";
 import { idForProject } from "../../utils/ids";
+import { toHexLowercase } from "../../utils/format";
 
-const cv: CV = "2";
+const pv: Version = "2";
 
 export function handleDeployProjectPayer(event: DeployProjectPayer): void {
-  // Create dataSource context
-  const projectPayerContext = new DataSourceContext();
-  projectPayerContext.setBytes("address", event.params.projectPayer);
-  JBETHERC20ProjectPayer.createWithContext(
-    event.params.projectPayer,
-    projectPayerContext
-  );
+  JBETHERC20ProjectPayer.create(event.params.projectPayer);
 
   // Create entity
   const projectPayer = new ETHERC20ProjectPayer(
-    event.params.projectPayer.toHexString().toLowerCase()
+    toHexLowercase(event.params.projectPayer)
   );
   if (!projectPayer) return;
   projectPayer.address = event.params.projectPayer;
@@ -34,12 +27,12 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   projectPayer.owner = event.params.owner;
   projectPayer.preferAddToBalance = event.params.preferAddToBalance;
   projectPayer.preferClaimedTokens = event.params.defaultPreferClaimedTokens;
-  projectPayer.project = idForProject(event.params.defaultProjectId, cv);
+  projectPayer.project = idForProject(event.params.defaultProjectId, pv);
   projectPayer.projectId = event.params.defaultProjectId.toI32();
   projectPayer.save();
 
   const deployProjectPayerEvent = new DeployETHERC20ProjectPayerEvent(
-    projectPayer.address.toHexString().toLowerCase()
+    toHexLowercase(projectPayer.address)
   );
   if (!deployProjectPayerEvent) return;
   deployProjectPayerEvent.address = projectPayer.address;
@@ -61,7 +54,7 @@ export function handleDeployProjectPayer(event: DeployProjectPayer): void {
     event,
     event.params.defaultProjectId,
     deployProjectPayerEvent.id,
-    cv,
+    pv,
     ProjectEventKey.deployETHERC20ProjectPayerEvent
   );
 }

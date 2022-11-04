@@ -10,37 +10,40 @@
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Project
+        - ENSNode
       abis:
         - name: JBProjectHandles
           file: ./abis/shared/JBProjectHandles.json
+        - name: ENSRegistry
+          file: ./abis/shared/ENSRegistry.json
       eventHandlers:
         - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
           handler: handleSetEnsNameParts
       file: ./src/mappings/shared/jbProjectHandles.ts
+  {{ #shared.address_legacy_jbProjectHandles }}    
   - kind: ethereum/contract
-    name: TextResolver
+    name: LegacyJBProjectHandles
     network: {{network}}
     source:
-      address: '{{shared.address_textResolver}}'
-      abi: TextResolver
-      startBlock: {{shared.startBlock_textResolver}}
+      address: '{{shared.address_legacy_jbProjectHandles}}'
+      abi: JBProjectHandles
+      startBlock: {{shared.startBlock_legacy_jbProjectHandles}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Project
         - ENSNode
       abis:
-        - name: TextResolver
-          file: ./abis/shared/TextResolver.json
         - name: JBProjectHandles
           file: ./abis/shared/JBProjectHandles.json
+        - name: ENSRegistry
+          file: ./abis/shared/ENSRegistry.json
       eventHandlers:
-        - event: TextChanged(indexed bytes32,indexed string,string)
-          handler: handleTextChanged
-      file: ./src/mappings/shared/textResolver.ts
+        - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
+          handler: handleSetEnsNameParts
+      file: ./src/mappings/shared/jbProjectHandles.ts
+  {{ /shared.address_legacy_jbProjectHandles }}
   {{ #shared.address_jbVeNftDeployer }}
   - kind: ethereum/contract
     name: JBVeNftDeployer
