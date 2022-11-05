@@ -1,12 +1,6 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
-import {
-  Configure
-  Init
-} from "../../../generated/FundingCycles/FundingCycles"
-import {
-  V1ConfigureEvent,
-  V1InitEvent,
-} from "../../../generated/schema"
+import { Configure, Init } from "../../../generated/FundingCycles/FundingCycles";
+import { V1ConfigureEvent, V1InitEvent } from "../../../generated/schema";
 import { ProjectEventKey } from "../../types";
 import { pvForV1Project } from "../../utils/pv";
 import { saveNewProjectEvent } from "../../utils/entity";

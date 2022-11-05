@@ -162,10 +162,10 @@ export function saveNewProjectEvent(
       break;
     case ProjectEventKey.configureEvent:
       projectEvent.configureEvent = id;
-      break
+      break;
     case ProjectEventKey.initEvent:
       projectEvent.initEvent = id;
-      break
+      break;
     case ProjectEventKey.v1ConfigureEvent:
       projectEvent.v1ConfigureEvent = id;
       break;

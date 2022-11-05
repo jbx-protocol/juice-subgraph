@@ -1,6 +1,6 @@
-import { BigInt, Bytes, log } from "@graphprotocol/graph-ts"
-import { Configure, Init } from "../../../generated/V3JBFundingCycleStore/JBFundingCycleStore"
-import { ConfigureEvent, InitEvent } from "../../../generated/schema"
+import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { Configure, Init } from "../../../generated/V3JBFundingCycleStore/JBFundingCycleStore";
+import { ConfigureEvent, InitEvent } from "../../../generated/schema";
 import { MAX_REDEMPTION_RATE } from "../../constants";
 import { ProjectEventKey, Version } from "../../types";
 import { idForProject, idForProjectTx } from "../../utils/ids";
@@ -86,11 +86,9 @@ export function handleInit(event: Init): void {
     initEvent.projectId = event.params.projectId.toI32();
     initEvent.project = projectId;
     initEvent.timestamp = event.block.timestamp.toI32();
-    // TODO: Check etherscan for init txHash and caller
     initEvent.txHash = event.transaction.hash;
     initEvent.caller = event.transaction.from;
 
-    // TODO: Check etherscan for init configuration and basedOn
     initEvent.configuration = event.params.data.configuration.toI32();
     initEvent.basedOn = event.params.data.basedOn.toI32();
 
