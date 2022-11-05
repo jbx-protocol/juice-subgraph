@@ -18,10 +18,10 @@ const TEXT_KEY = "juicebox_project_id";
 
 /**
  * Because different text resolver contracts may use different interfaces,
- * we use the following two handlers for two commonly emitted events. 
- * The only difference is that one emits the new value of the text record 
+ * we use the following two handlers for two commonly emitted events.
+ * The only difference is that one emits the new value of the text record
  * when changed, while the other doesn't.
- * 
+ *
  * These handlers will only work if a dataSource has been created for the
  * resolver used by the ENS name.
  *
@@ -47,21 +47,29 @@ export function handleTextChanged(event: TextChanged1): void {
     return;
   }
 
-  _handleTextChanged(textCallResult.value, event.params.node);
+  _handleTextChanged(
+    textCallResult.value,
+    event.params.node,
+    event.block.number
+  );
 }
 
 export function handleTextChangedWithValue(event: TextChanged): void {
   if (event.params.key != TEXT_KEY) return;
 
-  _handleTextChanged(event.params.value, event.params.node);
+  _handleTextChanged(event.params.value, event.params.node, event.block.number);
 }
 
-function _handleTextChanged(textRecordValue: string, node: Bytes): void {
+function _handleTextChanged(
+  textRecordValue: string,
+  node: Bytes,
+  blockNumber: BigInt
+): void {
   let projectIdFromTextRecord = 0;
   if (isNumberString(textRecordValue)) {
     const bigInt = BigInt.fromString(textRecordValue);
     projectIdFromTextRecord = bigInt.toI32();
-    updateProjectHandle(bigInt);
+    updateProjectHandle(bigInt, blockNumber);
   }
 
   const ensNodeId = toHexLowercase(node);
@@ -74,7 +82,7 @@ function _handleTextChanged(textRecordValue: string, node: Bytes): void {
      * Example: If a Project ENS name is moved to a different project,
      * this ensures the old Project doesn't keep the handle.
      */
-    updateProjectHandle(BigInt.fromI32(ensNode.projectId));
+    updateProjectHandle(BigInt.fromI32(ensNode.projectId), blockNumber);
   } else {
     ensNode = new ENSNode(ensNodeId);
   }

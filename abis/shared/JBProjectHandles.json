@@ -3,17 +3,17 @@
     "inputs": [
       {
         "internalType": "contract IJBProjects",
-        "name": "_jbProjects",
+        "name": "_projects",
         "type": "address"
       },
       {
         "internalType": "contract IJBOperatorStore",
-        "name": "_jbOperatorStore",
+        "name": "_operatorStore",
         "type": "address"
       },
       {
-        "internalType": "contract ITextResolver",
-        "name": "_ensTextResolver",
+        "internalType": "contract IJBProjectHandles",
+        "name": "_oldJbProjectHandles",
         "type": "address"
       }
     ],
@@ -100,10 +100,10 @@
   },
   {
     "inputs": [],
-    "name": "ensTextResolver",
+    "name": "ensRegistry",
     "outputs": [
       {
-        "internalType": "contract ITextResolver",
+        "internalType": "contract ENS",
         "name": "",
         "type": "address"
       }
@@ -132,10 +132,10 @@
   },
   {
     "inputs": [],
-    "name": "jbProjects",
+    "name": "oldJbProjectHandles",
     "outputs": [
       {
-        "internalType": "contract IJBProjects",
+        "internalType": "contract IJBProjectHandles",
         "name": "",
         "type": "address"
       }
@@ -149,6 +149,19 @@
     "outputs": [
       {
         "internalType": "contract IJBOperatorStore",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "projects",
+    "outputs": [
+      {
+        "internalType": "contract IJBProjects",
         "name": "",
         "type": "address"
       }

@@ -11,7 +11,11 @@ import {
   ProtocolV3Log,
 } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
-import { address_shared_jbProjectHandles } from "../contractAddresses";
+import {
+  address_shared_jbProjectHandles,
+  address_shared_legacy_jbProjectHandles,
+} from "../contractAddresses";
+import { startBlock_shared_jbProjectHandles } from "../startBlocks";
 import { ProjectEventKey, Version } from "../types";
 import { idForParticipant, idForProject, idForProjectEvent } from "./ids";
 
@@ -73,8 +77,8 @@ export function updateProtocolEntity(): void {
 
 /**
  * Differs from next function because terminal prop isn't optional.
- * 
- * By only using this function in Terminal contract handlers, we can 
+ *
+ * By only using this function in Terminal contract handlers, we can
  * avoid forgetting to pass the `terminal` arg.
  */
 export function saveNewProjectTerminalEvent(
@@ -249,13 +253,24 @@ export function updateParticipantBalance(participant: Participant): void {
   );
 }
 
-export function updateProjectHandle(projectId: BigInt): void {
+export function updateProjectHandle(
+  projectId: BigInt,
+  blockNumber: BigInt
+): void {
   if (!address_shared_jbProjectHandles) return;
 
   log.warning("updateProjectHandle id {}", [projectId.toHexString()]);
 
+  // If there is a legacy jbProjectHandles address and the block height is prior to the jbProjectHandles startBlock, use the legacy address
+  const projectHandlesAddress =
+    address_shared_legacy_jbProjectHandles &&
+    startBlock_shared_jbProjectHandles &&
+    blockNumber.toI32() < startBlock_shared_jbProjectHandles
+      ? address_shared_legacy_jbProjectHandles
+      : address_shared_jbProjectHandles;
+
   const jbProjectHandles = JBProjectHandles.bind(
-    Address.fromString(address_shared_jbProjectHandles!)
+    Address.fromString(projectHandlesAddress!)
   );
   const handleCallResult = jbProjectHandles.try_handleOf(projectId);
   const pv = "2";

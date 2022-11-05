@@ -21,12 +21,22 @@
   },
   {
     "inputs": [],
+    "name": "INVALID_QUANTITY",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "INVALID_TIER",
     "type": "error"
   },
   {
     "inputs": [],
     "name": "MANUAL_MINTING_NOT_ALLOWED",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "MAX_TIERS_EXCEEDED",
     "type": "error"
   },
   {
@@ -275,11 +285,6 @@
             "internalType": "bool",
             "name": "lockManualMintingChanges",
             "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "pausable",
-            "type": "bool"
           }
         ],
         "internalType": "struct JBTiered721Flags",
@@ -410,29 +415,29 @@
       {
         "components": [
           {
-            "internalType": "uint256",
+            "internalType": "uint80",
             "name": "contributionFloor",
-            "type": "uint256"
+            "type": "uint80"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint48",
             "name": "lockedUntil",
-            "type": "uint256"
+            "type": "uint48"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint40",
             "name": "initialQuantity",
-            "type": "uint256"
+            "type": "uint40"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint16",
             "name": "votingUnits",
-            "type": "uint256"
+            "type": "uint16"
           },
           {
-            "internalType": "uint256",
+            "internalType": "uint16",
             "name": "reservedRate",
-            "type": "uint256"
+            "type": "uint16"
           },
           {
             "internalType": "address",
@@ -452,6 +457,11 @@
           {
             "internalType": "bool",
             "name": "shouldUseBeneficiaryAsDefault",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "transfersPausable",
             "type": "bool"
           }
         ],
@@ -501,11 +511,6 @@
           {
             "internalType": "bool",
             "name": "lockManualMintingChanges",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "pausable",
             "type": "bool"
           }
         ],
@@ -826,6 +831,11 @@
             "internalType": "bool",
             "name": "allowManualMint",
             "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "transfersPausable",
+            "type": "bool"
           }
         ],
         "internalType": "struct JB721Tier",
@@ -950,6 +960,11 @@
             "internalType": "bool",
             "name": "allowManualMint",
             "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "transfersPausable",
+            "type": "bool"
           }
         ],
         "internalType": "struct JB721Tier",
@@ -1059,6 +1074,11 @@
           {
             "internalType": "bool",
             "name": "allowManualMint",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "transfersPausable",
             "type": "bool"
           }
         ],
