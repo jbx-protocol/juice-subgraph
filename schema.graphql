@@ -92,6 +92,7 @@ type Project @entity {
   configureEvents: [ConfigureEvent!]! @derivedFrom(field: "project")
   initEvents: [InitEvent!]! @derivedFrom(field: "project")
   v1ConfigureEvents: [V1ConfigureEvent!]! @derivedFrom(field: "project")
+  v1InitEvents: [V1InitEvent!]! @derivedFrom(field: "project")
 }
 
 # v1.0, v1.1, v2, v3
@@ -139,6 +140,7 @@ type ProjectEvent @entity {
   configureEvent: ConfigureEvent
   initEvent: InitEvent
   v1ConfigureEvent: V1ConfigureEvent
+  v1InitEvent: V1InitEvent
 }
 
 # v1.0, v1.1, v2, v3
@@ -303,15 +305,50 @@ type DistributeToTicketModEvent @entity {
   printReservesEvent: PrintReservesEvent!
 }
 
-# v1.0, v1.1
-type V1ConfigureEvent @entity{
+# v1, v1.1
+type V1ConfigureEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+
+  caller: Bytes!
+  target: BigInt!
+  currency: Int!
+  duration: Int!
+  cycleLimit: Int!
+  discountRate: Int!
+  ballot: Bytes!
+
+  fundingCycleId: Int!
+  reconfigured: Int!
+  metadata: BigInt!
+
+  version: Int!
+  reservedRate: Int!
+  bondingCurveRate: Int!
+  reconfigurationBondingCurveRate: Int!
+
+  payIsPaused: Boolean
+  ticketPrintingIsAllowed: Boolean
+  extension: Bytes
+}
+
+# v1, v1.1
+type V1InitEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  timestamp: Int!
+  txHash: Bytes!
+
   caller: Bytes!
   fundingCycleId: Int!
+  previous: Int!
+  start: Int!
+  weight: BigInt!
+  number: Int!
 }
 
 #############################################################################

@@ -32,6 +32,31 @@
           handler: handleTransferOwnership
       file: ./src/mappings/v1.x/projects.ts
   {{ /v1.address_projects }}
+  {{ #v1.address_fundingCycles }}
+  - kind: ethereum/contract
+    name: FundingCycles
+    network: {{network}}
+    source:
+      address: '{{v1.address_fundingCycles}}'
+      abi: FundingCycles
+      startBlock: {{v1.startBlock_fundingCycles}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Configure
+        - Init
+      abis:
+        - name: FundingCycles
+          file: ./abis/v1/FundingCycles.json
+      eventHandlers:
+        - event: Configure(indexed uint256,indexed uint256,uint256,(uint256,uint256,uint256,uint256,uint256,address),uint256,address)
+          handler: handleV1Configure
+        - event: Init(indexed uint256,indexed uint256,uint256,uint256,uint256,uint256)
+          handler: handleV1Init
+      file: ./src/mappings/v1.x/fundingCycles.ts
+  {{ /v1.address_fundingCycles }}
   {{ #v1.address_ticketBooth }}
   - kind: ethereum/contract
     name: TicketBooth
@@ -117,8 +142,6 @@
           handler: handleDistributeToTicketMod
         - event: Migrate(indexed uint256,indexed address,uint256,address)
           handler: handleMigrate
-        - event: Configure(indexed uint256,indexed uint256,address)
-          handler: handleConfigure
       file: ./src/mappings/v1.x/terminalV1.ts
   {{ /v1.address_terminalV1 }}
   {{ #v1.address_terminalV1_1 }}
@@ -167,8 +190,6 @@
           handler: handleDistributeToPayoutMod
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
-        - event: Configure(indexed uint256,indexed uint256,address)
-          handler: handleConfigure
       file: ./src/mappings/v1.x/terminalV1_1.ts
   {{ /v1.address_terminalV1_1 }}
 {{ /v1 }}

@@ -21,4 +21,5 @@ export enum ProjectEventKey {
   configureEvent,
   initEvent,
   v1ConfigureEvent,
+  v1InitEvent,
 }

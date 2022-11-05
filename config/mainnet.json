@@ -10,7 +10,9 @@
     "address_terminalDirectory": "0x46C9999A2EDCD5aA177ed7E8af90c68b7d75Ba46",
     "startBlock_terminalDirectory": 12833337,
     "address_ticketBooth": "0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc",
-    "startBlock_ticketBooth": 12833339
+    "startBlock_ticketBooth": 12833339,
+    "address_fundingCycles": "0xf507B2A1dD7439201eb07F11E1d62AfB29216e2E",
+    "startBlock_fundingCycles": 12833338
   },
   "v2": {
     "address_jbProjects": "0xD8B4359143eda5B2d763E127Ed27c77addBc47d3",
