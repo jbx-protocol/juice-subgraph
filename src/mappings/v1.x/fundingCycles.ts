@@ -16,8 +16,8 @@ export function handleV1Configure(event: Configure): void {
   configureEvent.projectId = event.params.projectId.toI32();
   configureEvent.project = projectId;
   configureEvent.caller = event.transaction.from;
-  configureEvent.txHash = even.transaction.hash;
-  initEvent.timestamp = event.block.timestamp.toI32();
+  configureEvent.txHash = event.transaction.hash;
+  configureEvent.timestamp = event.block.timestamp.toI32();
 
   // From the cycle's FundingCycleProperties
   configureEvent.target = event.params._properties.target;
@@ -70,7 +70,7 @@ export function handleV1Init(event: Init): void {
   initEvent.projectId = event.params.projectId.toI32();
   initEvent.project = projectId;
   initEvent.caller = event.transaction.from;
-  initEvent.txHash = even.transaction.hash;
+  initEvent.txHash = event.transaction.hash;
   initEvent.timestamp = event.block.timestamp.toI32();
 
   initEvent.fundingCycleId = event.params.fundingCycleId.toI32();
