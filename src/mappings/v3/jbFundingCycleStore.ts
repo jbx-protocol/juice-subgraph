@@ -86,14 +86,12 @@ export function handleConfigure(event: Configure): void {
     );
 
     let dataSource = Bytes.fromHexString("0x");
-    for (let i = 0; i < 160; i += 32) {
-      dataSource = dataSource.concatI32(
-        (event.params.metadata >> (84 + i)).toI32()
-      );
+    for (let i = u8(84); i < 160; i += 32) {
+      dataSource = dataSource.concatI32(event.params.metadata.toI32() >> i);
     }
 
     configureEvent.dataSource = dataSource;
-    configureEvent.metametadata = u8((event.params.metadata >> 244).toI32());
+    // configureEvent.metametadata = u8((event.params.metadata >> 244).toI32());
 
     configureEvent.save();
 

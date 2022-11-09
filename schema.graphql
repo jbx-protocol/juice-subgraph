@@ -584,7 +584,7 @@ type ConfigureEvent @entity {
   useDataSourceForRedeem: Boolean!
 
   dataSource: Bytes!
-  metametadata: Bytes!
+  # metametadata: Bytes!
 }
 
 # v2, v3
