@@ -2,6 +2,7 @@ import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 
 import { JBProjectHandles } from "../../generated/JBProjectHandles/JBProjectHandles";
 import {
+  ConfigureEvent,
   Participant,
   Project,
   ProjectEvent,
@@ -10,14 +11,25 @@ import {
   ProtocolV2Log,
   ProtocolV3Log,
 } from "../../generated/schema";
-import { PROTOCOL_ID } from "../constants";
+import { Configure } from "../../generated/V2JBFundingCycleStore/JBFundingCycleStore";
+import {
+  BITS_16,
+  BITS_8,
+  MAX_REDEMPTION_RATE,
+  PROTOCOL_ID,
+} from "../constants";
 import {
   address_shared_jbProjectHandles,
   address_shared_legacy_jbProjectHandles,
 } from "../contractAddresses";
 import { startBlock_shared_jbProjectHandles } from "../startBlocks";
 import { ProjectEventKey, Version } from "../types";
-import { idForParticipant, idForProject, idForProjectEvent } from "./ids";
+import {
+  idForParticipant,
+  idForProject,
+  idForProjectEvent,
+  idForProjectTx,
+} from "./ids";
 
 export function updateProtocolEntity(): void {
   const protocolLog = ProtocolLog.load(PROTOCOL_ID);
@@ -289,4 +301,77 @@ export function updateProjectHandle(
   }
 
   project.save();
+}
+
+export function newPV2ConfigureEvent(
+  event: ethereum.Event,
+  projectId: BigInt,
+  duration: BigInt,
+  weight: BigInt,
+  discountRate: BigInt,
+  ballot: Bytes,
+  mustStartAtOrAfter: BigInt,
+  configuration: BigInt,
+  metadata: BigInt
+): ConfigureEvent {
+  const pv: Version = "2";
+
+  const configureEvent = new ConfigureEvent(
+    idForProjectTx(projectId, pv, event)
+  );
+
+  configureEvent.projectId = projectId.toI32();
+  configureEvent.project = idForProject(projectId, pv);
+  configureEvent.timestamp = event.block.timestamp.toI32();
+  configureEvent.txHash = event.transaction.hash;
+  configureEvent.caller = event.transaction.from;
+
+  // From the cycle's JBFundingCycleData
+  configureEvent.duration = duration.toI32();
+  configureEvent.weight = weight;
+  configureEvent.discountRate = discountRate;
+  configureEvent.ballot = ballot;
+
+  // Top level
+  configureEvent.mustStartAtOrAfter = mustStartAtOrAfter.toI32();
+  configureEvent.configuration = configuration.toI32();
+  configureEvent.metadata = metadata;
+
+  // Unpacking global metadata.
+  const globalMetadata = (metadata.toI32() >> 8) & BITS_8;
+  configureEvent.setTerminalsAllowed = !!(globalMetadata & 1);
+  configureEvent.setControllerAllowed = !!((globalMetadata >> 1) & 1);
+  configureEvent.transfersPaused = !!((globalMetadata >> 2) & 1);
+
+  // Unpacking metadata. See github.com/jbx-protocol/juice-contracts-v3/blob/main/contracts/libraries/JBFundingCycleMetadataResolver.sol
+  configureEvent.reservedRate = (metadata.toI32() >> 24) & BITS_16;
+  configureEvent.redemptionRate =
+    ((MAX_REDEMPTION_RATE - metadata.toI32()) >> 40) & BITS_16;
+  configureEvent.ballotRedemptionRate =
+    ((MAX_REDEMPTION_RATE - metadata.toI32()) >> 56) & BITS_16;
+  configureEvent.payPaused = !!((metadata.toI32() >> 72) & 1);
+  configureEvent.distributionsPaused = !!((metadata.toI32() >> 73) & 1);
+  configureEvent.redeemPaused = !!((metadata.toI32() >> 74) & 1);
+  configureEvent.burnPaused = !!((metadata.toI32() >> 75) & 1);
+  configureEvent.mintingAllowed = !!((metadata.toI32() >> 76) & 1);
+  configureEvent.terminalMigrationAllowed = !!((metadata.toI32() >> 77) & 1);
+  configureEvent.controllerMigrationAllowed = !!((metadata.toI32() >> 78) & 1);
+  configureEvent.shouldHoldFees = !!((metadata.toI32() >> 79) & 1);
+  configureEvent.preferClaimedTokenOverride = !!((metadata.toI32() >> 80) & 1);
+  configureEvent.useTotalOverflowForRedemptions = !!(
+    (metadata.toI32() >> 81) &
+    1
+  );
+  configureEvent.useDataSourceForPay = !!((metadata.toI32() >> 82) & 1);
+  configureEvent.useDataSourceForRedeem = !!((metadata.toI32() >> 83) & 1);
+
+  let dataSource = Bytes.fromHexString("0x");
+  for (let i = 84; i < 160; i += 32) {
+    dataSource = dataSource.concatI32(metadata.toI32() >> i);
+  }
+
+  configureEvent.dataSource = dataSource;
+  configureEvent.metametadata = metadata.toI32() >> 244;
+
+  return configureEvent;
 }

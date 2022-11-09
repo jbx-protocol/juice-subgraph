@@ -50,6 +50,8 @@
       abis:
         - name: FundingCycles
           file: ./abis/v1/FundingCycles.json
+        - name: TerminalDirectory
+          file: ./abis/v1/TerminalDirectory.json
       eventHandlers:
         - event: Configure(indexed uint256,indexed uint256,uint256,(uint256,uint256,uint256,uint256,uint256,address),uint256,address)
           handler: handleV1Configure

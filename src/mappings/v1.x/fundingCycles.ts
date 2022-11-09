@@ -1,13 +1,15 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { Bytes } from "@graphprotocol/graph-ts";
+
 import {
   Configure,
   Init,
 } from "../../../generated/FundingCycles/FundingCycles";
 import { V1ConfigureEvent, V1InitEvent } from "../../../generated/schema";
+import { BITS_8 } from "../../constants";
 import { ProjectEventKey } from "../../types";
-import { pvForV1Project } from "../../utils/pv";
 import { saveNewProjectEvent } from "../../utils/entity";
 import { idForProject, idForProjectTx } from "../../utils/ids";
+import { pvForV1Project } from "../../utils/pv";
 
 export function handleV1Configure(event: Configure): void {
   const pv = pvForV1Project(event.params.projectId);
@@ -15,9 +17,7 @@ export function handleV1Configure(event: Configure): void {
   const configureEvent = new V1ConfigureEvent(
     idForProjectTx(event.params.projectId, pv, event)
   );
-  const BigIntOne = BigInt.fromI32(1);
 
-  if (!configureEvent) return;
   configureEvent.projectId = event.params.projectId.toI32();
   configureEvent.project = projectId;
   configureEvent.caller = event.transaction.from;
@@ -38,25 +38,24 @@ export function handleV1Configure(event: Configure): void {
   configureEvent.metadata = event.params.metadata;
 
   // Unpacking metadata
-  configureEvent.version = u8(event.params.metadata.toI32());
-  configureEvent.reservedRate = u8((event.params.metadata >> 8).toI32());
-  configureEvent.bondingCurveRate = u8((event.params.metadata >> 16).toI32());
-  configureEvent.reconfigurationBondingCurveRate = u8(
-    (event.params.metadata >> 24).toI32()
-  );
+  configureEvent.version = event.params.metadata.toI32() & BITS_8;
+  configureEvent.reservedRate = (event.params.metadata.toI32() >> 8) & BITS_8;
+  configureEvent.bondingCurveRate =
+    (event.params.metadata.toI32() >> 16) & BITS_8;
+  configureEvent.reconfigurationBondingCurveRate =
+    (event.params.metadata.toI32() >> 24) & BITS_8;
 
   // If v1.1, parse additional metadata
   if (configureEvent.version) {
-    configureEvent.payIsPaused = bool(
-      ((event.params.metadata >> 32) & BigIntOne).toI32()
-    );
-    configureEvent.ticketPrintingIsAllowed = bool(
-      ((event.params.metadata >> 33) & BigIntOne).toI32()
+    configureEvent.payIsPaused = !!((event.params.metadata.toI32() >> 32) & 1);
+    configureEvent.ticketPrintingIsAllowed = !!(
+      (event.params.metadata.toI32() >> 33) &
+      1
     );
 
     let extension = Bytes.fromHexString("0x");
-    for (let i = u8(34); i < 160; i += 32) {
-      extension = extension.concatI32((event.params.metadata >> i).toI32());
+    for (let i = 34; i < 160; i += 32) {
+      extension = extension.concatI32(event.params.metadata.toI32() >> i);
     }
     configureEvent.extension = extension;
   }
