@@ -1,4 +1,4 @@
-import { Bytes } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 
 import {
   Configure,
@@ -32,32 +32,44 @@ export function handleV1Configure(event: Configure): void {
   configureEvent.discountRate = event.params._properties.discountRate.toI32();
   configureEvent.ballot = event.params._properties.ballot;
 
+  const metadata = event.params.metadata;
+
   // Top level
   configureEvent.fundingCycleId = event.params.fundingCycleId.toI32();
   configureEvent.reconfigured = event.params.reconfigured.toI32();
-  configureEvent.metadata = event.params.metadata;
+  configureEvent.metadata = metadata;
 
   // Unpacking metadata
-  configureEvent.version = event.params.metadata.toI32() & BITS_8;
-  configureEvent.reservedRate = (event.params.metadata.toI32() >> 8) & BITS_8;
-  configureEvent.bondingCurveRate =
-    (event.params.metadata.toI32() >> 16) & BITS_8;
-  configureEvent.reconfigurationBondingCurveRate =
-    (event.params.metadata.toI32() >> 24) & BITS_8;
+  configureEvent.version = metadata.bitAnd(BigInt.fromI32(BITS_8)).toI32();
+  configureEvent.reservedRate = metadata
+    .rightShift(8)
+    .bitAnd(BigInt.fromI32(BITS_8))
+    .toI32();
+  configureEvent.bondingCurveRate = metadata
+    .rightShift(16)
+    .bitAnd(BigInt.fromI32(BITS_8))
+    .toI32();
+  configureEvent.reconfigurationBondingCurveRate = metadata
+    .rightShift(24)
+    .bitAnd(BigInt.fromI32(BITS_8))
+    .toI32();
 
   // If v1.1, parse additional metadata
   if (configureEvent.version) {
-    configureEvent.payIsPaused = !!((event.params.metadata.toI32() >> 32) & 1);
-    configureEvent.ticketPrintingIsAllowed = !!(
-      (event.params.metadata.toI32() >> 33) &
-      1
-    );
+    configureEvent.payIsPaused = !!metadata
+      .rightShift(32)
+      .bitAnd(BigInt.fromI32(1))
+      .toI32();
+    configureEvent.ticketPrintingIsAllowed = !!metadata
+      .rightShift(33)
+      .bitAnd(BigInt.fromI32(1))
+      .toI32();
 
-    let extension = Bytes.fromHexString("0x");
-    for (let i = 34; i < 160; i += 32) {
-      extension = extension.concatI32(event.params.metadata.toI32() >> i);
-    }
-    configureEvent.extension = extension;
+    // let extension = Bytes.fromHexString("0x");
+    // for (let i = 34; i < 160; i += 32) {
+    //   extension = extension.concatI32(metadata.rightShift(i).toI32());
+    // }
+    // configureEvent.extension = extension;
   }
 
   configureEvent.save();

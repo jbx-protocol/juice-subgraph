@@ -338,40 +338,90 @@ export function newPV2ConfigureEvent(
   configureEvent.metadata = metadata;
 
   // Unpacking global metadata.
-  const globalMetadata = (metadata.toI32() >> 8) & BITS_8;
-  configureEvent.setTerminalsAllowed = !!(globalMetadata & 1);
-  configureEvent.setControllerAllowed = !!((globalMetadata >> 1) & 1);
-  configureEvent.transfersPaused = !!((globalMetadata >> 2) & 1);
+  const globalMetadata = metadata.rightShift(8).bitAnd(BigInt.fromI32(BITS_8));
+  configureEvent.setTerminalsAllowed = !globalMetadata
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.setControllerAllowed = !globalMetadata
+    .rightShift(1)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.transfersPaused = !globalMetadata
+    .rightShift(2)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
 
   // Unpacking metadata. See github.com/jbx-protocol/juice-contracts-v3/blob/main/contracts/libraries/JBFundingCycleMetadataResolver.sol
-  configureEvent.reservedRate = (metadata.toI32() >> 24) & BITS_16;
-  configureEvent.redemptionRate =
-    ((MAX_REDEMPTION_RATE - metadata.toI32()) >> 40) & BITS_16;
-  configureEvent.ballotRedemptionRate =
-    ((MAX_REDEMPTION_RATE - metadata.toI32()) >> 56) & BITS_16;
-  configureEvent.payPaused = !!((metadata.toI32() >> 72) & 1);
-  configureEvent.distributionsPaused = !!((metadata.toI32() >> 73) & 1);
-  configureEvent.redeemPaused = !!((metadata.toI32() >> 74) & 1);
-  configureEvent.burnPaused = !!((metadata.toI32() >> 75) & 1);
-  configureEvent.mintingAllowed = !!((metadata.toI32() >> 76) & 1);
-  configureEvent.terminalMigrationAllowed = !!((metadata.toI32() >> 77) & 1);
-  configureEvent.controllerMigrationAllowed = !!((metadata.toI32() >> 78) & 1);
-  configureEvent.shouldHoldFees = !!((metadata.toI32() >> 79) & 1);
-  configureEvent.preferClaimedTokenOverride = !!((metadata.toI32() >> 80) & 1);
-  configureEvent.useTotalOverflowForRedemptions = !!(
-    (metadata.toI32() >> 81) &
-    1
-  );
-  configureEvent.useDataSourceForPay = !!((metadata.toI32() >> 82) & 1);
-  configureEvent.useDataSourceForRedeem = !!((metadata.toI32() >> 83) & 1);
+  configureEvent.reservedRate = metadata
+    .rightShift(24)
+    .bitAnd(BigInt.fromI32(BITS_16))
+    .toI32();
+
+  configureEvent.redemptionRate = BigInt.fromI32(MAX_REDEMPTION_RATE)
+    .minus(metadata.rightShift(40).bitAnd(BigInt.fromI32(BITS_16)))
+    .toI32();
+
+  configureEvent.ballotRedemptionRate = BigInt.fromI32(MAX_REDEMPTION_RATE)
+    .minus(metadata.rightShift(56).bitAnd(BigInt.fromI32(BITS_16)))
+    .toI32();
+
+  configureEvent.payPaused = !metadata
+    .rightShift(72)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.distributionsPaused = !metadata
+    .rightShift(73)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.redeemPaused = !metadata
+    .rightShift(74)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.burnPaused = !metadata
+    .rightShift(75)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.mintingAllowed = !metadata
+    .rightShift(76)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.terminalMigrationAllowed = !metadata
+    .rightShift(77)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.controllerMigrationAllowed = !metadata
+    .rightShift(78)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.shouldHoldFees = !metadata
+    .rightShift(79)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.preferClaimedTokenOverride = !metadata
+    .rightShift(80)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.useTotalOverflowForRedemptions = !metadata
+    .rightShift(81)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.useDataSourceForPay = !metadata
+    .rightShift(82)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
+  configureEvent.useDataSourceForRedeem = !metadata
+    .rightShift(83)
+    .bitAnd(BigInt.fromI32(1))
+    .isZero();
 
   let dataSource = Bytes.fromHexString("0x");
   for (let i = 84; i < 160; i += 32) {
-    dataSource = dataSource.concatI32(metadata.toI32() >> i);
+    // TODO ts-ignore u8 cast?
+    dataSource = dataSource.concatI32(metadata.rightShift(u8(i)).toI32());
   }
 
   configureEvent.dataSource = dataSource;
-  configureEvent.metametadata = metadata.toI32() >> 244;
+  configureEvent.metametadata = metadata.rightShift(244).toI32();
 
   return configureEvent;
 }

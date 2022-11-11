@@ -622,12 +622,14 @@ type JB721DelegateToken @entity {
   projectId: Int!
   name: String!
   symbol: String!
-  floorPrice: BigInt!
-  lockedUntil: BigInt!
 
   # dynamic fields
   owner: Participant!
   tokenUri: String!
+
+  # optional: only on tiered tokens
+  floorPrice: BigInt
+  lockedUntil: BigInt
 }
 
 #############################################################################

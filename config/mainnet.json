@@ -51,6 +51,8 @@
     "startBlock_legacy_jbProjectHandles": 14975701,
     "address_jbProjectHandles": "0xD75d2EeF7Fe65Bf9f46D7ef0b21EdED98cB0a3A4",
     "startBlock_jbProjectHandles": 15873677,
-    "address_ensRegistry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
+    "address_ensRegistry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+    "address_defifa721Delegate": "0xc94555ba2bf82222b37f4faf1008000562cece24",
+    "startBlock_defifa721Delegate": 15930559
   }
 }
