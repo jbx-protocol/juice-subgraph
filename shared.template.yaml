@@ -66,3 +66,28 @@
           handler: handleDeployVeNft
       file: ./src/mappings/veNft/veNftDeployer.ts
   {{ /shared.address_jbVeNftDeployer }}
+  {{ #shared.address_defifa721Delegate }}
+  - name: Defifa721Delegate
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      address: '{{shared.address_defifa721Delegate}}'
+      abi: JB721DelegateToken
+      startBlock: {{shared.startBlock_defifa721Delegate}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Participant
+        - JB721DelegateToken
+      abis:
+        - name: JB721DelegateToken
+          file: ./abis/shared/JB721DelegateToken.json
+        - name: JBTiered721DelegateStore
+          file: ./abis/v3/JBTiered721DelegateStore.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/mappings/shared/defifa721Delegate.ts
+  {{ /shared.address_defifa721Delegate }}

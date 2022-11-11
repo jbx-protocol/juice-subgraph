@@ -50,6 +50,8 @@
     "startBlock_legacy_jbProjectHandles": 0,
     "address_jbProjectHandles": "0x0000000000000000000000000000000000000000",
     "startBlock_jbProjectHandles": 0,
-    "address_ensRegistry": "0x0000000000000000000000000000000000000000"
+    "address_ensRegistry": "0x0000000000000000000000000000000000000000",
+    "address_defifa721Delegate": "0x0000000000000000000000000000000000000000",
+    "startBlock_defifa721Delegate": 0
   }
 }

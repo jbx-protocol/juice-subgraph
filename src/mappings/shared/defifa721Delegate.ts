@@ -1,12 +1,15 @@
-import { Address, Bytes, dataSource, log } from "@graphprotocol/graph-ts";
+import { Address, Bytes, log } from "@graphprotocol/graph-ts";
 
 import { JB721DelegateToken, Participant } from "../../../generated/schema";
 import {
   JB721DelegateToken as JB721DelegateTokenContract,
   Transfer,
 } from "../../../generated/templates/JB721DelegateToken/JB721DelegateToken";
-import { JBTiered721DelegateStore } from "../../../generated/templates/JB721DelegateToken/JBTiered721DelegateStore";
-import { address_v3_jbTiered721DelegateStore } from "../../contractAddresses";
+import {
+  address_shared_defifa721Delegate,
+  address_v3_jbTiered721DelegateStore,
+} from "../../contractAddresses";
+import { Version } from "../../types";
 import { newParticipant } from "../../utils/entity";
 import {
   idForJB721DelegateToken,
@@ -14,14 +17,23 @@ import {
   idForProject,
 } from "../../utils/ids";
 
+const pv: Version = "2";
+
 export function handleTransfer(event: Transfer): void {
-  const context = dataSource.context();
-  const projectId = context.getBigInt("projectId");
-  const pv = context.getString("pv");
-  const address = dataSource.address();
+  const address = Bytes.fromHexString(
+    address_shared_defifa721Delegate as string
+  );
   const jb721DelegateTokenContract = JB721DelegateTokenContract.bind(
     Address.fromBytes(address)
   );
+
+  // projectId
+  const projectIdCall = jb721DelegateTokenContract.try_projectId();
+  if (projectIdCall.reverted) {
+    log.error("[handleTransfer] projectId() reverted for jb721Delegate", []);
+    return;
+  }
+  const projectId = projectIdCall.value;
 
   const tokenId = event.params.tokenId;
 
@@ -66,24 +78,6 @@ export function handleTransfer(event: Transfer): void {
       );
       return;
     }
-    const jbTiered721DelegateStoreContract = JBTiered721DelegateStore.bind(
-      Address.fromBytes(
-        Bytes.fromHexString(address_v3_jbTiered721DelegateStore!)
-      )
-    );
-    const tierCall = jbTiered721DelegateStoreContract.try_tier(
-      address,
-      tokenId
-    );
-    if (tierCall.reverted) {
-      // Will revert for non-tiered tokens, among maybe other reasons
-      log.error("[handleTransfer] tier() reverted for address {}, tokenId {}", [
-        address.toHexString(),
-        tokenId.toString(),
-      ]);
-    }
-    token.floorPrice = tierCall.value.contributionFloor;
-    token.lockedUntil = tierCall.value.lockedUntil;
   }
 
   /**

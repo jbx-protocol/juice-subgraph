@@ -19,7 +19,7 @@ export function handleConfigure(event: Configure): void {
     event.params.data.ballot,
     event.params.mustStartAtOrAfter,
     event.params.configuration,
-    event.params.configuration
+    event.params.metadata
   );
   configureEvent.save();
 

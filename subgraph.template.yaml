@@ -27,7 +27,7 @@ templates:
     kind: ethereum/contract
     network: {{network}}
     source:
-      abi: ERC721
+      abi: JB721DelegateToken
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -37,8 +37,8 @@ templates:
         - Participant
         - JB721DelegateToken
       abis:
-        - name: ERC721
-          file: ./abis/shared/ERC721.json
+        - name: JB721DelegateToken
+          file: ./abis/shared/JB721DelegateToken.json
         - name: JBTiered721DelegateStore
           file: ./abis/v3/JBTiered721DelegateStore.json
       eventHandlers:
