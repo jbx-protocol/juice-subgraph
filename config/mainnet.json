@@ -1,5 +1,9 @@
 {
   "network": "mainnet",
+  "graft": {
+    "base": "QmTqzub5eATCZRuqDT2jLXPyuzSpZmMbwDnjsQK8NdAkCz",
+    "startBlock": 15930500
+  },
   "v1": {
     "address_projects": "0x9b5a4053FfBB11cA9cd858AAEE43cc95ab435418",
     "startBlock_projects": 12833329,
@@ -52,7 +56,7 @@
     "address_jbProjectHandles": "0xD75d2EeF7Fe65Bf9f46D7ef0b21EdED98cB0a3A4",
     "startBlock_jbProjectHandles": 15873677,
     "address_ensRegistry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-    "address_defifa721Delegate": "0xc94555ba2bf82222b37f4faf1008000562cece24",
+    "address_defifa721Delegate": "0xBC855060A8c96076a6778D547D430E6f43E9809A",
     "startBlock_defifa721Delegate": 15930559
   }
 }

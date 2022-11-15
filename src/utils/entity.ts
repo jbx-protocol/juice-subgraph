@@ -11,9 +11,9 @@ import {
   ProtocolV2Log,
   ProtocolV3Log,
 } from "../../generated/schema";
-import { Configure } from "../../generated/V2JBFundingCycleStore/JBFundingCycleStore";
 import {
   BITS_16,
+  BITS_160_HEX,
   BITS_8,
   MAX_REDEMPTION_RATE,
   PROTOCOL_ID,
@@ -271,8 +271,6 @@ export function updateProjectHandle(
 ): void {
   if (!address_shared_jbProjectHandles) return;
 
-  log.warning("updateProjectHandle id {}", [projectId.toHexString()]);
-
   // If there is a legacy jbProjectHandles address and the block height is prior to the jbProjectHandles startBlock, use the legacy address
   const projectHandlesAddress =
     address_shared_legacy_jbProjectHandles &&
@@ -304,6 +302,8 @@ export function updateProjectHandle(
 }
 
 export function newPV2ConfigureEvent(
+  // Note: Can't use an object arg here because assemblyscript
+  // We could pass the configure event itself as an arg, but we could only type it as a V2 *OR* V3 JBFundingCycleStore.configure event.
   event: ethereum.Event,
   projectId: BigInt,
   duration: BigInt,
@@ -414,13 +414,14 @@ export function newPV2ConfigureEvent(
     .bitAnd(BigInt.fromI32(1))
     .isZero();
 
-  let dataSource = Bytes.fromHexString("0x");
-  for (let i = 84; i < 160; i += 32) {
-    // TODO ts-ignore u8 cast?
-    dataSource = dataSource.concatI32(metadata.rightShift(u8(i)).toI32());
-  }
-
-  configureEvent.dataSource = dataSource;
+  configureEvent.dataSource = Bytes.fromByteArray(
+    Bytes.fromBigInt(
+      metadata.rightShift(84).bitAnd(
+        // Convert to uint160
+        BigInt.fromSignedBytes(Bytes.fromHexString(BITS_160_HEX))
+      )
+    )
+  );
   configureEvent.metametadata = metadata.rightShift(244).toI32();
 
   return configureEvent;

@@ -2,6 +2,7 @@ specVersion: 0.0.4
 description: Juicebox protocol on {{network}}
 features:
   - fullTextSearch
+{{{ graftConfig }}}
 schema:
   file: ./schema.graphql
 templates:
