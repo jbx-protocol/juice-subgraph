@@ -1,11 +1,12 @@
 import { Bytes, log } from "@graphprotocol/graph-ts";
+
 import {
+  AddToBalanceEvent,
   DistributeToPayoutModEvent,
   DistributeToTicketModEvent,
   MintTokensEvent,
   Participant,
   PayEvent,
-  AddToBalanceEvent,
   PrintReservesEvent,
   Project,
   ProtocolV1Log,
@@ -24,22 +25,22 @@ import {
   Tap,
 } from "../../../generated/TerminalV1/TerminalV1";
 import { PROTOCOL_ID } from "../../constants";
-import { ProjectEventKey, Version } from "../../types";
-import { pvForV1Project } from "../../utils/pv";
+import { address_v1_terminalV1 } from "../../contractAddresses";
+import { ProjectEventKey } from "../../types";
+import { newParticipant } from "../../utils/entities/participant";
+import { saveNewProjectTerminalEvent } from "../../utils/entities/projectEvent";
 import {
-  newParticipant,
   newProtocolV1Log,
-  saveNewProjectTerminalEvent,
   updateProtocolEntity,
-} from "../../utils/entity";
+} from "../../utils/entities/protocolLog";
 import {
   idForParticipant,
   idForPayEvent,
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
+import { pvForV1Project } from "../../utils/pv";
 import { handleTrendingPayment } from "../../utils/trending";
-import { address_v1_terminalV1 } from "../../contractAddresses";
 
 const terminal: Bytes = Bytes.fromHexString(address_v1_terminalV1!);
 

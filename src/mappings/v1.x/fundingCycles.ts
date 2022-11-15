@@ -7,7 +7,7 @@ import {
 import { V1ConfigureEvent, V1InitEvent } from "../../../generated/schema";
 import { BITS_8 } from "../../constants";
 import { ProjectEventKey } from "../../types";
-import { saveNewProjectEvent } from "../../utils/entity";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 import { pvForV1Project } from "../../utils/pv";
 

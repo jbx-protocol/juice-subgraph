@@ -1,18 +1,19 @@
 import { log } from "@graphprotocol/graph-ts";
-import {
-  DistributeReservedTokens,
-  DistributeToReservedTokenSplit,
-  Migrate,
-  MintTokens,
-} from "../../../generated/V2JBController/JBController";
+
 import {
   DistributeReservedTokensEvent,
   DistributeToReservedTokenSplitEvent,
   MintTokensEvent,
   Project,
 } from "../../../generated/schema";
-import { Version, ProjectEventKey } from "../../types";
-import { saveNewProjectEvent } from "../../utils/entity";
+import {
+  DistributeReservedTokens,
+  DistributeToReservedTokenSplit,
+  Migrate,
+  MintTokens,
+} from "../../../generated/V2JBController/JBController";
+import { ProjectEventKey, Version } from "../../types";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
 const pv: Version = "2";

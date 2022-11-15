@@ -7,7 +7,7 @@ import {
 } from "../../../generated/templates/JB721DelegateToken/JB721DelegateToken";
 import { JBTiered721DelegateStore } from "../../../generated/templates/JB721DelegateToken/JBTiered721DelegateStore";
 import { address_v3_jbTiered721DelegateStore } from "../../contractAddresses";
-import { newParticipant } from "../../utils/entity";
+import { newParticipant } from "../../utils/entities/participant";
 import {
   idForJB721DelegateToken,
   idForParticipant,

@@ -10,7 +10,7 @@ import {
   address_v3_jbTiered721DelegateStore,
 } from "../../contractAddresses";
 import { Version } from "../../types";
-import { newParticipant } from "../../utils/entity";
+import { newParticipant } from "../../utils/entities/participant";
 import {
   idForJB721DelegateToken,
   idForParticipant,
