@@ -11,7 +11,7 @@ import {
   MintTokens,
 } from "../../../generated/V3JBController/JBController";
 import { ProjectEventKey, Version } from "../../types";
-import { saveNewProjectEvent } from "../../utils/entity";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
 const pv: Version = "3";

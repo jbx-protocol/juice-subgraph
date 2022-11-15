@@ -1,28 +1,30 @@
 import { BigInt, DataSourceContext, log } from "@graphprotocol/graph-ts";
 
 import {
-  Burn,
-  Claim,
-  Issue,
-  Mint,
-  Transfer,
-} from "../../../generated/V2JBTokenStore/JBTokenStore";
-import {
   DeployedERC20Event,
   Participant,
   Project,
   ProtocolV2Log,
 } from "../../../generated/schema";
 import { ERC20 } from "../../../generated/templates";
+import {
+  Burn,
+  Claim,
+  Issue,
+  Mint,
+  Transfer,
+} from "../../../generated/V2JBTokenStore/JBTokenStore";
 import { PROTOCOL_ID } from "../../constants";
 import { ProjectEventKey, Version } from "../../types";
 import {
   newParticipant,
-  newProtocolV2Log,
-  saveNewProjectEvent,
   updateParticipantBalance,
+} from "../../utils/entities/participant";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
+import {
+  newProtocolV2Log,
   updateProtocolEntity,
-} from "../../utils/entity";
+} from "../../utils/entities/protocolLog";
 import {
   idForParticipant,
   idForProject,
@@ -127,7 +129,7 @@ export function handleIssue(event: Issue): void {
 
 export function handleMint(event: Mint): void {
   /**
-   * We're only concerned with updating unclaimed token balance. 
+   * We're only concerned with updating unclaimed token balance.
    * "Claimed" ERC20 tokens will be handled separately.
    */
   if (event.params.preferClaimedTokens) return;

@@ -18,11 +18,13 @@ import { PROTOCOL_ID } from "../../constants";
 import { ProjectEventKey, Version } from "../../types";
 import {
   newParticipant,
-  newProtocolV3Log,
-  saveNewProjectEvent,
   updateParticipantBalance,
+} from "../../utils/entities/participant";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
+import {
+  newProtocolV3Log,
   updateProtocolEntity,
-} from "../../utils/entity";
+} from "../../utils/entities/protocolLog";
 import {
   idForParticipant,
   idForProject,
@@ -127,7 +129,7 @@ export function handleIssue(event: Issue): void {
 
 export function handleMint(event: Mint): void {
   /**
-   * We're only concerned with updating unclaimed token balance. 
+   * We're only concerned with updating unclaimed token balance.
    * "Claimed" ERC20 tokens will be handled separately.
    */
   if (event.params.preferClaimedTokens) return;

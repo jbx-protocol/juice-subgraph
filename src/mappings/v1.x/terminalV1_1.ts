@@ -26,12 +26,12 @@ import {
 import { PROTOCOL_ID } from "../../constants";
 import { address_v1_terminalV1_1 } from "../../contractAddresses";
 import { ProjectEventKey } from "../../types";
+import { newParticipant } from "../../utils/entities/participant";
+import { saveNewProjectTerminalEvent } from "../../utils/entities/projectEvent";
 import {
-  newParticipant,
   newProtocolV1Log,
-  saveNewProjectTerminalEvent,
   updateProtocolEntity,
-} from "../../utils/entity";
+} from "../../utils/entities/protocolLog";
 import {
   idForParticipant,
   idForPayEvent,
@@ -117,8 +117,8 @@ export function handlePay(event: Pay): void {
 export function handlePrintTickets(event: PrintTickets): void {
   /**
    * Note: Receiver balance is updated in the ticketBooth event handler.
-   * 
-   * TBH the only reason to do this logic here instead of ticketBooth 
+   *
+   * TBH the only reason to do this logic here instead of ticketBooth
    * is to make use of the `memo` field
    */
 

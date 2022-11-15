@@ -2,7 +2,10 @@ import { BigInt, dataSource } from "@graphprotocol/graph-ts";
 
 import { Participant } from "../../../generated/schema";
 import { Transfer } from "../../../generated/templates/ERC20/ERC20";
-import { newParticipant, updateParticipantBalance } from "../../utils/entity";
+import {
+  newParticipant,
+  updateParticipantBalance,
+} from "../../utils/entities/participant";
 import { idForParticipant } from "../../utils/ids";
 
 export function handleERC20Transfer(event: Transfer): void {

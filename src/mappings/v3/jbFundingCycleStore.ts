@@ -4,7 +4,8 @@ import {
   Init,
 } from "../../../generated/V3JBFundingCycleStore/JBFundingCycleStore";
 import { ProjectEventKey, Version } from "../../types";
-import { newPV2ConfigureEvent, saveNewProjectEvent } from "../../utils/entity";
+import { newPV2ConfigureEvent } from "../../utils/entities/configureEvent";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
 const pv: Version = "2";

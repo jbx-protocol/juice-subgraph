@@ -24,19 +24,21 @@ import {
 import { PROTOCOL_ID } from "../../constants";
 import { address_v1_ticketBooth } from "../../contractAddresses";
 import { ProjectEventKey } from "../../types";
-import { pvForV1Project } from "../../utils/pv";
 import {
   newParticipant,
-  newProtocolV1Log,
-  saveNewProjectEvent,
   updateParticipantBalance,
+} from "../../utils/entities/participant";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
+import {
+  newProtocolV1Log,
   updateProtocolEntity,
-} from "../../utils/entity";
+} from "../../utils/entities/protocolLog";
 import {
   idForParticipant,
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
+import { pvForV1Project } from "../../utils/pv";
 
 export function handlePrint(event: Print): void {
   const pv = pvForV1Project(event.params.projectId);

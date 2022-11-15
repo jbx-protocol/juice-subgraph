@@ -1,4 +1,16 @@
-import { BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+import { Bytes, log } from "@graphprotocol/graph-ts";
+
+import {
+  AddToBalanceEvent,
+  DistributePayoutsEvent,
+  DistributeToPayoutSplitEvent,
+  Participant,
+  PayEvent,
+  Project,
+  ProtocolV2Log,
+  RedeemEvent,
+  UseAllowanceEvent,
+} from "../../../generated/schema";
 import {
   AddToBalance,
   DistributePayouts,
@@ -8,25 +20,15 @@ import {
   RedeemTokens,
   UseAllowance,
 } from "../../../generated/V2JBETHPaymentTerminal/JBETHPaymentTerminal";
-import {
-  DistributePayoutsEvent,
-  DistributeToPayoutSplitEvent,
-  Participant,
-  PayEvent,
-  AddToBalanceEvent,
-  Project,
-  ProtocolV2Log,
-  RedeemEvent,
-  UseAllowanceEvent,
-} from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
-import { Version, ProjectEventKey } from "../../types";
+import { address_v2_jbETHPaymentTerminal } from "../../contractAddresses";
+import { ProjectEventKey, Version } from "../../types";
+import { newParticipant } from "../../utils/entities/participant";
+import { saveNewProjectTerminalEvent } from "../../utils/entities/projectEvent";
 import {
-  newParticipant,
   newProtocolV2Log,
-  saveNewProjectTerminalEvent,
   updateProtocolEntity,
-} from "../../utils/entity";
+} from "../../utils/entities/protocolLog";
 import {
   idForParticipant,
   idForPayEvent,
@@ -35,7 +37,6 @@ import {
   idForProjectTx,
 } from "../../utils/ids";
 import { handleTrendingPayment } from "../../utils/trending";
-import { address_v2_jbETHPaymentTerminal } from "../../contractAddresses";
 
 const pv: Version = "2";
 const terminal: Bytes = Bytes.fromHexString(address_v2_jbETHPaymentTerminal!);

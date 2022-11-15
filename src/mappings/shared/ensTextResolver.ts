@@ -6,7 +6,7 @@ import {
   TextChanged,
   TextChanged1,
 } from "../../../generated/templates/ENSTextResolver/ENSTextResolver";
-import { updateProjectHandle } from "../../utils/entity";
+import { updateProjectHandle } from "../../utils/entities/project";
 import { isNumberString, toHexLowercase } from "../../utils/format";
 
 /**

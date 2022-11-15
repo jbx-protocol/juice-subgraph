@@ -23,12 +23,12 @@ import {
 import { PROTOCOL_ID } from "../../constants";
 import { address_v3_jbETHPaymentTerminal } from "../../contractAddresses";
 import { ProjectEventKey, Version } from "../../types";
+import { newParticipant } from "../../utils/entities/participant";
+import { saveNewProjectTerminalEvent } from "../../utils/entities/projectEvent";
 import {
-  newParticipant,
   newProtocolV3Log,
-  saveNewProjectTerminalEvent,
   updateProtocolEntity,
-} from "../../utils/entity";
+} from "../../utils/entities/protocolLog";
 import {
   idForParticipant,
   idForPayEvent,

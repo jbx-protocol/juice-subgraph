@@ -15,13 +15,13 @@ import {
 import { PROTOCOL_ID } from "../../constants";
 import { ProjectEventKey } from "../../types";
 import { pvForTerminal, pvForV1Project } from "../../utils/pv";
+import { idForProject, idForProjectTx } from "../../utils/ids";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import {
   newProtocolLog,
   newProtocolV1Log,
-  saveNewProjectEvent,
   updateProtocolEntity,
-} from "../../utils/entity";
-import { idForProject, idForProjectTx } from "../../utils/ids";
+} from "../../utils/entities/protocolLog";
 
 export function handleProjectCreate(event: Create): void {
   const pv = pvForTerminal(event.params.terminal);

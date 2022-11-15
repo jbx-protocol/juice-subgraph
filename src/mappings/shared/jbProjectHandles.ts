@@ -4,7 +4,7 @@ import { ENSRegistry } from "../../../generated/JBProjectHandles/ENSRegistry";
 import { SetEnsNameParts } from "../../../generated/JBProjectHandles/JBProjectHandles";
 import { ENSTextResolver } from "../../../generated/templates";
 import { address_shared_ensRegistry } from "../../contractAddresses";
-import { updateProjectHandle } from "../../utils/entity";
+import { updateProjectHandle } from "../../utils/entities/project";
 
 /**
  * Borrowed from https://github.com/Arachnid/eth-ens-namehash/blob/d3a6cc4e3780b04fb0fb742e80f2c9702e91c41f/index.js
