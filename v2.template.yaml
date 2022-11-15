@@ -43,10 +43,6 @@
       abis:
         - name: JBController
           file: ./abis/v2/JBController.json
-        - name: V2JBDirectory
-          file: ./abis/v2/JBDirectory.json
-        - name: V3JBDirectory
-          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: MintTokens(indexed address,indexed uint256,uint256,uint256,string,uint256,address)
           handler: handleMintTokens
@@ -112,10 +108,6 @@
       abis:
         - name: JBProjects
           file: ./abis/v2/JBProjects.json
-        - name: V2JBDirectory
-          file: ./abis/v2/JBDirectory.json
-        - name: V3JBDirectory
-          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: Create(indexed uint256,indexed address,(string,uint256),address)
           handler: handleCreate
@@ -141,12 +133,10 @@
         - ConfigureEvent
         - InitEvent
       abis:
+        - name: JBController
+          file: ./abis/v2/JBController.json
         - name: JBFundingCycleStore
           file: ./abis/v2/JBFundingCycleStore.json
-        - name: V2JBDirectory
-          file: ./abis/v2/JBDirectory.json
-        - name: V3JBDirectory
-          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: Configure(indexed uint256,indexed uint256,(uint256,uint256,uint256,address),uint256,uint256,address)
           handler: handleConfigure
