@@ -1,4 +1,5 @@
 import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+
 import { ConfigureEvent } from "../../../generated/schema";
 import {
   BITS_16,
@@ -22,6 +23,8 @@ export function newPV2ConfigureEvent(
   configuration: BigInt,
   metadata: BigInt
 ): ConfigureEvent {
+  // TODO how to add `distributionLimitOf` result, which requires a terminal argument?
+
   const pv: Version = "2";
 
   const configureEvent = new ConfigureEvent(
