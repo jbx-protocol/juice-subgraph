@@ -34,6 +34,20 @@ The `prepare.js` script also performs a safety check for mismatches between the 
 - a function is referenced in the `subgraph.yaml` that isn't defined in any mapping files
 - a function defined in a mapping file isn't referenced in the `subgraph.yaml`
 
+## Grafting
+
+[Grafting](https://thegraph.com/docs/en/developing/creating-a-subgraph/#grafting-onto-existing-subgraphs) allows a new subgraph to use data from a pre-indexed subgraph version up to a specific block height, requiring less time for the new subgraph to index. 
+
+A grafting configuration can be defined with an optional `graft` property in `config/<network>.json`, like:
+```
+"graft": {
+  "base": "<subgraph-id>", # Qm...
+  "startBlock": <block-number> # 123...
+},
+```
+
+> Note: Grafting is only supported on the hosted service and cannot be used in a subgraph deployed on the decentralized network
+
 ## Deploying
 
 To deploy a new subgraph version, first prepare the subgraph for the intended network:
