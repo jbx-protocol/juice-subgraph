@@ -134,11 +134,12 @@ export function handleDistributeToReservedTokenSplit(
 
 export function handleLaunchProject(event: LaunchProject): void {
   const projectId = idForProject(event.params.projectId, pv);
-  const creator = event.params.caller;
+  const deployer = event.params.caller;
+  if (deployer != event.transaction.from) {
+    const project = Project.load(projectId)!;
 
-  const project = Project.load(projectId)!;
+    project.deployer = deployer;
 
-  project.creator = creator;
-
-  project.save();
+    project.save();
+  }
 }
