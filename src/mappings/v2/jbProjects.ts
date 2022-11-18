@@ -39,6 +39,7 @@ export function handleCreate(event: Create): void {
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
   project.createdWithinTrendingWindow = true;
   project.owner = event.params.owner;
+  project.creator = event.transaction.from;
   project.createdAt = event.block.timestamp.toI32();
   project.metadataUri = event.params.metadata.content;
   project.metadataDomain = event.params.metadata.domain;

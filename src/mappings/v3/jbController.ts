@@ -4,11 +4,13 @@ import {
   DistributeReservedTokensEvent,
   DistributeToReservedTokenSplitEvent,
   MintTokensEvent,
+  Project,
 } from "../../../generated/schema";
 import {
   DistributeReservedTokens,
   DistributeToReservedTokenSplit,
   MintTokens,
+  LaunchProject,
 } from "../../../generated/V3JBController/JBController";
 import { ProjectEventKey, Version } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
@@ -128,4 +130,15 @@ export function handleDistributeToReservedTokenSplit(
     pv,
     ProjectEventKey.distributeToReservedTokenSplitEvent
   );
+}
+
+export function handleLaunchProject(event: LaunchProject): void {
+  const projectId = idForProject(event.params.projectId, pv);
+  const creator = event.params.caller;
+
+  const project = Project.load(projectId)!;
+
+  project.creator = creator;
+
+  project.save();
 }

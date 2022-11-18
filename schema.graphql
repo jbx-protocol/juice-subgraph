@@ -56,6 +56,7 @@ type Project @entity {
   metadataDomain: BigInt
 
   owner: Bytes!
+  creator: Bytes!
   createdAt: Int!
   totalPaid: BigInt!
   totalRedeemed: BigInt!
