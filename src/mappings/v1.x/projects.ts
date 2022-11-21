@@ -30,6 +30,7 @@ export function handleProjectCreate(event: Create): void {
   if (!project) return;
   project.projectId = event.params.projectId.toI32();
   project.pv = pv;
+  project.deployer = event.transaction.from;
   project.trendingScore = BigInt.fromString("0");
   project.trendingVolume = BigInt.fromString("0");
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
