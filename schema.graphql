@@ -54,9 +54,9 @@ type Project @entity {
 
   # Only v2 + v3
   metadataDomain: BigInt
+  deployer: Bytes
 
   owner: Bytes!
-  deployer: Bytes!
   createdAt: Int!
   totalPaid: BigInt!
   totalRedeemed: BigInt!
