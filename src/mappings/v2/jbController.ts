@@ -9,6 +9,7 @@ import {
 import {
   DistributeReservedTokens,
   DistributeToReservedTokenSplit,
+  LaunchProject,
   Migrate,
   MintTokens,
 } from "../../../generated/V2JBController/JBController";
@@ -138,5 +139,23 @@ export function handleMigrate(event: Migrate): void {
   const project = Project.load(projectId);
   if (!project) return;
   project.pv = pv;
+  project.save();
+}
+
+export function handleLaunchProject(event: LaunchProject): void {
+  const projectId = idForProject(event.params.projectId, pv);
+
+  const project = Project.load(projectId);
+
+  if (!project) {
+    log.error("[v2 handleLaunchProject] project not found for id: {}", [
+      projectId,
+    ]);
+    return;
+  }
+
+  // If the controller emits a launchProject event, the project launch tx was called via the JBController, and we want to prefer its `caller` param over any existing value
+  project.deployer = event.params.caller;
+
   project.save();
 }

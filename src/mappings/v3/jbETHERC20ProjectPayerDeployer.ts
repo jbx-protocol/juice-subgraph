@@ -9,7 +9,7 @@ import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { toHexLowercase } from "../../utils/format";
 import { idForProject } from "../../utils/ids";
 
-const pv: Version = "3";
+const pv: Version = "2";
 
 export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   JBETHERC20ProjectPayer.create(event.params.projectPayer);

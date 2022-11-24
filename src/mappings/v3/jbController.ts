@@ -16,7 +16,7 @@ import { ProjectEventKey, Version } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
-const pv: Version = "3";
+const pv: Version = "2";
 
 export function handleMintTokens(event: MintTokens): void {
   /**
@@ -134,12 +134,18 @@ export function handleDistributeToReservedTokenSplit(
 
 export function handleLaunchProject(event: LaunchProject): void {
   const projectId = idForProject(event.params.projectId, pv);
-  const deployer = event.params.caller;
-  if (deployer != event.transaction.from) {
-    const project = Project.load(projectId)!;
 
-    project.deployer = deployer;
+  const project = Project.load(projectId);
 
-    project.save();
+  if (!project) {
+    log.error("[v3 handleLaunchProject] project not found for id: {}", [
+      projectId,
+    ]);
+    return;
   }
+
+  // If the controller emits a launchProject event, the project launch tx was called via the JBController, and we want to prefer its `caller` param over any existing value
+  project.deployer = event.params.caller;
+
+  project.save();
 }
