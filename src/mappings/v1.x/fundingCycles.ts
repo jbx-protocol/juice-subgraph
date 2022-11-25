@@ -5,7 +5,7 @@ import {
   Init,
 } from "../../../generated/FundingCycles/FundingCycles";
 import { V1ConfigureEvent, V1InitEvent } from "../../../generated/schema";
-import { BITS_8 } from "../../constants";
+import { BITS_160_HEX, BITS_8 } from "../../constants";
 import { ProjectEventKey } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../utils/ids";
@@ -65,11 +65,14 @@ export function handleV1Configure(event: Configure): void {
       .bitAnd(BigInt.fromI32(1))
       .toI32();
 
-    // let extension = Bytes.fromHexString("0x");
-    // for (let i = 34; i < 160; i += 32) {
-    //   extension = extension.concatI32(metadata.rightShift(i).toI32());
-    // }
-    // configureEvent.extension = Bytes.fromUint8Array(extension.reverse());
+    configureEvent.extension = Bytes.fromUint8Array(
+      Bytes.fromBigInt(
+        metadata.rightShift(34).bitAnd(
+          // Convert to uint160
+          BigInt.fromSignedBytes(Bytes.fromHexString(BITS_160_HEX))
+        )
+      ).reverse() // assemblyscript bytes is little-endian. we want big-endian
+    );
   }
 
   configureEvent.save();

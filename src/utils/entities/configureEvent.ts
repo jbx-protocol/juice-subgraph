@@ -131,7 +131,7 @@ export function newPV2ConfigureEvent(
         // Convert to uint160
         BigInt.fromSignedBytes(Bytes.fromHexString(BITS_160_HEX))
       )
-    ).reverse()
+    ).reverse() // assemblyscript bytes is little-endian. we want big-endian
   );
   configureEvent.metametadata = metadata.rightShift(244).toI32();
 
