@@ -57,7 +57,7 @@ export function handleV1Configure(event: Configure): void {
     for (let i = 34; i < 160; i += 32) {
       extension = extension.concatI32(event.params.metadata.toI32() >> i);
     }
-    configureEvent.extension = extension;
+    configureEvent.extension = extension.reverse();
   }
 
   configureEvent.save();

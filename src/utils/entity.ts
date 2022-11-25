@@ -370,7 +370,7 @@ export function newPV2ConfigureEvent(
     dataSource = dataSource.concatI32(metadata.toI32() >> i);
   }
 
-  configureEvent.dataSource = dataSource;
+  configureEvent.dataSource = dataSource.reverse();
   configureEvent.metametadata = metadata.toI32() >> 244;
 
   return configureEvent;
