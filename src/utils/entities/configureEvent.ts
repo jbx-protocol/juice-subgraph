@@ -2,12 +2,13 @@ import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 
 import { ConfigureEvent } from "../../../generated/schema";
 import {
+  BIGINT_1,
   BITS_16,
-  BITS_160_HEX,
   BITS_8,
   MAX_REDEMPTION_RATE,
 } from "../../constants";
 import { Version } from "../../types";
+import { bytes20FromUint } from "../format";
 import { idForProject, idForProjectTx } from "../ids";
 
 export function newPV2ConfigureEvent(
@@ -51,15 +52,15 @@ export function newPV2ConfigureEvent(
   // Unpacking global metadata.
   const globalMetadata = metadata.rightShift(8).bitAnd(BigInt.fromI32(BITS_8));
   configureEvent.setTerminalsAllowed = !globalMetadata
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.setControllerAllowed = !globalMetadata
     .rightShift(1)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.transfersPaused = !globalMetadata
     .rightShift(2)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
 
   // Unpacking metadata. See github.com/jbx-protocol/juice-contracts-v3/blob/main/contracts/libraries/JBFundingCycleMetadataResolver.sol
@@ -78,61 +79,54 @@ export function newPV2ConfigureEvent(
 
   configureEvent.payPaused = !metadata
     .rightShift(72)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.distributionsPaused = !metadata
     .rightShift(73)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.redeemPaused = !metadata
     .rightShift(74)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.burnPaused = !metadata
     .rightShift(75)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.mintingAllowed = !metadata
     .rightShift(76)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.terminalMigrationAllowed = !metadata
     .rightShift(77)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.controllerMigrationAllowed = !metadata
     .rightShift(78)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.shouldHoldFees = !metadata
     .rightShift(79)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.preferClaimedTokenOverride = !metadata
     .rightShift(80)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.useTotalOverflowForRedemptions = !metadata
     .rightShift(81)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.useDataSourceForPay = !metadata
     .rightShift(82)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
   configureEvent.useDataSourceForRedeem = !metadata
     .rightShift(83)
-    .bitAnd(BigInt.fromI32(1))
+    .bitAnd(BIGINT_1)
     .isZero();
 
-  configureEvent.dataSource = Bytes.fromUint8Array(
-    Bytes.fromBigInt(
-      metadata.rightShift(84).bitAnd(
-        // Convert to uint160
-        BigInt.fromSignedBytes(Bytes.fromHexString(BITS_160_HEX))
-      )
-    ).reverse() // assemblyscript bytes is little-endian. we want big-endian
-  );
+  configureEvent.dataSource = bytes20FromUint(metadata.rightShift(84));
   configureEvent.metametadata = metadata.rightShift(244).toI32();
 
   return configureEvent;

@@ -1,13 +1,14 @@
-import { BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 import {
   Configure,
   Init,
 } from "../../../generated/FundingCycles/FundingCycles";
 import { V1ConfigureEvent, V1InitEvent } from "../../../generated/schema";
-import { BITS_160_HEX, BITS_8 } from "../../constants";
+import { BIGINT_1, BITS_8 } from "../../constants";
 import { ProjectEventKey } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
+import { bytes20FromUint } from "../../utils/format";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 import { pvForV1Project } from "../../utils/pv";
 
@@ -55,24 +56,17 @@ export function handleV1Configure(event: Configure): void {
     .toI32();
 
   // If v1.1, parse additional metadata
-  if (configureEvent.version) {
+  if (configureEvent.version > 0) {
     configureEvent.payIsPaused = !!metadata
       .rightShift(32)
-      .bitAnd(BigInt.fromI32(1))
+      .bitAnd(BIGINT_1)
       .toI32();
     configureEvent.ticketPrintingIsAllowed = !!metadata
       .rightShift(33)
-      .bitAnd(BigInt.fromI32(1))
+      .bitAnd(BIGINT_1)
       .toI32();
 
-    configureEvent.extension = Bytes.fromUint8Array(
-      Bytes.fromBigInt(
-        metadata.rightShift(34).bitAnd(
-          // Convert to uint160
-          BigInt.fromSignedBytes(Bytes.fromHexString(BITS_160_HEX))
-        )
-      ).reverse() // assemblyscript bytes is little-endian. we want big-endian
-    );
+    configureEvent.extension = bytes20FromUint(metadata.rightShift(34));
   }
 
   configureEvent.save();

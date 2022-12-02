@@ -584,7 +584,7 @@ type ConfigureEvent @entity {
   useDataSourceForPay: Boolean!
   useDataSourceForRedeem: Boolean!
 
-  dataSource: Bytes!
+  dataSource: Bytes
   metametadata: Int!
 }
 
