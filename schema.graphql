@@ -54,6 +54,7 @@ type Project @entity {
 
   # Only v2 + v3
   metadataDomain: BigInt
+  deployer: Bytes
 
   owner: Bytes!
   createdAt: Int!
@@ -89,6 +90,10 @@ type Project @entity {
   deployVeNftEvents: [DeployVeNftEvent!]! @derivedFrom(field: "project")
   veNftContract: VeNftContract @derivedFrom(field: "project")
   jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "project")
+  configureEvents: [ConfigureEvent!]! @derivedFrom(field: "project")
+  initEvents: [InitEvent!]! @derivedFrom(field: "project")
+  v1ConfigureEvents: [V1ConfigureEvent!]! @derivedFrom(field: "project")
+  v1InitEvents: [V1InitEvent!]! @derivedFrom(field: "project")
 }
 
 # v1.0, v1.1, v2, v3
@@ -133,6 +138,10 @@ type ProjectEvent @entity {
   useAllowanceEvent: UseAllowanceEvent
   deployETHERC20ProjectPayerEvent: DeployETHERC20ProjectPayerEvent
   deployVeNftEvent: DeployVeNftEvent
+  configureEvent: ConfigureEvent
+  initEvent: InitEvent
+  v1ConfigureEvent: V1ConfigureEvent
+  v1InitEvent: V1InitEvent
 }
 
 # v1.0, v1.1, v2, v3
@@ -295,6 +304,52 @@ type DistributeToTicketModEvent @entity {
   modCut: BigInt!
   caller: Bytes!
   printReservesEvent: PrintReservesEvent!
+}
+
+# v1, v1.1
+type V1ConfigureEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  timestamp: Int!
+  txHash: Bytes!
+
+  caller: Bytes!
+  target: BigInt!
+  currency: Int!
+  duration: Int!
+  cycleLimit: Int!
+  discountRate: Int!
+  ballot: Bytes!
+
+  fundingCycleId: Int!
+  reconfigured: Int!
+  metadata: BigInt!
+
+  version: Int!
+  reservedRate: Int!
+  bondingCurveRate: Int!
+  reconfigurationBondingCurveRate: Int!
+
+  payIsPaused: Boolean
+  ticketPrintingIsAllowed: Boolean
+  extension: Bytes
+}
+
+# v1, v1.1
+type V1InitEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  timestamp: Int!
+  txHash: Bytes!
+
+  caller: Bytes!
+  fundingCycleId: Int!
+  previous: Int!
+  start: Int!
+  weight: BigInt!
+  number: Int!
 }
 
 #############################################################################
@@ -491,6 +546,61 @@ type VeNftContract @entity {
   tokens: [VeNftToken!]! @derivedFrom(field: "contract")
 }
 
+# v2, v3
+type ConfigureEvent @entity {
+  id: ID!
+  projectId: Int!
+  project: Project!
+  timestamp: Int!
+  txHash: Bytes!
+  caller: Bytes!
+
+  duration: Int!
+  weight: BigInt!
+  discountRate: BigInt!
+  ballot: Bytes!
+
+  mustStartAtOrAfter: Int!
+  configuration: Int!
+  metadata: BigInt!
+
+  setTerminalsAllowed: Boolean!
+  setControllerAllowed: Boolean!
+  transfersPaused: Boolean!
+
+  reservedRate: Int!
+  redemptionRate: Int!
+  ballotRedemptionRate: Int!
+  payPaused: Boolean!
+  distributionsPaused: Boolean!
+  redeemPaused: Boolean!
+  burnPaused: Boolean!
+  mintingAllowed: Boolean!
+  terminalMigrationAllowed: Boolean!
+  controllerMigrationAllowed: Boolean!
+  shouldHoldFees: Boolean!
+  preferClaimedTokenOverride: Boolean!
+  useTotalOverflowForRedemptions: Boolean!
+  useDataSourceForPay: Boolean!
+  useDataSourceForRedeem: Boolean!
+
+  dataSource: Bytes
+  metametadata: Int!
+}
+
+# v2, v3
+type InitEvent @entity {
+  id: ID!
+  projectId: Int!
+  project: Project!
+  timestamp: Int!
+  txHash: Bytes!
+  caller: Bytes!
+
+  configuration: Int!
+  basedOn: Int!
+}
+
 #############################################################################
 ################################ v3 entities ################################
 #############################################################################
@@ -513,12 +623,14 @@ type JB721DelegateToken @entity {
   projectId: Int!
   name: String!
   symbol: String!
-  floorPrice: BigInt!
-  lockedUntil: BigInt!
 
   # dynamic fields
   owner: Participant!
   tokenUri: String!
+
+  # optional: only on tiered tokens
+  floorPrice: BigInt
+  lockedUntil: BigInt
 }
 
 #############################################################################

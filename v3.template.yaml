@@ -40,14 +40,13 @@
         - DistributeReservedTokensEvent
         - DistributeToReservedTokenSplitEvent
         - MintTokensEvent
+        - Project
       abis:
         - name: JBController
           file: ./abis/v3/JBController.json
-        - name: V2JBDirectory
-          file: ./abis/v2/JBDirectory.json
-        - name: V3JBDirectory
-          file: ./abis/v3/JBDirectory.json
       eventHandlers:
+        - event: LaunchProject(uint256,uint256,string,address)
+          handler: handleLaunchProject
         - event: MintTokens(indexed address,indexed uint256,uint256,uint256,string,uint256,address)
           handler: handleMintTokens
         - event: DistributeReservedTokens(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,string,address)
@@ -77,10 +76,6 @@
       abis:
         - name: JBTokenStore
           file: ./abis/v3/JBTokenStore.json
-        - name: V2JBDirectory
-          file: ./abis/v2/JBDirectory.json
-        - name: V3JBDirectory
-          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: Burn(indexed address,indexed uint256,uint256,uint256,uint256,bool,address)
           handler: handleBurn
@@ -94,6 +89,33 @@
           handler: handleTransfer
       file: ./src/mappings/v3/jbTokenStore.ts
   {{ /v3.address_jbTokenStore }}
+  {{ #v3.address_jbFundingCycleStore }}
+  - kind: ethereum/contract
+    name: V3JBFundingCycleStore
+    network: {{network}}
+    source:
+      address: '{{v3.address_jbFundingCycleStore}}'
+      abi: JBFundingCycleStore
+      startBlock: {{v3.startBlock_jbFundingCycleStore}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Configure
+        - Init
+      abis:
+        - name: JBController
+          file: ./abis/v3/JBController.json
+        - name: JBFundingCycleStore
+          file: ./abis/v3/JBFundingCycleStore.json
+      eventHandlers:
+        - event: Configure(indexed uint256,indexed uint256,(uint256,uint256,uint256,address),uint256,uint256,address)
+          handler: handleConfigure
+        - event: Init(indexed uint256,indexed uint256,indexed uint256)
+          handler: handleInit
+      file: ./src/mappings/v3/jbFundingCycleStore.ts
+  {{ /v3.address_jbFundingCycleStore }}
   {{ #v3.address_jbETHPaymentTerminal }}
   - kind: ethereum/contract
     name: V3JBETHPaymentTerminal
@@ -118,10 +140,6 @@
       abis:
         - name: JBETHPaymentTerminal
           file: ./abis/v3/JBETHPaymentTerminal.json
-        - name: V2JBDirectory
-          file: ./abis/v2/JBDirectory.json
-        - name: V3JBDirectory
-          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
           handler: handlePay

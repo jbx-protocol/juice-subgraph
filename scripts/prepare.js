@@ -112,6 +112,17 @@ function writeSubgraph() {
       .toString();
   }
 
+  const graftConfig = config.graft
+    ? `  - grafting
+graft:
+  base: ${config.graft.base}
+  block: ${config.graft.startBlock}`
+    : undefined;
+
+  if (graftConfig) {
+    console.log(chalk.cyan.bold("Grafting:"), config.graft);
+  }
+
   // Write new subgraph.yaml
   try {
     fs.writeFileSync(
@@ -120,6 +131,7 @@ function writeSubgraph() {
         .render(fs.readFileSync("subgraph.template.yaml").toString(), {
           // subgraph.template.yaml also needs config.network
           network: config.network,
+          graftConfig,
           ...dataSourceSnippets,
         })
         .toString()

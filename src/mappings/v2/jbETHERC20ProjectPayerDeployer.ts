@@ -1,13 +1,13 @@
-import { DeployProjectPayer } from "../../../generated/V2JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
 import {
   DeployETHERC20ProjectPayerEvent,
   ETHERC20ProjectPayer,
 } from "../../../generated/schema";
 import { JBETHERC20ProjectPayer } from "../../../generated/templates";
-import { Version, ProjectEventKey } from "../../types";
-import { saveNewProjectEvent } from "../../utils/entity";
-import { idForProject } from "../../utils/ids";
+import { DeployProjectPayer } from "../../../generated/V2JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
+import { ProjectEventKey, Version } from "../../types";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { toHexLowercase } from "../../utils/format";
+import { idForProject } from "../../utils/ids";
 
 const pv: Version = "2";
 

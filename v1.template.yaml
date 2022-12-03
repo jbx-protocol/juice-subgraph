@@ -32,6 +32,33 @@
           handler: handleTransferOwnership
       file: ./src/mappings/v1.x/projects.ts
   {{ /v1.address_projects }}
+  {{ #v1.address_fundingCycles }}
+  - kind: ethereum/contract
+    name: FundingCycles
+    network: {{network}}
+    source:
+      address: '{{v1.address_fundingCycles}}'
+      abi: FundingCycles
+      startBlock: {{v1.startBlock_fundingCycles}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Configure
+        - Init
+      abis:
+        - name: FundingCycles
+          file: ./abis/v1/FundingCycles.json
+        - name: TerminalDirectory
+          file: ./abis/v1/TerminalDirectory.json
+      eventHandlers:
+        - event: Configure(indexed uint256,indexed uint256,uint256,(uint256,uint256,uint256,uint256,uint256,address),uint256,address)
+          handler: handleV1Configure
+        - event: Init(indexed uint256,indexed uint256,uint256,uint256,uint256,uint256)
+          handler: handleV1Init
+      file: ./src/mappings/v1.x/fundingCycles.ts
+  {{ /v1.address_fundingCycles }}
   {{ #v1.address_ticketBooth }}
   - kind: ethereum/contract
     name: TicketBooth

@@ -43,11 +43,9 @@
       abis:
         - name: JBController
           file: ./abis/v2/JBController.json
-        - name: V2JBDirectory
-          file: ./abis/v2/JBDirectory.json
-        - name: V3JBDirectory
-          file: ./abis/v3/JBDirectory.json
       eventHandlers:
+        - event: LaunchProject(uint256,uint256,string,address)
+          handler: handleLaunchProject
         - event: MintTokens(indexed address,indexed uint256,uint256,uint256,string,uint256,address)
           handler: handleMintTokens
         - event: DistributeReservedTokens(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,string,address)
@@ -112,10 +110,6 @@
       abis:
         - name: JBProjects
           file: ./abis/v2/JBProjects.json
-        - name: V2JBDirectory
-          file: ./abis/v2/JBDirectory.json
-        - name: V3JBDirectory
-          file: ./abis/v3/JBDirectory.json
       eventHandlers:
         - event: Create(indexed uint256,indexed address,(string,uint256),address)
           handler: handleCreate
@@ -125,6 +119,33 @@
           handler: handleSetMetadata
       file: ./src/mappings/v2/jbProjects.ts
   {{ /v2.address_jbProjects }}
+  {{ #v2.address_jbFundingCycleStore }}
+  - kind: ethereum/contract
+    name: V2JBFundingCycleStore
+    network: {{network}}
+    source:
+      address: '{{v2.address_jbFundingCycleStore}}'
+      abi: JBFundingCycleStore
+      startBlock: {{v2.startBlock_jbFundingCycleStore}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ConfigureEvent
+        - InitEvent
+      abis:
+        - name: JBController
+          file: ./abis/v2/JBController.json
+        - name: JBFundingCycleStore
+          file: ./abis/v2/JBFundingCycleStore.json
+      eventHandlers:
+        - event: Configure(indexed uint256,indexed uint256,(uint256,uint256,uint256,address),uint256,uint256,address)
+          handler: handleConfigure
+        - event: Init(indexed uint256,indexed uint256,indexed uint256)
+          handler: handleInit
+      file: ./src/mappings/v2/jbFundingCycleStore.ts
+  {{ /v2.address_jbFundingCycleStore }}
   {{ #v2.address_jbETHPaymentTerminal }}
   - kind: ethereum/contract
     name: V2JBETHPaymentTerminal

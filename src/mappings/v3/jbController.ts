@@ -4,17 +4,19 @@ import {
   DistributeReservedTokensEvent,
   DistributeToReservedTokenSplitEvent,
   MintTokensEvent,
+  Project,
 } from "../../../generated/schema";
 import {
   DistributeReservedTokens,
   DistributeToReservedTokenSplit,
   MintTokens,
+  LaunchProject,
 } from "../../../generated/V3JBController/JBController";
 import { ProjectEventKey, Version } from "../../types";
-import { saveNewProjectEvent } from "../../utils/entity";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
-const pv: Version = "3";
+const pv: Version = "2";
 
 export function handleMintTokens(event: MintTokens): void {
   /**
@@ -128,4 +130,22 @@ export function handleDistributeToReservedTokenSplit(
     pv,
     ProjectEventKey.distributeToReservedTokenSplitEvent
   );
+}
+
+export function handleLaunchProject(event: LaunchProject): void {
+  const projectId = idForProject(event.params.projectId, pv);
+
+  const project = Project.load(projectId);
+
+  if (!project) {
+    log.error("[v3 handleLaunchProject] project not found for id: {}", [
+      projectId,
+    ]);
+    return;
+  }
+
+  // If the controller emits a launchProject event, the project launch tx was called via the JBController, and we want to prefer its `caller` param over any existing value
+  project.deployer = event.params.caller;
+
+  project.save();
 }

@@ -1,23 +1,24 @@
 import { BigInt, log } from "@graphprotocol/graph-ts";
-import {
-  Create,
-  SetMetadata,
-  Transfer,
-} from "../../../generated/V2JBProjects/JBProjects";
+
 import {
   Project,
   ProjectCreateEvent,
   ProtocolLog,
   ProtocolV2Log,
 } from "../../../generated/schema";
+import {
+  Create,
+  SetMetadata,
+  Transfer,
+} from "../../../generated/V2JBProjects/JBProjects";
 import { PROTOCOL_ID } from "../../constants";
 import { ProjectEventKey, Version } from "../../types";
+import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import {
   newProtocolLog,
   newProtocolV2Log,
-  saveNewProjectEvent,
   updateProtocolEntity,
-} from "../../utils/entity";
+} from "../../utils/entities/protocolLog";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
 const pv: Version = "2";
@@ -38,6 +39,7 @@ export function handleCreate(event: Create): void {
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
   project.createdWithinTrendingWindow = true;
   project.owner = event.params.owner;
+  project.deployer = event.params.caller;
   project.createdAt = event.block.timestamp.toI32();
   project.metadataUri = event.params.metadata.content;
   project.metadataDomain = event.params.metadata.domain;
@@ -106,7 +108,7 @@ export function handleTransferOwnership(event: Transfer): void {
   const project = Project.load(idForProject(event.params.tokenId, pv));
   if (!project) {
     /**
-     * Project will be missing when project 721 token is transferred 
+     * Project will be missing when project 721 token is transferred
      * for the first time at creation, so we don't throw any errors.
      */
     return;

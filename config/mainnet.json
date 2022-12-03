@@ -10,7 +10,9 @@
     "address_terminalDirectory": "0x46C9999A2EDCD5aA177ed7E8af90c68b7d75Ba46",
     "startBlock_terminalDirectory": 12833337,
     "address_ticketBooth": "0xee2eBCcB7CDb34a8A822b589F9E8427C24351bfc",
-    "startBlock_ticketBooth": 12833339
+    "startBlock_ticketBooth": 12833339,
+    "address_fundingCycles": "0xf507B2A1dD7439201eb07F11E1d62AfB29216e2E",
+    "startBlock_fundingCycles": 12833338
   },
   "v2": {
     "address_jbProjects": "0xD8B4359143eda5B2d763E127Ed27c77addBc47d3",
@@ -23,7 +25,8 @@
     "startBlock_jbETHPaymentTerminal": 14868869,
     "address_jbETHERC20ProjectPayerDeployer": "0x9E84bEcA3E4d3cfE5C3b5E1b534363E8D7468ABc",
     "startBlock_jbETHERC20ProjectPayerDeployer": 14730683,
-    "address_jbDirectory": "0xCc8f7a89d89c2AB3559f484E0C656423E979ac9C"
+    "address_jbFundingCycleStore": "0x6B8e01DAA8A61b544F96d2738893E05D04BF1D12",
+    "startBlock_jbFundingCycleStore": 14868844
   },
   "v3": {
     "address_jbController": "0xFFdD70C318915879d5192e8a0dcbFcB0285b3C98",
@@ -34,7 +37,8 @@
     "startBlock_jbETHPaymentTerminal": 15575464,
     "address_jbETHERC20ProjectPayerDeployer": "0x144F5F5Fdbe0fC8d4A758f33Bf14F68bdFe6feBD",
     "startBlock_jbETHERC20ProjectPayerDeployer": 15575452,
-    "address_jbDirectory": "0x65572FB928b46f9aDB7cfe5A4c41226F636161ea",
+    "address_jbFundingCycleStore": "0x6f18cF9173136c0B5A6eBF45f19D58d3ff2E17e6",
+    "startBlock_jbFundingCycleStore": 15575456,
     "address_jbTiered721DelegateDeployer": "0x748575f8aa3da88d478c331dca321282480e6038",
     "startBlock_jbTiered721DelegateDeployer": 15890760,
     "address_jbTiered721DelegateStore": "0xffb2cd8519439a7ddcf2c933caedd938053067d2",
@@ -45,6 +49,8 @@
     "startBlock_legacy_jbProjectHandles": 14975701,
     "address_jbProjectHandles": "0xD75d2EeF7Fe65Bf9f46D7ef0b21EdED98cB0a3A4",
     "startBlock_jbProjectHandles": 15873677,
-    "address_ensRegistry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
+    "address_ensRegistry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+    "address_defifa721Delegate": "0xBC855060A8c96076a6778D547D430E6f43E9809A",
+    "startBlock_defifa721Delegate": 15930559
   }
 }
