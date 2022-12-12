@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 
 import {
   Create,
@@ -27,7 +27,12 @@ export function handleProjectCreate(event: Create): void {
   const pv = pvForTerminal(event.params.terminal);
   const projectId = idForProject(event.params.projectId, pv);
   const project = new Project(projectId);
-  if (!project) return;
+
+  if (!project) {
+    log.error("[handleProjectCreate] Missing project. ID:{}", [projectId]);
+    return;
+  }
+
   project.projectId = event.params.projectId.toI32();
   project.pv = pv;
   project.trendingScore = BigInt.fromString("0");
@@ -40,7 +45,9 @@ export function handleProjectCreate(event: Create): void {
   project.createdAt = event.block.timestamp.toI32();
   project.metadataUri = event.params.uri;
   project.totalPaid = BigInt.fromString("0");
+  project.totalPaidUSD = BigInt.fromString("0");
   project.totalRedeemed = BigInt.fromString("0");
+  project.totalRedeemedUSD = BigInt.fromString("0");
   project.currentBalance = BigInt.fromString("0");
   project.save();
 
@@ -84,7 +91,10 @@ export function handleSetHandle(event: SetHandle): void {
   const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
-  if (!project) return;
+  if (!project) {
+    log.error("[handleProjectCreate] Missing project. ID:{}", [projectId]);
+    return;
+  }
   project.handle = event.params.handle.toString();
   project.save();
 }
@@ -93,15 +103,22 @@ export function handleSetUri(event: SetUri): void {
   const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
-  if (!project) return;
+  if (!project) {
+    log.error("[handleProjectCreate] Missing project. ID:{}", [projectId]);
+    return;
+  }
   project.metadataUri = event.params.uri;
   project.save();
 }
 
 export function handleTransferOwnership(event: Transfer): void {
   const pv = pvForV1Project(event.params.tokenId);
-  const project = Project.load(idForProject(event.params.tokenId, pv));
-  if (!project) return;
+  const projectId = idForProject(event.params.tokenId, pv);
+  const project = Project.load(projectId);
+  if (!project) {
+    log.error("[handleProjectCreate] Missing project. ID:{}", [projectId]);
+    return;
+  }
   project.owner = event.params.to;
   project.save();
 }

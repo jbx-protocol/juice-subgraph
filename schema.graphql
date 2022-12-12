@@ -8,7 +8,9 @@ type ProtocolLog @entity {
 
   projectsCount: Int!
   volumePaid: BigInt!
+  volumePaidUSD: BigInt!
   volumeRedeemed: BigInt!
+  volumeRedeemedUSD: BigInt!
   paymentsCount: Int!
   redeemCount: Int!
   erc20Count: Int!
@@ -59,12 +61,15 @@ type Project @entity {
   owner: Bytes!
   createdAt: Int!
   totalPaid: BigInt!
+  totalPaidUSD: BigInt!
   totalRedeemed: BigInt!
+  totalRedeemedUSD: BigInt!
   currentBalance: BigInt!
   trendingScore: BigInt!
   trendingVolume: BigInt!
   trendingPaymentsCount: Int!
   createdWithinTrendingWindow: Boolean!
+  nftsMintedCount: Int!
 
   # Derived fields
   participants: [Participant!]! @derivedFrom(field: "project")
@@ -104,6 +109,7 @@ type Participant @entity {
   pv: String!
   wallet: Bytes!
   totalPaid: BigInt!
+  totalPaidUSD: BigInt!
   lastPaidTimestamp: Int!
   balance: BigInt!
   stakedBalance: BigInt!
@@ -157,6 +163,7 @@ type PayEvent @entity {
   caller: Bytes!
   beneficiary: Bytes!
   amount: BigInt!
+  amountUSD: BigInt
   note: String!
   feeFromV2Project: Int # Indicates payment is a fee from project with this ID
 }
@@ -173,6 +180,7 @@ type AddToBalanceEvent @entity {
 
   caller: Bytes!
   amount: BigInt!
+  amountUSD: BigInt
   note: String
 }
 
@@ -205,6 +213,7 @@ type RedeemEvent @entity {
   beneficiary: Bytes!
   amount: BigInt!
   returnAmount: BigInt!
+  returnAmountUSD: BigInt
   caller: Bytes!
 }
 
@@ -230,7 +239,9 @@ type ProtocolV1Log @entity {
   log: ProtocolLog!
   projectsCount: Int!
   volumePaid: BigInt!
+  volumePaidUSD: BigInt!
   volumeRedeemed: BigInt!
+  volumeRedeemedUSD: BigInt!
   paymentsCount: Int!
   redeemCount: Int!
   erc20Count: Int!
@@ -267,6 +278,7 @@ type DistributeToPayoutModEvent @entity {
   modBeneficiary: Bytes!
   modPreferUnstaked: Boolean!
   modCut: BigInt!
+  modCutUSD: BigInt
   caller: Bytes!
   tapEvent: TapEvent!
 }
@@ -282,10 +294,14 @@ type TapEvent @entity {
   fundingCycleId: BigInt!
   beneficiary: Bytes!
   amount: BigInt!
+  amountUSD: BigInt
   currency: BigInt!
   netTransferAmount: BigInt!
+  netTransferAmountUSD: BigInt
   beneficiaryTransferAmount: BigInt!
+  beneficiaryTransferAmountUSD: BigInt
   govFeeAmount: BigInt!
+  govFeeAmountUSD: BigInt
   caller: Bytes!
   distributions: [DistributeToPayoutModEvent!]! @derivedFrom(field: "tapEvent")
 }
@@ -361,7 +377,9 @@ type ProtocolV2Log @entity {
   log: ProtocolLog!
   projectsCount: Int!
   volumePaid: BigInt!
+  volumePaidUSD: BigInt!
   volumeRedeemed: BigInt!
+  volumeRedeemedUSD: BigInt!
   paymentsCount: Int!
   redeemCount: Int!
   erc20Count: Int!
@@ -380,9 +398,13 @@ type DistributePayoutsEvent @entity {
   fundingCycleNumber: Int!
   beneficiary: Bytes!
   amount: BigInt!
+  amountUSD: BigInt
   distributedAmount: BigInt!
+  distributedAmountUSD: BigInt
   fee: BigInt!
+  feeUSD: BigInt
   beneficiaryDistributionAmount: BigInt!
+  beneficiaryDistributionAmountUSD: BigInt
   memo: String!
   caller: Bytes!
   splitDistributions: [DistributeToPayoutSplitEvent!]!
@@ -401,6 +423,7 @@ type DistributeToPayoutSplitEvent @entity {
   domain: BigInt!
   group: BigInt!
   amount: BigInt!
+  amountUSD: BigInt
   caller: Bytes!
   distributePayoutsEvent: DistributePayoutsEvent!
 
@@ -465,8 +488,11 @@ type UseAllowanceEvent @entity{
   fundingCycleNumber: Int!
   beneficiary: Bytes!
   amount: BigInt!
+  amountUSD: BigInt
   distributedAmount: BigInt!
+  distributedAmountUSD: BigInt
   netDistributedamount: BigInt!
+  netDistributedamountUSD: BigInt
   memo: String!
   caller: Bytes!
 }
@@ -609,7 +635,9 @@ type ProtocolV3Log @entity {
   log: ProtocolLog!
   projectsCount: Int!
   volumePaid: BigInt!
+  volumePaidUSD: BigInt!
   volumeRedeemed: BigInt!
+  volumeRedeemedUSD: BigInt!
   paymentsCount: Int!
   redeemCount: Int!
   erc20Count: Int!

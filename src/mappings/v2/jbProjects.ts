@@ -44,7 +44,9 @@ export function handleCreate(event: Create): void {
   project.metadataUri = event.params.metadata.content;
   project.metadataDomain = event.params.metadata.domain;
   project.totalPaid = BigInt.fromString("0");
+  project.totalPaidUSD = BigInt.fromString("0");
   project.totalRedeemed = BigInt.fromString("0");
+  project.totalRedeemedUSD = BigInt.fromString("0");
   project.currentBalance = BigInt.fromString("0");
   project.save();
 

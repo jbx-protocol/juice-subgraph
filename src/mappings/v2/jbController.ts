@@ -137,7 +137,10 @@ export function handleDistributeToReservedTokenSplit(
 export function handleMigrate(event: Migrate): void {
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
-  if (!project) return;
+  if (!project) {
+    log.error("[handleMigrate] Missing project. ID:{}", [projectId]);
+    return;
+  }
   project.pv = pv;
   project.save();
 }
