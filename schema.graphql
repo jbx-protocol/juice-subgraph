@@ -208,6 +208,7 @@ type RedeemEvent @entity {
   terminal: Bytes!
   timestamp: Int!
   txHash: Bytes!
+  metadata: Bytes # only v2/v3
 
   holder: Bytes!
   beneficiary: Bytes!

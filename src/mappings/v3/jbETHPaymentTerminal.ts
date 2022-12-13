@@ -294,6 +294,7 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     redeemEvent.project = projectId;
     redeemEvent.timestamp = event.block.timestamp.toI32();
     redeemEvent.txHash = event.transaction.hash;
+    redeemEvent.metadata = event.params.metadata;
     redeemEvent.save();
 
     saveNewProjectTerminalEvent(
