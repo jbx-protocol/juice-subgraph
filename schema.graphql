@@ -60,6 +60,8 @@ type Project @entity {
 
   owner: Bytes!
   createdAt: Int!
+  paymentsCount: Int!
+  redeemCount: Int!
   totalPaid: BigInt!
   totalPaidUSD: BigInt!
   totalRedeemed: BigInt!
@@ -69,7 +71,8 @@ type Project @entity {
   trendingVolume: BigInt!
   trendingPaymentsCount: Int!
   createdWithinTrendingWindow: Boolean!
-  nftsMintedCount: Int!
+
+  nftsMintedCount: Int # only if project has jb721DelegateTokens
 
   # Derived fields
   participants: [Participant!]! @derivedFrom(field: "project")

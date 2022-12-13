@@ -204,6 +204,7 @@ export function handlePay(event: Pay): void {
 
   project.totalPaid = project.totalPaid.plus(event.params.amount);
   project.currentBalance = project.currentBalance.plus(event.params.amount);
+  project.paymentsCount = project.paymentsCount + 1;
   project.save();
 
   if (pay) {
@@ -338,6 +339,7 @@ export function handleRedeemTokens(event: RedeemTokens): void {
   project.currentBalance = project.currentBalance.minus(
     event.params.reclaimedAmount
   );
+  project.redeemCount = project.redeemCount + 1;
   project.save();
 }
 

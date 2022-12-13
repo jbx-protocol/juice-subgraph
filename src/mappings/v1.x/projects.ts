@@ -49,6 +49,8 @@ export function handleProjectCreate(event: Create): void {
   project.totalRedeemed = BigInt.fromString("0");
   project.totalRedeemedUSD = BigInt.fromString("0");
   project.currentBalance = BigInt.fromString("0");
+  project.paymentsCount = 0;
+  project.redeemCount = 0;
   project.save();
 
   const projectCreateEvent = new ProjectCreateEvent(

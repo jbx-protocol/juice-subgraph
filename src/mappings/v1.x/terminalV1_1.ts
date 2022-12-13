@@ -60,6 +60,7 @@ export function handlePay(event: Pay): void {
   project.totalPaid = project.totalPaid.plus(event.params.amount);
   if (amountUSD) project.totalPaidUSD = project.totalPaidUSD.plus(amountUSD);
   project.currentBalance = project.currentBalance.plus(event.params.amount);
+  project.paymentsCount = project.paymentsCount + 1;
   project.save();
 
   if (pay) {
@@ -268,6 +269,7 @@ export function handleRedeem(event: Redeem): void {
     project.currentBalance = project.currentBalance.minus(
       event.params.returnAmount
     );
+    project.redeemCount = project.redeemCount + 1;
     project.save();
   }
 }
