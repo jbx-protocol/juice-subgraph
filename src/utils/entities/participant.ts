@@ -17,6 +17,7 @@ export function newParticipant(
   participant.stakedBalance = BigInt.fromString("0");
   participant.unstakedBalance = BigInt.fromString("0");
   participant.totalPaid = BigInt.fromString("0");
+  participant.totalPaidUSD = BigInt.fromString("0");
   participant.lastPaidTimestamp = 0;
   return participant;
 }

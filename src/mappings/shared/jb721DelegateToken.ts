@@ -1,11 +1,16 @@
 import { Address, Bytes, dataSource, log } from "@graphprotocol/graph-ts";
 
-import { JB721DelegateToken, Participant } from "../../../generated/schema";
+import {
+  JB721DelegateToken,
+  Participant,
+  Project,
+} from "../../../generated/schema";
 import {
   JB721DelegateToken as JB721DelegateTokenContract,
   Transfer,
 } from "../../../generated/templates/JB721DelegateToken/JB721DelegateToken";
 import { JBTiered721DelegateStore } from "../../../generated/templates/JB721DelegateToken/JBTiered721DelegateStore";
+import { ADDRESS_ZERO } from "../../constants";
 import { address_v3_jbTiered721DelegateStore } from "../../contractAddresses";
 import { newParticipant } from "../../utils/entities/participant";
 import {
@@ -107,6 +112,23 @@ export function handleTransfer(event: Transfer): void {
   // Create participant if doesn't exist
   let receiver = Participant.load(receiverId);
   if (!receiver) receiver = newParticipant(pv, projectId, event.params.to);
+
+  // Increment project stats
+  if (event.params.from == ADDRESS_ZERO) {
+    const _projectId = idForProject(projectId, pv);
+    const project = Project.load(_projectId);
+
+    if (project) {
+      if (project.nftsMintedCount == 0) project.nftsMintedCount = 1;
+      else project.nftsMintedCount = project.nftsMintedCount + 1;
+      project.save();
+    } else {
+      if (!project) {
+        log.error("[handleTransfer] Missing project. ID:{}", [_projectId]);
+        return;
+      }
+    }
+  }
 
   receiver.save();
 }

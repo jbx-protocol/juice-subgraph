@@ -10,12 +10,16 @@ import {
   idForVeNftContract,
 } from "../../utils/ids";
 import { JBVeNft } from "../../../generated/templates";
+import { log } from "@graphprotocol/graph-ts";
 
 export function handleDeployVeNft(event: DeployVeNft): void {
   const pv = "2";
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
-  if (!project) return;
+  if (!project) {
+    log.error("[handlePay] Missing project. ID:{}", [projectId]);
+    return;
+  }
 
   const deployVeNftEvent = new DeployVeNftEvent(
     idForProjectTx(event.params.projectId, pv, event)

@@ -11,7 +11,9 @@
     "address_ticketBooth": "0x0000000000000000000000000000000000000000",
     "startBlock_ticketBooth": 0,
     "address_fundingCycles": "0x0000000000000000000000000000000000000000",
-    "startBlock_fundingCycles": 0
+    "startBlock_fundingCycles": 0,
+    "address_prices": "0x0000000000000000000000000000000000000000",
+    "startBlock_prices": 0
   },
   "v2": {
     "address_jbProjects": "0x0000000000000000000000000000000000000000",
@@ -25,7 +27,9 @@
     "address_jbETHERC20ProjectPayerDeployer": "0x0000000000000000000000000000000000000000",
     "startBlock_jbETHERC20ProjectPayerDeployer": 0,
     "address_jbFundingCycleStore": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbFundingCycleStore": 0
+    "startBlock_jbFundingCycleStore": 0,
+    "address_jbPrices": "0x0000000000000000000000000000000000000000",
+    "startBlock_jbPrices": 0
   },
   "v3": {
     "address_jbController": "0x0000000000000000000000000000000000000000",
@@ -41,7 +45,9 @@
     "address_jbTiered721DelegateDeployer": "0x0000000000000000000000000000000000000000",
     "startBlock_jbTiered721DelegateDeployer": 0,
     "address_jbTiered721DelegateStore": "0x0000000000000000000000000000000000000000",
-    "startBlock_jbTiered721DelegateStore": 0
+    "startBlock_jbTiered721DelegateStore": 0,
+    "address_jbPrices": "0x0000000000000000000000000000000000000000",
+    "startBlock_jbPrices": 0
   },
   "shared": {
     "address_legacy_jbProjectHandles": "0x0000000000000000000000000000000000000000",

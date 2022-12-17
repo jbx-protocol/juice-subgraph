@@ -36,6 +36,7 @@ import {
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
+import { v2USDPriceForEth } from "../../utils/prices";
 import { handleTrendingPayment } from "../../utils/trending";
 
 const pv: Version = "2";
@@ -63,6 +64,7 @@ export function handleAddToBalance(event: AddToBalance): void {
     addToBalance.terminal = terminal;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.amount;
+    addToBalance.amountUSD = v2USDPriceForEth(event.params.amount);
     addToBalance.caller = event.transaction.from;
     addToBalance.project = projectId;
     addToBalance.note = event.params.memo;
@@ -85,6 +87,7 @@ export function handleDistributePayouts(event: DistributePayouts): void {
   const distributePayoutsEvent = new DistributePayoutsEvent(
     idForProjectTx(event.params.projectId, pv, event)
   );
+
   if (!distributePayoutsEvent) {
     log.error(
       "[handleDistributePayouts] Missing distributePayoutsEvent. ID:{}",
@@ -99,12 +102,17 @@ export function handleDistributePayouts(event: DistributePayouts): void {
   distributePayoutsEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutsEvent.txHash = event.transaction.hash;
   distributePayoutsEvent.amount = event.params.amount;
+  distributePayoutsEvent.amountUSD = v2USDPriceForEth(event.params.amount);
   distributePayoutsEvent.beneficiary = event.params.beneficiary;
   distributePayoutsEvent.beneficiaryDistributionAmount =
     event.params.beneficiaryDistributionAmount;
+  distributePayoutsEvent.beneficiaryDistributionAmountUSD =
+    event.params.beneficiaryDistributionAmount;
   distributePayoutsEvent.caller = event.transaction.from;
   distributePayoutsEvent.distributedAmount = event.params.distributedAmount;
+  distributePayoutsEvent.distributedAmountUSD = event.params.distributedAmount;
   distributePayoutsEvent.fee = event.params.fee;
+  distributePayoutsEvent.feeUSD = v2USDPriceForEth(event.params.fee);
   distributePayoutsEvent.fundingCycleConfiguration =
     event.params.fundingCycleConfiguration;
   distributePayoutsEvent.fundingCycleNumber = event.params.fundingCycleNumber.toI32();
@@ -156,6 +164,7 @@ export function handleDistributeToPayoutSplit(
   distributePayoutSplitEvent.txHash = event.transaction.hash;
   distributePayoutSplitEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutSplitEvent.amount = event.params.amount;
+  distributePayoutSplitEvent.amountUSD = v2USDPriceForEth(event.params.amount);
   distributePayoutSplitEvent.caller = event.transaction.from;
   distributePayoutSplitEvent.domain = event.params.domain;
   distributePayoutSplitEvent.group = event.params.group;
@@ -191,8 +200,11 @@ export function handlePay(event: Pay): void {
     return;
   }
 
+  const amountUSD = v2USDPriceForEth(event.params.amount);
+
   project.totalPaid = project.totalPaid.plus(event.params.amount);
   project.currentBalance = project.currentBalance.plus(event.params.amount);
+  project.paymentsCount = project.paymentsCount + 1;
   project.save();
 
   if (pay) {
@@ -200,6 +212,7 @@ export function handlePay(event: Pay): void {
     pay.terminal = terminal;
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
+    pay.amountUSD = amountUSD;
     pay.beneficiary = event.params.beneficiary;
     pay.caller = event.transaction.from;
     pay.project = projectId;
@@ -220,17 +233,22 @@ export function handlePay(event: Pay): void {
     handleTrendingPayment(event.block.timestamp);
   }
 
+  // Update protocol log
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
   if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
   if (protocolV2Log) {
     protocolV2Log.volumePaid = protocolV2Log.volumePaid.plus(
       event.params.amount
     );
+    if (amountUSD) {
+      protocolV2Log.volumePaidUSD = protocolV2Log.volumePaidUSD.plus(amountUSD);
+    }
     protocolV2Log.paymentsCount = protocolV2Log.paymentsCount + 1;
     protocolV2Log.save();
   }
   updateProtocolEntity();
 
+  // Update participant
   const participantId = idForParticipant(
     event.params.projectId,
     pv,
@@ -244,7 +262,10 @@ export function handlePay(event: Pay): void {
       event.params.beneficiary
     );
   } else {
-    participant.totalPaid = event.params.amount.plus(participant.totalPaid);
+    participant.totalPaid = participant.totalPaid.plus(event.params.amount);
+    if (amountUSD) {
+      participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
+    }
   }
   participant.lastPaidTimestamp = event.block.timestamp.toI32();
   participant.save();
@@ -256,6 +277,9 @@ export function handleRedeemTokens(event: RedeemTokens): void {
   const redeemEvent = new RedeemEvent(
     idForProjectTx(event.params.projectId, pv, event, true)
   );
+
+  const reclaimedAmountUSD = v2USDPriceForEth(event.params.reclaimedAmount);
+
   if (redeemEvent) {
     redeemEvent.projectId = event.params.projectId.toI32();
     redeemEvent.pv = pv;
@@ -265,9 +289,11 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     redeemEvent.caller = event.transaction.from;
     redeemEvent.holder = event.params.holder;
     redeemEvent.returnAmount = event.params.reclaimedAmount;
+    redeemEvent.returnAmountUSD = reclaimedAmountUSD;
     redeemEvent.project = projectId;
     redeemEvent.timestamp = event.block.timestamp.toI32();
     redeemEvent.txHash = event.transaction.hash;
+    redeemEvent.metadata = event.params.metadata;
     redeemEvent.save();
 
     saveNewProjectTerminalEvent(
@@ -283,8 +309,13 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
     if (protocolV2Log) {
       protocolV2Log.volumeRedeemed = protocolV2Log.volumeRedeemed.plus(
-        event.params.tokenCount
+        event.params.reclaimedAmount
       );
+      if (reclaimedAmountUSD) {
+        protocolV2Log.volumeRedeemedUSD = protocolV2Log.volumeRedeemedUSD.plus(
+          reclaimedAmountUSD
+        );
+      }
       protocolV2Log.redeemCount = protocolV2Log.redeemCount + 1;
       protocolV2Log.save();
     }
@@ -296,12 +327,19 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     log.error("[handleRedeemTokens] Missing project. ID:{}", [projectId]);
     return;
   }
+
   project.totalRedeemed = project.totalRedeemed.plus(
     event.params.reclaimedAmount
   );
+  if (reclaimedAmountUSD) {
+    project.totalRedeemedUSD = project.totalRedeemedUSD.plus(
+      reclaimedAmountUSD
+    );
+  }
   project.currentBalance = project.currentBalance.minus(
     event.params.reclaimedAmount
   );
+  project.redeemCount = project.redeemCount + 1;
   project.save();
 }
 
@@ -318,19 +356,28 @@ export function handleUseAllowance(event: UseAllowance): void {
     return;
   }
 
+  const amountUSD = v2USDPriceForEth(event.params.amount);
+  const distributedAmountUSD = v2USDPriceForEth(event.params.distributedAmount);
+  const netDistributedamountUSD = v2USDPriceForEth(
+    event.params.netDistributedamount
+  );
+
   useAllowanceEvent.project = projectId;
   useAllowanceEvent.projectId = event.params.projectId.toI32();
   useAllowanceEvent.timestamp = event.block.timestamp.toI32();
   useAllowanceEvent.txHash = event.transaction.hash;
   useAllowanceEvent.amount = event.params.amount;
+  useAllowanceEvent.amountUSD = amountUSD;
   useAllowanceEvent.beneficiary = event.params.beneficiary;
   useAllowanceEvent.caller = event.transaction.from;
   useAllowanceEvent.distributedAmount = event.params.distributedAmount;
+  useAllowanceEvent.distributedAmountUSD = distributedAmountUSD;
   useAllowanceEvent.fundingCycleConfiguration =
     event.params.fundingCycleConfiguration;
   useAllowanceEvent.fundingCycleNumber = event.params.fundingCycleNumber.toI32();
   useAllowanceEvent.memo = event.params.memo;
   useAllowanceEvent.netDistributedamount = event.params.netDistributedamount;
+  useAllowanceEvent.netDistributedamountUSD = netDistributedamountUSD;
   useAllowanceEvent.save();
 
   saveNewProjectTerminalEvent(

@@ -171,7 +171,10 @@ export function handleIssue(event: Issue): void {
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
 
-  if (!project) return;
+  if (!project) {
+    log.error("[handleIssue] Missing project. ID:{}", [projectId]);
+    return;
+  }
 
   const deployedERC20Event = new DeployedERC20Event(
     idForProjectTx(event.params.projectId, pv, event)

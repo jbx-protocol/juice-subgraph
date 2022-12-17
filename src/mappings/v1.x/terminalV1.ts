@@ -39,6 +39,7 @@ import {
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
+import { v1USDPriceForEth } from "../../utils/prices";
 import { pvForV1Project } from "../../utils/pv";
 import { handleTrendingPayment } from "../../utils/trending";
 
@@ -56,8 +57,11 @@ export function handlePay(event: Pay): void {
     return;
   }
 
+  const amountUSD = v1USDPriceForEth(event.params.amount);
   project.totalPaid = project.totalPaid.plus(event.params.amount);
+  if (amountUSD) project.totalPaidUSD = project.totalPaidUSD.plus(amountUSD);
   project.currentBalance = project.currentBalance.plus(event.params.amount);
+  project.paymentsCount = project.paymentsCount + 1;
   project.save();
 
   if (pay) {
@@ -65,6 +69,7 @@ export function handlePay(event: Pay): void {
     pay.terminal = terminal;
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
+    pay.amountUSD = amountUSD;
     pay.beneficiary = event.params.beneficiary;
     pay.caller = event.transaction.from;
     pay.project = projectId;
@@ -91,6 +96,9 @@ export function handlePay(event: Pay): void {
     protocolV1Log.volumePaid = protocolV1Log.volumePaid.plus(
       event.params.amount
     );
+    if (amountUSD) {
+      protocolV1Log.volumePaidUSD = protocolV1Log.volumePaidUSD.plus(amountUSD);
+    }
     protocolV1Log.paymentsCount = protocolV1Log.paymentsCount + 1;
     protocolV1Log.save();
   }
@@ -109,7 +117,12 @@ export function handlePay(event: Pay): void {
       event.params.beneficiary
     );
   } else {
-    participant.totalPaid = event.params.amount.plus(participant.totalPaid);
+    participant.totalPaid = participant.totalPaid = participant.totalPaid.plus(
+      event.params.amount
+    );
+    if (amountUSD) {
+      participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
+    }
   }
   participant.lastPaidTimestamp = event.block.timestamp.toI32();
   participant.save();
@@ -156,15 +169,26 @@ export function handleTap(event: Tap): void {
   const tapEvent = new TapEvent(
     idForProjectTx(event.params.projectId, pv, event)
   );
+
+  const amountUSD = v1USDPriceForEth(event.params.amount);
+
   if (tapEvent) {
     tapEvent.amount = event.params.amount;
+    tapEvent.amountUSD = amountUSD;
     tapEvent.beneficiary = event.params.beneficiary;
     tapEvent.beneficiaryTransferAmount = event.params.beneficiaryTransferAmount;
+    tapEvent.beneficiaryTransferAmountUSD = v1USDPriceForEth(
+      event.params.beneficiaryTransferAmount
+    );
     tapEvent.caller = event.transaction.from;
     tapEvent.currency = event.params.currency;
     tapEvent.fundingCycleId = event.params.fundingCycleId;
     tapEvent.govFeeAmount = event.params.govFeeAmount;
+    tapEvent.govFeeAmountUSD = v1USDPriceForEth(event.params.govFeeAmount);
     tapEvent.netTransferAmount = event.params.netTransferAmount;
+    tapEvent.netTransferAmountUSD = v1USDPriceForEth(
+      event.params.netTransferAmount
+    );
     tapEvent.project = projectId;
     tapEvent.projectId = event.params.projectId.toI32();
     tapEvent.timestamp = event.block.timestamp.toI32();
@@ -197,6 +221,7 @@ export function handleRedeem(event: Redeem): void {
   const redeemEvent = new RedeemEvent(
     idForProjectTx(event.params._projectId, pv, event, true)
   );
+  const returnAmountUSD = v1USDPriceForEth(event.params.returnAmount);
   if (redeemEvent) {
     redeemEvent.projectId = event.params._projectId.toI32();
     redeemEvent.pv = pv;
@@ -206,6 +231,7 @@ export function handleRedeem(event: Redeem): void {
     redeemEvent.caller = event.transaction.from;
     redeemEvent.holder = event.params.holder;
     redeemEvent.returnAmount = event.params.returnAmount;
+    redeemEvent.returnAmountUSD = returnAmountUSD;
     redeemEvent.project = projectId;
     redeemEvent.timestamp = event.block.timestamp.toI32();
     redeemEvent.txHash = event.transaction.hash;
@@ -225,8 +251,13 @@ export function handleRedeem(event: Redeem): void {
   if (!protocolV1Log) protocolV1Log = new ProtocolV1Log(PROTOCOL_ID);
   if (protocolV1Log) {
     protocolV1Log.volumeRedeemed = protocolV1Log.volumeRedeemed.plus(
-      event.params.amount
+      event.params.returnAmount
     );
+    if (returnAmountUSD) {
+      protocolV1Log.volumeRedeemedUSD = protocolV1Log.volumeRedeemedUSD.plus(
+        returnAmountUSD
+      );
+    }
     protocolV1Log.redeemCount = protocolV1Log.redeemCount + 1;
     protocolV1Log.save();
   }
@@ -237,9 +268,16 @@ export function handleRedeem(event: Redeem): void {
     project.totalRedeemed = project.totalRedeemed.plus(
       event.params.returnAmount
     );
+    const amountRedeemedUSD = v1USDPriceForEth(event.params.returnAmount);
+    if (amountRedeemedUSD) {
+      project.totalRedeemedUSD = project.totalRedeemedUSD.plus(
+        amountRedeemedUSD
+      );
+    }
     project.currentBalance = project.currentBalance.minus(
       event.params.returnAmount
     );
+    project.redeemCount = project.redeemCount + 1;
     project.save();
   }
 }
@@ -296,6 +334,7 @@ export function handleAddToBalance(event: AddToBalance): void {
     addToBalance.terminal = terminal;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.value;
+    addToBalance.amountUSD = v1USDPriceForEth(event.params.value);
     addToBalance.caller = event.transaction.from;
     addToBalance.project = projectId;
     addToBalance.timestamp = event.block.timestamp.toI32();
@@ -338,6 +377,7 @@ export function handleDistributeToPayoutMod(
   distributeToPayoutModEvent.modPreferUnstaked =
     event.params.mod.preferUnstaked;
   distributeToPayoutModEvent.modCut = event.params.modCut;
+  distributeToPayoutModEvent.modCutUSD = v1USDPriceForEth(event.params.modCut);
   distributeToPayoutModEvent.timestamp = event.block.timestamp.toI32();
   distributeToPayoutModEvent.txHash = event.transaction.hash;
 
@@ -395,7 +435,10 @@ export function handleMigrate(event: Migrate): void {
   const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
-  if (!project) return;
+  if (!project) {
+    log.error("[handleMigrate] Missing project. ID:{}", [projectId]);
+    return;
+  }
   project.terminal = event.params.to;
   project.save();
 }

@@ -125,6 +125,8 @@
           file: ./abis/v1/TerminalV1.json
         - name: TerminalDirectory
           file: ./abis/v1/TerminalDirectory.json
+        - name: Prices
+          file: ./abis/v1/Prices.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,string,address)
           handler: handlePay
@@ -175,6 +177,8 @@
           file: ./abis/v1/TerminalV1_1.json
         - name: TerminalDirectory
           file: ./abis/v1/TerminalDirectory.json
+        - name: Prices
+          file: ./abis/v1/Prices.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed address,uint256,uint256,uint256,string,address)
           handler: handlePay
