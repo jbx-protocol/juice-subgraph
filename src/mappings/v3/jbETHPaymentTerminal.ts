@@ -237,6 +237,7 @@ export function handlePay(event: Pay): void {
     handleTrendingPayment(event.block.timestamp);
   }
 
+  // Update protocol log
   let protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
   if (!protocolV3Log) protocolV3Log = newProtocolV3Log();
   if (protocolV3Log) {
@@ -251,6 +252,7 @@ export function handlePay(event: Pay): void {
   }
   updateProtocolEntity();
 
+  // Update participant
   const participantId = idForParticipant(
     event.params.projectId,
     pv,
@@ -263,11 +265,11 @@ export function handlePay(event: Pay): void {
       event.params.projectId,
       event.params.beneficiary
     );
-  } else {
-    participant.totalPaid = participant.totalPaid.plus(event.params.amount);
-    if (amountUSD) {
-      participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
-    }
+  }
+
+  participant.totalPaid = participant.totalPaid.plus(event.params.amount);
+  if (amountUSD) {
+    participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
   }
   participant.lastPaidTimestamp = event.block.timestamp.toI32();
   participant.save();

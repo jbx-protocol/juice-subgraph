@@ -236,16 +236,12 @@ export function handlePay(event: Pay): void {
   // Update protocol log
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
   if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
-  if (protocolV2Log) {
-    protocolV2Log.volumePaid = protocolV2Log.volumePaid.plus(
-      event.params.amount
-    );
-    if (amountUSD) {
-      protocolV2Log.volumePaidUSD = protocolV2Log.volumePaidUSD.plus(amountUSD);
-    }
-    protocolV2Log.paymentsCount = protocolV2Log.paymentsCount + 1;
-    protocolV2Log.save();
+  protocolV2Log.volumePaid = protocolV2Log.volumePaid.plus(event.params.amount);
+  if (amountUSD) {
+    protocolV2Log.volumePaidUSD = protocolV2Log.volumePaidUSD.plus(amountUSD);
   }
+  protocolV2Log.paymentsCount = protocolV2Log.paymentsCount + 1;
+  protocolV2Log.save();
   updateProtocolEntity();
 
   // Update participant
@@ -261,11 +257,11 @@ export function handlePay(event: Pay): void {
       event.params.projectId,
       event.params.beneficiary
     );
-  } else {
-    participant.totalPaid = participant.totalPaid.plus(event.params.amount);
-    if (amountUSD) {
-      participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
-    }
+  }
+
+  participant.totalPaid = participant.totalPaid.plus(event.params.amount);
+  if (amountUSD) {
+    participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
   }
   participant.lastPaidTimestamp = event.block.timestamp.toI32();
   participant.save();

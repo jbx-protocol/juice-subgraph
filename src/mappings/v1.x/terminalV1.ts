@@ -58,6 +58,7 @@ export function handlePay(event: Pay): void {
   }
 
   const amountUSD = v1USDPriceForEth(event.params.amount);
+
   project.totalPaid = project.totalPaid.plus(event.params.amount);
   if (amountUSD) project.totalPaidUSD = project.totalPaidUSD.plus(amountUSD);
   project.currentBalance = project.currentBalance.plus(event.params.amount);
@@ -90,20 +91,18 @@ export function handlePay(event: Pay): void {
     handleTrendingPayment(event.block.timestamp);
   }
 
+  // Update protocol log
   let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
   if (!protocolV1Log) protocolV1Log = newProtocolV1Log();
-  if (protocolV1Log) {
-    protocolV1Log.volumePaid = protocolV1Log.volumePaid.plus(
-      event.params.amount
-    );
-    if (amountUSD) {
-      protocolV1Log.volumePaidUSD = protocolV1Log.volumePaidUSD.plus(amountUSD);
-    }
-    protocolV1Log.paymentsCount = protocolV1Log.paymentsCount + 1;
-    protocolV1Log.save();
+  protocolV1Log.volumePaid = protocolV1Log.volumePaid.plus(event.params.amount);
+  if (amountUSD) {
+    protocolV1Log.volumePaidUSD = protocolV1Log.volumePaidUSD.plus(amountUSD);
   }
+  protocolV1Log.paymentsCount = protocolV1Log.paymentsCount + 1;
+  protocolV1Log.save();
   updateProtocolEntity();
 
+  // Update participant
   const participantId = idForParticipant(
     event.params.projectId,
     pv,
@@ -116,13 +115,11 @@ export function handlePay(event: Pay): void {
       event.params.projectId,
       event.params.beneficiary
     );
-  } else {
-    participant.totalPaid = participant.totalPaid = participant.totalPaid.plus(
-      event.params.amount
-    );
-    if (amountUSD) {
-      participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
-    }
+  }
+
+  participant.totalPaid = participant.totalPaid.plus(event.params.amount);
+  if (amountUSD) {
+    participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
   }
   participant.lastPaidTimestamp = event.block.timestamp.toI32();
   participant.save();
