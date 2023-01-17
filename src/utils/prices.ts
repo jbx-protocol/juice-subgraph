@@ -37,8 +37,8 @@ export function v2USDPriceForEth(ethAmount: BigInt): BigInt | null {
   );
 
   const priceForCall = pricesContract.try_priceFor(
-    V2V3_CURRENCY_ETH,
     V2V3_CURRENCY_USD,
+    V2V3_CURRENCY_ETH,
     BigInt.fromI32(18)
   );
   if (priceForCall.reverted) {
@@ -57,8 +57,8 @@ export function v3USDPriceForEth(ethAmount: BigInt): BigInt | null {
   );
 
   const priceForCall = pricesContract.try_priceFor(
-    V2V3_CURRENCY_ETH,
     V2V3_CURRENCY_USD,
+    V2V3_CURRENCY_ETH,
     BigInt.fromI32(18)
   );
   if (priceForCall.reverted) {
