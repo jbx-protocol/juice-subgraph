@@ -655,6 +655,7 @@ type JB721DelegateToken @entity {
   projectId: Int!
   name: String!
   symbol: String!
+  governanceType: Int!
 
   # dynamic fields
   owner: Participant!

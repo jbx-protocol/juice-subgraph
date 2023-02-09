@@ -39,12 +39,6 @@ export function idForParticipant(
 }
 
 export function idForProject(projectId: BigInt, pv: Version): string {
-  /**
-   * We only use the first character of PV since project IDs don't change
-   * between minor Projects versions.
-   *
-   * i.e. v1 & v1.1 Projects contracts share the same projectId mappings
-   */
   return `${pv[0]}-${projectId.toString()}`;
 }
 

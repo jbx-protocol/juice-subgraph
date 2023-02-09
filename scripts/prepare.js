@@ -15,6 +15,8 @@ if (!network) {
 
 console.log(`Network: ${chalk.cyan.bold(network)}\n`);
 
+const configTemplate = JSON.parse(fs.readFileSync(`config/template.json`));
+
 const config = JSON.parse(fs.readFileSync(`config/${network}.json`));
 
 if (!config) {
@@ -33,19 +35,19 @@ function writeContractAddresses() {
 
   let fileContents = "";
 
-  const configTemplate = JSON.parse(fs.readFileSync(`config/template.json`));
-
   for (p of PREFIXES) {
     // Iterate over all var names declared in config template
-    // Add to fileContents
-    fileContents += `${Object.keys(configTemplate[p])
-      .filter((key) => key.startsWith("address_"))
-      .map((key) => {
-        // Use `null` if key has no value in config
-        const val = config[p] && config[p][key] ? `"${config[p][key]}"` : null;
-        return `export const address_${p}_${
-          key.split("address_")[1]
-        }: string | null = ${val};\n`;
+    // Add to fileContents using values from actual config
+    const contractNames = configTemplate[p];
+
+    fileContents += `${contractNames
+      .map((c) => {
+        // Use null if no address exists in config
+        const address =
+          config[p] && config[p][c] && config[p][c].address
+            ? `"${config[p][c].address}"`
+            : null;
+        return `export const address_${p}_${c}: string | null = ${address};\n`;
       })
       .join("")}\n`;
   }
@@ -69,19 +71,17 @@ function writeStartBlocks() {
 
   let fileContents = "";
 
-  const configTemplate = JSON.parse(fs.readFileSync(`config/template.json`));
-
   for (p of PREFIXES) {
     // Iterate over all var names declared in config template
-    // Add to fileContents
-    fileContents += `${Object.keys(configTemplate[p])
-      .filter((key) => key.startsWith("startBlock_"))
-      .map((key) => {
-        // Use `null` if key has no value in config
-        const val = config[p] && config[p][key] ? `${config[p][key]}` : null;
-        return `export const startBlock_${p}_${
-          key.split("startBlock_")[1]
-        }: number = ${val || 0};\n`;
+    // Add to fileContents using values from actual config
+    const contractNames = configTemplate[p];
+
+    fileContents += `${contractNames
+      .map((c) => {
+        // Use null if no address exists in config
+        const startBlock =
+          config[p] && config[p][c] ? `${config[p][c].startBlock || 0}` : 0; // must be 0: `number` cannot be nullable
+        return `export const startBlock_${p}_${c}: number = ${startBlock};\n`;
       })
       .join("")}\n`;
   }

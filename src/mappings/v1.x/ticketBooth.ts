@@ -38,10 +38,10 @@ import {
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
-import { pvForV1Project } from "../../utils/pv";
+
+const pv = "1";
 
 export function handlePrint(event: Print): void {
-  const pv = pvForV1Project(event.params.projectId);
   const participantId = idForParticipant(
     event.params.projectId,
     pv,
@@ -70,7 +70,6 @@ export function handlePrint(event: Print): void {
 }
 
 export function handleTicketTransfer(event: Transfer): void {
-  const pv = pvForV1Project(event.params.projectId);
   const sender = Participant.load(
     idForParticipant(event.params.projectId, pv, event.params.holder)
   );
@@ -104,7 +103,6 @@ export function handleTicketTransfer(event: Transfer): void {
 }
 
 export function handleUnstake(event: Unstake): void {
-  const pv = pvForV1Project(event.params.projectId);
   const participant = Participant.load(
     idForParticipant(event.params.projectId, pv, event.params.holder)
   );
@@ -121,7 +119,6 @@ export function handleUnstake(event: Unstake): void {
 }
 
 export function handleStake(event: Stake): void {
-  const pv = pvForV1Project(event.params.projectId);
   const participant = Participant.load(
     idForParticipant(event.params.projectId, pv, event.params.holder)
   );
@@ -138,7 +135,6 @@ export function handleStake(event: Stake): void {
 }
 
 export function handleRedeem(event: Redeem): void {
-  const pv = pvForV1Project(event.params.projectId);
   const participant = Participant.load(
     idForParticipant(event.params.projectId, pv, event.params.holder)
   );
@@ -167,7 +163,6 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handleIssue(event: Issue): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
 

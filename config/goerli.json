@@ -1,28 +1,52 @@
 {
   "network": "goerli",
   "v2": {
-    "address_jbProjects": "0x21263a042aFE4bAE34F08Bb318056C181bD96D3b",
-    "startBlock_jbProjects": 7627964
+    "jbProjects": {
+      "address": "0x21263a042aFE4bAE34F08Bb318056C181bD96D3b",
+      "startBlock": 7627964
+    }
   },
   "v3": {
-    "address_jbController": "0x7Cb86D43B665196BC719b6974D320bf674AFb395",
-    "startBlock_jbController": 7627971,
-    "address_jbTokenStore": "0x1246a50e3aDaF684Ac566f0c40816fF738F309B3",
-    "startBlock_jbTokenStore": 7627969,
-    "address_jbETHPaymentTerminal": "0x55d4dfb578daA4d60380995ffF7a706471d7c719",
-    "startBlock_jbETHPaymentTerminal": 7627976,
-    "address_jbETHERC20ProjectPayerDeployer": "0x981c8ECD009E3E84eE1fF99266BF1461a12e5c68",
-    "startBlock_jbETHERC20ProjectPayerDeployer": 7627959,
-    "address_jbFundingCycleStore": "0xB9Ee9d8203467f6EC0eAC81163d210bd1a7d3b55",
-    "startBlock_jbFundingCycleStore": 7627967,
-    "address_jbTiered721DelegateDeployer": "0x6060fa6d5c5b7bd219f2bc576992c239da8f6664",
-    "startBlock_jbTiered721DelegateDeployer": 7885285,
-    "address_jbTiered721DelegateStore": "0x3ea16deff07f031e86bd13c55961eb576cd579a6",
-    "startBlock_jbTiered721DelegateStore": 7885285
+    "jbController": {
+      "address": "0x7Cb86D43B665196BC719b6974D320bf674AFb395",
+      "startBlock": 7627971
+    },
+    "jbController3_0_1": {
+      "address": "0x696f8175E114C5C89248Fb254185Df3Df4cD03f3",
+      "startBlock": 8426266
+    },
+    "jbTokenStore": {
+      "address": "0x1246a50e3aDaF684Ac566f0c40816fF738F309B3",
+      "startBlock": 7627969
+    },
+    "jbETHPaymentTerminal": {
+      "address": "0x55d4dfb578daA4d60380995ffF7a706471d7c719",
+      "startBlock": 7627976
+    },
+    "jbETHERC20ProjectPayerDeployer": {
+      "address": "0x981c8ECD009E3E84eE1fF99266BF1461a12e5c68",
+      "startBlock": 7627959
+    },
+    "jbFundingCycleStore": {
+      "address": "0xB9Ee9d8203467f6EC0eAC81163d210bd1a7d3b55",
+      "startBlock": 7627967
+    }
   },
-  "shared":{
-    "address_jbProjectHandles": "0x9e259442f800d981752c1359a3c7633db70bc395",
-    "startBlock_jbProjectHandles": 7784244,
-    "address_ensRegistry": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
+  "shared": {
+    "jbProjectHandles": {
+      "address": "0x9e259442f800d981752c1359a3c7633db70bc395",
+      "startBlock": 7784244
+    },
+    "jbTiered721DelegateDeployer": {
+      "address": "0x6060fa6d5c5b7bd219f2bc576992c239da8f6664",
+      "startBlock": 7885285
+    },
+    "jbTiered721DelegateStore": {
+      "address": "0x3ea16deff07f031e86bd13c55961eb576cd579a6",
+      "startBlock": 7885285
+    },
+    "ensRegistry": {
+      "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
+    }
   }
 }

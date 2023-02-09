@@ -39,13 +39,13 @@ import {
   idForProjectTx,
 } from "../../utils/ids";
 import { v1USDPriceForEth } from "../../utils/prices";
-import { pvForV1Project } from "../../utils/pv";
 import { handleTrendingPayment } from "../../utils/trending";
 
 const terminal: Bytes = Bytes.fromHexString(address_v1_terminalV1_1!);
 
+const pv = "1";
+
 export function handlePay(event: Pay): void {
-  const pv = pvForV1Project(event.params.projectId);
   const pay = new PayEvent(idForPayEvent());
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
@@ -133,7 +133,6 @@ export function handlePrintTickets(event: PrintTickets): void {
    * is to make use of the `memo` field
    */
 
-  const pv = pvForV1Project(event.params.projectId);
   const mintTokensEvent = new MintTokensEvent(
     idForProjectTx(event.params.projectId, pv, event, true)
   );
@@ -163,7 +162,6 @@ export function handlePrintTickets(event: PrintTickets): void {
 }
 
 export function handleTap(event: Tap): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const tapEvent = new TapEvent(
     idForProjectTx(event.params.projectId, pv, event)
@@ -209,7 +207,6 @@ export function handleTap(event: Tap): void {
 }
 
 export function handleRedeem(event: Redeem): void {
-  const pv = pvForV1Project(event.params._projectId);
   const projectId = idForProject(event.params._projectId, pv);
 
   const returnAmountUSD = v1USDPriceForEth(event.params.returnAmount);
@@ -275,7 +272,6 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handlePrintReserveTickets(event: PrintReserveTickets): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const printReserveEvent = new PrintReservesEvent(
     idForProjectTx(event.params.projectId, pv, event)
@@ -304,7 +300,6 @@ export function handlePrintReserveTickets(event: PrintReserveTickets): void {
 }
 
 export function handleAddToBalance(event: AddToBalance): void {
-  const pv = pvForV1Project(event.params.projectId);
   const addToBalance = new AddToBalanceEvent(
     idForProjectTx(event.params.projectId, pv, event, true)
   );
@@ -347,7 +342,6 @@ export function handleAddToBalance(event: AddToBalance): void {
 export function handleDistributeToPayoutMod(
   event: DistributeToPayoutMod
 ): void {
-  const pv = pvForV1Project(event.params.projectId);
   const distributeToPayoutModEvent = new DistributeToPayoutModEvent(
     idForProjectTx(event.params.projectId, pv, event, true)
   );
@@ -390,7 +384,6 @@ export function handleDistributeToPayoutMod(
 export function handleDistributeToTicketMod(
   event: DistributeToTicketMod
 ): void {
-  const pv = pvForV1Project(event.params.projectId);
   const distributeToTicketModEvent = new DistributeToTicketModEvent(
     idForProjectTx(event.params.projectId, pv, event, true)
   );

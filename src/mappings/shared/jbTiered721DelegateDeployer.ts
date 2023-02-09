@@ -7,7 +7,7 @@ import { Version } from "../../types";
 const pv: Version = "2";
 
 /**
- * When a delegate is deployed, we create a new dataSource so we can 
+ * When a delegate is deployed, we create a new dataSource so we can
  * handle token transfers later.
  */
 export function handleDelegateDeployed(event: DelegateDeployed): void {
@@ -16,6 +16,10 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   const jbTiered721DelegateContext = new DataSourceContext();
   jbTiered721DelegateContext.setBigInt("projectId", event.params.projectId);
   jbTiered721DelegateContext.setString("pv", pv);
+  jbTiered721DelegateContext.setI32(
+    "governanceType",
+    event.params.governanceType
+  );
   JB721DelegateTokenTemplate.createWithContext(
     address,
     jbTiered721DelegateContext

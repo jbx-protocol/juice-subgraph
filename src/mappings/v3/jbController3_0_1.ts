@@ -9,10 +9,9 @@ import {
 import {
   DistributeReservedTokens,
   DistributeToReservedTokenSplit,
-  LaunchProject,
-  Migrate,
   MintTokens,
-} from "../../../generated/V2JBController/JBController";
+  LaunchProject,
+} from "../../../generated/V3_0_1JBController/JBController3_0_1";
 import { ProjectEventKey, Version } from "../../types";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../utils/ids";
@@ -21,12 +20,11 @@ const pv: Version = "2";
 
 export function handleMintTokens(event: MintTokens): void {
   /**
-   * Note: Receiver balance is updated in the ticketBooth event handler.
+   * Note: Receiver balance is updated in the JBTokenStore event handler.
    *
-   * TBH the only reason to do this logic here instead of ticketBooth
+   * TBH the only reason to do this logic here instead of JBTokenStore
    * is to make use of the `memo` field
    */
-
   const mintTokensEvent = new MintTokensEvent(
     idForProjectTx(event.params.projectId, pv, event, true)
   );
@@ -140,7 +138,7 @@ export function handleLaunchProject(event: LaunchProject): void {
   const project = Project.load(projectId);
 
   if (!project) {
-    log.error("[v2 handleLaunchProject] project not found for id: {}", [
+    log.error("[v3 handleLaunchProject] project not found for id: {}", [
       projectId,
     ]);
     return;

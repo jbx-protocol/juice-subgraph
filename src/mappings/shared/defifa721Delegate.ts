@@ -7,7 +7,7 @@ import {
 } from "../../../generated/templates/JB721DelegateToken/JB721DelegateToken";
 import {
   address_shared_defifa721Delegate,
-  address_v3_jbTiered721DelegateStore,
+  address_shared_jbTiered721DelegateStore,
 } from "../../contractAddresses";
 import { Version } from "../../types";
 import { newParticipant } from "../../utils/entities/participant";
@@ -71,9 +71,9 @@ export function handleTransfer(event: Transfer): void {
     token.symbol = symbolCall.value;
 
     // Tier data
-    if (!address_v3_jbTiered721DelegateStore) {
+    if (!address_shared_jbTiered721DelegateStore) {
       log.error(
-        "[handleTransfer] missing address_v3_jbTiered721DelegateStore",
+        "[handleTransfer] missing address_shared_jbTiered721DelegateStore",
         []
       );
       return;

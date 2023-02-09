@@ -14,7 +14,6 @@ import {
 } from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
 import { ProjectEventKey } from "../../types";
-import { pvForTerminal, pvForV1Project } from "../../utils/pv";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import {
@@ -23,8 +22,9 @@ import {
   updateProtocolEntity,
 } from "../../utils/entities/protocolLog";
 
+const pv = "1"
+
 export function handleProjectCreate(event: Create): void {
-  const pv = pvForTerminal(event.params.terminal);
   const projectId = idForProject(event.params.projectId, pv);
   const project = new Project(projectId);
 
@@ -90,7 +90,6 @@ export function handleProjectCreate(event: Create): void {
 }
 
 export function handleSetHandle(event: SetHandle): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
   if (!project) {
@@ -102,7 +101,6 @@ export function handleSetHandle(event: SetHandle): void {
 }
 
 export function handleSetUri(event: SetUri): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
   if (!project) {
@@ -114,7 +112,6 @@ export function handleSetUri(event: SetUri): void {
 }
 
 export function handleTransferOwnership(event: Transfer): void {
-  const pv = pvForV1Project(event.params.tokenId);
   const projectId = idForProject(event.params.tokenId, pv);
   const project = Project.load(projectId);
   if (!project) {
