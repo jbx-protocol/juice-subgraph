@@ -1,4 +1,7 @@
-export type Version = string;
+export enum PV {
+  PV1 = 1,
+  PV2 = 2,
+}
 
 export enum ProjectEventKey {
   deployedERC20Event,
@@ -22,4 +25,11 @@ export enum ProjectEventKey {
   initEvent,
   v1ConfigureEvent,
   v1InitEvent,
+  burn
+}
+
+export enum JB721GovernanceType {
+  NONE,
+  TIERED,
+  GLOBAL
 }

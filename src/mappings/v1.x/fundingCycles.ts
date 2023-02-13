@@ -6,12 +6,12 @@ import {
 } from "../../../generated/FundingCycles/FundingCycles";
 import { V1ConfigureEvent, V1InitEvent } from "../../../generated/schema";
 import { BIGINT_1, BITS_8 } from "../../constants";
-import { ProjectEventKey } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { bytes20FromUint } from "../../utils/format";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
-const pv = "1"
+const pv = PV.PV1;
 
 export function handleV1Configure(event: Configure): void {
   const projectId = idForProject(event.params.projectId, pv);

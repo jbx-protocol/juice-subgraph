@@ -13,7 +13,7 @@ import {
   ProtocolV1Log,
 } from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
-import { ProjectEventKey } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import {
@@ -22,7 +22,7 @@ import {
   updateProtocolEntity,
 } from "../../utils/entities/protocolLog";
 
-const pv = "1"
+const pv = PV.PV1;
 
 export function handleProjectCreate(event: Create): void {
   const projectId = idForProject(event.params.projectId, pv);
@@ -34,7 +34,7 @@ export function handleProjectCreate(event: Create): void {
   }
 
   project.projectId = event.params.projectId.toI32();
-  project.pv = pv;
+  project.pv = pv.toString();
   project.trendingScore = BigInt.fromString("0");
   project.trendingVolume = BigInt.fromString("0");
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
@@ -57,7 +57,7 @@ export function handleProjectCreate(event: Create): void {
     idForProjectTx(event.params.projectId, pv, event)
   );
   if (projectCreateEvent) {
-    projectCreateEvent.pv = pv;
+    projectCreateEvent.pv = pv.toString();
     projectCreateEvent.project = project.id;
     projectCreateEvent.projectId = event.params.projectId.toI32();
     projectCreateEvent.timestamp = event.block.timestamp.toI32();

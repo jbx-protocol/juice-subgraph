@@ -9,7 +9,7 @@ import {
   address_shared_defifa721Delegate,
   address_shared_jbTiered721DelegateStore,
 } from "../../contractAddresses";
-import { Version } from "../../types";
+import { JB721GovernanceType, PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
 import {
   idForJB721DelegateToken,
@@ -17,7 +17,7 @@ import {
   idForProject,
 } from "../../utils/ids";
 
-const pv: Version = "2";
+const pv = PV.PV2;
 
 export function handleTransfer(event: Transfer): void {
   const address = Bytes.fromHexString(
@@ -50,6 +50,7 @@ export function handleTransfer(event: Transfer): void {
     token.tokenId = tokenId;
     token.address = address;
     token.projectId = projectId.toI32();
+    token.governanceType = JB721GovernanceType.TIERED;
     token.project = idForProject(projectId, pv);
 
     // Name

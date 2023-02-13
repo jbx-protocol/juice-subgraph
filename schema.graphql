@@ -102,6 +102,7 @@ type Project @entity {
   initEvents: [InitEvent!]! @derivedFrom(field: "project")
   v1ConfigureEvents: [V1ConfigureEvent!]! @derivedFrom(field: "project")
   v1InitEvents: [V1InitEvent!]! @derivedFrom(field: "project")
+  burnEvents: [BurnEvent!]! @derivedFrom(field: "project")
 }
 
 # v1.0, v1.1, v2, v3
@@ -151,6 +152,7 @@ type ProjectEvent @entity {
   initEvent: InitEvent
   v1ConfigureEvent: V1ConfigureEvent
   v1InitEvent: V1InitEvent
+  burnEvent: BurnEvent
 }
 
 # v1.0, v1.1, v2, v3
@@ -232,6 +234,25 @@ type DeployedERC20Event @entity {
 
   symbol: String!
   address: Bytes # will be empty for v1.x events
+}
+
+type ENSNode @entity {
+  id: ID!
+  projectId: Int
+}
+
+type BurnEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  pv: String!
+  timestamp: Int!
+  txHash: Bytes!
+
+  holder: Bytes!
+  amount: BigInt!
+  stakedAmount: BigInt!
+  unstakedAmount: BigInt!
 }
 
 #############################################################################
@@ -589,6 +610,7 @@ type ConfigureEvent @entity {
   weight: BigInt!
   discountRate: BigInt!
   ballot: Bytes!
+  memo: String
 
   mustStartAtOrAfter: Int!
   configuration: Int!
@@ -664,12 +686,4 @@ type JB721DelegateToken @entity {
   # optional: only on tiered tokens
   floorPrice: BigInt
   lockedUntil: BigInt
-}
-
-#############################################################################
-############################## shared entities ##############################
-#############################################################################
-type ENSNode @entity {
-  id: ID!
-  projectId: Int
 }

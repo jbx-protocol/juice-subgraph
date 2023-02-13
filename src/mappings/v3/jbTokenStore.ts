@@ -1,6 +1,7 @@
 import { BigInt, DataSourceContext, log } from "@graphprotocol/graph-ts";
 
 import {
+  BurnEvent,
   DeployedERC20Event,
   Participant,
   Project,
@@ -15,7 +16,7 @@ import {
   Transfer,
 } from "../../../generated/V3JBTokenStore/JBTokenStore";
 import { PROTOCOL_ID } from "../../constants";
-import { ProjectEventKey, Version } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import {
   newParticipant,
   updateParticipantBalance,
@@ -31,7 +32,7 @@ import {
   idForProjectTx,
 } from "../../utils/ids";
 
-const pv: Version = "2";
+const pv = PV.PV2;
 
 export function handleBurn(event: Burn): void {
   const holderId = idForParticipant(
@@ -43,17 +44,22 @@ export function handleBurn(event: Burn): void {
 
   if (!participant) return;
 
+  const amount = event.params.amount;
+
+  let burnedStakedAmount = BigInt.fromString("0");
+
+  // Only update stakedBalance, since unstakedBalance will be updated by erc20 handler
   if (event.params.preferClaimedTokens) {
-    if (participant.unstakedBalance.lt(event.params.amount)) {
+    if (participant.unstakedBalance.lt(amount)) {
+      burnedStakedAmount = amount.minus(participant.unstakedBalance);
       participant.stakedBalance = participant.stakedBalance.minus(
-        event.params.amount.minus(participant.unstakedBalance)
+        burnedStakedAmount
       );
     }
   } else {
-    if (participant.stakedBalance.gt(event.params.amount)) {
-      participant.stakedBalance = participant.stakedBalance.minus(
-        event.params.amount
-      );
+    if (participant.stakedBalance.gt(amount)) {
+      burnedStakedAmount = amount;
+      participant.stakedBalance = participant.stakedBalance.minus(amount);
     } else {
       participant.stakedBalance = BigInt.fromString("0");
     }
@@ -62,6 +68,27 @@ export function handleBurn(event: Burn): void {
   updateParticipantBalance(participant);
 
   participant.save();
+
+  const burnEvent = new BurnEvent(
+    idForProjectTx(event.params.projectId, pv, event)
+  );
+  burnEvent.holder = event.params.holder;
+  burnEvent.project = idForProject(event.params.projectId, pv);
+  burnEvent.projectId = event.params.projectId.toI32();
+  burnEvent.pv = pv.toString();
+  burnEvent.timestamp = event.block.timestamp.toI32();
+  burnEvent.txHash = event.transaction.hash;
+  burnEvent.amount = amount;
+  burnEvent.stakedAmount = burnedStakedAmount;
+  burnEvent.unstakedAmount = BigInt.fromString("0");
+  burnEvent.save();
+  saveNewProjectEvent(
+    event,
+    event.params.projectId,
+    burnEvent.id,
+    pv,
+    ProjectEventKey.burn
+  );
 }
 
 export function handleClaim(event: Claim): void {
@@ -97,7 +124,7 @@ export function handleIssue(event: Issue): void {
   if (deployedERC20Event) {
     deployedERC20Event.project = project.id;
     deployedERC20Event.projectId = project.projectId;
-    deployedERC20Event.pv = pv;
+    deployedERC20Event.pv = pv.toString();
     deployedERC20Event.symbol = event.params.symbol;
     deployedERC20Event.address = event.params.token;
     deployedERC20Event.timestamp = event.block.timestamp.toI32();
@@ -123,7 +150,7 @@ export function handleIssue(event: Issue): void {
 
   const erc20Context = new DataSourceContext();
   erc20Context.setI32("projectId", event.params.projectId.toI32());
-  erc20Context.setString("pv", pv);
+  erc20Context.setString("pv", pv.toString());
   ERC20.createWithContext(event.params.token, erc20Context);
 }
 

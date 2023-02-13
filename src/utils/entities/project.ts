@@ -7,6 +7,7 @@ import {
   address_shared_legacy_jbProjectHandles,
 } from "../../contractAddresses";
 import { startBlock_shared_jbProjectHandles } from "../../startBlocks";
+import { PV } from "../../enums";
 import { idForProject } from "../ids";
 
 export function updateProjectHandle(
@@ -27,7 +28,7 @@ export function updateProjectHandle(
     Address.fromString(projectHandlesAddress!)
   );
   const handleCallResult = jbProjectHandles.try_handleOf(projectId);
-  const pv = "2";
+  const pv = PV.PV2;
   const project = Project.load(idForProject(projectId, pv));
   if (!project) {
     log.error("[handleSetReverseRecord] Missing project. ID:{}", [

@@ -1,6 +1,6 @@
 import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 import { ProjectEvent } from "../../../generated/schema";
-import { ProjectEventKey, Version } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import { idForProject, idForProjectEvent } from "../ids";
 
 /**
@@ -13,7 +13,7 @@ export function saveNewProjectTerminalEvent(
   event: ethereum.Event,
   projectId: BigInt,
   id: string,
-  pv: Version,
+  pv: PV,
   key: ProjectEventKey,
   terminal: Bytes
 ): void {
@@ -24,7 +24,7 @@ export function saveNewProjectEvent(
   event: ethereum.Event,
   projectId: BigInt,
   id: string,
-  pv: Version,
+  pv: PV,
   key: ProjectEventKey,
   terminal: Bytes | null = null
 ): void {
@@ -37,7 +37,7 @@ export function saveNewProjectEvent(
     )
   );
   if (!projectEvent) return;
-  projectEvent.pv = pv;
+  projectEvent.pv = pv.toString();
   if (terminal) projectEvent.terminal = terminal;
   projectEvent.projectId = projectId.toI32();
   projectEvent.timestamp = event.block.timestamp.toI32();

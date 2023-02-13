@@ -3,12 +3,12 @@ import {
   Configure,
   Init,
 } from "../../../generated/V2JBFundingCycleStore/JBFundingCycleStore";
-import { ProjectEventKey, Version } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import { newPV2ConfigureEvent } from "../../utils/entities/configureEvent";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
-const pv: Version = "2";
+const pv = PV.PV2;
 
 export function handleConfigure(event: Configure): void {
   const configureEvent = newPV2ConfigureEvent(

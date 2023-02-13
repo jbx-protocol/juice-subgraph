@@ -2,12 +2,12 @@ import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 
 import { ProtocolLog } from "../../generated/schema";
 import { PROTOCOL_ID } from "../constants";
-import { Version } from "../types";
+import { PV } from "../enums";
 import { toHexLowercase } from "./format";
 
 export function idForProjectTx(
   projectId: BigInt,
-  pv: Version,
+  pv: PV,
   event: ethereum.Event,
   useLogIndex: boolean = false // Using log index will ensure ID is unique even if event is emitted multiple times within a single tx
 ): string {
@@ -19,9 +19,17 @@ export function idForProjectTx(
   );
 }
 
+export function idForConfigureEvent(
+  projectId: BigInt,
+  pv: PV,
+  event: ethereum.Event
+): string {
+  return idForProjectTx(projectId, pv, event); // do not use logIndex, because we load/save ConfigureEvent multiple times for a single transaction
+}
+
 export function idForProjectEvent(
   projectId: BigInt,
-  pv: Version,
+  pv: PV,
   txHash: Bytes,
   logIndex: BigInt
 ): string {
@@ -32,14 +40,14 @@ export function idForProjectEvent(
 
 export function idForParticipant(
   projectId: BigInt,
-  pv: Version,
+  pv: PV,
   walletAddress: Bytes
 ): string {
   return `${idForProject(projectId, pv)}-${toHexLowercase(walletAddress)}`;
 }
 
-export function idForProject(projectId: BigInt, pv: Version): string {
-  return `${pv[0]}-${projectId.toString()}`;
+export function idForProject(projectId: BigInt, pv: PV): string {
+  return `${pv}-${projectId.toString()}`;
 }
 
 /**

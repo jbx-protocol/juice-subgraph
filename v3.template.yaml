@@ -41,6 +41,7 @@
         - DistributeToReservedTokenSplitEvent
         - MintTokensEvent
         - Project
+        - ConfigureEvent
       abis:
         - name: JBController
           file: ./abis/v3/JBController.json
@@ -53,6 +54,8 @@
           handler: handleDistributeReservedTokens
         - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
           handler: handleDistributeToReservedTokenSplit
+        - event: ReconfigureFundingCycles(uint256,uint256,string,address)
+          handler: handleReconfigureFundingCycles
       file: ./src/mappings/v3/jbController.ts
   {{ /jbController }}
   {{ #jbController3_0_1 }}
@@ -72,6 +75,7 @@
         - DistributeToReservedTokenSplitEvent
         - MintTokensEvent
         - Project
+        - ConfigureEvent
       abis:
         - name: JBController3_0_1
           file: ./abis/v3/JBController3_0_1.json
@@ -84,6 +88,8 @@
           handler: handleDistributeReservedTokens
         - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
           handler: handleDistributeToReservedTokenSplit
+        - event: ReconfigureFundingCycles(uint256,uint256,string,address)
+          handler: handleReconfigureFundingCycles
       file: ./src/mappings/v3/jbController3_0_1.ts
   {{ /jbController3_0_1 }}
   {{ #jbTokenStore }}

@@ -22,7 +22,7 @@ import {
 } from "../../../generated/V3JBETHPaymentTerminal/JBETHPaymentTerminal";
 import { PROTOCOL_ID } from "../../constants";
 import { address_v3_jbETHPaymentTerminal } from "../../contractAddresses";
-import { ProjectEventKey, Version } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
 import { saveNewProjectTerminalEvent } from "../../utils/entities/projectEvent";
 import {
@@ -39,7 +39,7 @@ import {
 import { v3USDPriceForEth } from "../../utils/prices";
 import { handleTrendingPayment } from "../../utils/trending";
 
-const pv: Version = "2";
+const pv = PV.PV2;
 const terminal: Bytes = Bytes.fromHexString(address_v3_jbETHPaymentTerminal!);
 
 export function handleAddToBalance(event: AddToBalance): void {
@@ -59,7 +59,7 @@ export function handleAddToBalance(event: AddToBalance): void {
   project.save();
 
   if (addToBalance) {
-    addToBalance.pv = pv;
+    addToBalance.pv = pv.toString();
     addToBalance.terminal = terminal;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.amount;
@@ -212,7 +212,7 @@ export function handlePay(event: Pay): void {
   project.save();
 
   if (pay) {
-    pay.pv = pv;
+    pay.pv = pv.toString();
     pay.terminal = terminal;
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
@@ -284,7 +284,7 @@ export function handleRedeemTokens(event: RedeemTokens): void {
 
   if (redeemEvent) {
     redeemEvent.projectId = event.params.projectId.toI32();
-    redeemEvent.pv = pv;
+    redeemEvent.pv = pv.toString();
     redeemEvent.terminal = terminal;
     redeemEvent.amount = event.params.tokenCount;
     redeemEvent.beneficiary = event.params.beneficiary;

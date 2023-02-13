@@ -11,9 +11,10 @@ import {
 } from "../../utils/ids";
 import { JBVeNft } from "../../../generated/templates";
 import { log } from "@graphprotocol/graph-ts";
+import { PV } from "../../enums";
 
 export function handleDeployVeNft(event: DeployVeNft): void {
-  const pv = "2";
+  const pv = PV.PV2;
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
   if (!project) {

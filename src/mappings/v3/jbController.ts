@@ -1,6 +1,7 @@
 import { log } from "@graphprotocol/graph-ts";
 
 import {
+  ConfigureEvent,
   DistributeReservedTokensEvent,
   DistributeToReservedTokenSplitEvent,
   MintTokensEvent,
@@ -11,12 +12,18 @@ import {
   DistributeToReservedTokenSplit,
   MintTokens,
   LaunchProject,
+  ReconfigureFundingCycles,
 } from "../../../generated/V3JBController/JBController";
-import { ProjectEventKey, Version } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
+import { newPV2ConfigureEvent } from "../../utils/entities/configureEvent";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
-import { idForProject, idForProjectTx } from "../../utils/ids";
+import {
+  idForConfigureEvent,
+  idForProject,
+  idForProjectTx,
+} from "../../utils/ids";
 
-const pv: Version = "2";
+const pv = PV.PV2;
 
 export function handleMintTokens(event: MintTokens): void {
   /**
@@ -35,7 +42,7 @@ export function handleMintTokens(event: MintTokens): void {
     ]);
     return;
   }
-  mintTokensEvent.pv = pv;
+  mintTokensEvent.pv = pv.toString();
   mintTokensEvent.projectId = event.params.projectId.toI32();
   mintTokensEvent.amount = event.params.tokenCount;
   mintTokensEvent.beneficiary = event.params.beneficiary;
@@ -148,4 +155,17 @@ export function handleLaunchProject(event: LaunchProject): void {
   project.deployer = event.params.caller;
 
   project.save();
+}
+
+export function handleReconfigureFundingCycles(
+  event: ReconfigureFundingCycles
+): void {
+  const configureEvent = ConfigureEvent.load(
+    idForConfigureEvent(event.params.projectId, pv, event)
+  );
+
+  if (!configureEvent) return;
+
+  configureEvent.memo = event.params.memo;
+  configureEvent.save();
 }

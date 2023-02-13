@@ -25,7 +25,7 @@ import {
 } from "../../../generated/TerminalV1_1/TerminalV1_1";
 import { PROTOCOL_ID } from "../../constants";
 import { address_v1_terminalV1_1 } from "../../contractAddresses";
-import { ProjectEventKey } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
 import { saveNewProjectTerminalEvent } from "../../utils/entities/projectEvent";
 import {
@@ -43,7 +43,7 @@ import { handleTrendingPayment } from "../../utils/trending";
 
 const terminal: Bytes = Bytes.fromHexString(address_v1_terminalV1_1!);
 
-const pv = "1";
+const pv = PV.PV1;
 
 export function handlePay(event: Pay): void {
   const pay = new PayEvent(idForPayEvent());
@@ -64,7 +64,7 @@ export function handlePay(event: Pay): void {
   project.save();
 
   if (pay) {
-    pay.pv = pv;
+    pay.pv = pv.toString();
     pay.terminal = terminal;
     pay.projectId = event.params.projectId.toI32();
     pay.amount = event.params.amount;
@@ -140,7 +140,7 @@ export function handlePrintTickets(event: PrintTickets): void {
 
   if (!mintTokensEvent) return;
 
-  mintTokensEvent.pv = pv;
+  mintTokensEvent.pv = pv.toString();
   mintTokensEvent.projectId = event.params.projectId.toI32();
   mintTokensEvent.amount = event.params.amount;
   mintTokensEvent.beneficiary = event.params.beneficiary;
@@ -216,7 +216,7 @@ export function handleRedeem(event: Redeem): void {
   );
   if (redeemEvent) {
     redeemEvent.projectId = event.params._projectId.toI32();
-    redeemEvent.pv = pv;
+    redeemEvent.pv = pv.toString();
     redeemEvent.terminal = terminal;
     redeemEvent.amount = event.params.amount;
     redeemEvent.beneficiary = event.params.beneficiary;
@@ -317,7 +317,7 @@ export function handleAddToBalance(event: AddToBalance): void {
   project.save();
 
   if (addToBalance) {
-    addToBalance.pv = pv;
+    addToBalance.pv = pv.toString();
     addToBalance.terminal = terminal;
     addToBalance.projectId = event.params.projectId.toI32();
     addToBalance.amount = event.params.value;

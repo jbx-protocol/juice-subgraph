@@ -5,11 +5,11 @@ import {
   OwnershipTransferred,
   SetDefaultValues,
 } from "../../../generated/templates/JBETHERC20ProjectPayer/JBETHERC20ProjectPayer";
-import { Version } from "../../types";
+import { PV } from "../../enums";
 import { toHexLowercase } from "../../utils/format";
 import { idForProject } from "../../utils/ids";
 
-const pv: Version = "2";
+const pv = PV.PV2;
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   const address = toHexLowercase(dataSource.address());
