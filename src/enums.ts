@@ -20,7 +20,6 @@ export enum ProjectEventKey {
   redeemEvent,
   useAllowanceEvent,
   deployETHERC20ProjectPayerEvent,
-  deployVeNftEvent,
   configureEvent,
   initEvent,
   v1ConfigureEvent,

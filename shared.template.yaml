@@ -47,28 +47,6 @@
           handler: handleSetEnsNameParts
       file: ./src/mappings/shared/jbProjectHandles.ts
   {{ /legacy_jbProjectHandles }}
-  {{ #jbVeNftDeployer }}
-  - kind: ethereum/contract
-    name: JBVeNftDeployer
-    network: {{network}}
-    source:
-      abi: JBVeNftDeployer
-      address: '{{address}}'
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - VeNftToken
-      abis:
-        - name: JBVeNftDeployer
-          file: ./abis/shared/JBVeNftDeployer.json
-      eventHandlers:
-        - event: DeployVeNft(address,indexed uint256,string,string,address,address,address,uint256[],address,address)
-          handler: handleDeployVeNft
-      file: ./src/mappings/shared/veNftDeployer.ts
-  {{ /jbVeNftDeployer }}
   {{ #defifa721Delegate }}
   - name: Defifa721Delegate
     kind: ethereum/contract

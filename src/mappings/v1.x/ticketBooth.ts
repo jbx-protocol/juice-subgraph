@@ -116,6 +116,7 @@ export function handleTicketTransfer(event: Transfer): void {
     burnEvent.amount = event.params.amount;
     burnEvent.stakedAmount = event.params.amount;
     burnEvent.unstakedAmount = BigInt.fromString("0");
+    burnEvent.caller = event.params.caller;
     burnEvent.save();
 
     saveNewProjectEvent(
@@ -207,6 +208,7 @@ export function handleIssue(event: Issue): void {
     deployedERC20Event.symbol = event.params.symbol;
     deployedERC20Event.timestamp = event.block.timestamp.toI32();
     deployedERC20Event.txHash = event.transaction.hash;
+    deployedERC20Event.caller = event.params.caller;
     deployedERC20Event.save();
 
     saveNewProjectEvent(

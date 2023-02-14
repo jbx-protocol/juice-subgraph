@@ -95,8 +95,6 @@ type Project @entity {
   useAllowanceEvents: [UseAllowanceEvent!]! @derivedFrom(field: "project")
   projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
   ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
-  deployVeNftEvents: [DeployVeNftEvent!]! @derivedFrom(field: "project")
-  veNftContract: VeNftContract @derivedFrom(field: "project")
   jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "project")
   configureEvents: [ConfigureEvent!]! @derivedFrom(field: "project")
   initEvents: [InitEvent!]! @derivedFrom(field: "project")
@@ -147,7 +145,6 @@ type ProjectEvent @entity {
   distributeToPayoutSplitEvent: DistributeToPayoutSplitEvent
   useAllowanceEvent: UseAllowanceEvent
   deployETHERC20ProjectPayerEvent: DeployETHERC20ProjectPayerEvent
-  deployVeNftEvent: DeployVeNftEvent
   configureEvent: ConfigureEvent
   initEvent: InitEvent
   v1ConfigureEvent: V1ConfigureEvent
@@ -233,6 +230,7 @@ type DeployedERC20Event @entity {
   pv: String!
   timestamp: Int!
   txHash: Bytes!
+  caller: Bytes!
 
   symbol: String!
   address: Bytes # will be empty for v1.x events
@@ -250,6 +248,7 @@ type BurnEvent @entity {
   pv: String!
   timestamp: Int!
   txHash: Bytes!
+  caller: Bytes!
 
   holder: Bytes!
   amount: BigInt!
@@ -543,17 +542,6 @@ type DeployETHERC20ProjectPayerEvent @entity{
   caller: Bytes!
 }
 
-#v2
-type DeployVeNftEvent @entity {
-  id: ID!
-  project: Project!
-  projectId: Int!
-  timestamp: Int!
-  txHash: Bytes!
-
-  veNftContract: VeNftContract!
-}
-
 # v2
 type ETHERC20ProjectPayer @entity{
   id: ID!
@@ -567,36 +555,6 @@ type ETHERC20ProjectPayer @entity{
   owner: Bytes!
   memo: String
   metadata: Bytes
-}
-
-#v2
-type VeNftToken @entity {
-  id: ID!
-  tokenId: Int!
-  tokenUri: String!
-  createdAt: Int!
-  redeemedAt: Int
-  unlockedAt: Int
-  owner: Bytes!
-  participant: Participant!
-  lockAmount: BigInt!
-  lockEnd: Int!
-  lockDuration: Int!
-  lockUseJbToken: Boolean!
-  lockAllowPublicExtension: Boolean!
-  contract: VeNftContract!
-  contractAddress: Bytes!
-}
-
-#v2
-type VeNftContract @entity {
-  id: ID!
-  address: Bytes!
-  symbol: String!
-  uriResolver: Bytes!
-  project: Project!
-  projectId: Int!
-  tokens: [VeNftToken!]! @derivedFrom(field: "contract")
 }
 
 # v2, v3

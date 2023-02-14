@@ -73,10 +73,6 @@ export function idForPrevPayEvent(): string {
   return protocolLog.paymentsCount.toString();
 }
 
-export function idForVeNftContract(address: Address): string {
-  return toHexLowercase(address);
-}
-
 export function idForJB721DelegateToken(
   address: Address,
   tokenId: BigInt
