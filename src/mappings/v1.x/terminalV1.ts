@@ -1,4 +1,4 @@
-import { Bytes, log, store } from "@graphprotocol/graph-ts";
+import { Bytes, log } from "@graphprotocol/graph-ts";
 
 import {
   AddToBalanceEvent,

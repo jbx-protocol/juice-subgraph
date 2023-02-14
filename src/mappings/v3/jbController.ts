@@ -15,7 +15,6 @@ import {
   ReconfigureFundingCycles,
 } from "../../../generated/V3JBController/JBController";
 import { ProjectEventKey, PV } from "../../enums";
-import { newPV2ConfigureEvent } from "../../utils/entities/configureEvent";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import {
   idForConfigureEvent,
