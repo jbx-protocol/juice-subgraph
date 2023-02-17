@@ -10,10 +10,10 @@ import {
 import {
   DistributeReservedTokens,
   DistributeToReservedTokenSplit,
-  MintTokens,
   LaunchProject,
+  MintTokens,
   ReconfigureFundingCycles,
-} from "../../../generated/V3JBController/JBController";
+} from "../../../generated/V3_0_1JBController/JBController3_0_1";
 import { ProjectEventKey, PV } from "../../enums";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import {

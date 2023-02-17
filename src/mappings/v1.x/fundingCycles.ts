@@ -6,14 +6,14 @@ import {
 } from "../../../generated/FundingCycles/FundingCycles";
 import { V1ConfigureEvent, V1InitEvent } from "../../../generated/schema";
 import { BIGINT_1, BITS_8 } from "../../constants";
-import { ProjectEventKey } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { bytes20FromUint } from "../../utils/format";
 import { idForProject, idForProjectTx } from "../../utils/ids";
-import { pvForV1Project } from "../../utils/pv";
+
+const pv = PV.PV1;
 
 export function handleV1Configure(event: Configure): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const configureEvent = new V1ConfigureEvent(
     idForProjectTx(event.params.projectId, pv, event)
@@ -81,7 +81,6 @@ export function handleV1Configure(event: Configure): void {
 }
 
 export function handleV1Init(event: Init): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const initEvent = new V1InitEvent(
     idForProjectTx(event.params.projectId, pv, event)

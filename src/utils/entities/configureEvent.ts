@@ -7,9 +7,9 @@ import {
   BITS_8,
   MAX_REDEMPTION_RATE,
 } from "../../constants";
-import { Version } from "../../types";
+import { PV } from "../../enums";
 import { bytes20FromUint } from "../format";
-import { idForProject, idForProjectTx } from "../ids";
+import { idForConfigureEvent, idForProject } from "../ids";
 
 export function newPV2ConfigureEvent(
   // Note: Can't use an object arg here because assemblyscript
@@ -22,14 +22,15 @@ export function newPV2ConfigureEvent(
   ballot: Bytes,
   mustStartAtOrAfter: BigInt,
   configuration: BigInt,
-  metadata: BigInt
+  metadata: BigInt,
+  memo: string | null = null
 ): ConfigureEvent {
   // TODO how to add `distributionLimitOf` result, which requires a terminal argument?
 
-  const pv: Version = "2";
+  const pv = PV.PV2
 
   const configureEvent = new ConfigureEvent(
-    idForProjectTx(projectId, pv, event)
+    idForConfigureEvent(projectId, pv, event)
   );
 
   configureEvent.projectId = projectId.toI32();
@@ -43,6 +44,7 @@ export function newPV2ConfigureEvent(
   configureEvent.weight = weight;
   configureEvent.discountRate = discountRate;
   configureEvent.ballot = ballot;
+  configureEvent.memo = memo;
 
   // Top level
   configureEvent.mustStartAtOrAfter = mustStartAtOrAfter.toI32();

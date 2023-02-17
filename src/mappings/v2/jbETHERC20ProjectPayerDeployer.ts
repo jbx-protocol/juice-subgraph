@@ -4,12 +4,12 @@ import {
 } from "../../../generated/schema";
 import { JBETHERC20ProjectPayer } from "../../../generated/templates";
 import { DeployProjectPayer } from "../../../generated/V2JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
-import { ProjectEventKey, Version } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import { toHexLowercase } from "../../utils/format";
 import { idForProject } from "../../utils/ids";
 
-const pv: Version = "2";
+const pv = PV.PV2;
 
 export function handleDeployProjectPayer(event: DeployProjectPayer): void {
   JBETHERC20ProjectPayer.create(event.params.projectPayer);

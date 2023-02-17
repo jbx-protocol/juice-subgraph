@@ -1,10 +1,12 @@
+{{ #shared }}
+  {{ #jbProjectHandles }}
   - kind: ethereum/contract
     name: JBProjectHandles
     network: {{network}}
     source:
-      address: '{{shared.address_jbProjectHandles}}'
       abi: JBProjectHandles
-      startBlock: {{shared.startBlock_jbProjectHandles}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -20,14 +22,15 @@
         - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
           handler: handleSetEnsNameParts
       file: ./src/mappings/shared/jbProjectHandles.ts
-  {{ #shared.address_legacy_jbProjectHandles }}    
+  {{ /jbProjectHandles }}
+  {{ #legacy_jbProjectHandles }}
   - kind: ethereum/contract
     name: LegacyJBProjectHandles
     network: {{network}}
     source:
-      address: '{{shared.address_legacy_jbProjectHandles}}'
       abi: JBProjectHandles
-      startBlock: {{shared.startBlock_legacy_jbProjectHandles}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -43,37 +46,15 @@
         - event: SetEnsNameParts(indexed uint256,indexed string,string[],address)
           handler: handleSetEnsNameParts
       file: ./src/mappings/shared/jbProjectHandles.ts
-  {{ /shared.address_legacy_jbProjectHandles }}
-  {{ #shared.address_jbVeNftDeployer }}
-  - kind: ethereum/contract
-    name: JBVeNftDeployer
-    network: {{network}}
-    source:
-      address: '{{shared.address_jbVeNftDeployer}}'
-      abi: JBVeNftDeployer
-      startBlock: {{shared.startBlock_jbVeNftDeployer}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - VeNftToken
-      abis:
-        - name: JBVeNftDeployer
-          file: ./abis/shared/JBVeNftDeployer.json
-      eventHandlers:
-        - event: DeployVeNft(address,indexed uint256,string,string,address,address,address,uint256[],address,address)
-          handler: handleDeployVeNft
-      file: ./src/mappings/veNft/veNftDeployer.ts
-  {{ /shared.address_jbVeNftDeployer }}
-  {{ #shared.address_defifa721Delegate }}
+  {{ /legacy_jbProjectHandles }}
+  {{ #defifa721Delegate }}
   - name: Defifa721Delegate
     kind: ethereum/contract
     network: {{network}}
     source:
-      address: '{{shared.address_defifa721Delegate}}'
       abi: JB721DelegateToken
-      startBlock: {{shared.startBlock_defifa721Delegate}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -85,9 +66,32 @@
         - name: JB721DelegateToken
           file: ./abis/shared/JB721DelegateToken.json
         - name: JBTiered721DelegateStore
-          file: ./abis/v3/JBTiered721DelegateStore.json
+          file: ./abis/shared/JBTiered721DelegateStore.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/mappings/shared/defifa721Delegate.ts
-  {{ /shared.address_defifa721Delegate }}
+  {{ /defifa721Delegate }}
+  {{ #jbTiered721DelegateDeployer }}
+  - kind: ethereum/contract
+    name: JBTiered721DelegateDeployer
+    network: {{network}}
+    source:
+      abi: JBTiered721DelegateDeployer
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - JB721DelegateToken
+      abis:
+        - name: JBTiered721DelegateDeployer
+          file: ./abis/shared/JBTiered721DelegateDeployer.json
+      eventHandlers:
+        - event: DelegateDeployed(indexed uint256,address,uint8)
+          handler: handleDelegateDeployed
+      file: ./src/mappings/shared/jbTiered721DelegateDeployer.ts
+  {{ /jbTiered721DelegateDeployer }}
+{{ /shared }}

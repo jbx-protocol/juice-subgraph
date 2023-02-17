@@ -1,12 +1,12 @@
 {{ #v1 }}
-  {{ #v1.address_projects }}
+  {{ #projects }}
   - kind: ethereum/contract
     name: Projects
     network: {{network}}
     source:
-      address: '{{v1.address_projects}}'
       abi: Projects
-      startBlock: {{v1.startBlock_projects}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -31,15 +31,15 @@
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransferOwnership
       file: ./src/mappings/v1.x/projects.ts
-  {{ /v1.address_projects }}
-  {{ #v1.address_fundingCycles }}
+  {{ /projects }}
+  {{ #fundingCycles }}
   - kind: ethereum/contract
     name: FundingCycles
     network: {{network}}
     source:
-      address: '{{v1.address_fundingCycles}}'
       abi: FundingCycles
-      startBlock: {{v1.startBlock_fundingCycles}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -58,15 +58,15 @@
         - event: Init(indexed uint256,indexed uint256,uint256,uint256,uint256,uint256)
           handler: handleV1Init
       file: ./src/mappings/v1.x/fundingCycles.ts
-  {{ /v1.address_fundingCycles }}
-  {{ #v1.address_ticketBooth }}
+  {{ /fundingCycles }}
+  {{ #ticketBooth }}
   - kind: ethereum/contract
     name: TicketBooth
     network: {{network}}
     source:
-      address: '{{v1.address_ticketBooth}}'
       abi: TicketBooth
-      startBlock: {{v1.startBlock_ticketBooth}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -95,15 +95,15 @@
         - event: Issue(indexed uint256,string,string,address)
           handler: handleIssue
       file: ./src/mappings/v1.x/ticketBooth.ts
-  {{ /v1.address_ticketBooth }}
-  {{ #v1.address_terminalV1 }}
+  {{ /ticketBooth }}
+  {{ #terminalV1 }}
   - kind: ethereum/contract
     name: TerminalV1
     network: {{network}}
     source:
-      address: '{{v1.address_terminalV1}}'
       abi: TerminalV1
-      startBlock: {{v1.startBlock_terminalV1}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -147,15 +147,15 @@
         - event: Migrate(indexed uint256,indexed address,uint256,address)
           handler: handleMigrate
       file: ./src/mappings/v1.x/terminalV1.ts
-  {{ /v1.address_terminalV1 }}
-  {{ #v1.address_terminalV1_1 }}
+  {{ /terminalV1 }}
+  {{ #terminalV1_1 }}
   - kind: ethereum/contract
     name: TerminalV1_1
     network: {{network}}
     source:
-      address: '{{v1.address_terminalV1_1}}'
       abi: TerminalV1_1
-      startBlock: {{v1.startBlock_terminalV1_1}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -197,5 +197,5 @@
         - event: DistributeToTicketMod(indexed uint256,indexed uint256,(bool,uint16,uint48,address),uint256,address)
           handler: handleDistributeToTicketMod
       file: ./src/mappings/v1.x/terminalV1_1.ts
-  {{ /v1.address_terminalV1_1 }}
+  {{ /terminalV1_1 }}
 {{ /v1 }}

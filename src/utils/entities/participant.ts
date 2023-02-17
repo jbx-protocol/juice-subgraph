@@ -1,15 +1,15 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { Participant } from "../../../generated/schema";
-import { Version } from "../../types";
+import { PV } from "../../enums";
 import { idForParticipant, idForProject } from "../ids";
 
 export function newParticipant(
-  pv: Version,
+  pv: PV,
   projectId: BigInt,
   wallet: Bytes
 ): Participant {
   const participant = new Participant(idForParticipant(projectId, pv, wallet));
-  participant.pv = pv;
+  participant.pv = pv.toString();
   participant.projectId = projectId.toI32();
   participant.project = idForProject(projectId, pv);
   participant.wallet = wallet;

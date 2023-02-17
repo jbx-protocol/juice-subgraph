@@ -1,12 +1,12 @@
 {{ #v3 }}
-  {{ #v3.address_jbETHERC20ProjectPayerDeployer }}
+  {{ #jbETHERC20ProjectPayerDeployer }}
   - kind: ethereum/contract
     name: V3JBETHERC20ProjectPayerDeployer
     network: {{network}}
     source:
-      address: '{{v3.address_jbETHERC20ProjectPayerDeployer}}'
       abi: JBETHERC20ProjectPayerDeployer
-      startBlock: {{v3.startBlock_jbETHERC20ProjectPayerDeployer}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -23,15 +23,15 @@
         - event: DeployProjectPayer(indexed address,uint256,address,bool,string,bytes,bool,address,address,address)
           handler: handleDeployProjectPayer
       file: ./src/mappings/v3/jbETHERC20ProjectPayerDeployer.ts
-  {{ /v3.address_jbETHERC20ProjectPayerDeployer }}
-  {{ #v3.address_jbController }}
+  {{ /jbETHERC20ProjectPayerDeployer }}
+  {{ #jbController }}
   - kind: ethereum/contract
     name: V3JBController
     network: {{network}}
     source:
-      address: '{{v3.address_jbController}}'
       abi: JBController
-      startBlock: {{v3.startBlock_jbController}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -41,6 +41,7 @@
         - DistributeToReservedTokenSplitEvent
         - MintTokensEvent
         - Project
+        - ConfigureEvent
       abis:
         - name: JBController
           file: ./abis/v3/JBController.json
@@ -53,16 +54,52 @@
           handler: handleDistributeReservedTokens
         - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
           handler: handleDistributeToReservedTokenSplit
+        - event: ReconfigureFundingCycles(uint256,uint256,string,address)
+          handler: handleReconfigureFundingCycles
       file: ./src/mappings/v3/jbController.ts
-  {{ /v3.address_jbController }}
-  {{ #v3.address_jbTokenStore }}
+  {{ /jbController }}
+  {{ #jbController3_0_1 }}
+  - kind: ethereum/contract
+    name: V3_0_1JBController
+    network: {{network}}
+    source:
+      abi: JBController3_0_1
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - DistributeReservedTokensEvent
+        - DistributeToReservedTokenSplitEvent
+        - MintTokensEvent
+        - Project
+        - ConfigureEvent
+      abis:
+        - name: JBController3_0_1
+          file: ./abis/v3/JBController3_0_1.json
+      eventHandlers:
+        - event: LaunchProject(uint256,uint256,string,address)
+          handler: handleLaunchProject
+        - event: MintTokens(indexed address,indexed uint256,uint256,uint256,string,uint256,address)
+          handler: handleMintTokens
+        - event: DistributeReservedTokens(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,string,address)
+          handler: handleDistributeReservedTokens
+        - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
+          handler: handleDistributeToReservedTokenSplit
+        - event: ReconfigureFundingCycles(uint256,uint256,string,address)
+          handler: handleReconfigureFundingCycles
+      file: ./src/mappings/v3/jbController3_0_1.ts
+  {{ /jbController3_0_1 }}
+  {{ #jbTokenStore }}
   - kind: ethereum/contract
     name: V3JBTokenStore
     network: {{network}}
     source:
-      address: '{{v3.address_jbTokenStore}}'
       abi: JBTokenStore
-      startBlock: {{v3.startBlock_jbTokenStore}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -88,15 +125,15 @@
         - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
           handler: handleTransfer
       file: ./src/mappings/v3/jbTokenStore.ts
-  {{ /v3.address_jbTokenStore }}
-  {{ #v3.address_jbFundingCycleStore }}
+  {{ /jbTokenStore }}
+  {{ #jbFundingCycleStore }}
   - kind: ethereum/contract
     name: V3JBFundingCycleStore
     network: {{network}}
     source:
-      address: '{{v3.address_jbFundingCycleStore}}'
       abi: JBFundingCycleStore
-      startBlock: {{v3.startBlock_jbFundingCycleStore}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -115,15 +152,15 @@
         - event: Init(indexed uint256,indexed uint256,indexed uint256)
           handler: handleInit
       file: ./src/mappings/v3/jbFundingCycleStore.ts
-  {{ /v3.address_jbFundingCycleStore }}
-  {{ #v3.address_jbETHPaymentTerminal }}
+  {{ /jbFundingCycleStore }}
+  {{ #jbETHPaymentTerminal }}
   - kind: ethereum/contract
     name: V3JBETHPaymentTerminal
     network: {{network}}
     source:
-      address: '{{v3.address_jbETHPaymentTerminal}}'
       abi: JBETHPaymentTerminal
-      startBlock: {{v3.startBlock_jbETHPaymentTerminal}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -158,27 +195,5 @@
         - event: ProcessFee(indexed uint256,indexed uint256,indexed bool,address,address)
           handler: handleProcessFee
       file: ./src/mappings/v3/jbETHPaymentTerminal.ts
-  {{ /v3.address_jbETHPaymentTerminal }}
-  {{ #v3.address_jbTiered721DelegateDeployer }}
-  - kind: ethereum/contract
-    name: JBTiered721DelegateDeployer
-    network: {{network}}
-    source:
-      address: '{{address_jbTiered721DelegateDeployer}}'
-      abi: JBTiered721DelegateDeployer
-      startBlock: {{startBlock_jbTiered721DelegateDeployer}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - JB721DelegateToken
-      abis:
-        - name: JBTiered721DelegateDeployer
-          file: ./abis/v3/JBTiered721DelegateDeployer.json
-      eventHandlers:
-        - event: DelegateDeployed(indexed uint256,address,uint8)
-          handler: handleDelegateDeployed
-      file: ./src/mappings/v3/jbTiered721DelegateDeployer.ts
-  {{ /v3.address_jbTiered721DelegateDeployer }}
+  {{ /jbETHPaymentTerminal }}
 {{ /v3 }}

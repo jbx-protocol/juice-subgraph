@@ -12,7 +12,7 @@ import {
   Transfer,
 } from "../../../generated/V2JBProjects/JBProjects";
 import { PROTOCOL_ID } from "../../constants";
-import { ProjectEventKey, Version } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import {
   newProtocolLog,
@@ -21,7 +21,7 @@ import {
 } from "../../utils/entities/protocolLog";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 
-const pv: Version = "2";
+const pv = PV.PV2;
 
 export function handleCreate(event: Create): void {
   const projectId = idForProject(event.params.projectId, pv);
@@ -33,7 +33,7 @@ export function handleCreate(event: Create): void {
     return;
   }
   project.projectId = event.params.projectId.toI32();
-  project.pv = pv;
+  project.pv = pv.toString();
   project.trendingScore = BigInt.fromString("0");
   project.trendingVolume = BigInt.fromString("0");
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
@@ -56,7 +56,7 @@ export function handleCreate(event: Create): void {
     idForProjectTx(event.params.projectId, pv, event)
   );
   if (projectCreateEvent) {
-    projectCreateEvent.pv = pv;
+    projectCreateEvent.pv = pv.toString();
     projectCreateEvent.project = project.id;
     projectCreateEvent.projectId = event.params.projectId.toI32();
     projectCreateEvent.timestamp = event.block.timestamp.toI32();

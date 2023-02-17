@@ -1,10 +1,12 @@
 import { BigInt, log } from "@graphprotocol/graph-ts";
 
 import { PayEvent, Project, ProtocolLog } from "../../generated/schema";
-import { PROTOCOL_ID } from "../constants";
+import { BEGIN_TRENDING_TIMESTAMP, PROTOCOL_ID } from "../constants";
 import { idForPrevPayEvent } from "./ids";
 
 export function handleTrendingPayment(timestamp: BigInt): void {
+  if (timestamp.toI32() < BEGIN_TRENDING_TIMESTAMP) return;
+
   const protocolLog = ProtocolLog.load(PROTOCOL_ID);
   if (!protocolLog) return;
 

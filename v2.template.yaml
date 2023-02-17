@@ -1,12 +1,12 @@
 {{ #v2 }}
-  {{ #v2.address_jbETHERC20ProjectPayerDeployer }}
+  {{ #jbETHERC20ProjectPayerDeployer }}
   - kind: ethereum/contract
     name: V2JBETHERC20ProjectPayerDeployer
     network: {{network}}
     source:
-      address: '{{v2.address_jbETHERC20ProjectPayerDeployer}}'
       abi: JBETHERC20ProjectPayerDeployer
-      startBlock: {{v2.startBlock_jbETHERC20ProjectPayerDeployer}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -23,15 +23,15 @@
         - event: DeployProjectPayer(indexed address,uint256,address,bool,string,bytes,bool,address,address,address)
           handler: handleDeployProjectPayer
       file: ./src/mappings/v2/jbETHERC20ProjectPayerDeployer.ts
-  {{ /v2.address_jbETHERC20ProjectPayerDeployer }}
-  {{ #v2.address_jbController }}
+  {{ /jbETHERC20ProjectPayerDeployer }}
+  {{ #jbController }}
   - kind: ethereum/contract
     name: V2JBController
     network: {{network}}
     source:
-      address: '{{v2.address_jbController}}'
       abi: JBController
-      startBlock: {{v2.startBlock_jbController}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -40,6 +40,7 @@
         - DistributeReservedTokensEvent
         - DistributeToReservedTokenSplitEvent
         - MintTokensEvent
+        - ConfigureEvent
       abis:
         - name: JBController
           file: ./abis/v2/JBController.json
@@ -52,18 +53,18 @@
           handler: handleDistributeReservedTokens
         - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
           handler: handleDistributeToReservedTokenSplit
-        - event: Migrate(indexed uint256,address,address)
-          handler: handleMigrate
+        - event: ReconfigureFundingCycles(uint256,uint256,string,address)
+          handler: handleReconfigureFundingCycles
       file: ./src/mappings/v2/jbController.ts
-  {{ /v2.address_jbController }}
-  {{ #v2.address_jbTokenStore }}
+  {{ /jbController }}
+  {{ #jbTokenStore }}
   - kind: ethereum/contract
     name: V2JBTokenStore
     network: {{network}}
     source:
-      address: '{{v2.address_jbTokenStore}}'
       abi: JBTokenStore
-      startBlock: {{v2.startBlock_jbTokenStore}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -89,15 +90,15 @@
         - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
           handler: handleTransfer
       file: ./src/mappings/v2/jbTokenStore.ts
-  {{ /v2.address_jbTokenStore }}
-  {{ #v2.address_jbProjects }}
+  {{ /jbTokenStore }}
+  {{ #jbProjects }}
   - kind: ethereum/contract
     name: V2JBProjects
     network: {{network}}
     source:
-      address: '{{v2.address_jbProjects}}'
       abi: JBProjects
-      startBlock: {{v2.startBlock_jbProjects}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -118,15 +119,15 @@
         - event: SetMetadata(indexed uint256,(string,uint256),address)
           handler: handleSetMetadata
       file: ./src/mappings/v2/jbProjects.ts
-  {{ /v2.address_jbProjects }}
-  {{ #v2.address_jbFundingCycleStore }}
+  {{ /jbProjects }}
+  {{ #jbFundingCycleStore }}
   - kind: ethereum/contract
     name: V2JBFundingCycleStore
     network: {{network}}
     source:
-      address: '{{v2.address_jbFundingCycleStore}}'
       abi: JBFundingCycleStore
-      startBlock: {{v2.startBlock_jbFundingCycleStore}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -145,15 +146,15 @@
         - event: Init(indexed uint256,indexed uint256,indexed uint256)
           handler: handleInit
       file: ./src/mappings/v2/jbFundingCycleStore.ts
-  {{ /v2.address_jbFundingCycleStore }}
-  {{ #v2.address_jbETHPaymentTerminal }}
+  {{ /jbFundingCycleStore }}
+  {{ #jbETHPaymentTerminal }}
   - kind: ethereum/contract
     name: V2JBETHPaymentTerminal
     network: {{network}}
     source:
-      address: '{{v2.address_jbETHPaymentTerminal}}'
       abi: JBETHPaymentTerminal
-      startBlock: {{v2.startBlock_jbETHPaymentTerminal}}
+      address: '{{address}}'
+      startBlock: {{startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -188,5 +189,5 @@
         - event: ProcessFee(indexed uint256,indexed uint256,indexed bool,address,address)
           handler: handleProcessFee
       file: ./src/mappings/v2/jbETHPaymentTerminal.ts
-  {{ /v2.address_jbETHPaymentTerminal }}
+  {{ /jbETHPaymentTerminal }}
 {{ /v2 }}

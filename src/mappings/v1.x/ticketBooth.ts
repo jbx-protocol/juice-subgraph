@@ -6,6 +6,7 @@ import {
 } from "@graphprotocol/graph-ts";
 
 import {
+  BurnEvent,
   DeployedERC20Event,
   Participant,
   Project,
@@ -21,9 +22,9 @@ import {
   Transfer,
   Unstake,
 } from "../../../generated/TicketBooth/TicketBooth";
-import { PROTOCOL_ID } from "../../constants";
+import { ADDRESS_ZERO, PROTOCOL_ID } from "../../constants";
 import { address_v1_ticketBooth } from "../../contractAddresses";
-import { ProjectEventKey } from "../../types";
+import { ProjectEventKey, PV } from "../../enums";
 import {
   newParticipant,
   updateParticipantBalance,
@@ -38,10 +39,10 @@ import {
   idForProject,
   idForProjectTx,
 } from "../../utils/ids";
-import { pvForV1Project } from "../../utils/pv";
+
+const pv = PV.PV1;
 
 export function handlePrint(event: Print): void {
-  const pv = pvForV1Project(event.params.projectId);
   const participantId = idForParticipant(
     event.params.projectId,
     pv,
@@ -70,7 +71,6 @@ export function handlePrint(event: Print): void {
 }
 
 export function handleTicketTransfer(event: Transfer): void {
-  const pv = pvForV1Project(event.params.projectId);
   const sender = Participant.load(
     idForParticipant(event.params.projectId, pv, event.params.holder)
   );
@@ -101,10 +101,35 @@ export function handleTicketTransfer(event: Transfer): void {
   updateParticipantBalance(receiver);
 
   receiver.save();
+
+  // Handle burn
+  if (event.params.recipient == ADDRESS_ZERO) {
+    const burnEvent = new BurnEvent(
+      idForProjectTx(event.params.projectId, pv, event)
+    );
+    burnEvent.holder = event.params.holder;
+    burnEvent.project = idForProject(event.params.projectId, pv);
+    burnEvent.projectId = event.params.projectId.toI32();
+    burnEvent.pv = pv.toString();
+    burnEvent.timestamp = event.block.timestamp.toI32();
+    burnEvent.txHash = event.transaction.hash;
+    burnEvent.amount = event.params.amount;
+    burnEvent.stakedAmount = event.params.amount;
+    burnEvent.unstakedAmount = BigInt.fromString("0");
+    burnEvent.caller = event.params.caller;
+    burnEvent.save();
+
+    saveNewProjectEvent(
+      event,
+      event.params.projectId,
+      burnEvent.id,
+      pv,
+      ProjectEventKey.burn
+    );
+  }
 }
 
 export function handleUnstake(event: Unstake): void {
-  const pv = pvForV1Project(event.params.projectId);
   const participant = Participant.load(
     idForParticipant(event.params.projectId, pv, event.params.holder)
   );
@@ -121,7 +146,6 @@ export function handleUnstake(event: Unstake): void {
 }
 
 export function handleStake(event: Stake): void {
-  const pv = pvForV1Project(event.params.projectId);
   const participant = Participant.load(
     idForParticipant(event.params.projectId, pv, event.params.holder)
   );
@@ -138,7 +162,6 @@ export function handleStake(event: Stake): void {
 }
 
 export function handleRedeem(event: Redeem): void {
-  const pv = pvForV1Project(event.params.projectId);
   const participant = Participant.load(
     idForParticipant(event.params.projectId, pv, event.params.holder)
   );
@@ -167,7 +190,6 @@ export function handleRedeem(event: Redeem): void {
 }
 
 export function handleIssue(event: Issue): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
 
@@ -182,10 +204,11 @@ export function handleIssue(event: Issue): void {
   if (deployedERC20Event) {
     deployedERC20Event.project = project.id;
     deployedERC20Event.projectId = project.projectId;
-    deployedERC20Event.pv = pv;
+    deployedERC20Event.pv = pv.toString();
     deployedERC20Event.symbol = event.params.symbol;
     deployedERC20Event.timestamp = event.block.timestamp.toI32();
     deployedERC20Event.txHash = event.transaction.hash;
+    deployedERC20Event.caller = event.params.caller;
     deployedERC20Event.save();
 
     saveNewProjectEvent(
@@ -218,7 +241,7 @@ export function handleIssue(event: Issue): void {
     } else {
       const erc20Context = new DataSourceContext();
       erc20Context.setI32("projectId", event.params.projectId.toI32());
-      erc20Context.setString("pv", pv);
+      erc20Context.setString("pv", pv.toString());
       ERC20.createWithContext(ticketsOfCall.value, erc20Context);
     }
   }

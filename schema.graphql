@@ -95,13 +95,12 @@ type Project @entity {
   useAllowanceEvents: [UseAllowanceEvent!]! @derivedFrom(field: "project")
   projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
   ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
-  deployVeNftEvents: [DeployVeNftEvent!]! @derivedFrom(field: "project")
-  veNftContract: VeNftContract @derivedFrom(field: "project")
   jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "project")
   configureEvents: [ConfigureEvent!]! @derivedFrom(field: "project")
   initEvents: [InitEvent!]! @derivedFrom(field: "project")
   v1ConfigureEvents: [V1ConfigureEvent!]! @derivedFrom(field: "project")
   v1InitEvents: [V1InitEvent!]! @derivedFrom(field: "project")
+  burnEvents: [BurnEvent!]! @derivedFrom(field: "project")
 }
 
 # v1.0, v1.1, v2, v3
@@ -146,11 +145,11 @@ type ProjectEvent @entity {
   distributeToPayoutSplitEvent: DistributeToPayoutSplitEvent
   useAllowanceEvent: UseAllowanceEvent
   deployETHERC20ProjectPayerEvent: DeployETHERC20ProjectPayerEvent
-  deployVeNftEvent: DeployVeNftEvent
   configureEvent: ConfigureEvent
   initEvent: InitEvent
   v1ConfigureEvent: V1ConfigureEvent
   v1InitEvent: V1InitEvent
+  burnEvent: BurnEvent
 }
 
 # v1.0, v1.1, v2, v3
@@ -211,7 +210,9 @@ type RedeemEvent @entity {
   terminal: Bytes!
   timestamp: Int!
   txHash: Bytes!
+
   metadata: Bytes # only v2/v3
+  memo: String # only v2/v3
 
   holder: Bytes!
   beneficiary: Bytes!
@@ -229,9 +230,30 @@ type DeployedERC20Event @entity {
   pv: String!
   timestamp: Int!
   txHash: Bytes!
+  caller: Bytes!
 
   symbol: String!
   address: Bytes # will be empty for v1.x events
+}
+
+type ENSNode @entity {
+  id: ID!
+  projectId: Int
+}
+
+type BurnEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  pv: String!
+  timestamp: Int!
+  txHash: Bytes!
+  caller: Bytes!
+
+  holder: Bytes!
+  amount: BigInt!
+  stakedAmount: BigInt!
+  unstakedAmount: BigInt!
 }
 
 #############################################################################
@@ -520,17 +542,6 @@ type DeployETHERC20ProjectPayerEvent @entity{
   caller: Bytes!
 }
 
-#v2
-type DeployVeNftEvent @entity {
-  id: ID!
-  project: Project!
-  projectId: Int!
-  timestamp: Int!
-  txHash: Bytes!
-
-  veNftContract: VeNftContract!
-}
-
 # v2
 type ETHERC20ProjectPayer @entity{
   id: ID!
@@ -546,36 +557,6 @@ type ETHERC20ProjectPayer @entity{
   metadata: Bytes
 }
 
-#v2
-type VeNftToken @entity {
-  id: ID!
-  tokenId: Int!
-  tokenUri: String!
-  createdAt: Int!
-  redeemedAt: Int
-  unlockedAt: Int
-  owner: Bytes!
-  participant: Participant!
-  lockAmount: BigInt!
-  lockEnd: Int!
-  lockDuration: Int!
-  lockUseJbToken: Boolean!
-  lockAllowPublicExtension: Boolean!
-  contract: VeNftContract!
-  contractAddress: Bytes!
-}
-
-#v2
-type VeNftContract @entity {
-  id: ID!
-  address: Bytes!
-  symbol: String!
-  uriResolver: Bytes!
-  project: Project!
-  projectId: Int!
-  tokens: [VeNftToken!]! @derivedFrom(field: "contract")
-}
-
 # v2, v3
 type ConfigureEvent @entity {
   id: ID!
@@ -589,6 +570,7 @@ type ConfigureEvent @entity {
   weight: BigInt!
   discountRate: BigInt!
   ballot: Bytes!
+  memo: String
 
   mustStartAtOrAfter: Int!
   configuration: Int!
@@ -655,6 +637,7 @@ type JB721DelegateToken @entity {
   projectId: Int!
   name: String!
   symbol: String!
+  governanceType: Int!
 
   # dynamic fields
   owner: Participant!
@@ -663,12 +646,4 @@ type JB721DelegateToken @entity {
   # optional: only on tiered tokens
   floorPrice: BigInt
   lockedUntil: BigInt
-}
-
-#############################################################################
-############################## shared entities ##############################
-#############################################################################
-type ENSNode @entity {
-  id: ID!
-  projectId: Int
 }

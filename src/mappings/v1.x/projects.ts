@@ -13,8 +13,7 @@ import {
   ProtocolV1Log,
 } from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
-import { ProjectEventKey } from "../../types";
-import { pvForTerminal, pvForV1Project } from "../../utils/pv";
+import { ProjectEventKey, PV } from "../../enums";
 import { idForProject, idForProjectTx } from "../../utils/ids";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
 import {
@@ -23,8 +22,9 @@ import {
   updateProtocolEntity,
 } from "../../utils/entities/protocolLog";
 
+const pv = PV.PV1;
+
 export function handleProjectCreate(event: Create): void {
-  const pv = pvForTerminal(event.params.terminal);
   const projectId = idForProject(event.params.projectId, pv);
   const project = new Project(projectId);
 
@@ -34,7 +34,7 @@ export function handleProjectCreate(event: Create): void {
   }
 
   project.projectId = event.params.projectId.toI32();
-  project.pv = pv;
+  project.pv = pv.toString();
   project.trendingScore = BigInt.fromString("0");
   project.trendingVolume = BigInt.fromString("0");
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
@@ -57,7 +57,7 @@ export function handleProjectCreate(event: Create): void {
     idForProjectTx(event.params.projectId, pv, event)
   );
   if (projectCreateEvent) {
-    projectCreateEvent.pv = pv;
+    projectCreateEvent.pv = pv.toString();
     projectCreateEvent.project = project.id;
     projectCreateEvent.projectId = event.params.projectId.toI32();
     projectCreateEvent.timestamp = event.block.timestamp.toI32();
@@ -90,7 +90,6 @@ export function handleProjectCreate(event: Create): void {
 }
 
 export function handleSetHandle(event: SetHandle): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
   if (!project) {
@@ -102,7 +101,6 @@ export function handleSetHandle(event: SetHandle): void {
 }
 
 export function handleSetUri(event: SetUri): void {
-  const pv = pvForV1Project(event.params.projectId);
   const projectId = idForProject(event.params.projectId, pv);
   const project = Project.load(projectId);
   if (!project) {
@@ -114,7 +112,6 @@ export function handleSetUri(event: SetUri): void {
 }
 
 export function handleTransferOwnership(event: Transfer): void {
-  const pv = pvForV1Project(event.params.tokenId);
   const projectId = idForProject(event.params.tokenId, pv);
   const project = Project.load(projectId);
   if (!project) {
