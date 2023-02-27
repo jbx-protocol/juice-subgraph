@@ -27,12 +27,12 @@ type _Schema_
   )
 
 #############################################################################
-############################### vx.x entities ###############################
+############################## shared entities ##############################
 #############################################################################
 
 # Note: Events used for v1, v2 and v3 contracts include `pv` (projects version) and `terminal` (terminal address) properties which allows querying events for specific contract versions.
 
-# v1.0, v1.1, v2, v3
+# shared
 type ProjectCreateEvent @entity {
   id: ID!
   project: Project!
@@ -43,7 +43,7 @@ type ProjectCreateEvent @entity {
   caller: Bytes!
 }
 
-# v1.0, v1.1, v2, v3
+# shared
 type Project @entity {
   id: ID!
   projectId: Int!
@@ -74,36 +74,38 @@ type Project @entity {
 
   nftsMintedCount: Int # only if project has jb721DelegateTokens
 
-  # Derived fields
-  participants: [Participant!]! @derivedFrom(field: "project")
-  payEvents: [PayEvent!]! @derivedFrom(field: "project")
+  # Derived event entities
   addToBalanceEvents: [AddToBalanceEvent!]! @derivedFrom(field: "project")
-  mintTokensEvents: [MintTokensEvent!]! @derivedFrom(field: "project")
-  tapEvents: [TapEvent!]! @derivedFrom(field: "project")
-  redeemEvents: [RedeemEvent!]! @derivedFrom(field: "project")
-  printReservesEvents: [PrintReservesEvent!]! @derivedFrom(field: "project")
+  burnEvents: [BurnEvent!]! @derivedFrom(field: "project")
+  configureEvents: [ConfigureEvent!]! @derivedFrom(field: "project")
+  deployedERC20Events: [DeployedERC20Event!]! @derivedFrom(field: "project")
   distributeToPayoutModEvents: [DistributeToPayoutModEvent!]!
     @derivedFrom(field: "project")
+  distributePayoutsEvents: [DistributePayoutsEvent!]! @derivedFrom(field: "project")
+  distributeReservedTokensEvents: [DistributeReservedTokensEvent!]! @derivedFrom(field: "project")
+  distributeToPayoutSplitEvents: [DistributeToPayoutSplitEvent!]! @derivedFrom(field: "project")
+  distributeToReservedTokenSplitEvents: [DistributeToReservedTokenSplitEvent!]! @derivedFrom(field: "project")
   distributeToTicketModEvents: [DistributeToTicketModEvent!]!
     @derivedFrom(field: "project")
-  deployedERC20s: [DeployedERC20Event!]! @derivedFrom(field: "project")
-  distributePayoutsEvents: [DistributePayoutsEvent!]! @derivedFrom(field: "project")
-  distributeToPayoutSplitEvents: [DistributeToPayoutSplitEvent!]! @derivedFrom(field: "project")
-  distributeReservedTokensEvents: [DistributeReservedTokensEvent!]! @derivedFrom(field: "project")
-  distributeToReservedTokenSplitEvents: [DistributeToReservedTokenSplitEvent!]! @derivedFrom(field: "project")
-  deployedERC20Events: [DeployedERC20Event!]! @derivedFrom(field: "project")
-  useAllowanceEvents: [UseAllowanceEvent!]! @derivedFrom(field: "project")
-  projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
-  ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
-  jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "project")
-  configureEvents: [ConfigureEvent!]! @derivedFrom(field: "project")
   initEvents: [InitEvent!]! @derivedFrom(field: "project")
+  mintTokensEvents: [MintTokensEvent!]! @derivedFrom(field: "project")
+  payEvents: [PayEvent!]! @derivedFrom(field: "project")
+  printReservesEvents: [PrintReservesEvent!]! @derivedFrom(field: "project")
+  projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
+  redeemEvents: [RedeemEvent!]! @derivedFrom(field: "project")
+  setFundAccessConstraintsEvents: [SetFundAccessConstraintsEvent!]! @derivedFrom(field: "project")
+  tapEvents: [TapEvent!]! @derivedFrom(field: "project")
+  useAllowanceEvents: [UseAllowanceEvent!]! @derivedFrom(field: "project")
   v1ConfigureEvents: [V1ConfigureEvent!]! @derivedFrom(field: "project")
   v1InitEvents: [V1InitEvent!]! @derivedFrom(field: "project")
-  burnEvents: [BurnEvent!]! @derivedFrom(field: "project")
+
+  # Derived entities
+  ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
+  jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "project")
+  participants: [Participant!]! @derivedFrom(field: "project")
 }
 
-# v1.0, v1.1, v2, v3
+# shared
 type Participant @entity {
   id: ID!
   project: Project!
@@ -115,11 +117,11 @@ type Participant @entity {
   lastPaidTimestamp: Int!
   balance: BigInt!
   stakedBalance: BigInt!
-  unstakedBalance: BigInt!
+  erc20Balance: BigInt!
   jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "owner")
 }
 
-# v1.0, v1.1, v2, v3
+# shared
 type ProjectEvent @entity {
   id: ID!
   project: Project!
@@ -127,6 +129,7 @@ type ProjectEvent @entity {
   pv: String!
   terminal: Bytes # Only terminal events
   timestamp: Int!
+  caller: Bytes!
 
   # Conditional properties. Only one of these properties should exist. This is a helper entity that makes it possible to query all "project events" for a project.
   payEvent: PayEvent
@@ -150,9 +153,10 @@ type ProjectEvent @entity {
   v1ConfigureEvent: V1ConfigureEvent
   v1InitEvent: V1InitEvent
   burnEvent: BurnEvent
+  setFundAccessConstraintsEvent: SetFundAccessConstraintsEvent
 }
 
-# v1.0, v1.1, v2, v3
+# shared
 type PayEvent @entity {
   id: ID!
   project: Project!
@@ -170,7 +174,7 @@ type PayEvent @entity {
   feeFromV2Project: Int # Indicates payment is a fee from project with this ID
 }
 
-# v1.0, v1.1, v2, v3
+# shared
 type AddToBalanceEvent @entity {
   id: ID!
   project: Project!
@@ -186,7 +190,7 @@ type AddToBalanceEvent @entity {
   note: String
 }
 
-# v1.0, v1.1, v2, v3
+# shared
 type MintTokensEvent @entity {
   id: ID!
   project: Project!
@@ -201,7 +205,7 @@ type MintTokensEvent @entity {
   caller: Bytes!
 }
 
-# v1.0, v1.1, v2, v3
+# shared
 type RedeemEvent @entity {
   id: ID!
   project: Project!
@@ -222,7 +226,7 @@ type RedeemEvent @entity {
   caller: Bytes!
 }
 
-# v1.0, v1.1, v2, v3
+# shared
 type DeployedERC20Event @entity {
   id: ID!
   project: Project!
@@ -236,11 +240,13 @@ type DeployedERC20Event @entity {
   address: Bytes # will be empty for v1.x events
 }
 
+# shared
 type ENSNode @entity {
   id: ID!
   projectId: Int
 }
 
+# shared
 type BurnEvent @entity {
   id: ID!
   project: Project!
@@ -253,13 +259,33 @@ type BurnEvent @entity {
   holder: Bytes!
   amount: BigInt!
   stakedAmount: BigInt!
-  unstakedAmount: BigInt!
+  erc20Amount: BigInt!
+}
+
+# shared
+type JB721DelegateToken @entity {
+  id: ID!
+  address: Bytes!
+  tokenId: BigInt!
+  project: Project!
+  projectId: Int!
+  name: String!
+  symbol: String!
+  governanceType: Int!
+
+  # dynamic fields
+  owner: Participant!
+  tokenUri: String!
+
+  # optional: only on tiered tokens
+  floorPrice: BigInt
+  lockedUntil: BigInt
 }
 
 #############################################################################
 ############################### v1.x entities ###############################
 #############################################################################
-# v1.0, v1.1
+# v1, v1.1
 type ProtocolV1Log @entity {
   id: ID!
   log: ProtocolLog!
@@ -273,7 +299,7 @@ type ProtocolV1Log @entity {
   erc20Count: Int!
 }
 
-# v1.0, v1.1
+# v1, v1.1
 type PrintReservesEvent @entity {
   id: ID!
   project: Project!
@@ -290,7 +316,7 @@ type PrintReservesEvent @entity {
     @derivedFrom(field: "printReservesEvent")
 }
 
-# v1.0, v1.1
+# v1, v1.1
 type DistributeToPayoutModEvent @entity {
   id: ID!
   project: Project!
@@ -309,7 +335,7 @@ type DistributeToPayoutModEvent @entity {
   tapEvent: TapEvent!
 }
 
-# v1.0, v1.1
+# v1, v1.1
 type TapEvent @entity {
   id: ID!
   project: Project!
@@ -332,7 +358,7 @@ type TapEvent @entity {
   distributions: [DistributeToPayoutModEvent!]! @derivedFrom(field: "tapEvent")
 }
 
-# v1.0, v1.1
+# v1, v1.1
 type DistributeToTicketModEvent @entity {
   id: ID!
   project: Project!
@@ -395,8 +421,27 @@ type V1InitEvent @entity {
 }
 
 #############################################################################
-################################ v2 entities ################################
+############################### v2/v3 entities ##############################
 #############################################################################
+# v2
+type SetFundAccessConstraintsEvent @entity {
+  id: ID!
+  project: Project!
+  projectId: Int!
+  timestamp: Int!
+  txHash: Bytes!
+
+  caller: Bytes!
+  distributionLimit: BigInt!
+  distributionLimitCurrency: Int!
+  overflowAllowance: BigInt!
+  overflowAllowanceCurrency: Int!
+  terminal: Bytes!
+  token: Bytes
+  fundingCycleConfiguration: BigInt!
+  fundingCycleNumber: Int!
+}
+
 # v2
 type ProtocolV2Log @entity {
   id: ID!
@@ -583,7 +628,7 @@ type ConfigureEvent @entity {
   reservedRate: Int!
   redemptionRate: Int!
   ballotRedemptionRate: Int!
-  payPaused: Boolean!
+  pausePay: Boolean!
   distributionsPaused: Boolean!
   redeemPaused: Boolean!
   burnPaused: Boolean!
@@ -613,9 +658,7 @@ type InitEvent @entity {
   basedOn: Int!
 }
 
-#############################################################################
-################################ v3 entities ################################
-#############################################################################
+# v3
 type ProtocolV3Log @entity {
   id: ID!
   log: ProtocolLog!
@@ -627,23 +670,4 @@ type ProtocolV3Log @entity {
   paymentsCount: Int!
   redeemCount: Int!
   erc20Count: Int!
-}
-
-type JB721DelegateToken @entity {
-  id: ID!
-  address: Bytes!
-  tokenId: BigInt!
-  project: Project!
-  projectId: Int!
-  name: String!
-  symbol: String!
-  governanceType: Int!
-
-  # dynamic fields
-  owner: Participant!
-  tokenUri: String!
-
-  # optional: only on tiered tokens
-  floorPrice: BigInt
-  lockedUntil: BigInt
 }

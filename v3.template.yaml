@@ -56,6 +56,8 @@
           handler: handleDistributeToReservedTokenSplit
         - event: ReconfigureFundingCycles(uint256,uint256,string,address)
           handler: handleReconfigureFundingCycles
+        - event: SetFundAccessConstraints(indexed uint256,indexed uint256,indexed uint256,(address,address,uint256,uint256,uint256,uint256),address)
+          handler: handleSetFundAccessConstraints
       file: ./src/mappings/v3/jbController.ts
   {{ /jbController }}
   {{ #jbController3_0_1 }}
@@ -90,6 +92,8 @@
           handler: handleDistributeToReservedTokenSplit
         - event: ReconfigureFundingCycles(uint256,uint256,string,address)
           handler: handleReconfigureFundingCycles
+        - event: SetFundAccessConstraints(indexed uint256,indexed uint256,indexed uint256,(address,address,uint256,uint256,uint256,uint256),address)
+          handler: handleSetFundAccessConstraints
       file: ./src/mappings/v3/jbController3_0_1.ts
   {{ /jbController3_0_1 }}
   {{ #jbTokenStore }}

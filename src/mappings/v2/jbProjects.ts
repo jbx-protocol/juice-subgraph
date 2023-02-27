@@ -69,7 +69,8 @@ export function handleCreate(event: Create): void {
       event.params.projectId,
       projectCreateEvent.id,
       pv,
-      ProjectEventKey.projectCreateEvent
+      ProjectEventKey.projectCreateEvent,
+      event.params.caller,
     );
   }
 

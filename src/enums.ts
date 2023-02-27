@@ -4,31 +4,32 @@ export enum PV {
 }
 
 export enum ProjectEventKey {
+  addToBalanceEvent,
+  burn,
+  configureEvent,
   deployedERC20Event,
+  deployETHERC20ProjectPayerEvent,
+  distributePayoutsEvent,
   distributeReservedTokensEvent,
   distributeToPayoutModEvent,
-  distributeToReservedTokenSplitEvent,
   distributeToPayoutSplitEvent,
+  distributeToReservedTokenSplitEvent,
   distributeToTicketModEvent,
+  initEvent,
   mintTokensEvent,
   payEvent,
-  addToBalanceEvent,
   printReservesEvent,
   projectCreateEvent,
-  tapEvent,
-  distributePayoutsEvent,
   redeemEvent,
+  setFundAccessConstraintsEvent,
+  tapEvent,
   useAllowanceEvent,
-  deployETHERC20ProjectPayerEvent,
-  configureEvent,
-  initEvent,
   v1ConfigureEvent,
   v1InitEvent,
-  burn
 }
 
 export enum JB721GovernanceType {
   NONE,
   TIERED,
-  GLOBAL
+  GLOBAL,
 }

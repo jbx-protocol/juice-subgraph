@@ -24,7 +24,7 @@ export function handleTransfer(event: Transfer): void {
   const context = dataSource.context();
   const projectId = context.getBigInt("projectId");
   const pv = context.getString("pv") === "1" ? PV.PV1 : PV.PV2;
-  const governanceType = context.getI32("governanceType")
+  const governanceType = context.getI32("governanceType");
   const address = dataSource.address();
   const jb721DelegateTokenContract = JB721DelegateTokenContract.bind(
     Address.fromBytes(address)
@@ -127,7 +127,10 @@ export function handleTransfer(event: Transfer): void {
       project.save();
     } else {
       if (!project) {
-        log.error("[handleTransfer] Missing project. ID:{}", [_projectId]);
+        log.error(
+          "[jb721DelegateToken:handleTransfer] Missing project. ID:{}",
+          [_projectId]
+        );
         return;
       }
     }

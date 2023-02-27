@@ -57,7 +57,6 @@ export function handlePrint(event: Print): void {
       event.params.holder
     );
   }
-  if (!participant) return;
 
   if (!event.params.preferUnstakedTickets) {
     participant.stakedBalance = participant.stakedBalance.plus(
@@ -94,7 +93,6 @@ export function handleTicketTransfer(event: Transfer): void {
       event.params.recipient
     );
   }
-  if (!receiver) return;
 
   receiver.stakedBalance = receiver.stakedBalance.plus(event.params.amount);
 
@@ -115,7 +113,7 @@ export function handleTicketTransfer(event: Transfer): void {
     burnEvent.txHash = event.transaction.hash;
     burnEvent.amount = event.params.amount;
     burnEvent.stakedAmount = event.params.amount;
-    burnEvent.unstakedAmount = BigInt.fromString("0");
+    burnEvent.erc20Amount = BigInt.fromString("0");
     burnEvent.caller = event.params.caller;
     burnEvent.save();
 
@@ -124,7 +122,8 @@ export function handleTicketTransfer(event: Transfer): void {
       event.params.projectId,
       burnEvent.id,
       pv,
-      ProjectEventKey.burn
+      ProjectEventKey.burn,
+      event.params.caller
     );
   }
 }
@@ -169,9 +168,9 @@ export function handleRedeem(event: Redeem): void {
   if (!participant) return;
 
   if (event.params.preferUnstaked) {
-    if (!participant.unstakedBalance.gt(event.params.amount)) {
+    if (!participant.erc20Balance.gt(event.params.amount)) {
       participant.stakedBalance = participant.stakedBalance.minus(
-        event.params.amount.minus(participant.unstakedBalance)
+        event.params.amount.minus(participant.erc20Balance)
       );
     }
   } else {
@@ -216,7 +215,8 @@ export function handleIssue(event: Issue): void {
       event.params.projectId,
       deployedERC20Event.id,
       pv,
-      ProjectEventKey.deployedERC20Event
+      ProjectEventKey.deployedERC20Event,
+      event.params.caller
     );
   }
 

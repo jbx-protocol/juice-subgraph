@@ -15,9 +15,10 @@ export function saveNewProjectTerminalEvent(
   id: string,
   pv: PV,
   key: ProjectEventKey,
+  caller: Bytes,
   terminal: Bytes
 ): void {
-  saveNewProjectEvent(event, projectId, id, pv, key, terminal);
+  saveNewProjectEvent(event, projectId, id, pv, key, terminal, caller);
 }
 
 export function saveNewProjectEvent(
@@ -26,6 +27,7 @@ export function saveNewProjectEvent(
   id: string,
   pv: PV,
   key: ProjectEventKey,
+  caller: Bytes,
   terminal: Bytes | null = null
 ): void {
   let projectEvent = new ProjectEvent(
@@ -36,12 +38,12 @@ export function saveNewProjectEvent(
       event.transactionLogIndex
     )
   );
-  if (!projectEvent) return;
   projectEvent.pv = pv.toString();
   if (terminal) projectEvent.terminal = terminal;
   projectEvent.projectId = projectId.toI32();
   projectEvent.timestamp = event.block.timestamp.toI32();
   projectEvent.project = idForProject(projectId, pv);
+  projectEvent.caller = caller;
 
   switch (key) {
     case ProjectEventKey.deployedERC20Event:

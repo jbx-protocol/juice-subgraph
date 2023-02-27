@@ -15,7 +15,7 @@ export function newParticipant(
   participant.wallet = wallet;
   participant.balance = BigInt.fromString("0");
   participant.stakedBalance = BigInt.fromString("0");
-  participant.unstakedBalance = BigInt.fromString("0");
+  participant.erc20Balance = BigInt.fromString("0");
   participant.totalPaid = BigInt.fromString("0");
   participant.totalPaidUSD = BigInt.fromString("0");
   participant.lastPaidTimestamp = 0;
@@ -23,7 +23,7 @@ export function newParticipant(
 }
 
 export function updateParticipantBalance(participant: Participant): void {
-  participant.balance = participant.unstakedBalance.plus(
+  participant.balance = participant.erc20Balance.plus(
     participant.stakedBalance
   );
 }

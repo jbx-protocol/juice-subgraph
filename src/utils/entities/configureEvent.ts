@@ -79,7 +79,7 @@ export function newPV2ConfigureEvent(
     .minus(metadata.rightShift(56).bitAnd(BigInt.fromI32(BITS_16)))
     .toI32();
 
-  configureEvent.payPaused = !metadata
+  configureEvent.pausePay = !metadata
     .rightShift(72)
     .bitAnd(BIGINT_1)
     .isZero();
