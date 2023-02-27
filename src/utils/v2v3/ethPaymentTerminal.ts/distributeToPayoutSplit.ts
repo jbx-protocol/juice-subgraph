@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { DistributeToPayoutSplitEvent } from "../../../../generated/schema";
 import { DistributeToPayoutSplitSplitStruct } from "../../../../generated/V3JBETHPaymentTerminal/JBETHPaymentTerminal";
 import { ProjectEventKey, PV } from "../../../enums";
@@ -10,12 +10,18 @@ const pv = PV.PV2;
 export function handleV2V3DistributeToPayoutSplit(
   event: ethereum.Event,
   projectId: BigInt,
-  terminal: Address,
+  terminal: Bytes,
   amount: BigInt,
   amountUSD: BigInt | null,
   domain: BigInt,
   group: BigInt,
-  split: DistributeToPayoutSplitSplitStruct,
+  splitProjectId: BigInt,
+  splitAllocator: Address,
+  splitBeneficiary: Address,
+  splitLockedUntil: BigInt,
+  splitPercent: BigInt,
+  splitPreferClaimed: boolean,
+  splitPreferAddToBalance: boolean,
   caller: Address
 ): void {
   const idOfProject = idForProject(projectId, pv);
@@ -51,13 +57,13 @@ export function handleV2V3DistributeToPayoutSplit(
   distributePayoutSplitEvent.domain = domain;
   distributePayoutSplitEvent.group = group;
   distributePayoutSplitEvent.projectId = projectId.toI32();
-  distributePayoutSplitEvent.splitProjectId = split.projectId.toI32();
-  distributePayoutSplitEvent.allocator = split.allocator;
-  distributePayoutSplitEvent.beneficiary = split.beneficiary;
-  distributePayoutSplitEvent.lockedUntil = split.lockedUntil.toI32();
-  distributePayoutSplitEvent.percent = split.percent.toI32();
-  distributePayoutSplitEvent.preferClaimed = split.preferClaimed;
-  distributePayoutSplitEvent.preferAddToBalance = split.preferAddToBalance;
+  distributePayoutSplitEvent.splitProjectId = splitProjectId.toI32();
+  distributePayoutSplitEvent.allocator = splitAllocator;
+  distributePayoutSplitEvent.beneficiary = splitBeneficiary;
+  distributePayoutSplitEvent.lockedUntil = splitLockedUntil.toI32();
+  distributePayoutSplitEvent.percent = splitPercent.toI32();
+  distributePayoutSplitEvent.preferClaimed = splitPreferClaimed;
+  distributePayoutSplitEvent.preferAddToBalance = splitPreferAddToBalance;
   distributePayoutSplitEvent.save();
 
   saveNewProjectTerminalEvent(

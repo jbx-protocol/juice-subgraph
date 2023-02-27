@@ -20,7 +20,7 @@ export function handleV2V3Issue(
   symbol: string,
   token: Address,
   caller: Address
-) {
+): void {
   const idOfProject = idForProject(projectId, pv);
   const project = Project.load(idOfProject);
 

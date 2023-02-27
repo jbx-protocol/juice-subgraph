@@ -9,7 +9,7 @@ const pv = PV.PV2;
 export function handleV2V3RedeemTokens(
   event: ethereum.Event,
   projectId: BigInt,
-  terminal: Address,
+  terminal: Bytes,
   tokenCount: BigInt,
   beneficiary: Address,
   reclaimedAmount: BigInt,

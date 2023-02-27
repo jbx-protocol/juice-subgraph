@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 
 import { PrintReservesEvent } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
@@ -15,7 +15,7 @@ export function handleV1PrintReserveTickets(
   count: BigInt,
   fundingCycleId: BigInt,
   caller: Address,
-  terminal: Address
+  terminal: Bytes
 ): void {
   const idOfProject = idForProject(projectId, pv);
   const printReserveEvent = new PrintReservesEvent(

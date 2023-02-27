@@ -150,7 +150,10 @@ export function handleDistributeToPayoutMod(
     event,
     event.params.projectId,
     event.params.fundingCycleId,
-    event.params.mod,
+    event.params.mod.projectId,
+    event.params.mod.beneficiary,
+    event.params.mod.allocator,
+    event.params.mod.preferUnstaked,
     event.params.modCut,
     event.params.caller,
     terminal
@@ -164,7 +167,8 @@ export function handleDistributeToTicketMod(
     event,
     event.params.projectId,
     event.params.fundingCycleId,
-    event.params.mod,
+    event.params.mod.beneficiary,
+    event.params.mod.preferUnstaked,
     event.params.modCut,
     event.params.caller,
     terminal

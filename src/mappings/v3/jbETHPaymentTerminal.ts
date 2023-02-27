@@ -68,7 +68,13 @@ export function handleDistributeToPayoutSplit(
     v3USDPriceForEth(event.params.amount),
     event.params.domain,
     event.params.group,
-    event.params.split,
+    event.params.split.projectId,
+    event.params.split.allocator,
+    event.params.split.beneficiary,
+    event.params.split.lockedUntil,
+    event.params.split.percent,
+    event.params.split.preferClaimed,
+    event.params.split.preferAddToBalance,
     event.params.caller
   );
 }

@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { DistributePayoutsEvent, Project } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
@@ -16,7 +16,7 @@ export function handleV2V3DistributePayouts(
   beneficiaryDistributionAmountUSD: BigInt | null,
   distributedAmount: BigInt,
   distributedAmountUSD: BigInt | null,
-  terminal: Address,
+  terminal: Bytes,
   caller: Address,
   fee: BigInt,
   fundingCycleConfiguration: BigInt,

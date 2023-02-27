@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 
 import { MintTokensEvent } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
@@ -14,7 +14,7 @@ export function handleV1PrintRedeemedTickets(
   beneficiary: Address,
   memo: string,
   caller: Address,
-  terminal: Address
+  terminal: Bytes
 ): void {
   /**
    * Note: Receiver balance is updated in the ticketBooth event handler.

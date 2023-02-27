@@ -10,7 +10,10 @@ const pv = PV.PV2;
 export function handleV2V3Configure(
   event: ethereum.Event,
   projectId: BigInt,
-  data: ConfigureDataStruct,
+  duration: BigInt,
+  weight: BigInt,
+  discountRate: BigInt,
+  ballot: Address,
   mustStartAtOrAfter: BigInt,
   configuration: BigInt,
   metadata: BigInt,
@@ -19,10 +22,10 @@ export function handleV2V3Configure(
   const configureEvent = newPV2ConfigureEvent(
     event,
     projectId,
-    data.duration,
-    data.weight,
-    data.discountRate,
-    data.ballot,
+    duration,
+    weight,
+    discountRate,
+    ballot,
     mustStartAtOrAfter,
     configuration,
     metadata

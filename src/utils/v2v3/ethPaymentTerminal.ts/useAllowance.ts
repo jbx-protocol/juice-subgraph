@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { UseAllowanceEvent } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
@@ -20,7 +20,7 @@ export function handleV2V3UseAllowance(
   fundingCycleNumber: BigInt,
   memo: string,
   caller: Address,
-  terminal: Address
+  terminal: Bytes
 ): void {
   const useAllowanceEventId = idForProjectTx(projectId, pv, event, true);
   const useAllowanceEvent = new UseAllowanceEvent(useAllowanceEventId);

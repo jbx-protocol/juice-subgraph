@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 import { Project, TapEvent } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
@@ -18,7 +18,7 @@ export function handleV1Tap(
   currency: BigInt,
   fundingCycleId: BigInt,
   caller: Address,
-  terminal: Address
+  terminal: Bytes
 ): void {
   const tapEvent = new TapEvent(idForProjectTx(projectId, pv, event));
 

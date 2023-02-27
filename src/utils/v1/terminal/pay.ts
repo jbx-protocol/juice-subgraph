@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { Participant, PayEvent, Project } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { newParticipant } from "../../entities/participant";
@@ -13,7 +13,7 @@ export function handleV1Pay(
   projectId: BigInt,
   amount: BigInt,
   amountUSD: BigInt | null,
-  terminal: Address,
+  terminal: Bytes,
   beneficiary: Address,
   note: string,
   caller: Address

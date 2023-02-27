@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 import { DistributeToPayoutModEvent } from "../../../../generated/schema";
 import { DistributeToPayoutModModStruct } from "../../../../generated/TerminalV1/TerminalV1";
 import { ProjectEventKey, PV } from "../../../enums";
@@ -12,10 +12,13 @@ export function handleV1DistributeToPayoutMod(
   event: ethereum.Event,
   projectId: BigInt,
   fundingCycleId: BigInt,
-  mod: DistributeToPayoutModModStruct,
+  modProjectId: BigInt,
+  modBeneficiary: Address,
+  modAllocator: Address,
+  modPreferUnstaked: boolean,
   modCut: BigInt,
   caller: Address,
-  terminal: Address
+  terminal: Bytes
 ): void {
   const distributeToPayoutModEvent = new DistributeToPayoutModEvent(
     idForProjectTx(projectId, pv, event, true)
@@ -27,10 +30,10 @@ export function handleV1DistributeToPayoutMod(
   distributeToPayoutModEvent.caller = event.transaction.from;
   distributeToPayoutModEvent.projectId = projectId.toI32();
   distributeToPayoutModEvent.fundingCycleId = fundingCycleId;
-  distributeToPayoutModEvent.modProjectId = mod.projectId.toI32();
-  distributeToPayoutModEvent.modBeneficiary = mod.beneficiary;
-  distributeToPayoutModEvent.modAllocator = mod.allocator;
-  distributeToPayoutModEvent.modPreferUnstaked = mod.preferUnstaked;
+  distributeToPayoutModEvent.modProjectId = modProjectId.toI32();
+  distributeToPayoutModEvent.modBeneficiary = modBeneficiary;
+  distributeToPayoutModEvent.modAllocator = modAllocator;
+  distributeToPayoutModEvent.modPreferUnstaked = modPreferUnstaked;
   distributeToPayoutModEvent.modCut = modCut;
   distributeToPayoutModEvent.modCutUSD = v1USDPriceForEth(modCut);
   distributeToPayoutModEvent.timestamp = event.block.timestamp.toI32();

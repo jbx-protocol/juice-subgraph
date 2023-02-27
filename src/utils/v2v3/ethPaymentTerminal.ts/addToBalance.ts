@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 
 import { AddToBalanceEvent, Project } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
@@ -12,7 +12,7 @@ export function handleV2V3AddToBalance(
   event: ethereum.Event,
   projectId: BigInt,
   amount: BigInt,
-  terminal: Address,
+  terminal: Bytes,
   memo: string,
   caller: Address
 ): void {

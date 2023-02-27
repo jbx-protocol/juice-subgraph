@@ -12,7 +12,12 @@ export function handleV2V3DistributeReservedTokenSplit(
   event: ethereum.Event,
   projectId: BigInt,
   tokenCount: BigInt,
-  split: DistributeToReservedTokenSplitSplitStruct,
+  allocator: Address,
+  beneficiary: Address,
+  lockedUntil: BigInt,
+  percent: BigInt,
+  preferClaimed: boolean,
+  splitProjectId: BigInt,
   caller: Address
 ): void {
   const distributeReservedTokenSplitEvent = new DistributeToReservedTokenSplitEvent(
@@ -31,12 +36,12 @@ export function handleV2V3DistributeReservedTokenSplit(
   distributeReservedTokenSplitEvent.timestamp = event.block.timestamp.toI32();
   distributeReservedTokenSplitEvent.caller = event.transaction.from;
   distributeReservedTokenSplitEvent.tokenCount = tokenCount;
-  distributeReservedTokenSplitEvent.allocator = split.allocator;
-  distributeReservedTokenSplitEvent.beneficiary = split.beneficiary;
-  distributeReservedTokenSplitEvent.lockedUntil = split.lockedUntil.toI32();
-  distributeReservedTokenSplitEvent.percent = split.percent.toI32();
-  distributeReservedTokenSplitEvent.preferClaimed = split.preferClaimed;
-  distributeReservedTokenSplitEvent.splitProjectId = split.projectId.toI32();
+  distributeReservedTokenSplitEvent.allocator = allocator;
+  distributeReservedTokenSplitEvent.beneficiary = beneficiary;
+  distributeReservedTokenSplitEvent.lockedUntil = lockedUntil.toI32();
+  distributeReservedTokenSplitEvent.percent = percent.toI32();
+  distributeReservedTokenSplitEvent.preferClaimed = preferClaimed;
+  distributeReservedTokenSplitEvent.splitProjectId = splitProjectId.toI32();
   distributeReservedTokenSplitEvent.save();
 
   saveNewProjectEvent(

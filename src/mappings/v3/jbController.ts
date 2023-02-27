@@ -46,7 +46,12 @@ export function handleDistributeToReservedTokenSplit(
     event,
     event.params.projectId,
     event.params.tokenCount,
-    event.params.split,
+    event.params.split.allocator,
+    event.params.split.beneficiary,
+    event.params.split.lockedUntil,
+    event.params.split.percent,
+    event.params.split.preferClaimed,
+    event.params.split.projectId,
     event.params.caller
   );
 }
@@ -72,7 +77,12 @@ export function handleSetFundAccessConstraints(
     event,
     event.params.projectId,
     event.params.caller,
-    event.params.constraints,
+    event.params.constraints.distributionLimit,
+    event.params.constraints.distributionLimitCurrency,
+    event.params.constraints.overflowAllowance,
+    event.params.constraints.overflowAllowanceCurrency,
+    event.params.constraints.terminal,
+    event.params.constraints.token,
     event.params.fundingCycleConfiguration,
     event.params.fundingCycleNumber
   );

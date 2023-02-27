@@ -9,7 +9,10 @@ export function handleConfigure(event: Configure): void {
   handleV2V3Configure(
     event,
     event.params.projectId,
-    event.params.data,
+    event.params.data.duration,
+    event.params.data.weight,
+    event.params.data.discountRate,
+    event.params.data.ballot,
     event.params.mustStartAtOrAfter,
     event.params.configuration,
     event.params.metadata,

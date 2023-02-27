@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 
 import { DistributeToTicketModEvent } from "../../../../generated/schema";
 import { DistributeToTicketModModStruct } from "../../../../generated/TerminalV1/TerminalV1";
@@ -12,10 +12,11 @@ export function handleV1DistributeToTicketMod(
   event: ethereum.Event,
   projectId: BigInt,
   fundingCycleId: BigInt,
-  mod: DistributeToTicketModModStruct,
+  modBeneficiary: Address,
+  modPreferUnstaked: boolean,
   modCut: BigInt,
   caller: Address,
-  terminal: Address
+  terminal: Bytes
 ): void {
   const distributeToTicketModEvent = new DistributeToTicketModEvent(
     idForProjectTx(projectId, pv, event, true)
@@ -28,8 +29,8 @@ export function handleV1DistributeToTicketMod(
     event
   );
   distributeToTicketModEvent.caller = event.transaction.from;
-  distributeToTicketModEvent.modBeneficiary = mod.beneficiary;
-  distributeToTicketModEvent.modPreferUnstaked = mod.preferUnstaked;
+  distributeToTicketModEvent.modBeneficiary = modBeneficiary;
+  distributeToTicketModEvent.modPreferUnstaked = modPreferUnstaked;
   distributeToTicketModEvent.modCut = modCut;
   distributeToTicketModEvent.projectId = projectId.toI32();
   distributeToTicketModEvent.fundingCycleId = fundingCycleId;
