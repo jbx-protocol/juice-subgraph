@@ -1,8 +1,13 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 
-import { Participant, PayEvent, Project } from "../../../../generated/schema";
+import {
+  Participant,
+  PayEvent,
+  Project,
+  Wallet,
+} from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
-import { newParticipant } from "../../entities/participant";
+import { newParticipant, newWallet } from "../../entities/participant";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { idForParticipant, idForPayEvent, idForProject } from "../../ids";
 import { handleTrendingPayment } from "../../trending";
@@ -60,11 +65,11 @@ export function handleV2V3Pay(
     handleTrendingPayment(event.block.timestamp);
   }
 
-  // Update participant
-  const participantId = idForParticipant(projectId, pv, beneficiary);
+  // Update participant, create if needed
+  const participantId = idForParticipant(projectId, pv, caller);
   let participant = Participant.load(participantId);
   if (!participant) {
-    participant = newParticipant(pv, projectId, beneficiary);
+    participant = newParticipant(pv, projectId, caller);
   } else {
     participant.totalPaid = participant.totalPaid.plus(amount);
     if (amountUSD) {
@@ -73,4 +78,13 @@ export function handleV2V3Pay(
   }
   participant.lastPaidTimestamp = event.block.timestamp.toI32();
   participant.save();
+
+  // Update wallet, create if needed
+  let wallet = Wallet.load(caller.toHexString());
+  if (!wallet) {
+    wallet = newWallet(caller.toHexString());
+  }
+  wallet.totalPaid = wallet.totalPaid.plus(amount);
+  if (amountUSD) wallet.totalPaidUSD = wallet.totalPaidUSD.plus(amountUSD);
+  wallet.save();
 }

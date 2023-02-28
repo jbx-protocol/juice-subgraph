@@ -30,7 +30,9 @@ export function handleV2V3SetFundAccessConstraints(
   setFundAccessConstraintsEvent.overflowAllowance = overflowAllowance;
   setFundAccessConstraintsEvent.overflowAllowanceCurrency = overflowAllowanceCurrency.toI32();
   setFundAccessConstraintsEvent.terminal = terminal;
+  setFundAccessConstraintsEvent.timestamp = event.block.timestamp.toI32();
   setFundAccessConstraintsEvent.token = token;
+  setFundAccessConstraintsEvent.txHash = event.transaction.hash;
   setFundAccessConstraintsEvent.project = idForProject(projectId, pv);
   setFundAccessConstraintsEvent.fundingCycleConfiguration = fundingCycleConfiguration;
   setFundAccessConstraintsEvent.fundingCycleNumber = fundingCycleNumber.toI32();
