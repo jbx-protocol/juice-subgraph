@@ -6,12 +6,12 @@ import {
   Project,
 } from "../../../generated/schema";
 import {
-  JB721Delegate,
+  JB721Delegate2,
   Transfer,
-} from "../../../generated/templates/JB721Delegate/JB721Delegate";
-import { JBTiered721DelegateStore } from "../../../generated/templates/JB721DelegateToken/JBTiered721DelegateStore";
+} from "../../../generated/templates/JB721Delegate2/JB721Delegate2";
+import { JBTiered721DelegateStore2 } from "../../../generated/templates/JB721Delegate2/JBTiered721DelegateStore2";
 import { ADDRESS_ZERO } from "../../constants";
-import { address_shared_jbTiered721DelegateStore } from "../../contractAddresses";
+import { address_shared_jbTiered721DelegateStore2 } from "../../contractAddresses";
 import { PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
 import {
@@ -26,7 +26,9 @@ export function handleTransfer(event: Transfer): void {
   const pv = context.getString("pv") === "1" ? PV.PV1 : PV.PV2;
   const governanceType = context.getI32("governanceType");
   const address = dataSource.address();
-  const jb721DelegateContract = JB721Delegate.bind(Address.fromBytes(address));
+  const jb721DelegateTokenContract = JB721Delegate2.bind(
+    Address.fromBytes(address)
+  );
 
   const tokenId = event.params.tokenId;
 
@@ -47,10 +49,10 @@ export function handleTransfer(event: Transfer): void {
     token.project = idForProject(projectId, pv);
 
     // Name
-    const nameCall = jb721DelegateContract.try_name();
+    const nameCall = jb721DelegateTokenContract.try_name();
     if (nameCall.reverted) {
       log.error(
-        "[jb721_v1:handleTransfer] name() reverted for jb721Delegate:{}",
+        "[jb721_v2:handleTransfer] name() reverted for jb721Delegate:{}",
         [id]
       );
       return;
@@ -58,10 +60,10 @@ export function handleTransfer(event: Transfer): void {
     token.name = nameCall.value;
 
     // Symbol
-    const symbolCall = jb721DelegateContract.try_symbol();
+    const symbolCall = jb721DelegateTokenContract.try_symbol();
     if (symbolCall.reverted) {
       log.error(
-        "[jb721_v1:handleTransfer] symbol() reverted for jb721Delegate:{}",
+        "[jb721_v2:handleTransfer] symbol() reverted for jb721Delegate:{}",
         [id]
       );
       return;
@@ -69,16 +71,16 @@ export function handleTransfer(event: Transfer): void {
     token.symbol = symbolCall.value;
 
     // Tier data
-    if (!address_shared_jbTiered721DelegateStore) {
+    if (!address_shared_jbTiered721DelegateStore2) {
       log.error(
-        "[jb721_v1:handleTransfer] missing address_shared_jbTiered721DelegateStore",
+        "[jb721_v2:handleTransfer] missing address_shared_jbTiered721DelegateStore",
         []
       );
       return;
     }
-    const jbTiered721DelegateStoreContract = JBTiered721DelegateStore.bind(
+    const jbTiered721DelegateStoreContract = JBTiered721DelegateStore2.bind(
       Address.fromBytes(
-        Bytes.fromHexString(address_shared_jbTiered721DelegateStore!)
+        Bytes.fromHexString(address_shared_jbTiered721DelegateStore2!)
       )
     );
     const tierCall = jbTiered721DelegateStoreContract.try_tier(
@@ -88,7 +90,7 @@ export function handleTransfer(event: Transfer): void {
     if (tierCall.reverted) {
       // Will revert for non-tiered tokens, among maybe other reasons
       log.error(
-        "[jb721_v1:handleTransfer] tier() reverted for address {}, tokenId {}",
+        "[jb721_v2:handleTransfer] tier() reverted for address {}, tokenId {}",
         [address.toHexString(), tokenId.toString()]
       );
     }
@@ -100,10 +102,10 @@ export function handleTransfer(event: Transfer): void {
    * Some params may change, so we update them every time the token
    * is transferred.
    */
-  const tokenUriCall = jb721DelegateContract.try_tokenURI(tokenId);
+  const tokenUriCall = jb721DelegateTokenContract.try_tokenURI(tokenId);
   if (tokenUriCall.reverted) {
     log.error(
-      "[jb721_v1:handleTransfer] tokenURI() reverted for jb721Delegate:{}",
+      "[jb721_v2:handleTransfer] tokenURI() reverted for jb721Delegate:{}",
       [id]
     );
     return;
@@ -130,7 +132,7 @@ export function handleTransfer(event: Transfer): void {
       project.save();
     } else {
       if (!project) {
-        log.error("[jb721_v1:handleTransfer] Missing project. ID:{}", [
+        log.error("[jb721_v2] Missing project. ID:{}", [
           _projectId,
         ]);
         return;

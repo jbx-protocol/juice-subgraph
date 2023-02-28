@@ -79,6 +79,7 @@ export function handleV1Pay(
   participant.lastPaidTimestamp = event.block.timestamp.toI32();
   participant.save();
 
+  // Update wallet, create if needed
   let wallet = Wallet.load(caller.toHexString());
   if (!wallet) {
     wallet = newWallet(caller.toHexString());
