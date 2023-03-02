@@ -3,7 +3,7 @@ import { Project, TapEvent } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../ids";
-import { v1USDPriceForEth } from "../../prices";
+import { v1USDPriceForEth } from "../../prices/v1Prices";
 
 const pv = PV.PV1;
 

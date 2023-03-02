@@ -3,7 +3,7 @@ import { DistributePayoutsEvent, Project } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../ids";
-import { v3USDPriceForEth } from "../../prices";
+import { v3USDPriceForEth } from "../../prices/v3Prices";
 
 const pv = PV.PV2;
 

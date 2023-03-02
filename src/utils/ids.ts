@@ -67,7 +67,7 @@ export function idForPayEvent(): string {
 export function idForPrevPayEvent(): string {
   const protocolLog = ProtocolLog.load(PROTOCOL_ID);
   if (!protocolLog) {
-    log.error("[idForPayEvent] Failed to load protocolLog", []);
+    log.error("[idForPrevPayEvent] Failed to load protocolLog", []);
     return "0";
   }
   return protocolLog.paymentsCount.toString();

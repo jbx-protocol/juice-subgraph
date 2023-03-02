@@ -31,7 +31,7 @@ export function updateProjectHandle(
   const pv = PV.PV2;
   const project = Project.load(idForProject(projectId, pv));
   if (!project) {
-    log.error("[handleSetReverseRecord] Missing project. ID:{}", [
+    log.error("[updateProjectHandle] Missing project. ID:{}", [
       projectId.toString(),
     ]);
     return;

@@ -23,7 +23,7 @@
           file: ./abis/v1/TerminalDirectory.json
       eventHandlers:
         - event: Create(indexed uint256,indexed address,indexed bytes32,string,address,address)
-          handler: handleProjectCreate
+          handler: handleCreate
         - event: SetHandle(indexed uint256,indexed bytes32,address)
           handler: handleSetHandle
         - event: SetUri(indexed uint256,string,address)

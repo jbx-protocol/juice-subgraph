@@ -9,6 +9,7 @@ import {
 import { ProjectEventKey, PV } from "../../../enums";
 import { newParticipant, newWallet } from "../../entities/participant";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
+import { toHexLowercase } from "../../format";
 import { idForParticipant, idForPayEvent, idForProject } from "../../ids";
 import { handleTrendingPayment } from "../../trending";
 
@@ -24,7 +25,6 @@ export function handleV2V3Pay(
   caller: Address,
   memo: string
 ): void {
-  const pay = new PayEvent(idForPayEvent());
   const idOfProject = idForProject(projectId, pv);
   const project = Project.load(idOfProject);
 
@@ -38,53 +38,56 @@ export function handleV2V3Pay(
   project.paymentsCount = project.paymentsCount + 1;
   project.save();
 
-  if (pay) {
-    pay.pv = pv.toString();
-    pay.terminal = terminal;
-    pay.projectId = projectId.toI32();
-    pay.amount = amount;
-    pay.amountUSD = amountUSD;
-    pay.beneficiary = beneficiary;
-    pay.caller = event.transaction.from;
-    pay.project = idOfProject;
-    pay.note = memo;
-    pay.timestamp = event.block.timestamp.toI32();
-    pay.txHash = event.transaction.hash;
-    pay.save();
+  const pay = new PayEvent(idForPayEvent());
+  pay.pv = pv.toString();
+  pay.terminal = terminal;
+  pay.projectId = projectId.toI32();
+  pay.amount = amount;
+  pay.amountUSD = amountUSD;
+  pay.beneficiary = beneficiary;
+  pay.caller = event.transaction.from;
+  pay.project = idOfProject;
+  pay.note = memo;
+  pay.timestamp = event.block.timestamp.toI32();
+  pay.txHash = event.transaction.hash;
+  pay.save();
 
-    saveNewProjectTerminalEvent(
-      event,
-      projectId,
-      pay.id,
-      pv,
-      ProjectEventKey.payEvent,
-      caller,
-      terminal
-    );
+  saveNewProjectTerminalEvent(
+    event,
+    projectId,
+    pay.id,
+    pv,
+    ProjectEventKey.payEvent,
+    caller,
+    terminal
+  );
 
-    handleTrendingPayment(event.block.timestamp);
-  }
+  handleTrendingPayment(event.block.timestamp);
 
-  // Update participant, create if needed
+  const lastPaidTimestamp = event.block.timestamp.toI32();
+
   const participantId = idForParticipant(projectId, pv, caller);
   let participant = Participant.load(participantId);
   if (!participant) {
     participant = newParticipant(pv, projectId, caller);
-  } else {
-    participant.totalPaid = participant.totalPaid.plus(amount);
-    if (amountUSD) {
-      participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
-    }
   }
-  participant.lastPaidTimestamp = event.block.timestamp.toI32();
+  participant.totalPaid = participant.totalPaid.plus(amount);
+  if (amountUSD) {
+    participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
+  }
+  participant.lastPaidTimestamp = lastPaidTimestamp;
   participant.save();
 
   // Update wallet, create if needed
-  let wallet = Wallet.load(caller.toHexString());
+  const walletId = toHexLowercase(caller);
+  let wallet = Wallet.load(walletId);
   if (!wallet) {
-    wallet = newWallet(caller.toHexString());
+    wallet = newWallet(walletId);
   }
   wallet.totalPaid = wallet.totalPaid.plus(amount);
-  if (amountUSD) wallet.totalPaidUSD = wallet.totalPaidUSD.plus(amountUSD);
+  if (amountUSD) {
+    wallet.totalPaidUSD = wallet.totalPaidUSD.plus(amountUSD);
+  }
+  wallet.lastPaidTimestamp = lastPaidTimestamp;
   wallet.save();
 }

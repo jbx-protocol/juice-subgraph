@@ -122,7 +122,7 @@ export function handleTicketTransfer(event: Transfer): void {
       event.params.projectId,
       burnEvent.id,
       pv,
-      ProjectEventKey.burn,
+      ProjectEventKey.burnEvent,
       event.params.caller
     );
   }
@@ -200,33 +200,29 @@ export function handleIssue(event: Issue): void {
   const deployedERC20Event = new DeployedERC20Event(
     idForProjectTx(event.params.projectId, pv, event)
   );
-  if (deployedERC20Event) {
-    deployedERC20Event.project = project.id;
-    deployedERC20Event.projectId = project.projectId;
-    deployedERC20Event.pv = pv.toString();
-    deployedERC20Event.symbol = event.params.symbol;
-    deployedERC20Event.timestamp = event.block.timestamp.toI32();
-    deployedERC20Event.txHash = event.transaction.hash;
-    deployedERC20Event.caller = event.params.caller;
-    deployedERC20Event.save();
+  deployedERC20Event.project = project.id;
+  deployedERC20Event.projectId = project.projectId;
+  deployedERC20Event.pv = pv.toString();
+  deployedERC20Event.symbol = event.params.symbol;
+  deployedERC20Event.timestamp = event.block.timestamp.toI32();
+  deployedERC20Event.txHash = event.transaction.hash;
+  deployedERC20Event.caller = event.params.caller;
+  deployedERC20Event.save();
 
-    saveNewProjectEvent(
-      event,
-      event.params.projectId,
-      deployedERC20Event.id,
-      pv,
-      ProjectEventKey.deployedERC20Event,
-      event.params.caller
-    );
-  }
+  saveNewProjectEvent(
+    event,
+    event.params.projectId,
+    deployedERC20Event.id,
+    pv,
+    ProjectEventKey.deployedERC20Event,
+    event.params.caller
+  );
 
   let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
   if (!protocolV1Log) protocolV1Log = newProtocolV1Log();
-  if (protocolV1Log) {
-    protocolV1Log.erc20Count = protocolV1Log.erc20Count + 1;
-    protocolV1Log.save();
-    updateProtocolEntity();
-  }
+  protocolV1Log.erc20Count = protocolV1Log.erc20Count + 1;
+  protocolV1Log.save();
+  updateProtocolEntity();
 
   if (address_v1_ticketBooth) {
     const ticketBooth = TicketBooth.bind(
@@ -234,7 +230,7 @@ export function handleIssue(event: Issue): void {
     );
     const ticketsOfCall = ticketBooth.try_ticketsOf(event.params.projectId);
     if (ticketsOfCall.reverted) {
-      log.error("ticketsOf reverted, project: {}, ticketBooth: {}", [
+      log.error("[handleIssue] ticketsOf reverted, project: {}, ticketBooth: {}", [
         event.params.projectId.toString(),
         address_v1_ticketBooth!,
       ]);

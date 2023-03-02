@@ -64,7 +64,7 @@ export function handleV2V3Burn(
     projectId,
     burnEvent.id,
     pv,
-    ProjectEventKey.burn,
+    ProjectEventKey.burnEvent,
     caller
   );
 }

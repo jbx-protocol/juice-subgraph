@@ -16,7 +16,7 @@ import {
   newProtocolV2Log,
   updateProtocolEntity,
 } from "../../utils/entities/protocolLog";
-import { v2USDPriceForEth } from "../../utils/prices";
+import { v2USDPriceForEth } from "../../utils/prices/v2Prices";
 import { handleV2V3AddToBalance } from "../../utils/v2v3/ethPaymentTerminal.ts/addToBalance";
 import { handleV2V3DistributePayouts } from "../../utils/v2v3/ethPaymentTerminal.ts/distributePayouts";
 import { handleV2V3DistributeToPayoutSplit } from "../../utils/v2v3/ethPaymentTerminal.ts/distributeToPayoutSplit";
@@ -96,16 +96,12 @@ export function handlePay(event: Pay): void {
   // Update protocol log
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
   if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
-  if (protocolV2Log) {
-    protocolV2Log.volumePaid = protocolV2Log.volumePaid.plus(
-      event.params.amount
-    );
-    if (amountUSD) {
-      protocolV2Log.volumePaidUSD = protocolV2Log.volumePaidUSD.plus(amountUSD);
-    }
-    protocolV2Log.paymentsCount = protocolV2Log.paymentsCount + 1;
-    protocolV2Log.save();
+  protocolV2Log.volumePaid = protocolV2Log.volumePaid.plus(event.params.amount);
+  if (amountUSD) {
+    protocolV2Log.volumePaidUSD = protocolV2Log.volumePaidUSD.plus(amountUSD);
   }
+  protocolV2Log.paymentsCount = protocolV2Log.paymentsCount + 1;
+  protocolV2Log.save();
   updateProtocolEntity();
 }
 
@@ -128,18 +124,16 @@ export function handleRedeemTokens(event: RedeemTokens): void {
 
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
   if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
-  if (protocolV2Log) {
-    protocolV2Log.volumeRedeemed = protocolV2Log.volumeRedeemed.plus(
-      event.params.reclaimedAmount
+  protocolV2Log.volumeRedeemed = protocolV2Log.volumeRedeemed.plus(
+    event.params.reclaimedAmount
+  );
+  if (reclaimedAmountUSD) {
+    protocolV2Log.volumeRedeemedUSD = protocolV2Log.volumeRedeemedUSD.plus(
+      reclaimedAmountUSD
     );
-    if (reclaimedAmountUSD) {
-      protocolV2Log.volumeRedeemedUSD = protocolV2Log.volumeRedeemedUSD.plus(
-        reclaimedAmountUSD
-      );
-    }
-    protocolV2Log.redeemCount = protocolV2Log.redeemCount + 1;
-    protocolV2Log.save();
   }
+  protocolV2Log.redeemCount = protocolV2Log.redeemCount + 1;
+  protocolV2Log.save();
   updateProtocolEntity();
 }
 

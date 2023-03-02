@@ -9,7 +9,7 @@ import {
   JB721Delegate,
   Transfer,
 } from "../../../generated/templates/JB721Delegate/JB721Delegate";
-import { JBTiered721DelegateStore } from "../../../generated/templates/JB721DelegateToken/JBTiered721DelegateStore";
+import { JBTiered721DelegateStore } from "../../../generated/templates/JB721Delegate/JBTiered721DelegateStore";
 import { ADDRESS_ZERO } from "../../constants";
 import { address_shared_jbTiered721DelegateStore } from "../../contractAddresses";
 import { PV } from "../../enums";
@@ -121,20 +121,18 @@ export function handleTransfer(event: Transfer): void {
 
   // Increment project stats
   if (event.params.from == ADDRESS_ZERO) {
-    const _projectId = idForProject(projectId, pv);
-    const project = Project.load(_projectId);
+    const idOfProject = idForProject(projectId, pv);
+    const project = Project.load(idOfProject);
 
     if (project) {
       if (project.nftsMintedCount == 0) project.nftsMintedCount = 1;
       else project.nftsMintedCount = project.nftsMintedCount + 1;
       project.save();
     } else {
-      if (!project) {
-        log.error("[jb721_v1:handleTransfer] Missing project. ID:{}", [
-          _projectId,
-        ]);
-        return;
-      }
+      log.error("[jb721_v1:handleTransfer] Missing project. ID:{}", [
+        idOfProject,
+      ]);
+      return;
     }
   }
 

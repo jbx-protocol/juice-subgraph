@@ -5,7 +5,7 @@ export enum PV {
 
 export enum ProjectEventKey {
   addToBalanceEvent,
-  burn,
+  burnEvent,
   configureEvent,
   deployedERC20Event,
   deployETHERC20ProjectPayerEvent,

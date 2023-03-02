@@ -8,6 +8,7 @@ import {
 import { ProjectEventKey, PV } from "../../../enums";
 import { newParticipant, newWallet } from "../../entities/participant";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
+import { toHexLowercase } from "../../format";
 import { idForParticipant, idForPayEvent, idForProject } from "../../ids";
 import { handleTrendingPayment } from "../../trending";
 
@@ -66,25 +67,30 @@ export function handleV1Pay(
     handleTrendingPayment(event.block.timestamp);
   }
 
+  const lastPaidTimestamp = event.block.timestamp.toI32();
+
   const participantId = idForParticipant(projectId, pv, caller);
   let participant = Participant.load(participantId);
   if (!participant) {
     participant = newParticipant(pv, projectId, caller);
-  } else {
-    participant.totalPaid = participant.totalPaid.plus(amount);
-    if (amountUSD) {
-      participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
-    }
   }
-  participant.lastPaidTimestamp = event.block.timestamp.toI32();
+  participant.totalPaid = participant.totalPaid.plus(amount);
+  if (amountUSD) {
+    participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
+  }
+  participant.lastPaidTimestamp = lastPaidTimestamp;
   participant.save();
 
   // Update wallet, create if needed
-  let wallet = Wallet.load(caller.toHexString());
+  const walletId = toHexLowercase(caller);
+  let wallet = Wallet.load(walletId);
   if (!wallet) {
-    wallet = newWallet(caller.toHexString());
+    wallet = newWallet(walletId);
   }
   wallet.totalPaid = wallet.totalPaid.plus(amount);
-  if (amountUSD) wallet.totalPaidUSD = wallet.totalPaidUSD.plus(amountUSD);
+  if (amountUSD) {
+    wallet.totalPaidUSD = wallet.totalPaidUSD.plus(amountUSD);
+  }
+  wallet.lastPaidTimestamp = lastPaidTimestamp;
   wallet.save();
 }

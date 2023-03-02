@@ -16,7 +16,7 @@ import {
   newProtocolV3Log,
   updateProtocolEntity,
 } from "../../utils/entities/protocolLog";
-import { v3USDPriceForEth } from "../../utils/prices";
+import { v3USDPriceForEth } from "../../utils/prices/v3Prices";
 import { handleV2V3AddToBalance } from "../../utils/v2v3/ethPaymentTerminal.ts/addToBalance";
 import { handleV2V3DistributePayouts } from "../../utils/v2v3/ethPaymentTerminal.ts/distributePayouts";
 import { handleV2V3DistributeToPayoutSplit } from "../../utils/v2v3/ethPaymentTerminal.ts/distributeToPayoutSplit";

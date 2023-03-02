@@ -55,7 +55,7 @@ export function handleERC20Transfer(event: Transfer): void {
       projectId,
       burnEvent.id,
       pv,
-      ProjectEventKey.burn,
+      ProjectEventKey.burnEvent,
       event.params.from
     );
   }

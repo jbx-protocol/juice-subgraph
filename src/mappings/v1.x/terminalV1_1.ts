@@ -17,7 +17,7 @@ import {
   newProtocolV1Log,
   updateProtocolEntity,
 } from "../../utils/entities/protocolLog";
-import { v1USDPriceForEth } from "../../utils/prices";
+import { v1USDPriceForEth } from "../../utils/prices/v1Prices";
 import { handleV1AddToBalance } from "../../utils/v1/terminal/addToBalance";
 import { handleV1DistributeToPayoutMod } from "../../utils/v1/terminal/distributeToPayoutMod";
 import { handleV1DistributeToTicketMod } from "../../utils/v1/terminal/distributeToTicketMod";

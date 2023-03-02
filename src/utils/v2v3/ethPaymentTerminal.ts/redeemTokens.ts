@@ -1,7 +1,16 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
-import { Project, RedeemEvent } from "../../../../generated/schema";
+import {
+  Project,
+  ProtocolV2Log,
+  RedeemEvent,
+} from "../../../../generated/schema";
+import { PROTOCOL_ID } from "../../../constants";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
+import {
+  newProtocolV2Log,
+  updateProtocolEntity,
+} from "../../entities/protocolLog";
 import { idForProject, idForProjectTx } from "../../ids";
 
 const pv = PV.PV2;

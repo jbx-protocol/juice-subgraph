@@ -26,9 +26,7 @@ export function handleTransfer(event: Transfer): void {
   const pv = context.getString("pv") === "1" ? PV.PV1 : PV.PV2;
   const governanceType = context.getI32("governanceType");
   const address = dataSource.address();
-  const jb721DelegateTokenContract = JB721Delegate2.bind(
-    Address.fromBytes(address)
-  );
+  const jb721DelegateContract = JB721Delegate2.bind(Address.fromBytes(address));
 
   const tokenId = event.params.tokenId;
 
@@ -49,7 +47,7 @@ export function handleTransfer(event: Transfer): void {
     token.project = idForProject(projectId, pv);
 
     // Name
-    const nameCall = jb721DelegateTokenContract.try_name();
+    const nameCall = jb721DelegateContract.try_name();
     if (nameCall.reverted) {
       log.error(
         "[jb721_v2:handleTransfer] name() reverted for jb721Delegate:{}",
@@ -60,7 +58,7 @@ export function handleTransfer(event: Transfer): void {
     token.name = nameCall.value;
 
     // Symbol
-    const symbolCall = jb721DelegateTokenContract.try_symbol();
+    const symbolCall = jb721DelegateContract.try_symbol();
     if (symbolCall.reverted) {
       log.error(
         "[jb721_v2:handleTransfer] symbol() reverted for jb721Delegate:{}",
@@ -102,7 +100,7 @@ export function handleTransfer(event: Transfer): void {
    * Some params may change, so we update them every time the token
    * is transferred.
    */
-  const tokenUriCall = jb721DelegateTokenContract.try_tokenURI(tokenId);
+  const tokenUriCall = jb721DelegateContract.try_tokenURI(tokenId);
   if (tokenUriCall.reverted) {
     log.error(
       "[jb721_v2:handleTransfer] tokenURI() reverted for jb721Delegate:{}",
@@ -123,20 +121,18 @@ export function handleTransfer(event: Transfer): void {
 
   // Increment project stats
   if (event.params.from == ADDRESS_ZERO) {
-    const _projectId = idForProject(projectId, pv);
-    const project = Project.load(_projectId);
+    const idOfProject = idForProject(projectId, pv);
+    const project = Project.load(idOfProject);
 
     if (project) {
       if (project.nftsMintedCount == 0) project.nftsMintedCount = 1;
       else project.nftsMintedCount = project.nftsMintedCount + 1;
       project.save();
     } else {
-      if (!project) {
-        log.error("[jb721_v2] Missing project. ID:{}", [
-          _projectId,
-        ]);
-        return;
-      }
+      log.error("[jb721_v2:handleTransfer] Missing project. ID:{}", [
+        idOfProject,
+      ]);
+      return;
     }
   }
 

@@ -1,6 +1,7 @@
 import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { Participant, Wallet } from "../../../generated/schema";
 import { PV } from "../../enums";
+import { toHexLowercase } from "../format";
 import { idForParticipant, idForProject } from "../ids";
 
 export function newParticipant(
@@ -21,16 +22,18 @@ export function newParticipant(
   participant.totalPaidUSD = BigInt.fromString("0");
   participant.lastPaidTimestamp = 0;
 
-  let _wallet = Wallet.load(wallet.toHexString());
+  // Create a wallet any time we create a participant
+  const walletId = toHexLowercase(wallet);
+  let _wallet = Wallet.load(walletId);
   if (!_wallet) {
-    _wallet = newWallet(wallet.toHexString());
+    _wallet = newWallet(walletId);
     _wallet.save();
   }
 
   return participant;
 }
 
-export function newWallet(id: string) {
+export function newWallet(id: string): Wallet {
   const wallet = new Wallet(id);
   wallet.lastPaidTimestamp = 0;
   wallet.totalPaid = BigInt.fromString("0");

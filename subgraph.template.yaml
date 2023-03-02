@@ -54,7 +54,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings/shared/jb721DelegateToken.ts
+      file: ./src/mappings/shared/jb721DelegateToken2.ts
       entities:
         - Participant
         - JB721DelegateToken

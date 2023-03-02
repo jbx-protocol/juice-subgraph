@@ -4,7 +4,7 @@ import { DistributeToPayoutModModStruct } from "../../../../generated/TerminalV1
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../ids";
-import { v1USDPriceForEth } from "../../prices";
+import { v1USDPriceForEth } from "../../prices/v1Prices";
 
 const pv = PV.PV1;
 

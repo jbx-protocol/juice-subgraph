@@ -4,7 +4,7 @@ import { AddToBalanceEvent, Project } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../ids";
-import { v2USDPriceForEth } from "../../prices";
+import { v3USDPriceForEth } from "../../prices/v3Prices";
 
 const pv = PV.PV2;
 
@@ -35,7 +35,7 @@ export function handleV2V3AddToBalance(
     addToBalance.terminal = terminal;
     addToBalance.projectId = projectId.toI32();
     addToBalance.amount = amount;
-    addToBalance.amountUSD = v2USDPriceForEth(amount);
+    addToBalance.amountUSD = v3USDPriceForEth(amount);
     addToBalance.caller = event.transaction.from;
     addToBalance.project = idOfProject;
     addToBalance.note = memo;

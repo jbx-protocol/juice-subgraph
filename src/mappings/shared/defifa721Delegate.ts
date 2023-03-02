@@ -2,9 +2,9 @@ import { Address, Bytes, log } from "@graphprotocol/graph-ts";
 
 import { JB721DelegateToken, Participant } from "../../../generated/schema";
 import {
-  JB721DelegateToken as JB721DelegateTokenContract,
+  JB721Delegate,
   Transfer,
-} from "../../../generated/templates/JB721DelegateToken/JB721DelegateToken";
+} from "../../../generated/templates/JB721Delegate/JB721Delegate";
 import {
   address_shared_defifa721Delegate,
   address_shared_jbTiered721DelegateStore,
@@ -23,12 +23,10 @@ export function handleTransfer(event: Transfer): void {
   const address = Bytes.fromHexString(
     address_shared_defifa721Delegate as string
   );
-  const jb721DelegateTokenContract = JB721DelegateTokenContract.bind(
-    Address.fromBytes(address)
-  );
+  const jb721DelegateContract = JB721Delegate.bind(Address.fromBytes(address));
 
   // projectId
-  const projectIdCall = jb721DelegateTokenContract.try_projectId();
+  const projectIdCall = jb721DelegateContract.try_projectId();
   if (projectIdCall.reverted) {
     log.error("[handleTransfer] projectId() reverted for jb721Delegate", []);
     return;
@@ -54,7 +52,7 @@ export function handleTransfer(event: Transfer): void {
     token.project = idForProject(projectId, pv);
 
     // Name
-    const nameCall = jb721DelegateTokenContract.try_name();
+    const nameCall = jb721DelegateContract.try_name();
     if (nameCall.reverted) {
       log.error("[handleTransfer] name() reverted for jb721Delegate:{}", [id]);
       return;
@@ -62,7 +60,7 @@ export function handleTransfer(event: Transfer): void {
     token.name = nameCall.value;
 
     // Symbol
-    const symbolCall = jb721DelegateTokenContract.try_symbol();
+    const symbolCall = jb721DelegateContract.try_symbol();
     if (symbolCall.reverted) {
       log.error("[handleTransfer] symbol() reverted for jb721Delegate:{}", [
         id,
@@ -85,7 +83,7 @@ export function handleTransfer(event: Transfer): void {
    * Some params may change, so we update them every time the token
    * is transferred.
    */
-  const tokenUriCall = jb721DelegateTokenContract.try_tokenURI(tokenId);
+  const tokenUriCall = jb721DelegateContract.try_tokenURI(tokenId);
   if (tokenUriCall.reverted) {
     log.error("[handleTransfer] tokenURI() reverted for jb721Delegate:{}", [
       id,
@@ -102,6 +100,6 @@ export function handleTransfer(event: Transfer): void {
   // Create participant if doesn't exist
   let receiver = Participant.load(receiverId);
   if (!receiver) receiver = newParticipant(pv, projectId, event.params.to);
-
+  
   receiver.save();
 }
