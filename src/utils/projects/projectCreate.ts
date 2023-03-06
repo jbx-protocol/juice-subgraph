@@ -52,6 +52,7 @@ export function handleProjectCreate(
   project.currentBalance = BigInt.fromString("0");
   project.paymentsCount = 0;
   project.redeemCount = 0;
+  project.nftsMintedCount = 0;
   project.save();
 
   const projectCreateEvent = new ProjectCreateEvent(

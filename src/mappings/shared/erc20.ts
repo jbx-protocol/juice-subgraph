@@ -41,6 +41,8 @@ export function handleERC20Transfer(event: Transfer): void {
   if (event.params.to == ADDRESS_ZERO && pv == PV.PV1) {
     const _projectId = idForProjectTx(projectId, pv, event);
     const burnEvent = new BurnEvent(_projectId);
+    burnEvent.timestamp = event.block.timestamp.toI32();
+    burnEvent.txHash = event.transaction.hash;
     burnEvent.projectId = projectId.toI32();
     burnEvent.project = _projectId;
     burnEvent.holder = event.params.from;
@@ -48,6 +50,7 @@ export function handleERC20Transfer(event: Transfer): void {
     burnEvent.amount = event.params.value;
     burnEvent.stakedAmount = BigInt.fromString("0");
     burnEvent.erc20Amount = event.params.value;
+    burnEvent.caller = event.params.from;
     burnEvent.save();
 
     saveNewProjectEvent(

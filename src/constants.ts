@@ -5,7 +5,9 @@ export const MAX_REDEMPTION_RATE = 10_000;
 export const BITS_8 = 0b11111111;
 export const BITS_16 = 0b1111111111111111;
 export const BIGINT_1 = BigInt.fromI32(1);
-export const ADDRESS_ZERO = Address.fromI32(0);
+export const ADDRESS_ZERO = Address.fromHexString(
+  "0x0000000000000000000000000000000000000000"
+);
 
 /**
  * Trending calculations are complex. to alleviate indexing computation load, we don't run calculations on blocks with timestamps older than this

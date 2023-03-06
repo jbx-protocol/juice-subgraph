@@ -72,7 +72,7 @@ type Project @entity {
   trendingPaymentsCount: Int!
   createdWithinTrendingWindow: Boolean!
 
-  nftsMintedCount: Int # only if project has jb721DelegateTokens
+  nftsMintedCount: Int! # only if project has jb721DelegateTokens
 
   # Derived event entities
   addToBalanceEvents: [AddToBalanceEvent!]! @derivedFrom(field: "project")

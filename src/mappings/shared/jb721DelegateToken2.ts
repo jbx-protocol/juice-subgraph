@@ -125,8 +125,7 @@ export function handleTransfer(event: Transfer): void {
     const project = Project.load(idOfProject);
 
     if (project) {
-      if (project.nftsMintedCount == 0) project.nftsMintedCount = 1;
-      else project.nftsMintedCount = project.nftsMintedCount + 1;
+      project.nftsMintedCount = project.nftsMintedCount + 1;
       project.save();
     } else {
       log.error("[jb721_v2:handleTransfer] Missing project. ID:{}", [
