@@ -5,7 +5,7 @@ import {
   MintTokens,
   ReconfigureFundingCycles,
   SetFundAccessConstraints,
-} from "../../../generated/JBController2/JBController2";
+} from "../../../generated/JBController3/JBController3";
 import { handleV2V3DistributeReservedTokens } from "../../utils/v2v3/controller/distributeReservedTokens";
 import { handleV2V3DistributeReservedTokenSplit } from "../../utils/v2v3/controller/distributeReservedTokenSplit";
 import { handleV2V3LaunchProject } from "../../utils/v2v3/controller/launchProject";

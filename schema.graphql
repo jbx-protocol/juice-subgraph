@@ -449,7 +449,7 @@ type SetFundAccessConstraintsEvent @entity {
   terminal: Bytes!
   token: Bytes
   fundingCycleConfiguration: BigInt!
-  fundingCycleNumber: Int!
+  fundingCycleNumber: Int
 }
 
 # v2

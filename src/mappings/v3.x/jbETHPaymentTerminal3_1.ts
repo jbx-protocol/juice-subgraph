@@ -1,6 +1,6 @@
 import { Bytes } from "@graphprotocol/graph-ts";
 
-import { ProtocolV2Log } from "../../../generated/schema";
+import { ProtocolV3Log } from "../../../generated/schema";
 import {
   AddToBalance,
   DistributePayouts,
@@ -9,14 +9,14 @@ import {
   ProcessFee,
   RedeemTokens,
   UseAllowance,
-} from "../../../generated/JBETHPaymentTerminal2/JBETHPaymentTerminal2";
+} from "../../../generated/JBETHPaymentTerminal3/JBETHPaymentTerminal3";
 import { PROTOCOL_ID } from "../../constants";
-import { address_v2_jbETHPaymentTerminal } from "../../contractAddresses";
+import { address_v3_jbETHPaymentTerminal } from "../../contractAddresses";
 import {
-  newProtocolV2Log,
+  newProtocolV3Log,
   updateProtocolEntity,
 } from "../../utils/entities/protocolLog";
-import { v2USDPriceForEth } from "../../utils/prices/v2Prices";
+import { v3USDPriceForEth } from "../../utils/prices/v3Prices";
 import { handleV2V3AddToBalance } from "../../utils/v2v3/ethPaymentTerminal.ts/addToBalance";
 import { handleV2V3DistributePayouts } from "../../utils/v2v3/ethPaymentTerminal.ts/distributePayouts";
 import { handleV2V3DistributeToPayoutSplit } from "../../utils/v2v3/ethPaymentTerminal.ts/distributeToPayoutSplit";
@@ -25,7 +25,7 @@ import { handleV2V3ProcessFee } from "../../utils/v2v3/ethPaymentTerminal.ts/pro
 import { handleV2V3RedeemTokens } from "../../utils/v2v3/ethPaymentTerminal.ts/redeemTokens";
 import { handleV2V3UseAllowance } from "../../utils/v2v3/ethPaymentTerminal.ts/useAllowance";
 
-const terminal: Bytes = Bytes.fromHexString(address_v2_jbETHPaymentTerminal!);
+const terminal: Bytes = Bytes.fromHexString(address_v3_jbETHPaymentTerminal!);
 
 export function handleAddToBalance(event: AddToBalance): void {
   handleV2V3AddToBalance(
@@ -45,9 +45,9 @@ export function handleDistributePayouts(event: DistributePayouts): void {
     event.params.amount,
     event.params.beneficiary,
     event.params.beneficiaryDistributionAmount,
-    v2USDPriceForEth(event.params.beneficiaryDistributionAmount),
+    v3USDPriceForEth(event.params.beneficiaryDistributionAmount),
     event.params.distributedAmount,
-    v2USDPriceForEth(event.params.distributedAmount),
+    v3USDPriceForEth(event.params.distributedAmount),
     terminal,
     event.params.caller,
     event.params.fee,
@@ -65,7 +65,7 @@ export function handleDistributeToPayoutSplit(
     event.params.projectId,
     terminal,
     event.params.amount,
-    v2USDPriceForEth(event.params.amount),
+    v3USDPriceForEth(event.params.amount),
     event.params.domain,
     event.params.group,
     event.params.split.projectId,
@@ -80,7 +80,7 @@ export function handleDistributeToPayoutSplit(
 }
 
 export function handlePay(event: Pay): void {
-  const amountUSD = v2USDPriceForEth(event.params.amount);
+  const amountUSD = v3USDPriceForEth(event.params.amount);
 
   handleV2V3Pay(
     event,
@@ -93,20 +93,19 @@ export function handlePay(event: Pay): void {
     event.params.memo
   );
 
-  // Update protocol log
-  let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
-  if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
-  protocolV2Log.volumePaid = protocolV2Log.volumePaid.plus(event.params.amount);
+  let protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
+  if (!protocolV3Log) protocolV3Log = newProtocolV3Log();
+  protocolV3Log.volumePaid = protocolV3Log.volumePaid.plus(event.params.amount);
   if (amountUSD) {
-    protocolV2Log.volumePaidUSD = protocolV2Log.volumePaidUSD.plus(amountUSD);
+    protocolV3Log.volumePaidUSD = protocolV3Log.volumePaidUSD.plus(amountUSD);
   }
-  protocolV2Log.paymentsCount = protocolV2Log.paymentsCount + 1;
-  protocolV2Log.save();
+  protocolV3Log.paymentsCount = protocolV3Log.paymentsCount + 1;
+  protocolV3Log.save();
   updateProtocolEntity();
 }
 
 export function handleRedeemTokens(event: RedeemTokens): void {
-  const reclaimedAmountUSD = v2USDPriceForEth(event.params.reclaimedAmount);
+  const reclaimedAmountUSD = v3USDPriceForEth(event.params.reclaimedAmount);
 
   handleV2V3RedeemTokens(
     event,
@@ -122,25 +121,25 @@ export function handleRedeemTokens(event: RedeemTokens): void {
     event.params.caller
   );
 
-  let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
-  if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
-  protocolV2Log.volumeRedeemed = protocolV2Log.volumeRedeemed.plus(
+  let protocolV3Log = ProtocolV3Log.load(PROTOCOL_ID);
+  if (!protocolV3Log) protocolV3Log = newProtocolV3Log();
+  protocolV3Log.volumeRedeemed = protocolV3Log.volumeRedeemed.plus(
     event.params.reclaimedAmount
   );
   if (reclaimedAmountUSD) {
-    protocolV2Log.volumeRedeemedUSD = protocolV2Log.volumeRedeemedUSD.plus(
+    protocolV3Log.volumeRedeemedUSD = protocolV3Log.volumeRedeemedUSD.plus(
       reclaimedAmountUSD
     );
   }
-  protocolV2Log.redeemCount = protocolV2Log.redeemCount + 1;
-  protocolV2Log.save();
+  protocolV3Log.redeemCount = protocolV3Log.redeemCount + 1;
+  protocolV3Log.save();
   updateProtocolEntity();
 }
 
 export function handleUseAllowance(event: UseAllowance): void {
-  const amountUSD = v2USDPriceForEth(event.params.amount);
-  const distributedAmountUSD = v2USDPriceForEth(event.params.distributedAmount);
-  const netDistributedamountUSD = v2USDPriceForEth(
+  const amountUSD = v3USDPriceForEth(event.params.amount);
+  const distributedAmountUSD = v3USDPriceForEth(event.params.distributedAmount);
+  const netDistributedamountUSD = v3USDPriceForEth(
     event.params.netDistributedamount
   );
 

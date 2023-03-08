@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "fs": "^0.0.1-security",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "source-map-support": "^0.5.21"
   }
 }

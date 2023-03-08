@@ -1,7 +1,7 @@
 import {
   Configure,
   Init,
-} from "../../../generated/V2JBFundingCycleStore/JBFundingCycleStore";
+} from "../../../generated/JBFundingCycleStore2/JBFundingCycleStore2";
 import { handleV2V3Configure } from "../../utils/v2v3/fundingCycleStore/configure";
 import { handleV2V3Init } from "../../utils/v2v3/fundingCycleStore/init";
 

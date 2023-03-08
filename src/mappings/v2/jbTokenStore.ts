@@ -5,7 +5,7 @@ import {
   Issue,
   Mint,
   Transfer,
-} from "../../../generated/V2JBTokenStore/JBTokenStore";
+} from "../../../generated/JBTokenStore2/JBTokenStore2";
 import { PROTOCOL_ID } from "../../constants";
 import {
   newProtocolV2Log,

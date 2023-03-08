@@ -21,7 +21,6 @@ export function handleCreate(event: Create): void {
     event.params.owner,
     event.params.caller,
     event.params.uri,
-    null
   );
 }
 

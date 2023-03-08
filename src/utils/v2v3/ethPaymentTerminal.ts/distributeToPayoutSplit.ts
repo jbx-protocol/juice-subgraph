@@ -1,6 +1,5 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { DistributeToPayoutSplitEvent } from "../../../../generated/schema";
-import { DistributeToPayoutSplitSplitStruct } from "../../../../generated/V3JBETHPaymentTerminal/JBETHPaymentTerminal";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../ids";

@@ -24,7 +24,7 @@ export function handleProjectCreate(
   owner: Address,
   caller: Address,
   metadataUri: string,
-  metadataDomain: BigInt | null
+  metadataDomain: BigInt | null = null
 ): void {
   const idOfProject = idForProject(projectId, pv);
   const project = new Project(idOfProject);

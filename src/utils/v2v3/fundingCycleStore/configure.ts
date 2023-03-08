@@ -1,6 +1,5 @@
 import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
 
-import { ConfigureDataStruct } from "../../../../generated/V3JBFundingCycleStore/JBFundingCycleStore";
 import { ProjectEventKey, PV } from "../../../enums";
 import { newPV2ConfigureEvent } from "../../entities/configureEvent";
 import { saveNewProjectEvent } from "../../entities/projectEvent";
