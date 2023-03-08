@@ -1,4 +1,4 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { log } from "@graphprotocol/graph-ts";
 
 import {
   Create,
@@ -6,94 +6,30 @@ import {
   SetUri,
   Transfer,
 } from "../../../generated/Projects/Projects";
-import {
-  Project,
-  ProjectCreateEvent,
-  ProtocolLog,
-  ProtocolV1Log,
-} from "../../../generated/schema";
-import { PROTOCOL_ID } from "../../constants";
-import { ProjectEventKey, PV } from "../../enums";
-import { idForProject, idForProjectTx } from "../../utils/ids";
-import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
-import {
-  newProtocolLog,
-  newProtocolV1Log,
-  updateProtocolEntity,
-} from "../../utils/entities/protocolLog";
+import { Project } from "../../../generated/schema";
+import { PV } from "../../enums";
+import { idForProject } from "../../utils/ids";
+import { handleProjectCreate } from "../../utils/projects/projectCreate";
 
 const pv = PV.PV1;
 
-export function handleProjectCreate(event: Create): void {
-  const projectId = idForProject(event.params.projectId, pv);
-  const project = new Project(projectId);
-
-  if (!project) {
-    log.error("[handleProjectCreate] Missing project. ID:{}", [projectId]);
-    return;
-  }
-
-  project.projectId = event.params.projectId.toI32();
-  project.pv = pv.toString();
-  project.trendingScore = BigInt.fromString("0");
-  project.trendingVolume = BigInt.fromString("0");
-  project.trendingPaymentsCount = BigInt.fromString("0").toI32();
-  project.createdWithinTrendingWindow = true;
-  project.terminal = event.params.terminal;
-  project.handle = event.params.handle.toString();
-  project.owner = event.params.owner;
-  project.createdAt = event.block.timestamp.toI32();
-  project.metadataUri = event.params.uri;
-  project.totalPaid = BigInt.fromString("0");
-  project.totalPaidUSD = BigInt.fromString("0");
-  project.totalRedeemed = BigInt.fromString("0");
-  project.totalRedeemedUSD = BigInt.fromString("0");
-  project.currentBalance = BigInt.fromString("0");
-  project.paymentsCount = 0;
-  project.redeemCount = 0;
-  project.save();
-
-  const projectCreateEvent = new ProjectCreateEvent(
-    idForProjectTx(event.params.projectId, pv, event)
+export function handleCreate(event: Create): void {
+  handleProjectCreate(
+    event,
+    event.params.projectId,
+    pv,
+    event.params.owner,
+    event.params.caller,
+    event.params.uri,
+    null
   );
-  if (projectCreateEvent) {
-    projectCreateEvent.pv = pv.toString();
-    projectCreateEvent.project = project.id;
-    projectCreateEvent.projectId = event.params.projectId.toI32();
-    projectCreateEvent.timestamp = event.block.timestamp.toI32();
-    projectCreateEvent.txHash = event.transaction.hash;
-    projectCreateEvent.caller = event.transaction.from;
-    projectCreateEvent.save();
-
-    saveNewProjectEvent(
-      event,
-      event.params.projectId,
-      projectCreateEvent.id,
-      pv,
-      ProjectEventKey.projectCreateEvent
-    );
-  }
-
-  if (!ProtocolLog.load(PROTOCOL_ID)) {
-    const protocolLog = newProtocolLog();
-    protocolLog.save();
-  }
-
-  let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
-  if (!protocolV1Log) protocolV1Log = newProtocolV1Log();
-  if (protocolV1Log) {
-    protocolV1Log.projectsCount = protocolV1Log.projectsCount + 1;
-    protocolV1Log.save();
-  }
-
-  updateProtocolEntity();
 }
 
 export function handleSetHandle(event: SetHandle): void {
-  const projectId = idForProject(event.params.projectId, pv);
-  const project = Project.load(projectId);
+  const idOfProject = idForProject(event.params.projectId, pv);
+  const project = Project.load(idOfProject);
   if (!project) {
-    log.error("[handleProjectCreate] Missing project. ID:{}", [projectId]);
+    log.error("[handleSetHandle] Missing project. ID:{}", [idOfProject]);
     return;
   }
   project.handle = event.params.handle.toString();
@@ -101,10 +37,10 @@ export function handleSetHandle(event: SetHandle): void {
 }
 
 export function handleSetUri(event: SetUri): void {
-  const projectId = idForProject(event.params.projectId, pv);
-  const project = Project.load(projectId);
+  const idOfProject = idForProject(event.params.projectId, pv);
+  const project = Project.load(idOfProject);
   if (!project) {
-    log.error("[handleProjectCreate] Missing project. ID:{}", [projectId]);
+    log.error("[handleSetUri] Missing project. ID:{}", [idOfProject]);
     return;
   }
   project.metadataUri = event.params.uri;
@@ -112,10 +48,13 @@ export function handleSetUri(event: SetUri): void {
 }
 
 export function handleTransferOwnership(event: Transfer): void {
-  const projectId = idForProject(event.params.tokenId, pv);
-  const project = Project.load(projectId);
+  const idOfProject = idForProject(event.params.tokenId, pv);
+  const project = Project.load(idOfProject);
   if (!project) {
-    log.error("[handleProjectCreate] Missing project. ID:{}", [projectId]);
+    /**
+     * Project will be missing when project 721 token is transferred
+     * for the first time at creation, so we don't throw any errors.
+     */
     return;
   }
   project.owner = event.params.to;

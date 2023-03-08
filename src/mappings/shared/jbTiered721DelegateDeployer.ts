@@ -1,7 +1,7 @@
 import { DataSourceContext } from "@graphprotocol/graph-ts";
 
 import { DelegateDeployed } from "../../../generated/JBTiered721DelegateDeployer/JBTiered721DelegateDeployer";
-import { JB721DelegateToken as JB721DelegateTokenTemplate } from "../../../generated/templates";
+import { JB721Delegate } from "../../../generated/templates";
 import { PV } from "../../enums";
 
 const pv = PV.PV2;
@@ -20,8 +20,5 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
     "governanceType",
     event.params.governanceType
   );
-  JB721DelegateTokenTemplate.createWithContext(
-    address,
-    jbTiered721DelegateContext
-  );
+  JB721Delegate.createWithContext(address, jbTiered721DelegateContext);
 }

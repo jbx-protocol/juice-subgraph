@@ -1,17 +1,12 @@
-import { InitEvent } from "../../../generated/schema";
 import {
   Configure,
   Init,
 } from "../../../generated/V2JBFundingCycleStore/JBFundingCycleStore";
-import { ProjectEventKey, PV } from "../../enums";
-import { newPV2ConfigureEvent } from "../../utils/entities/configureEvent";
-import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
-import { idForProject, idForProjectTx } from "../../utils/ids";
-
-const pv = PV.PV2;
+import { handleV2V3Configure } from "../../utils/v2v3/fundingCycleStore/configure";
+import { handleV2V3Init } from "../../utils/v2v3/fundingCycleStore/init";
 
 export function handleConfigure(event: Configure): void {
-  const configureEvent = newPV2ConfigureEvent(
+  handleV2V3Configure(
     event,
     event.params.projectId,
     event.params.data.duration,
@@ -20,43 +15,16 @@ export function handleConfigure(event: Configure): void {
     event.params.data.ballot,
     event.params.mustStartAtOrAfter,
     event.params.configuration,
-    event.params.metadata
-  );
-  configureEvent.save();
-
-  saveNewProjectEvent(
-    event,
-    event.params.projectId,
-    configureEvent.id,
-    pv,
-    ProjectEventKey.configureEvent
+    event.params.metadata,
+    event.params.caller
   );
 }
 
 export function handleInit(event: Init): void {
-  const initEvent = new InitEvent(
-    idForProjectTx(event.params.projectId, pv, event)
+  handleV2V3Init(
+    event,
+    event.params.projectId,
+    event.params.configuration,
+    event.params.basedOn
   );
-  const projectId = idForProject(event.params.projectId, pv);
-
-  if (initEvent) {
-    initEvent.projectId = event.params.projectId.toI32();
-    initEvent.project = projectId;
-    initEvent.timestamp = event.block.timestamp.toI32();
-    initEvent.txHash = event.transaction.hash;
-    initEvent.caller = event.transaction.from;
-
-    initEvent.configuration = event.params.configuration.toI32();
-    initEvent.basedOn = event.params.basedOn.toI32();
-
-    initEvent.save();
-
-    saveNewProjectEvent(
-      event,
-      event.params.projectId,
-      initEvent.id,
-      pv,
-      ProjectEventKey.initEvent
-    );
-  }
 }

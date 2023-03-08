@@ -30,7 +30,9 @@
     "legacy_jbProjectHandles",
     "jbProjectHandles",
     "jbTiered721DelegateDeployer",
+    "jbTiered721DelegateDeployer2",
     "jbTiered721DelegateStore",
+    "jbTiered721DelegateStore2",
     "ensRegistry",
     "defifa721Delegate"
   ]

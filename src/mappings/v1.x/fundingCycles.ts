@@ -76,7 +76,8 @@ export function handleV1Configure(event: Configure): void {
     event.params.projectId,
     configureEvent.id,
     pv,
-    ProjectEventKey.v1ConfigureEvent
+    ProjectEventKey.v1ConfigureEvent,
+    event.params.caller,
   );
 }
 
@@ -86,7 +87,6 @@ export function handleV1Init(event: Init): void {
     idForProjectTx(event.params.projectId, pv, event)
   );
 
-  if (!initEvent) return;
   initEvent.projectId = event.params.projectId.toI32();
   initEvent.project = projectId;
   initEvent.caller = event.transaction.from;
@@ -105,6 +105,7 @@ export function handleV1Init(event: Init): void {
     event.params.projectId,
     initEvent.id,
     pv,
-    ProjectEventKey.v1InitEvent
+    ProjectEventKey.v1InitEvent,
+    event.transaction.from,
   );
 }

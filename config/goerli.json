@@ -41,9 +41,17 @@
       "address": "0x6060fa6d5c5b7bd219f2bc576992c239da8f6664",
       "startBlock": 7885285
     },
+    "jbTiered721DelegateDeployer2": {
+      "address": "0xF9d5Bc54f54eBEE30dE3e960992a343481073B3d",
+      "startBlock": 8568319
+    },
     "jbTiered721DelegateStore": {
       "address": "0x3ea16deff07f031e86bd13c55961eb576cd579a6",
       "startBlock": 7885285
+    },
+    "jbTiered721DelegateStore2": {
+      "address": "0xF85DC8C2b9dFfeab95c614A306141882048dE467",
+      "startBlock": 8568319
     },
     "ensRegistry": {
       "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"

@@ -1,4 +1,4 @@
-import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
 import { ProjectEvent } from "../../../generated/schema";
 import { ProjectEventKey, PV } from "../../enums";
 import { idForProject, idForProjectEvent } from "../ids";
@@ -15,9 +15,10 @@ export function saveNewProjectTerminalEvent(
   id: string,
   pv: PV,
   key: ProjectEventKey,
+  caller: Bytes,
   terminal: Bytes
 ): void {
-  saveNewProjectEvent(event, projectId, id, pv, key, terminal);
+  saveNewProjectEvent(event, projectId, id, pv, key, terminal, caller);
 }
 
 export function saveNewProjectEvent(
@@ -26,6 +27,7 @@ export function saveNewProjectEvent(
   id: string,
   pv: PV,
   key: ProjectEventKey,
+  caller: Bytes,
   terminal: Bytes | null = null
 ): void {
   let projectEvent = new ProjectEvent(
@@ -36,16 +38,28 @@ export function saveNewProjectEvent(
       event.transactionLogIndex
     )
   );
-  if (!projectEvent) return;
   projectEvent.pv = pv.toString();
   if (terminal) projectEvent.terminal = terminal;
   projectEvent.projectId = projectId.toI32();
   projectEvent.timestamp = event.block.timestamp.toI32();
   projectEvent.project = idForProject(projectId, pv);
+  projectEvent.caller = caller;
 
   switch (key) {
+    case ProjectEventKey.addToBalanceEvent:
+      projectEvent.addToBalanceEvent = id;
+      break;
+    case ProjectEventKey.burnEvent:
+      projectEvent.burnEvent = id;
+      break;
+    case ProjectEventKey.configureEvent:
+      projectEvent.configureEvent = id;
+      break;
     case ProjectEventKey.deployedERC20Event:
       projectEvent.deployedERC20Event = id;
+      break;
+    case ProjectEventKey.deployETHERC20ProjectPayerEvent:
+      projectEvent.deployETHERC20ProjectPayerEvent = id;
       break;
     case ProjectEventKey.distributePayoutsEvent:
       projectEvent.distributePayoutsEvent = id;
@@ -56,11 +70,17 @@ export function saveNewProjectEvent(
     case ProjectEventKey.distributeToPayoutModEvent:
       projectEvent.distributeToPayoutModEvent = id;
       break;
+    case ProjectEventKey.distributeToPayoutSplitEvent:
+      projectEvent.distributeToPayoutSplitEvent = id;
+      break;
     case ProjectEventKey.distributeToReservedTokenSplitEvent:
       projectEvent.distributeToReservedTokenSplitEvent = id;
       break;
     case ProjectEventKey.distributeToTicketModEvent:
       projectEvent.distributeToTicketModEvent = id;
+      break;
+    case ProjectEventKey.initEvent:
+      projectEvent.initEvent = id;
       break;
     case ProjectEventKey.mintTokensEvent:
       projectEvent.mintTokensEvent = id;
@@ -68,14 +88,14 @@ export function saveNewProjectEvent(
     case ProjectEventKey.payEvent:
       projectEvent.payEvent = id;
       break;
-    case ProjectEventKey.addToBalanceEvent:
-      projectEvent.addToBalanceEvent = id;
-      break;
     case ProjectEventKey.printReservesEvent:
       projectEvent.printReservesEvent = id;
       break;
     case ProjectEventKey.projectCreateEvent:
       projectEvent.projectCreateEvent = id;
+      break;
+    case ProjectEventKey.setFundAccessConstraintsEvent:
+      projectEvent.setFundAccessConstraintsEvent = id;
       break;
     case ProjectEventKey.redeemEvent:
       projectEvent.redeemEvent = id;
@@ -86,21 +106,15 @@ export function saveNewProjectEvent(
     case ProjectEventKey.useAllowanceEvent:
       projectEvent.useAllowanceEvent = id;
       break;
-    case ProjectEventKey.deployETHERC20ProjectPayerEvent:
-      projectEvent.deployETHERC20ProjectPayerEvent = id;
-      break;
-    case ProjectEventKey.configureEvent:
-      projectEvent.configureEvent = id;
-      break;
-    case ProjectEventKey.initEvent:
-      projectEvent.initEvent = id;
-      break;
     case ProjectEventKey.v1ConfigureEvent:
       projectEvent.v1ConfigureEvent = id;
       break;
     case ProjectEventKey.v1InitEvent:
       projectEvent.v1InitEvent = id;
       break;
+    default:
+      log.error("Unhandled ProjectEventKey: {}", [key.toString()]);
+      return;
   }
 
   projectEvent.save();

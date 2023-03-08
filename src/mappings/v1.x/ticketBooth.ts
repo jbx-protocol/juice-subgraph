@@ -57,7 +57,6 @@ export function handlePrint(event: Print): void {
       event.params.holder
     );
   }
-  if (!participant) return;
 
   if (!event.params.preferUnstakedTickets) {
     participant.stakedBalance = participant.stakedBalance.plus(
@@ -94,7 +93,6 @@ export function handleTicketTransfer(event: Transfer): void {
       event.params.recipient
     );
   }
-  if (!receiver) return;
 
   receiver.stakedBalance = receiver.stakedBalance.plus(event.params.amount);
 
@@ -115,7 +113,7 @@ export function handleTicketTransfer(event: Transfer): void {
     burnEvent.txHash = event.transaction.hash;
     burnEvent.amount = event.params.amount;
     burnEvent.stakedAmount = event.params.amount;
-    burnEvent.unstakedAmount = BigInt.fromString("0");
+    burnEvent.erc20Amount = BigInt.fromString("0");
     burnEvent.caller = event.params.caller;
     burnEvent.save();
 
@@ -124,7 +122,8 @@ export function handleTicketTransfer(event: Transfer): void {
       event.params.projectId,
       burnEvent.id,
       pv,
-      ProjectEventKey.burn
+      ProjectEventKey.burnEvent,
+      event.params.caller
     );
   }
 }
@@ -169,9 +168,9 @@ export function handleRedeem(event: Redeem): void {
   if (!participant) return;
 
   if (event.params.preferUnstaked) {
-    if (!participant.unstakedBalance.gt(event.params.amount)) {
+    if (!participant.erc20Balance.gt(event.params.amount)) {
       participant.stakedBalance = participant.stakedBalance.minus(
-        event.params.amount.minus(participant.unstakedBalance)
+        event.params.amount.minus(participant.erc20Balance)
       );
     }
   } else {
@@ -201,32 +200,29 @@ export function handleIssue(event: Issue): void {
   const deployedERC20Event = new DeployedERC20Event(
     idForProjectTx(event.params.projectId, pv, event)
   );
-  if (deployedERC20Event) {
-    deployedERC20Event.project = project.id;
-    deployedERC20Event.projectId = project.projectId;
-    deployedERC20Event.pv = pv.toString();
-    deployedERC20Event.symbol = event.params.symbol;
-    deployedERC20Event.timestamp = event.block.timestamp.toI32();
-    deployedERC20Event.txHash = event.transaction.hash;
-    deployedERC20Event.caller = event.params.caller;
-    deployedERC20Event.save();
+  deployedERC20Event.project = project.id;
+  deployedERC20Event.projectId = project.projectId;
+  deployedERC20Event.pv = pv.toString();
+  deployedERC20Event.symbol = event.params.symbol;
+  deployedERC20Event.timestamp = event.block.timestamp.toI32();
+  deployedERC20Event.txHash = event.transaction.hash;
+  deployedERC20Event.caller = event.params.caller;
+  deployedERC20Event.save();
 
-    saveNewProjectEvent(
-      event,
-      event.params.projectId,
-      deployedERC20Event.id,
-      pv,
-      ProjectEventKey.deployedERC20Event
-    );
-  }
+  saveNewProjectEvent(
+    event,
+    event.params.projectId,
+    deployedERC20Event.id,
+    pv,
+    ProjectEventKey.deployedERC20Event,
+    event.params.caller
+  );
 
   let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
   if (!protocolV1Log) protocolV1Log = newProtocolV1Log();
-  if (protocolV1Log) {
-    protocolV1Log.erc20Count = protocolV1Log.erc20Count + 1;
-    protocolV1Log.save();
-    updateProtocolEntity();
-  }
+  protocolV1Log.erc20Count = protocolV1Log.erc20Count + 1;
+  protocolV1Log.save();
+  updateProtocolEntity();
 
   if (address_v1_ticketBooth) {
     const ticketBooth = TicketBooth.bind(
@@ -234,7 +230,7 @@ export function handleIssue(event: Issue): void {
     );
     const ticketsOfCall = ticketBooth.try_ticketsOf(event.params.projectId);
     if (ticketsOfCall.reverted) {
-      log.error("ticketsOf reverted, project: {}, ticketBooth: {}", [
+      log.error("[handleIssue] ticketsOf reverted, project: {}, ticketBooth: {}", [
         event.params.projectId.toString(),
         address_v1_ticketBooth!,
       ]);

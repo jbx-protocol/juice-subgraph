@@ -52,7 +52,7 @@
     kind: ethereum/contract
     network: {{network}}
     source:
-      abi: JB721DelegateToken
+      abi: JB721Delegate
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -63,8 +63,8 @@
         - Participant
         - JB721DelegateToken
       abis:
-        - name: JB721DelegateToken
-          file: ./abis/shared/JB721DelegateToken.json
+        - name: JB721Delegate
+          file: ./abis/shared/JB721Delegate.json
         - name: JBTiered721DelegateStore
           file: ./abis/shared/JBTiered721DelegateStore.json
       eventHandlers:
@@ -94,4 +94,26 @@
           handler: handleDelegateDeployed
       file: ./src/mappings/shared/jbTiered721DelegateDeployer.ts
   {{ /jbTiered721DelegateDeployer }}
+  {{ #jbTiered721DelegateDeployer2 }}
+  - kind: ethereum/contract
+    name: JBTiered721DelegateDeployer2
+    network: {{network}}
+    source:
+      abi: JBTiered721DelegateDeployer2
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - JB721DelegateToken
+      abis:
+        - name: JBTiered721DelegateDeployer2
+          file: ./abis/shared/JBTiered721DelegateDeployer2.json
+      eventHandlers:
+        - event: DelegateDeployed(indexed uint256,address,uint8,address)
+          handler: handleDelegateDeployed
+      file: ./src/mappings/shared/jbTiered721DelegateDeployer2.ts
+  {{ /jbTiered721DelegateDeployer2 }}
 {{ /shared }}
