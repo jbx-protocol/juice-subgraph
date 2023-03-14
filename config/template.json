@@ -20,11 +20,14 @@
   "v3": [
     "jbController",
     "jbController3_0_1",
+    "jbController3_1",
     "jbTokenStore",
     "jbETHPaymentTerminal",
+    "jbETHPaymentTerminal3_1",
     "jbETHERC20ProjectPayerDeployer",
     "jbFundingCycleStore",
-    "jbPrices"
+    "jbPrices",
+    "jbFundAccessConstraintsStore"
   ],
   "shared": [
     "legacy_jbProjectHandles",

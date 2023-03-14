@@ -1,4 +1,4 @@
-import { DeployProjectPayer } from "../../../generated/V3JBETHERC20ProjectPayerDeployer/JBETHERC20ProjectPayerDeployer";
+import { DeployProjectPayer } from "../../../generated/JBETHERC20ProjectPayerDeployer3/JBETHERC20ProjectPayerDeployer";
 import { handleV2V3DeployProjectPayer } from "../../utils/v2v3/ethERC20ProjectPayerDeployer.ts/deployProjectPayer";
 
 export function handleDeployProjectPayer(event: DeployProjectPayer): void {

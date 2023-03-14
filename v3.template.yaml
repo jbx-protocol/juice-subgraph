@@ -1,7 +1,7 @@
 {{ #v3 }}
   {{ #jbETHERC20ProjectPayerDeployer }}
   - kind: ethereum/contract
-    name: V3JBETHERC20ProjectPayerDeployer
+    name: JBETHERC20ProjectPayerDeployer3
     network: {{network}}
     source:
       abi: JBETHERC20ProjectPayerDeployer
@@ -22,14 +22,14 @@
       eventHandlers:
         - event: DeployProjectPayer(indexed address,uint256,address,bool,string,bytes,bool,address,address,address)
           handler: handleDeployProjectPayer
-      file: ./src/mappings/v3/jbETHERC20ProjectPayerDeployer.ts
+      file: ./src/mappings/v3.x/jbETHERC20ProjectPayerDeployer.ts
   {{ /jbETHERC20ProjectPayerDeployer }}
   {{ #jbController }}
   - kind: ethereum/contract
-    name: V3JBController
+    name: JBController3
     network: {{network}}
     source:
-      abi: JBController
+      abi: JBController3
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -42,8 +42,9 @@
         - MintTokensEvent
         - Project
         - ConfigureEvent
+        - SetFundAccessConstraintsEvent
       abis:
-        - name: JBController
+        - name: JBController3
           file: ./abis/v3/JBController.json
       eventHandlers:
         - event: LaunchProject(uint256,uint256,string,address)
@@ -58,11 +59,11 @@
           handler: handleReconfigureFundingCycles
         - event: SetFundAccessConstraints(indexed uint256,indexed uint256,indexed uint256,(address,address,uint256,uint256,uint256,uint256),address)
           handler: handleSetFundAccessConstraints
-      file: ./src/mappings/v3/jbController.ts
+      file: ./src/mappings/v3.x/jbController.ts
   {{ /jbController }}
   {{ #jbController3_0_1 }}
   - kind: ethereum/contract
-    name: V3_0_1JBController
+    name: JBController3_0_1
     network: {{network}}
     source:
       abi: JBController3_0_1
@@ -78,6 +79,7 @@
         - MintTokensEvent
         - Project
         - ConfigureEvent
+        - SetFundAccessConstraintsEvent
       abis:
         - name: JBController3_0_1
           file: ./abis/v3/JBController3_0_1.json
@@ -94,14 +96,70 @@
           handler: handleReconfigureFundingCycles
         - event: SetFundAccessConstraints(indexed uint256,indexed uint256,indexed uint256,(address,address,uint256,uint256,uint256,uint256),address)
           handler: handleSetFundAccessConstraints
-      file: ./src/mappings/v3/jbController3_0_1.ts
+      file: ./src/mappings/v3.x/jbController3_0_1.ts
   {{ /jbController3_0_1 }}
-  {{ #jbTokenStore }}
+  {{ #jbController3_1 }}
   - kind: ethereum/contract
-    name: V3JBTokenStore
+    name: JBController3_1
     network: {{network}}
     source:
-      abi: JBTokenStore
+      abi: JBController3_1
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - DistributeReservedTokensEvent
+        - DistributeToReservedTokenSplitEvent
+        - MintTokensEvent
+        - Project
+        - ConfigureEvent
+      abis:
+        - name: JBController3_1
+          file: ./abis/v3/JBController3_1.json
+      eventHandlers:
+        - event: LaunchProject(uint256,uint256,string,address)
+          handler: handleLaunchProject
+        - event: MintTokens(indexed address,indexed uint256,uint256,uint256,string,uint256,address)
+          handler: handleMintTokens
+        - event: DistributeReservedTokens(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,string,address)
+          handler: handleDistributeReservedTokens
+        - event: DistributeToReservedTokenSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,address)
+          handler: handleDistributeToReservedTokenSplit
+        - event: ReconfigureFundingCycles(uint256,uint256,string,address)
+          handler: handleReconfigureFundingCycles
+      file: ./src/mappings/v3.x/jbController3_1.ts
+  {{ /jbController3_1 }}
+  {{ #jbFundAccessConstraintsStore }}
+  - kind: ethereum/contract
+    name: JBFundAccessConstraintsStore
+    network: {{network}}
+    source:
+      abi: JBFundAccessConstraintsStore
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - SetFundAccessConstraintsEvent
+      abis:
+        - name: JBFundAccessConstraintsStore
+          file: ./abis/v3/JBFundAccessConstraintsStore.json
+      eventHandlers:
+        - event: SetFundAccessConstraints(indexed uint256,indexed uint256,(address,address,uint256,uint256,uint256,uint256),address)
+          handler: handleSetFundAccessConstraints
+      file: ./src/mappings/v3.x/jbFundAccessConstraintsStore.ts
+  {{ /jbFundAccessConstraintsStore }}
+  {{ #jbTokenStore }}
+  - kind: ethereum/contract
+    name: JBTokenStore3
+    network: {{network}}
+    source:
+      abi: JBTokenStore3
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -115,7 +173,7 @@
         - ProjectEvent
         - ProtocolV3Log
       abis:
-        - name: JBTokenStore
+        - name: JBTokenStore3
           file: ./abis/v3/JBTokenStore.json
       eventHandlers:
         - event: Burn(indexed address,indexed uint256,uint256,uint256,uint256,bool,address)
@@ -128,14 +186,14 @@
           handler: handleMint
         - event: Transfer(indexed address,indexed uint256,indexed address,uint256,address)
           handler: handleTransfer
-      file: ./src/mappings/v3/jbTokenStore.ts
+      file: ./src/mappings/v3.x/jbTokenStore.ts
   {{ /jbTokenStore }}
   {{ #jbFundingCycleStore }}
   - kind: ethereum/contract
-    name: V3JBFundingCycleStore
+    name: JBFundingCycleStore3
     network: {{network}}
     source:
-      abi: JBFundingCycleStore
+      abi: JBFundingCycleStore3
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -146,23 +204,23 @@
         - Configure
         - Init
       abis:
-        - name: JBController
+        - name: JBController3
           file: ./abis/v3/JBController.json
-        - name: JBFundingCycleStore
+        - name: JBFundingCycleStore3
           file: ./abis/v3/JBFundingCycleStore.json
       eventHandlers:
         - event: Configure(indexed uint256,indexed uint256,(uint256,uint256,uint256,address),uint256,uint256,address)
           handler: handleConfigure
         - event: Init(indexed uint256,indexed uint256,indexed uint256)
           handler: handleInit
-      file: ./src/mappings/v3/jbFundingCycleStore.ts
+      file: ./src/mappings/v3.x/jbFundingCycleStore.ts
   {{ /jbFundingCycleStore }}
   {{ #jbETHPaymentTerminal }}
   - kind: ethereum/contract
-    name: V3JBETHPaymentTerminal
+    name: JBETHPaymentTerminal3
     network: {{network}}
     source:
-      abi: JBETHPaymentTerminal
+      abi: JBETHPaymentTerminal3
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -178,10 +236,11 @@
         - ProtocolV3Log
         - RedeemEvent
         - UseAllowanceEvent
+        - Wallet
       abis:
-        - name: JBETHPaymentTerminal
+        - name: JBETHPaymentTerminal3
           file: ./abis/v3/JBETHPaymentTerminal.json
-        - name: JBPrices
+        - name: JBPrices3
           file: ./abis/v3/JBPrices.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
@@ -198,6 +257,50 @@
           handler: handleDistributeToPayoutSplit
         - event: ProcessFee(indexed uint256,indexed uint256,indexed bool,address,address)
           handler: handleProcessFee
-      file: ./src/mappings/v3/jbETHPaymentTerminal.ts
+      file: ./src/mappings/v3.x/jbETHPaymentTerminal.ts
   {{ /jbETHPaymentTerminal }}
+  {{ #jbETHPaymentTerminal3_1 }}
+  - kind: ethereum/contract
+    name: JBETHPaymentTerminal3_1
+    network: {{network}}
+    source:
+      abi: JBETHPaymentTerminal3_1
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - DistributePayoutsEvent
+        - DistributeToPayoutSplitEvent
+        - Participant
+        - PayEvent
+        - Project
+        - ProtocolV3Log
+        - RedeemEvent
+        - UseAllowanceEvent
+        - Wallet
+      abis:
+        - name: JBETHPaymentTerminal3_1
+          file: ./abis/v3/JBETHPaymentTerminal3_1.json
+        - name: JBPrices3
+          file: ./abis/v3/JBPrices.json
+      eventHandlers:
+        - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
+          handler: handlePay
+        - event: RedeemTokens(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
+          handler: handleRedeemTokens
+        - event: AddToBalance(indexed uint256,uint256,uint256,string,bytes,address)
+          handler: handleAddToBalance
+        - event: DistributePayouts(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,uint256,uint256,bytes,address)
+          handler: handleDistributePayouts
+        - event: UseAllowance(indexed uint256,indexed uint256,indexed uint256,address,uint256,uint256,uint256,string,bytes,address)
+          handler: handleUseAllowance
+        - event: DistributeToPayoutSplit(indexed uint256,indexed uint256,indexed uint256,(bool,bool,uint256,uint256,address,uint256,address),uint256,uint256,address)
+          handler: handleDistributeToPayoutSplit
+        - event: ProcessFee(indexed uint256,indexed uint256,indexed bool,address,address)
+          handler: handleProcessFee
+      file: ./src/mappings/v3.x/jbETHPaymentTerminal3_1.ts
+  {{ /jbETHPaymentTerminal3_1 }}
 {{ /v3 }}

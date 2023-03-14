@@ -18,7 +18,7 @@ export function handleV2V3SetFundAccessConstraints(
   terminal: Bytes,
   token: Address,
   fundingCycleConfiguration: BigInt,
-  fundingCycleNumber: BigInt
+  fundingCycleNumber: BigInt | null = null
 ): void {
   const setFundAccessConstraintsEvent = new SetFundAccessConstraintsEvent(
     idForProjectTx(projectId, pv, event)
@@ -35,8 +35,10 @@ export function handleV2V3SetFundAccessConstraints(
   setFundAccessConstraintsEvent.txHash = event.transaction.hash;
   setFundAccessConstraintsEvent.project = idForProject(projectId, pv);
   setFundAccessConstraintsEvent.fundingCycleConfiguration = fundingCycleConfiguration;
-  setFundAccessConstraintsEvent.fundingCycleNumber = fundingCycleNumber.toI32();
   setFundAccessConstraintsEvent.projectId = projectId.toI32();
+  if (fundingCycleNumber) {
+    setFundAccessConstraintsEvent.fundingCycleNumber = fundingCycleNumber.toI32();
+  }
   setFundAccessConstraintsEvent.save();
 
   saveNewProjectEvent(

@@ -1,10 +1,10 @@
 {{ #v2 }}
   {{ #jbETHERC20ProjectPayerDeployer }}
   - kind: ethereum/contract
-    name: V2JBETHERC20ProjectPayerDeployer
+    name: JBETHERC20ProjectPayerDeployer2
     network: {{network}}
     source:
-      abi: JBETHERC20ProjectPayerDeployer
+      abi: JBETHERC20ProjectPayerDeployer2
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -15,7 +15,7 @@
         - ETHERC20ProjectPayer
         - DeployETHERC20ProjectPayerEvent
       abis:
-        - name: JBETHERC20ProjectPayerDeployer
+        - name: JBETHERC20ProjectPayerDeployer2
           file: ./abis/v2/JBETHERC20ProjectPayerDeployer.json
         - name: JBETHERC20ProjectPayer
           file: ./abis/shared/JBETHERC20ProjectPayer.json
@@ -26,10 +26,10 @@
   {{ /jbETHERC20ProjectPayerDeployer }}
   {{ #jbController }}
   - kind: ethereum/contract
-    name: V2JBController
+    name: JBController2
     network: {{network}}
     source:
-      abi: JBController
+      abi: JBController2
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -41,8 +41,10 @@
         - DistributeToReservedTokenSplitEvent
         - MintTokensEvent
         - ConfigureEvent
+        - Project
+        - SetFundAccessConstraintsEvent
       abis:
-        - name: JBController
+        - name: JBController2
           file: ./abis/v2/JBController.json
       eventHandlers:
         - event: LaunchProject(uint256,uint256,string,address)
@@ -61,10 +63,10 @@
   {{ /jbController }}
   {{ #jbTokenStore }}
   - kind: ethereum/contract
-    name: V2JBTokenStore
+    name: JBTokenStore2
     network: {{network}}
     source:
-      abi: JBTokenStore
+      abi: JBTokenStore2
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -78,7 +80,7 @@
         - ProjectEvent
         - ProtocolV2Log
       abis:
-        - name: JBTokenStore
+        - name: JBTokenStore2
           file: ./abis/v2/JBTokenStore.json
       eventHandlers:
         - event: Burn(indexed address,indexed uint256,uint256,uint256,uint256,bool,address)
@@ -95,7 +97,7 @@
   {{ /jbTokenStore }}
   {{ #jbProjects }}
   - kind: ethereum/contract
-    name: V2JBProjects
+    name: JBProjects
     network: {{network}}
     source:
       abi: JBProjects
@@ -124,10 +126,10 @@
   {{ /jbProjects }}
   {{ #jbFundingCycleStore }}
   - kind: ethereum/contract
-    name: V2JBFundingCycleStore
+    name: JBFundingCycleStore2
     network: {{network}}
     source:
-      abi: JBFundingCycleStore
+      abi: JBFundingCycleStore2
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -138,9 +140,9 @@
         - ConfigureEvent
         - InitEvent
       abis:
-        - name: JBController
+        - name: JBController2
           file: ./abis/v2/JBController.json
-        - name: JBFundingCycleStore
+        - name: JBFundingCycleStore2
           file: ./abis/v2/JBFundingCycleStore.json
       eventHandlers:
         - event: Configure(indexed uint256,indexed uint256,(uint256,uint256,uint256,address),uint256,uint256,address)
@@ -151,10 +153,10 @@
   {{ /jbFundingCycleStore }}
   {{ #jbETHPaymentTerminal }}
   - kind: ethereum/contract
-    name: V2JBETHPaymentTerminal
+    name: JBETHPaymentTerminal2
     network: {{network}}
     source:
-      abi: JBETHPaymentTerminal
+      abi: JBETHPaymentTerminal2
       address: '{{address}}'
       startBlock: {{startBlock}}
     mapping:
@@ -171,10 +173,12 @@
         - RedeemEvent
         - UseAllowanceEvent
       abis:
-        - name: JBETHPaymentTerminal
+        - name: JBETHPaymentTerminal2
           file: ./abis/v2/JBETHPaymentTerminal.json
-        - name: JBPrices
+        - name: JBPrices2
           file: ./abis/v2/JBPrices.json
+        - name: JBPrices3
+          file: ./abis/v3/JBPrices.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
           handler: handlePay

@@ -5,7 +5,7 @@ import {
   Create,
   SetMetadata,
   Transfer,
-} from "../../../generated/V2JBProjects/JBProjects";
+} from "../../../generated/JBProjects/JBProjects";
 import { PV } from "../../enums";
 import { idForProject } from "../../utils/ids";
 import { handleProjectCreate } from "../../utils/projects/projectCreate";

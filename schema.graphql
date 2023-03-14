@@ -449,7 +449,7 @@ type SetFundAccessConstraintsEvent @entity {
   terminal: Bytes!
   token: Bytes
   fundingCycleConfiguration: BigInt!
-  fundingCycleNumber: Int!
+  fundingCycleNumber: Int
 }
 
 # v2
@@ -486,7 +486,7 @@ type DistributePayoutsEvent @entity {
   feeUSD: BigInt
   beneficiaryDistributionAmount: BigInt!
   beneficiaryDistributionAmountUSD: BigInt
-  memo: String!
+  memo: String
   caller: Bytes!
   splitDistributions: [DistributeToPayoutSplitEvent!]!
     @derivedFrom(field: "distributePayoutsEvent")

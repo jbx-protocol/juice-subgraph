@@ -135,7 +135,7 @@ export function handleTrendingPayment(timestamp: BigInt): void {
   protocolLog.save();
 
   log.info(
-    "[handleTrendingPayment] Updated trending stats using payments range {}-{} at timestamp {}",
+    "[handleTrendingPayment] Updated trending stats using payments {}-{} at timestamp {}",
     [
       (protocolLog.oldestTrendingPayEvent || "0") as string,
       latestPayEventId.toString(),

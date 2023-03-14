@@ -120,6 +120,7 @@
         - ProtocolV1Log
         - RedeemEvent
         - TapEvent
+        - Wallet
       abis:
         - name: TerminalV1
           file: ./abis/v1/TerminalV1.json
@@ -172,6 +173,7 @@
         - ProtocolV1Log
         - RedeemEvent
         - TapEvent
+        - Wallet
       abis:
         - name: TerminalV1_1
           file: ./abis/v1/TerminalV1_1.json

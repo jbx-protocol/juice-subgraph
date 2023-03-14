@@ -26,6 +26,10 @@ if (!config) {
 
 config.network = network;
 
+// Clear /generated and /build folder
+fs.rm("build", { force: true, recursive: true }, () => null);
+fs.rm("generated", { force: true, recursive: true }, () => null);
+
 // Write all contract addresses in config to a .ts file
 function writeContractAddresses() {
   const contractAddressesPath = "src/contractAddresses.ts";

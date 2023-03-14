@@ -112,9 +112,6 @@ export function saveNewProjectEvent(
     case ProjectEventKey.v1InitEvent:
       projectEvent.v1InitEvent = id;
       break;
-    default:
-      log.error("Unhandled ProjectEventKey: {}", [key.toString()]);
-      return;
   }
 
   projectEvent.save();

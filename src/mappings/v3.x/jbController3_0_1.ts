@@ -5,13 +5,13 @@ import {
   MintTokens,
   ReconfigureFundingCycles,
   SetFundAccessConstraints,
-} from "../../../generated/V3JBController/JBController";
+} from "../../../generated/JBController3_0_1/JBController3_0_1";
 import { handleV2V3DistributeReservedTokens } from "../../utils/v2v3/controller/distributeReservedTokens";
 import { handleV2V3DistributeReservedTokenSplit } from "../../utils/v2v3/controller/distributeReservedTokenSplit";
 import { handleV2V3LaunchProject } from "../../utils/v2v3/controller/launchProject";
 import { handleV2V3MintTokens } from "../../utils/v2v3/controller/mintTokens";
 import { handleV2V3ReconfigureFundingCycles } from "../../utils/v2v3/controller/reconfigureFundingCycles";
-import { handleV2V3SetFundAccessConstraints } from "../../utils/v2v3/controller/setFundAccessConstraints";
+import { handleV2V3SetFundAccessConstraints } from "../../utils/v2v3/fundAccessConstraints/setFundAccessConstraints";
 
 export function handleMintTokens(event: MintTokens): void {
   handleV2V3MintTokens(

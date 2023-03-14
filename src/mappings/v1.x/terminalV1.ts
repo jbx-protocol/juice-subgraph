@@ -44,7 +44,8 @@ export function handlePay(event: Pay): void {
     terminal,
     event.params.beneficiary,
     event.params.note,
-    event.params.caller
+    event.params.caller,
+    event.transaction.from
   );
 
   let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);

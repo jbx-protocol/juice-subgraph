@@ -9,7 +9,7 @@ import {
   ProcessFee,
   RedeemTokens,
   UseAllowance,
-} from "../../../generated/V3JBETHPaymentTerminal/JBETHPaymentTerminal";
+} from "../../../generated/JBETHPaymentTerminal3/JBETHPaymentTerminal3";
 import { PROTOCOL_ID } from "../../constants";
 import { address_v3_jbETHPaymentTerminal } from "../../contractAddresses";
 import {
@@ -90,6 +90,7 @@ export function handlePay(event: Pay): void {
     terminal,
     event.params.beneficiary,
     event.params.caller,
+    event.params.payer,
     event.params.memo
   );
 

@@ -1,7 +1,6 @@
 import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
 
 import { DistributeToReservedTokenSplitEvent } from "../../../../generated/schema";
-import { DistributeToReservedTokenSplitSplitStruct } from "../../../../generated/V3JBController/JBController";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectEvent } from "../../entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../ids";

@@ -69,6 +69,10 @@
       "address": "0xA139D37275d1fF7275e6F33821898934Bc8Cb7B6",
       "startBlock": 16570401
     },
+    "jbController3_1": {
+      "address": "0x97a5b9D9F0F7cD676B69f584F29048D0Ef4BB59b",
+      "startBlock": 16677457
+    },
     "jbTokenStore": {
       "address": "0x6FA996581D7edaABE62C15eaE19fEeD4F1DdDfE7",
       "startBlock": 15575457
@@ -76,6 +80,14 @@
     "jbETHPaymentTerminal": {
       "address": "0x594Cb208b5BB48db1bcbC9354d1694998864ec63",
       "startBlock": 15575464
+    },
+    "jbETHPaymentTerminal3_1": {
+      "address": "0xFA391De95Fcbcd3157268B91d8c7af083E607A5C",
+      "startBlock": 16677460
+    },
+    "jbFundAccessConstraintsStore": {
+      "address": "0xFA391De95Fcbcd3157268B91d8c7af083E607A5C",
+      "startBlock": 16677460
     },
     "jbETHERC20ProjectPayerDeployer": {
       "address": "0x144F5F5Fdbe0fC8d4A758f33Bf14F68bdFe6feBD",

@@ -4,14 +4,12 @@ import {
   LaunchProject,
   MintTokens,
   ReconfigureFundingCycles,
-  SetFundAccessConstraints,
-} from "../../../generated/V3_0_1JBController/JBController3_0_1";
+} from "../../../generated/JBController3_1/JBController3_1";
 import { handleV2V3DistributeReservedTokens } from "../../utils/v2v3/controller/distributeReservedTokens";
 import { handleV2V3DistributeReservedTokenSplit } from "../../utils/v2v3/controller/distributeReservedTokenSplit";
 import { handleV2V3LaunchProject } from "../../utils/v2v3/controller/launchProject";
 import { handleV2V3MintTokens } from "../../utils/v2v3/controller/mintTokens";
 import { handleV2V3ReconfigureFundingCycles } from "../../utils/v2v3/controller/reconfigureFundingCycles";
-import { handleV2V3SetFundAccessConstraints } from "../../utils/v2v3/controller/setFundAccessConstraints";
 
 export function handleMintTokens(event: MintTokens): void {
   handleV2V3MintTokens(
@@ -67,23 +65,5 @@ export function handleReconfigureFundingCycles(
     event,
     event.params.projectId,
     event.params.memo
-  );
-}
-
-export function handleSetFundAccessConstraints(
-  event: SetFundAccessConstraints
-): void {
-  handleV2V3SetFundAccessConstraints(
-    event,
-    event.params.projectId,
-    event.params.caller,
-    event.params.constraints.distributionLimit,
-    event.params.constraints.distributionLimitCurrency,
-    event.params.constraints.overflowAllowance,
-    event.params.constraints.overflowAllowanceCurrency,
-    event.params.constraints.terminal,
-    event.params.constraints.token,
-    event.params.fundingCycleConfiguration,
-    event.params.fundingCycleNumber
   );
 }

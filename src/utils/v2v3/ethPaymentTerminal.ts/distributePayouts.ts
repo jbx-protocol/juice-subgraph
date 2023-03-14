@@ -21,7 +21,7 @@ export function handleV2V3DistributePayouts(
   fee: BigInt,
   fundingCycleConfiguration: BigInt,
   fundingCycleNumber: BigInt,
-  memo: string
+  memo: string | null = null
 ): void {
   const distributePayoutsEventId = idForProjectTx(projectId, pv, event);
   const distributePayoutsEvent = new DistributePayoutsEvent(
