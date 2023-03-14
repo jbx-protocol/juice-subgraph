@@ -9,7 +9,7 @@ import {
   ProcessFee,
   RedeemTokens,
   UseAllowance,
-} from "../../../generated/JBETHPaymentTerminal3/JBETHPaymentTerminal3";
+} from "../../../generated/JBETHPaymentTerminal3_1/JBETHPaymentTerminal3_1";
 import { PROTOCOL_ID } from "../../constants";
 import { address_v3_jbETHPaymentTerminal } from "../../contractAddresses";
 import {
@@ -53,7 +53,6 @@ export function handleDistributePayouts(event: DistributePayouts): void {
     event.params.fee,
     event.params.fundingCycleConfiguration,
     event.params.fundingCycleNumber,
-    event.params.memo
   );
 }
 
@@ -90,6 +89,7 @@ export function handlePay(event: Pay): void {
     terminal,
     event.params.beneficiary,
     event.params.caller,
+    event.params.payer,
     event.params.memo
   );
 

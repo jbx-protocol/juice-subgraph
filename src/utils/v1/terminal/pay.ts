@@ -22,7 +22,8 @@ export function handleV1Pay(
   terminal: Bytes,
   beneficiary: Address,
   note: string,
-  caller: Address
+  caller: Address,
+  payer: Address
 ): void {
   const pay = new PayEvent(idForPayEvent());
   const idOfProject = idForProject(projectId, pv);
@@ -69,10 +70,10 @@ export function handleV1Pay(
 
   const lastPaidTimestamp = event.block.timestamp.toI32();
 
-  const participantId = idForParticipant(projectId, pv, caller);
+  const participantId = idForParticipant(projectId, pv, payer);
   let participant = Participant.load(participantId);
   if (!participant) {
-    participant = newParticipant(pv, projectId, caller);
+    participant = newParticipant(pv, projectId, payer);
   }
   participant.totalPaid = participant.totalPaid.plus(amount);
   if (amountUSD) {
@@ -82,7 +83,7 @@ export function handleV1Pay(
   participant.save();
 
   // Update wallet, create if needed
-  const walletId = toHexLowercase(caller);
+  const walletId = toHexLowercase(payer);
   let wallet = Wallet.load(walletId);
   if (!wallet) {
     wallet = newWallet(walletId);

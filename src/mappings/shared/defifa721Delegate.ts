@@ -28,7 +28,7 @@ export function handleTransfer(event: Transfer): void {
   // projectId
   const projectIdCall = jb721DelegateContract.try_projectId();
   if (projectIdCall.reverted) {
-    log.error("[handleTransfer] projectId() reverted for jb721Delegate", []);
+    log.error("[handleTransfer] jb721Delegate.projectId() reverted", []);
     return;
   }
   const projectId = projectIdCall.value;
@@ -54,7 +54,7 @@ export function handleTransfer(event: Transfer): void {
     // Name
     const nameCall = jb721DelegateContract.try_name();
     if (nameCall.reverted) {
-      log.error("[handleTransfer] name() reverted for jb721Delegate:{}", [id]);
+      log.error("[handleTransfer] jb721Delegate.name() reverted: {}", [id]);
       return;
     }
     token.name = nameCall.value;
@@ -85,7 +85,7 @@ export function handleTransfer(event: Transfer): void {
    */
   const tokenUriCall = jb721DelegateContract.try_tokenURI(tokenId);
   if (tokenUriCall.reverted) {
-    log.error("[handleTransfer] tokenURI() reverted for jb721Delegate:{}", [
+    log.error("[handleTransfer] jb721Delegate.tokenURI() reverted:{}", [
       id,
     ]);
     return;

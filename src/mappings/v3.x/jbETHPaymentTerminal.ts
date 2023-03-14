@@ -90,6 +90,7 @@ export function handlePay(event: Pay): void {
     terminal,
     event.params.beneficiary,
     event.params.caller,
+    event.params.payer,
     event.params.memo
   );
 

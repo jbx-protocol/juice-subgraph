@@ -177,6 +177,8 @@
           file: ./abis/v2/JBETHPaymentTerminal.json
         - name: JBPrices2
           file: ./abis/v2/JBPrices.json
+        - name: JBPrices3
+          file: ./abis/v3/JBPrices.json
       eventHandlers:
         - event: Pay(indexed uint256,indexed uint256,indexed uint256,address,address,uint256,uint256,string,bytes,address)
           handler: handlePay

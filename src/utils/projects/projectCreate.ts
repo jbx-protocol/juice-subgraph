@@ -24,7 +24,8 @@ export function handleProjectCreate(
   owner: Address,
   caller: Address,
   metadataUri: string,
-  metadataDomain: BigInt | null = null
+  metadataDomain: BigInt | null = null,
+  handle: string | null = null
 ): void {
   const idOfProject = idForProject(projectId, pv);
   const project = new Project(idOfProject);
@@ -53,6 +54,7 @@ export function handleProjectCreate(
   project.paymentsCount = 0;
   project.redeemCount = 0;
   project.nftsMintedCount = 0;
+  project.handle = handle;
   project.save();
 
   const projectCreateEvent = new ProjectCreateEvent(
