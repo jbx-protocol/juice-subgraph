@@ -24,7 +24,8 @@ export function handleV1PrintReserveTickets(
   printReserveEvent.projectId = projectId.toI32();
   printReserveEvent.beneficiary = beneficiary;
   printReserveEvent.beneficiaryTicketAmount = beneficiaryTicketAmount;
-  printReserveEvent.caller = event.transaction.from;
+  printReserveEvent.caller = caller;
+  printReserveEvent.from = event.transaction.from;
   printReserveEvent.count = count;
   printReserveEvent.fundingCycleId = fundingCycleId;
   printReserveEvent.project = idOfProject;
@@ -38,7 +39,7 @@ export function handleV1PrintReserveTickets(
     printReserveEvent.id,
     pv,
     ProjectEventKey.printReservesEvent,
-    caller,
-    terminal
+    terminal,
+    caller
   );
 }

@@ -59,13 +59,13 @@ export function handleV2V3DeployProjectPayer(
   deployProjectPayerEvent.timestamp = event.block.timestamp.toI32();
   deployProjectPayerEvent.txHash = event.transaction.hash;
   deployProjectPayerEvent.caller = caller;
+  deployProjectPayerEvent.from = event.transaction.from;
   deployProjectPayerEvent.save();
   saveNewProjectEvent(
     event,
     defaultProjectId,
     deployProjectPayerEvent.id,
     pv,
-    ProjectEventKey.deployETHERC20ProjectPayerEvent,
-    caller
+    ProjectEventKey.deployETHERC20ProjectPayerEvent
   );
 }

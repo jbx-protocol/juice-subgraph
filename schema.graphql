@@ -7,8 +7,8 @@ type ProtocolLog @entity {
   v3: ProtocolV3Log @derivedFrom(field: "log")
 
   projectsCount: Int!
-  volumePaid: BigInt!
-  volumePaidUSD: BigInt!
+  volume: BigInt!
+  volumeUSD: BigInt!
   volumeRedeemed: BigInt!
   volumeRedeemedUSD: BigInt!
   paymentsCount: Int!
@@ -40,6 +40,7 @@ type ProjectCreateEvent @entity {
   pv: String!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
   caller: Bytes!
 }
 
@@ -62,10 +63,10 @@ type Project @entity {
   createdAt: Int!
   paymentsCount: Int!
   redeemCount: Int!
-  totalPaid: BigInt!
-  totalPaidUSD: BigInt!
-  totalRedeemed: BigInt!
-  totalRedeemedUSD: BigInt!
+  volume: BigInt!
+  volumeUSD: BigInt!
+  redeemVolume: BigInt!
+  redeemVolumeUSD: BigInt!
   currentBalance: BigInt!
   trendingScore: BigInt!
   trendingVolume: BigInt!
@@ -113,8 +114,8 @@ type Participant @entity {
   pv: String!
   address: Bytes!
   wallet: Wallet!
-  totalPaid: BigInt!
-  totalPaidUSD: BigInt!
+  volume: BigInt!
+  volumeUSD: BigInt!
   lastPaidTimestamp: Int!
   balance: BigInt!
   stakedBalance: BigInt!
@@ -125,8 +126,8 @@ type Participant @entity {
 # shared
 type Wallet @entity {
   id: ID!
-  totalPaid: BigInt!
-  totalPaidUSD: BigInt!
+  volume: BigInt!
+  volumeUSD: BigInt!
   lastPaidTimestamp: Int!
   participants: [Participant!]! @derivedFrom(field: "wallet")
 }
@@ -139,7 +140,8 @@ type ProjectEvent @entity {
   pv: String!
   terminal: Bytes # Only terminal events
   timestamp: Int!
-  caller: Bytes!
+  from: Bytes!
+  caller: Bytes
 
   # Conditional properties. Only one of these properties should exist. This is a helper entity that makes it possible to query all "project events" for a project.
   payEvent: PayEvent
@@ -175,8 +177,10 @@ type PayEvent @entity {
   terminal: Bytes!
   timestamp: Int!
   txHash: Bytes!
-
+  from: Bytes!
   caller: Bytes!
+
+  isDistribution: Boolean!
   beneficiary: Bytes!
   amount: BigInt!
   amountUSD: BigInt
@@ -193,8 +197,9 @@ type AddToBalanceEvent @entity {
   terminal: Bytes!
   timestamp: Int!
   txHash: Bytes!
-
+  from: Bytes!
   caller: Bytes!
+
   amount: BigInt!
   amountUSD: BigInt
   note: String
@@ -208,11 +213,12 @@ type MintTokensEvent @entity {
   pv: String!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   beneficiary: Bytes!
   amount: BigInt!
   memo: String!
-  caller: Bytes!
 }
 
 # shared
@@ -224,6 +230,8 @@ type RedeemEvent @entity {
   terminal: Bytes!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   metadata: Bytes # only v2/v3
   memo: String # only v2/v3
@@ -233,7 +241,6 @@ type RedeemEvent @entity {
   amount: BigInt!
   returnAmount: BigInt!
   returnAmountUSD: BigInt
-  caller: Bytes!
 }
 
 # shared
@@ -244,6 +251,7 @@ type DeployedERC20Event @entity {
   pv: String!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
   caller: Bytes!
 
   symbol: String!
@@ -264,7 +272,8 @@ type BurnEvent @entity {
   pv: String!
   timestamp: Int!
   txHash: Bytes!
-  caller: Bytes!
+  from: Bytes!
+  caller: Bytes
 
   holder: Bytes!
   amount: BigInt!
@@ -300,8 +309,8 @@ type ProtocolV1Log @entity {
   id: ID!
   log: ProtocolLog!
   projectsCount: Int!
-  volumePaid: BigInt!
-  volumePaidUSD: BigInt!
+  volume: BigInt!
+  volumeUSD: BigInt!
   volumeRedeemed: BigInt!
   volumeRedeemedUSD: BigInt!
   paymentsCount: Int!
@@ -316,12 +325,13 @@ type PrintReservesEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   fundingCycleId: BigInt!
   beneficiary: Bytes!
   count: BigInt!
   beneficiaryTicketAmount: BigInt!
-  caller: Bytes!
   distributions: [DistributeToTicketModEvent!]!
     @derivedFrom(field: "printReservesEvent")
 }
@@ -333,6 +343,8 @@ type DistributeToPayoutModEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   fundingCycleId: BigInt!
   modProjectId: Int!
@@ -341,7 +353,6 @@ type DistributeToPayoutModEvent @entity {
   modPreferUnstaked: Boolean!
   modCut: BigInt!
   modCutUSD: BigInt
-  caller: Bytes!
   tapEvent: TapEvent!
 }
 
@@ -352,6 +363,8 @@ type TapEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   fundingCycleId: BigInt!
   beneficiary: Bytes!
@@ -364,7 +377,6 @@ type TapEvent @entity {
   beneficiaryTransferAmountUSD: BigInt
   govFeeAmount: BigInt!
   govFeeAmountUSD: BigInt
-  caller: Bytes!
   distributions: [DistributeToPayoutModEvent!]! @derivedFrom(field: "tapEvent")
 }
 
@@ -375,12 +387,13 @@ type DistributeToTicketModEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   fundingCycleId: BigInt!
   modBeneficiary: Bytes!
   modPreferUnstaked: Boolean!
   modCut: BigInt!
-  caller: Bytes!
   printReservesEvent: PrintReservesEvent!
 }
 
@@ -391,8 +404,9 @@ type V1ConfigureEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
-
+  from: Bytes!
   caller: Bytes!
+
   target: BigInt!
   currency: Int!
   duration: Int!
@@ -421,8 +435,8 @@ type V1InitEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
 
-  caller: Bytes!
   fundingCycleId: Int!
   previous: Int!
   start: Int!
@@ -440,8 +454,9 @@ type SetFundAccessConstraintsEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
-
+  from: Bytes!
   caller: Bytes!
+
   distributionLimit: BigInt!
   distributionLimitCurrency: Int!
   overflowAllowance: BigInt!
@@ -457,8 +472,8 @@ type ProtocolV2Log @entity {
   id: ID!
   log: ProtocolLog!
   projectsCount: Int!
-  volumePaid: BigInt!
-  volumePaidUSD: BigInt!
+  volume: BigInt!
+  volumeUSD: BigInt!
   volumeRedeemed: BigInt!
   volumeRedeemedUSD: BigInt!
   paymentsCount: Int!
@@ -474,6 +489,8 @@ type DistributePayoutsEvent @entity {
   timestamp: Int!
   txHash: Bytes!
   terminal: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   fundingCycleConfiguration: BigInt!
   fundingCycleNumber: Int!
@@ -487,7 +504,6 @@ type DistributePayoutsEvent @entity {
   beneficiaryDistributionAmount: BigInt!
   beneficiaryDistributionAmountUSD: BigInt
   memo: String
-  caller: Bytes!
   splitDistributions: [DistributeToPayoutSplitEvent!]!
     @derivedFrom(field: "distributePayoutsEvent")
 }
@@ -500,12 +516,13 @@ type DistributeToPayoutSplitEvent @entity {
   timestamp: Int!
   txHash: Bytes!
   terminal: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   domain: BigInt!
   group: BigInt!
   amount: BigInt!
   amountUSD: BigInt
-  caller: Bytes!
   distributePayoutsEvent: DistributePayoutsEvent!
 
   # Split struct properties below
@@ -525,13 +542,14 @@ type DistributeReservedTokensEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   fundingCycleNumber: Int!
   beneficiary: Bytes!
   tokenCount: BigInt!
   beneficiaryTokenCount: BigInt!
   memo: String!
-  caller: Bytes!
   splitDistributions: [DistributeToReservedTokenSplitEvent!]!
     @derivedFrom(field: "distributeReservedTokensEvent")
 }
@@ -543,9 +561,10 @@ type DistributeToReservedTokenSplitEvent @entity {
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   tokenCount: BigInt!
-  caller: Bytes!
   distributeReservedTokensEvent: DistributeReservedTokensEvent!
 
   # Split struct properties below
@@ -564,6 +583,8 @@ type UseAllowanceEvent @entity{
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   fundingCycleConfiguration: BigInt!
   fundingCycleNumber: Int!
@@ -575,7 +596,6 @@ type UseAllowanceEvent @entity{
   netDistributedamount: BigInt!
   netDistributedamountUSD: BigInt
   memo: String!
-  caller: Bytes!
 }
 
 # v2
@@ -585,6 +605,8 @@ type DeployETHERC20ProjectPayerEvent @entity{
   projectId: Int!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
 
   address: Bytes!
   beneficiary: Bytes!
@@ -594,7 +616,6 @@ type DeployETHERC20ProjectPayerEvent @entity{
   owner: Bytes!
   memo: String
   metadata: Bytes
-  caller: Bytes!
 }
 
 # v2
@@ -619,6 +640,7 @@ type ConfigureEvent @entity {
   project: Project!
   timestamp: Int!
   txHash: Bytes!
+  from: Bytes!
   caller: Bytes!
 
   duration: Int!
@@ -662,7 +684,7 @@ type InitEvent @entity {
   project: Project!
   timestamp: Int!
   txHash: Bytes!
-  caller: Bytes!
+  from: Bytes!
 
   configuration: Int!
   basedOn: Int!
@@ -673,8 +695,8 @@ type ProtocolV3Log @entity {
   id: ID!
   log: ProtocolLog!
   projectsCount: Int!
-  volumePaid: BigInt!
-  volumePaidUSD: BigInt!
+  volume: BigInt!
+  volumeUSD: BigInt!
   volumeRedeemed: BigInt!
   volumeRedeemedUSD: BigInt!
   paymentsCount: Int!

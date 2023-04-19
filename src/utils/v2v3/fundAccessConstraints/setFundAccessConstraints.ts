@@ -25,6 +25,7 @@ export function handleV2V3SetFundAccessConstraints(
   );
 
   setFundAccessConstraintsEvent.caller = caller;
+  setFundAccessConstraintsEvent.from = event.transaction.from;
   setFundAccessConstraintsEvent.distributionLimit = distributionLimit;
   setFundAccessConstraintsEvent.distributionLimitCurrency = distributionLimitCurrency.toI32();
   setFundAccessConstraintsEvent.overflowAllowance = overflowAllowance;
@@ -46,7 +47,6 @@ export function handleV2V3SetFundAccessConstraints(
     projectId,
     setFundAccessConstraintsEvent.id,
     pv,
-    ProjectEventKey.setFundAccessConstraintsEvent,
-    caller
+    ProjectEventKey.setFundAccessConstraintsEvent
   );
 }

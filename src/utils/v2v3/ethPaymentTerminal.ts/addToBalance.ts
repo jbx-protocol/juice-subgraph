@@ -36,7 +36,8 @@ export function handleV2V3AddToBalance(
     addToBalance.projectId = projectId.toI32();
     addToBalance.amount = amount;
     addToBalance.amountUSD = v3USDPriceForEth(amount);
-    addToBalance.caller = event.transaction.from;
+    addToBalance.caller = caller;
+    addToBalance.from = event.transaction.from;
     addToBalance.project = idOfProject;
     addToBalance.note = memo;
     addToBalance.timestamp = event.block.timestamp.toI32();

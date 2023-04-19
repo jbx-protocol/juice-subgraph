@@ -27,7 +27,8 @@ export function handleV2V3Configure(
     ballot,
     mustStartAtOrAfter,
     configuration,
-    metadata
+    metadata,
+    caller
   );
   configureEvent.save();
 
@@ -37,6 +38,5 @@ export function handleV2V3Configure(
     configureEvent.id,
     pv,
     ProjectEventKey.configureEvent,
-    caller
   );
 }

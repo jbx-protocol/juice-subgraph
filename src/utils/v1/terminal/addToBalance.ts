@@ -35,7 +35,8 @@ export function handleV1AddToBalance(
     addToBalance.projectId = projectId.toI32();
     addToBalance.amount = value;
     addToBalance.amountUSD = v1USDPriceForEth(value);
-    addToBalance.caller = event.transaction.from;
+    addToBalance.from = event.transaction.from;
+    addToBalance.caller = caller;
     addToBalance.project = idOfProject;
     addToBalance.timestamp = event.block.timestamp.toI32();
     addToBalance.txHash = event.transaction.hash;
@@ -47,8 +48,8 @@ export function handleV1AddToBalance(
       addToBalance.id,
       pv,
       ProjectEventKey.addToBalanceEvent,
-      caller,
-      terminal
+      terminal,
+      caller
     );
   }
 }

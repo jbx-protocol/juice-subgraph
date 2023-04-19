@@ -1,6 +1,6 @@
 import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+
 import { DistributeToPayoutModEvent } from "../../../../generated/schema";
-import { DistributeToPayoutModModStruct } from "../../../../generated/TerminalV1/TerminalV1";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../ids";
@@ -27,7 +27,8 @@ export function handleV1DistributeToPayoutMod(
   distributeToPayoutModEvent.projectId = projectId.toI32();
   distributeToPayoutModEvent.tapEvent = idForProjectTx(projectId, pv, event);
   distributeToPayoutModEvent.project = idForProject(projectId, pv);
-  distributeToPayoutModEvent.caller = event.transaction.from;
+  distributeToPayoutModEvent.caller = caller;
+  distributeToPayoutModEvent.from = event.transaction.from;
   distributeToPayoutModEvent.projectId = projectId.toI32();
   distributeToPayoutModEvent.fundingCycleId = fundingCycleId;
   distributeToPayoutModEvent.modProjectId = modProjectId.toI32();
@@ -47,7 +48,7 @@ export function handleV1DistributeToPayoutMod(
     distributeToPayoutModEvent.id,
     pv,
     ProjectEventKey.distributeToPayoutModEvent,
-    caller,
-    terminal
+    terminal,
+    caller
   );
 }

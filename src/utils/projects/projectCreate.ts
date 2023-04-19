@@ -46,10 +46,10 @@ export function handleProjectCreate(
   project.createdAt = event.block.timestamp.toI32();
   project.metadataUri = metadataUri;
   project.metadataDomain = metadataDomain;
-  project.totalPaid = BigInt.fromString("0");
-  project.totalPaidUSD = BigInt.fromString("0");
-  project.totalRedeemed = BigInt.fromString("0");
-  project.totalRedeemedUSD = BigInt.fromString("0");
+  project.volume = BigInt.fromString("0");
+  project.volumeUSD = BigInt.fromString("0");
+  project.redeemVolume = BigInt.fromString("0");
+  project.redeemVolumeUSD = BigInt.fromString("0");
   project.currentBalance = BigInt.fromString("0");
   project.paymentsCount = 0;
   project.redeemCount = 0;
@@ -65,7 +65,8 @@ export function handleProjectCreate(
   projectCreateEvent.projectId = projectId.toI32();
   projectCreateEvent.timestamp = event.block.timestamp.toI32();
   projectCreateEvent.txHash = event.transaction.hash;
-  projectCreateEvent.caller = event.transaction.from;
+  projectCreateEvent.caller = caller;
+  projectCreateEvent.from = event.transaction.from;
   projectCreateEvent.save();
 
   saveNewProjectEvent(
@@ -74,7 +75,6 @@ export function handleProjectCreate(
     projectCreateEvent.id,
     pv,
     ProjectEventKey.projectCreateEvent,
-    caller
   );
 
   /**

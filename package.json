@@ -4,7 +4,16 @@
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
-    "prep": "node scripts/prepare.js"
+    "prep": "node scripts/prepare.js",
+    "lint": "eslint --ext .ts ./",
+    "lint-staged": "lint-staged",
+    "lint:fix": "yarn lint --fix"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css}": [
+      "eslint",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.33.0",
@@ -12,8 +21,14 @@
     "mustache": "^4.0.1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^8.38.0",
+    "eslint-plugin-import": "^2.27.5",
     "fs": "^0.0.1-security",
     "js-yaml": "^4.1.0",
-    "source-map-support": "^0.5.21"
+    "lint-staged": "^13.2.0",
+    "source-map-support": "^0.5.21",
+    "typescript": "^5.0.4"
   }
 }

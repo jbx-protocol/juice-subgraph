@@ -1,4 +1,5 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+
 import {
   Participant,
   PayEvent,
@@ -22,8 +23,7 @@ export function handleV1Pay(
   terminal: Bytes,
   beneficiary: Address,
   note: string,
-  caller: Address,
-  payer: Address
+  caller: Address
 ): void {
   const pay = new PayEvent(idForPayEvent());
   const idOfProject = idForProject(projectId, pv);
@@ -35,11 +35,14 @@ export function handleV1Pay(
     return;
   }
 
-  project.totalPaid = project.totalPaid.plus(amount);
-  if (amountUSD) project.totalPaidUSD = project.totalPaidUSD.plus(amountUSD);
+  project.volume = project.volume.plus(amount);
+  if (amountUSD) project.volumeUSD = project.volumeUSD.plus(amountUSD);
   project.currentBalance = project.currentBalance.plus(amount);
   project.paymentsCount = project.paymentsCount + 1;
   project.save();
+
+  // This is hacky, but the only way we can tell if this payment is a distribution
+  const isDistribution = note.startsWith("Fee from @") || note.startsWith("Payout from @");
 
   if (pay) {
     pay.pv = pv.toString();
@@ -48,11 +51,13 @@ export function handleV1Pay(
     pay.amount = amount;
     pay.amountUSD = amountUSD;
     pay.beneficiary = beneficiary;
-    pay.caller = event.transaction.from;
+    pay.caller = caller;
+    pay.from = event.transaction.from;
     pay.project = idOfProject;
     pay.note = note;
     pay.timestamp = event.block.timestamp.toI32();
     pay.txHash = event.transaction.hash;
+    pay.isDistribution = isDistribution;
     pay.save();
 
     saveNewProjectTerminalEvent(
@@ -61,37 +66,65 @@ export function handleV1Pay(
       pay.id,
       pv,
       ProjectEventKey.payEvent,
-      caller,
-      terminal
+      terminal,
+      caller
     );
 
     handleTrendingPayment(event.block.timestamp);
   }
 
-  const lastPaidTimestamp = event.block.timestamp.toI32();
+  const isJangoJB =
+    event.transaction.hash.toHexString().toLowerCase() ==
+      "0x198ea3b9ecd5ed00b5b9e4d69d7976f8b49ed87e050acce4279d1605399493cd".toLowerCase() &&
+    projectId.toString() == "1" &&
+    event.transaction.from.toHexString().toLowerCase() ==
+      "0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD".toLowerCase();
 
-  const participantId = idForParticipant(projectId, pv, payer);
-  let participant = Participant.load(participantId);
-  if (!participant) {
-    participant = newParticipant(pv, projectId, payer);
+  if (isJangoJB) {
+    if (isDistribution) {
+      log.warning("YES distribution {}, {}", [
+        caller.toHexString(),
+        event.transaction.hash.toHexString(),
+      ]);
+    } else {
+      log.warning("NO distribution {}, {}", [
+        caller.toHexString(),
+        event.transaction.hash.toHexString(),
+      ]);
+    }
   }
-  participant.totalPaid = participant.totalPaid.plus(amount);
-  if (amountUSD) {
-    participant.totalPaidUSD = participant.totalPaidUSD.plus(amountUSD);
-  }
-  participant.lastPaidTimestamp = lastPaidTimestamp;
-  participant.save();
 
-  // Update wallet, create if needed
-  const walletId = toHexLowercase(payer);
-  let wallet = Wallet.load(walletId);
-  if (!wallet) {
-    wallet = newWallet(walletId);
+  if (!isDistribution) {
+    const lastPaidTimestamp = event.block.timestamp.toI32();
+
+    const participantId = idForParticipant(
+      projectId,
+      pv,
+      event.transaction.from
+    );
+
+    let participant = Participant.load(participantId);
+    if (!participant) {
+      participant = newParticipant(pv, projectId, event.transaction.from);
+    }
+    participant.volume = participant.volume.plus(amount);
+    if (amountUSD) {
+      participant.volumeUSD = participant.volumeUSD.plus(amountUSD);
+    }
+    participant.lastPaidTimestamp = lastPaidTimestamp;
+    participant.save();
+
+    // Update wallet, create if needed
+    const walletId = toHexLowercase(event.transaction.from);
+    let wallet = Wallet.load(walletId);
+    if (!wallet) {
+      wallet = newWallet(walletId);
+    }
+    wallet.volume = wallet.volume.plus(amount);
+    if (amountUSD) {
+      wallet.volumeUSD = wallet.volumeUSD.plus(amountUSD);
+    }
+    wallet.lastPaidTimestamp = lastPaidTimestamp;
+    wallet.save();
   }
-  wallet.totalPaid = wallet.totalPaid.plus(amount);
-  if (amountUSD) {
-    wallet.totalPaidUSD = wallet.totalPaidUSD.plus(amountUSD);
-  }
-  wallet.lastPaidTimestamp = lastPaidTimestamp;
-  wallet.save();
 }

@@ -1,4 +1,5 @@
-import { BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+
 import { ProjectEvent } from "../../../generated/schema";
 import { ProjectEventKey, PV } from "../../enums";
 import { idForProject, idForProjectEvent } from "../ids";
@@ -15,10 +16,10 @@ export function saveNewProjectTerminalEvent(
   id: string,
   pv: PV,
   key: ProjectEventKey,
-  caller: Bytes,
-  terminal: Bytes
+  terminal: Bytes,
+  caller: Bytes | null = null
 ): void {
-  saveNewProjectEvent(event, projectId, id, pv, key, terminal, caller);
+  saveNewProjectEvent(event, projectId, id, pv, key, caller, terminal);
 }
 
 export function saveNewProjectEvent(
@@ -27,10 +28,10 @@ export function saveNewProjectEvent(
   id: string,
   pv: PV,
   key: ProjectEventKey,
-  caller: Bytes,
-  terminal: Bytes | null = null
+  terminal: Bytes | null = null,
+  caller: Bytes | null = null
 ): void {
-  let projectEvent = new ProjectEvent(
+  const projectEvent = new ProjectEvent(
     idForProjectEvent(
       projectId,
       pv,
@@ -39,11 +40,12 @@ export function saveNewProjectEvent(
     )
   );
   projectEvent.pv = pv.toString();
-  if (terminal) projectEvent.terminal = terminal;
   projectEvent.projectId = projectId.toI32();
   projectEvent.timestamp = event.block.timestamp.toI32();
   projectEvent.project = idForProject(projectId, pv);
   projectEvent.caller = caller;
+  projectEvent.from = event.transaction.from;
+  if (terminal) projectEvent.terminal = terminal;
 
   switch (key) {
     case ProjectEventKey.addToBalanceEvent:

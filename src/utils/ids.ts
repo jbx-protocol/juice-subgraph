@@ -9,7 +9,7 @@ export function idForProjectTx(
   projectId: BigInt,
   pv: PV,
   event: ethereum.Event,
-  useLogIndex: boolean = false // Using log index will ensure ID is unique even if event is emitted multiple times within a single tx
+  useLogIndex = false // Using log index will ensure ID is unique even if event is emitted multiple times within a single tx
 ): string {
   return (
     idForProject(projectId, pv) +

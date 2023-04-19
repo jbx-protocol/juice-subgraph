@@ -1,4 +1,5 @@
-import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+
 import { UseAllowanceEvent } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
@@ -32,7 +33,8 @@ export function handleV2V3UseAllowance(
   useAllowanceEvent.amount = amount;
   useAllowanceEvent.amountUSD = amountUSD;
   useAllowanceEvent.beneficiary = beneficiary;
-  useAllowanceEvent.caller = event.transaction.from;
+  useAllowanceEvent.caller = caller;
+  useAllowanceEvent.from = event.transaction.from;
   useAllowanceEvent.distributedAmount = distributedAmount;
   useAllowanceEvent.distributedAmountUSD = distributedAmountUSD;
   useAllowanceEvent.fundingCycleConfiguration = fundingCycleConfiguration;
@@ -48,7 +50,7 @@ export function handleV2V3UseAllowance(
     useAllowanceEvent.id,
     pv,
     ProjectEventKey.useAllowanceEvent,
-    caller,
-    terminal
+    terminal,
+    caller
   );
 }
