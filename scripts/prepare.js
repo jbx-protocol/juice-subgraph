@@ -244,7 +244,7 @@ function checkHandlers() {
 
       missingHandlersCount++;
     } else {
-      process.stdout.write(" All good\n");
+      process.stdout.write(" OK\n");
     }
   });
 

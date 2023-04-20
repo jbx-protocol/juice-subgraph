@@ -9,7 +9,7 @@ export function idForProjectTx(
   projectId: BigInt,
   pv: PV,
   event: ethereum.Event,
-  useLogIndex = false // Using log index will ensure ID is unique even if event is emitted multiple times within a single tx
+  useLogIndex: boolean = false // Using log index will ensure ID is unique even if event is emitted multiple times within a single tx
 ): string {
   return (
     idForProject(projectId, pv) +
@@ -78,4 +78,8 @@ export function idForJB721DelegateToken(
   tokenId: BigInt
 ): string {
   return `${toHexLowercase(address)}-${tokenId.toString()}`;
+}
+
+export function idForSplitsPayer(projectId: BigInt, address: Bytes): string {
+  return `${projectId.toString()}-${address.toHexString()}`;
 }

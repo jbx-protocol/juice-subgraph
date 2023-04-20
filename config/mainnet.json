@@ -51,6 +51,10 @@
       "address": "0x9E84bEcA3E4d3cfE5C3b5E1b534363E8D7468ABc",
       "startBlock": 14730683
     },
+    "jbETHERC20SplitsPayerDeployer": {
+      "address": "0x5c3b3a616ce33653AF9fCE1b97823790884aCc04",
+      "startBlock": 15036166
+    },
     "jbFundingCycleStore": {
       "address": "0x6B8e01DAA8A61b544F96d2738893E05D04BF1D12",
       "startBlock": 14868844
@@ -92,6 +96,10 @@
     "jbETHERC20ProjectPayerDeployer": {
       "address": "0x144F5F5Fdbe0fC8d4A758f33Bf14F68bdFe6feBD",
       "startBlock": 15575452
+    },
+    "jbETHERC20SplitsPayerDeployer": {
+      "address": "0x3ff1f0583a41CE8B9463F74a1227C75FC13f7C27",
+      "startBlock": 16961439
     },
     "jbFundingCycleStore": {
       "address": "0x6f18cF9173136c0B5A6eBF45f19D58d3ff2E17e6",

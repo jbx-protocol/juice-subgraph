@@ -74,7 +74,6 @@ type Project @entity {
   createdWithinTrendingWindow: Boolean!
 
   nftsMintedCount: Int! # only if project has jb721DelegateTokens
-
   # Derived event entities
   addToBalanceEvents: [AddToBalanceEvent!]! @derivedFrom(field: "project")
   burnEvents: [BurnEvent!]! @derivedFrom(field: "project")
@@ -82,10 +81,14 @@ type Project @entity {
   deployedERC20Events: [DeployedERC20Event!]! @derivedFrom(field: "project")
   distributeToPayoutModEvents: [DistributeToPayoutModEvent!]!
     @derivedFrom(field: "project")
-  distributePayoutsEvents: [DistributePayoutsEvent!]! @derivedFrom(field: "project")
-  distributeReservedTokensEvents: [DistributeReservedTokensEvent!]! @derivedFrom(field: "project")
-  distributeToPayoutSplitEvents: [DistributeToPayoutSplitEvent!]! @derivedFrom(field: "project")
-  distributeToReservedTokenSplitEvents: [DistributeToReservedTokenSplitEvent!]! @derivedFrom(field: "project")
+  distributePayoutsEvents: [DistributePayoutsEvent!]!
+    @derivedFrom(field: "project")
+  distributeReservedTokensEvents: [DistributeReservedTokensEvent!]!
+    @derivedFrom(field: "project")
+  distributeToPayoutSplitEvents: [DistributeToPayoutSplitEvent!]!
+    @derivedFrom(field: "project")
+  distributeToReservedTokenSplitEvents: [DistributeToReservedTokenSplitEvent!]!
+    @derivedFrom(field: "project")
   distributeToTicketModEvents: [DistributeToTicketModEvent!]!
     @derivedFrom(field: "project")
   initEvents: [InitEvent!]! @derivedFrom(field: "project")
@@ -94,7 +97,8 @@ type Project @entity {
   printReservesEvents: [PrintReservesEvent!]! @derivedFrom(field: "project")
   projectEvents: [ProjectEvent!]! @derivedFrom(field: "project")
   redeemEvents: [RedeemEvent!]! @derivedFrom(field: "project")
-  setFundAccessConstraintsEvents: [SetFundAccessConstraintsEvent!]! @derivedFrom(field: "project")
+  setFundAccessConstraintsEvents: [SetFundAccessConstraintsEvent!]!
+    @derivedFrom(field: "project")
   tapEvents: [TapEvent!]! @derivedFrom(field: "project")
   useAllowanceEvents: [UseAllowanceEvent!]! @derivedFrom(field: "project")
   v1ConfigureEvents: [V1ConfigureEvent!]! @derivedFrom(field: "project")
@@ -146,12 +150,12 @@ type ProjectEvent @entity {
   # Conditional properties. Only one of these properties should exist. This is a helper entity that makes it possible to query all "project events" for a project.
   payEvent: PayEvent
   addToBalanceEvent: AddToBalanceEvent
-  mintTokensEvent: MintTokensEvent 
-  tapEvent: TapEvent 
-  redeemEvent: RedeemEvent 
-  printReservesEvent: PrintReservesEvent 
-  distributeToPayoutModEvent: DistributeToPayoutModEvent 
-  distributeToTicketModEvent: DistributeToTicketModEvent 
+  mintTokensEvent: MintTokensEvent
+  tapEvent: TapEvent
+  redeemEvent: RedeemEvent
+  printReservesEvent: PrintReservesEvent
+  distributeToPayoutModEvent: DistributeToPayoutModEvent
+  distributeToTicketModEvent: DistributeToTicketModEvent
   deployedERC20Event: DeployedERC20Event
   projectCreateEvent: ProjectCreateEvent
   distributePayoutsEvent: DistributePayoutsEvent
@@ -235,7 +239,6 @@ type RedeemEvent @entity {
 
   metadata: Bytes # only v2/v3
   memo: String # only v2/v3
-
   holder: Bytes!
   beneficiary: Bytes!
   amount: BigInt!
@@ -577,7 +580,7 @@ type DistributeToReservedTokenSplitEvent @entity {
 }
 
 # v2
-type UseAllowanceEvent @entity{
+type UseAllowanceEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
@@ -599,7 +602,7 @@ type UseAllowanceEvent @entity{
 }
 
 # v2
-type DeployETHERC20ProjectPayerEvent @entity{
+type DeployETHERC20ProjectPayerEvent @entity {
   id: ID!
   project: Project!
   projectId: Int!
@@ -619,7 +622,7 @@ type DeployETHERC20ProjectPayerEvent @entity{
 }
 
 # v2
-type ETHERC20ProjectPayer @entity{
+type ETHERC20ProjectPayer @entity {
   id: ID!
   project: Project!
   projectId: Int!
@@ -702,4 +705,37 @@ type ProtocolV3Log @entity {
   paymentsCount: Int!
   redeemCount: Int!
   erc20Count: Int!
+}
+
+type ETHERC20SplitsPayer @entity {
+  id: ID!
+
+  defaultBeneficiary: Bytes!
+  defaultMemo: String!
+  defaultMetadata: Bytes!
+  defaultPreferClaimedTokens: Boolean!
+  defaultProjectId: Int!
+  defaultSplitsDomain: BigInt!
+  defaultSplitsGroup: BigInt!
+  defaultSplitsProjectId: Int!
+  owner: Bytes!
+  preferAddToBalance: Boolean!
+  splitsPayer: Bytes!
+}
+
+type DeployETHERC20SplitsPayerEvent @entity {
+  id: ID!
+  caller: Bytes!
+
+  defaultBeneficiary: Bytes!
+  defaultMemo: String!
+  defaultMetadata: Bytes!
+  defaultPreferClaimedTokens: Boolean!
+  defaultProjectId: Int!
+  defaultSplitsDomain: BigInt!
+  defaultSplitsGroup: BigInt!
+  defaultSplitsProjectId: Int!
+  owner: Bytes!
+  preferAddToBalance: Boolean!
+  splitsPayer: Bytes!
 }
