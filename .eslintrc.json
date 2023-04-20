@@ -6,23 +6,20 @@
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint", "import"],
   "rules": {
-    "@typescript-eslint/no-inferrable-types": "off",
-    "@typescript-eslint/ban-types": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-var-requires": "warn",
     "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-inferrable-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-redeclare": "error",
     "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-var-requires": "warn",
     "no-console": ["error"],
     "no-plusplus": [
       "error",
@@ -31,5 +28,5 @@
       }
     ]
   },
-  "ignorePatterns": ["generated/*", "build/*"]
+  "ignorePatterns": ["generated/*", "build/*", "spec/out/*"]
 }
