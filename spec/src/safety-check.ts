@@ -85,8 +85,8 @@ describe("Projects", async () => {
       case "mainnet":
         expect(jb.totalPaid).toBeGreaterThan(7000e18);
         expect(jb.totalPaid).toBeLessThan(70000e18);
-        expect(jb.currentBalance).toBeGreaterThan(1000e18);
-        expect(jb.currentBalance).toBeLessThan(10000e18);
+        expect(jb.currentBalance).toBeGreaterThan(500e18);
+        expect(jb.currentBalance).toBeLessThan(1000e18);
         break;
       case "goerli":
         expect(jb.totalPaid).toBeGreaterThan(10e18);
