@@ -19,5 +19,3 @@ subgraph.yaml
 
 src/contractAddresses.ts
 src/startBlocks.ts
-
-spec/out
