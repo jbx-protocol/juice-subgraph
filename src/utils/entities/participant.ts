@@ -21,6 +21,7 @@ export function newParticipant(
   participant.volume = BigInt.fromString("0");
   participant.volumeUSD = BigInt.fromString("0");
   participant.lastPaidTimestamp = 0;
+  participant.paymentsCount = 0;
 
   // Create a wallet any time we create a participant
   const walletId = toHexLowercase(wallet);

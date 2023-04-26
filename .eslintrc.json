@@ -28,5 +28,5 @@
       }
     ]
   },
-  "ignorePatterns": ["generated/*", "build/*", "spec/out/*"]
+  "ignorePatterns": ["generated/*", "build/*", "spec/out/*", "spec/src/*.ts"]
 }

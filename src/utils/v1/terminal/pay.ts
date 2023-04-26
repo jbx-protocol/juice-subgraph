@@ -39,10 +39,10 @@ export function handleV1Pay(
   if (amountUSD) project.volumeUSD = project.volumeUSD.plus(amountUSD);
   project.currentBalance = project.currentBalance.plus(amount);
   project.paymentsCount = project.paymentsCount + 1;
-  project.save();
 
   // This is hacky, but the only way we can tell if this payment is a distribution
-  const isDistribution = note.startsWith("Fee from @") || note.startsWith("Payout from @");
+  const isDistribution =
+    note.startsWith("Fee from @") || note.startsWith("Payout from @");
 
   if (pay) {
     pay.pv = pv.toString();
@@ -73,27 +73,6 @@ export function handleV1Pay(
     handleTrendingPayment(event.block.timestamp);
   }
 
-  const isJangoJB =
-    event.transaction.hash.toHexString().toLowerCase() ==
-      "0x198ea3b9ecd5ed00b5b9e4d69d7976f8b49ed87e050acce4279d1605399493cd".toLowerCase() &&
-    projectId.toString() == "1" &&
-    event.transaction.from.toHexString().toLowerCase() ==
-      "0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD".toLowerCase();
-
-  if (isJangoJB) {
-    if (isDistribution) {
-      log.warning("YES distribution {}, {}", [
-        caller.toHexString(),
-        event.transaction.hash.toHexString(),
-      ]);
-    } else {
-      log.warning("NO distribution {}, {}", [
-        caller.toHexString(),
-        event.transaction.hash.toHexString(),
-      ]);
-    }
-  }
-
   if (!isDistribution) {
     const lastPaidTimestamp = event.block.timestamp.toI32();
 
@@ -104,6 +83,12 @@ export function handleV1Pay(
     );
 
     let participant = Participant.load(participantId);
+
+    // update contributorsCount
+    if (!participant || participant.volume.isZero()) {
+      project.contributorsCount = project.contributorsCount + 1;
+    }
+
     if (!participant) {
       participant = newParticipant(pv, projectId, event.transaction.from);
     }
@@ -112,6 +97,7 @@ export function handleV1Pay(
       participant.volumeUSD = participant.volumeUSD.plus(amountUSD);
     }
     participant.lastPaidTimestamp = lastPaidTimestamp;
+    participant.paymentsCount = participant.paymentsCount + 1;
     participant.save();
 
     // Update wallet, create if needed
@@ -127,4 +113,6 @@ export function handleV1Pay(
     wallet.lastPaidTimestamp = lastPaidTimestamp;
     wallet.save();
   }
+
+  project.save();
 }

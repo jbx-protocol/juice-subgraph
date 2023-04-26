@@ -51,7 +51,6 @@ export function handleV2V3Pay(
   project.volume = project.volume.plus(amount);
   project.currentBalance = project.currentBalance.plus(amount);
   project.paymentsCount = project.paymentsCount + 1;
-  project.save();
 
   // For distribute events, caller will be a terminal
   const isDistribution = isTerminalAddress(caller);
@@ -85,27 +84,27 @@ export function handleV2V3Pay(
   handleTrendingPayment(event.block.timestamp);
 
   if (!isDistribution) {
-    if (
-      projectId.toString() == "1" &&
-      payer.toHexString().toLowerCase() ==
-        "0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD".toLowerCase()
-    ) {
-      log.warning("Jango jb {}", [event.transaction.hash.toHexString()]);
-    }
-
     const lastPaidTimestamp = event.block.timestamp.toI32();
 
     const participantId = idForParticipant(projectId, pv, payer);
 
     let participant = Participant.load(participantId);
+
+    // update contributorsCount
+    if (!participant || participant.volume.isZero()) {
+      project.contributorsCount = project.contributorsCount + 1;
+    }
+
     if (!participant) {
       participant = newParticipant(pv, projectId, payer);
     }
+
     participant.volume = participant.volume.plus(amount);
     if (amountUSD) {
       participant.volumeUSD = participant.volumeUSD.plus(amountUSD);
     }
     participant.lastPaidTimestamp = lastPaidTimestamp;
+    participant.paymentsCount = participant.paymentsCount + 1;
     participant.save();
 
     // Update wallet, create if needed
@@ -121,6 +120,8 @@ export function handleV2V3Pay(
     wallet.lastPaidTimestamp = lastPaidTimestamp;
     wallet.save();
   }
+
+  project.save();
 }
 
 function addrEquals(addr: Address, b: string | null): boolean {

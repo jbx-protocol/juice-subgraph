@@ -62,6 +62,7 @@ type Project @entity {
   owner: Bytes!
   createdAt: Int!
   paymentsCount: Int!
+  contributorsCount: Int!
   redeemCount: Int!
   volume: BigInt!
   volumeUSD: BigInt!
@@ -121,6 +122,7 @@ type Participant @entity {
   volume: BigInt!
   volumeUSD: BigInt!
   lastPaidTimestamp: Int!
+  paymentsCount: Int!
   balance: BigInt!
   stakedBalance: BigInt!
   erc20Balance: BigInt!

@@ -1,6 +1,8 @@
-import { getExhaustive, network } from "./utils";
+import { get, getExhaustive, network } from "./utils";
 
+let protocolLog: any;
 let projects: any[];
+let jbV1PayEvents: any[];
 let jbV2PayEvents: any[];
 
 beforeAll(async () => {
@@ -8,8 +10,8 @@ beforeAll(async () => {
     "id",
     "pv",
     "handle",
-    "totalPaid",
-    "totalPaidUSD",
+    "volume",
+    "volumeUSD",
     "currentBalance",
   ]);
   console.info(projects.length, "projects");
@@ -19,6 +21,15 @@ beforeAll(async () => {
     ["id", "feeFromV2Project"],
     'projectId: 1, pv: "2"'
   );
+
+  jbV1PayEvents = await getExhaustive(
+    "payEvent",
+    ["id", "feeFromV2Project"],
+    'projectId: 1, pv: "1"'
+  );
+
+  protocolLog = (await get("protocolLog", ["paymentsCount"]))[0];
+
   console.info(jbV2PayEvents.length, "JB pay events");
 }, 30000);
 
@@ -78,25 +89,33 @@ describe("Projects", async () => {
     }
   });
 
-  it("JB should have reasonable totalPaid and currentBalance", async () => {
+  it("All projects should have non-zero deployer", async () => {
+    expect(
+      projects.every(
+        (p) => p.deployer !== "0x0000000000000000000000000000000000000000"
+      )
+    ).toBeTrue();
+  });
+
+  it("JB should have reasonable volume and currentBalance", async () => {
     const jb = projects.find((p) => p.id === "1-1");
 
     switch (network) {
       case "mainnet":
-        expect(jb.totalPaid).toBeGreaterThan(7000e18);
-        expect(jb.totalPaid).toBeLessThan(70000e18);
+        expect(jb.volume).toBeGreaterThan(7000e18);
+        expect(jb.volume).toBeLessThan(70000e18);
         expect(jb.currentBalance).toBeGreaterThan(500e18);
         expect(jb.currentBalance).toBeLessThan(1000e18);
         break;
       case "goerli":
-        expect(jb.totalPaid).toBeGreaterThan(10e18);
-        expect(jb.totalPaid).toBeLessThan(100e18);
+        expect(jb.volume).toBeGreaterThan(10e18);
+        expect(jb.volume).toBeLessThan(100e18);
         break;
     }
 
     // Check average ETH price
-    expect(jb.totalPaidUSD / jb.totalPaid).toBeGreaterThan(3000);
-    expect(jb.totalPaidUSD / jb.totalPaid).toBeLessThan(4000);
+    expect(jb.volumeUSD / jb.volume).toBeGreaterThan(3000);
+    expect(jb.volumeUSD / jb.volume).toBeLessThan(4000);
   });
 });
 
@@ -114,12 +133,31 @@ describe("Pay events", async () => {
     }
   });
 
-  it("Pay events should have valid data", async () => {
+  it("Some pay events should be fees", async () => {
+    expect(jbV1PayEvents.some((e) => e.feeFromV2Project > 0)).toBeTrue();
+    expect(jbV1PayEvents.some((e) => !e.feeFromV2Project)).toBeTrue();
+    expect(jbV2PayEvents.some((e) => e.feeFromV2Project > 0)).toBeTrue();
+    expect(jbV2PayEvents.some((e) => !e.feeFromV2Project)).toBeTrue();
+  });
+
+  it("Some pay events should be distributions", async () => {
+    expect(jbV1PayEvents.some((e) => e.isDistribution)).toBeTrue();
+    expect(jbV1PayEvents.some((e) => !e.isDistribution)).toBeTrue();
+    expect(jbV2PayEvents.some((e) => e.isDistribution)).toBeTrue();
+    expect(jbV2PayEvents.some((e) => !e.isDistribution)).toBeTrue();
+  });
+});
+
+describe("Protocol Logs", async () => {
+  it("Should have reasonable paymentsCount", async () => {
     switch (network) {
       case "mainnet":
-        expect(jbV2PayEvents.some((e) => e.feeFromV2Project > 0)).toBeTrue();
+        expect(protocolLog.paymentsCount).toBeGreaterThan(10000);
+        expect(protocolLog.paymentsCount).toBeLessThan(20000);
         break;
       case "goerli":
+        expect(protocolLog.paymentsCount).toBeGreaterThan(10000);
+        expect(protocolLog.paymentsCount).toBeLessThan(20000);
         break;
     }
   });
