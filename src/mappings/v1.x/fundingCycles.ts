@@ -21,7 +21,8 @@ export function handleV1Configure(event: Configure): void {
 
   configureEvent.projectId = event.params.projectId.toI32();
   configureEvent.project = projectId;
-  configureEvent.caller = event.transaction.from;
+  configureEvent.from = event.transaction.from;
+  configureEvent.caller = event.params.caller;
   configureEvent.txHash = event.transaction.hash;
   configureEvent.timestamp = event.block.timestamp.toI32();
 
@@ -76,8 +77,7 @@ export function handleV1Configure(event: Configure): void {
     event.params.projectId,
     configureEvent.id,
     pv,
-    ProjectEventKey.v1ConfigureEvent,
-    event.params.caller,
+    ProjectEventKey.v1ConfigureEvent
   );
 }
 
@@ -89,7 +89,7 @@ export function handleV1Init(event: Init): void {
 
   initEvent.projectId = event.params.projectId.toI32();
   initEvent.project = projectId;
-  initEvent.caller = event.transaction.from;
+  initEvent.from = event.transaction.from;
   initEvent.txHash = event.transaction.hash;
   initEvent.timestamp = event.block.timestamp.toI32();
 
@@ -105,7 +105,6 @@ export function handleV1Init(event: Init): void {
     event.params.projectId,
     initEvent.id,
     pv,
-    ProjectEventKey.v1InitEvent,
-    event.transaction.from,
+    ProjectEventKey.v1InitEvent
   );
 }

@@ -26,7 +26,8 @@ export function handleV2V3DistributeReservedTokens(
   distributeReservedTokensEvent.txHash = event.transaction.hash;
   distributeReservedTokensEvent.timestamp = event.block.timestamp.toI32();
   distributeReservedTokensEvent.fundingCycleNumber = fundingCycleNumber.toI32();
-  distributeReservedTokensEvent.caller = event.transaction.from;
+  distributeReservedTokensEvent.caller = caller;
+  distributeReservedTokensEvent.from = event.transaction.from;
   distributeReservedTokensEvent.beneficiary = beneficiary;
   distributeReservedTokensEvent.tokenCount = tokenCount;
   distributeReservedTokensEvent.beneficiaryTokenCount = beneficiaryTokenCount;
@@ -39,6 +40,5 @@ export function handleV2V3DistributeReservedTokens(
     distributeReservedTokensEvent.id,
     pv,
     ProjectEventKey.distributeReservedTokensEvent,
-    caller
   );
 }

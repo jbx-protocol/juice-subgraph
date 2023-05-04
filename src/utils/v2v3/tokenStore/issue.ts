@@ -43,6 +43,7 @@ export function handleV2V3Issue(
     deployedERC20Event.timestamp = event.block.timestamp.toI32();
     deployedERC20Event.txHash = event.transaction.hash;
     deployedERC20Event.caller = caller;
+    deployedERC20Event.from = event.transaction.from;
     deployedERC20Event.save();
 
     saveNewProjectEvent(
@@ -50,8 +51,7 @@ export function handleV2V3Issue(
       projectId,
       deployedERC20Event.id,
       pv,
-      ProjectEventKey.deployedERC20Event,
-      caller
+      ProjectEventKey.deployedERC20Event
     );
   }
 

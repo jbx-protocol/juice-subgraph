@@ -1,4 +1,5 @@
 import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+
 import { Project, TapEvent } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
@@ -37,7 +38,8 @@ export function handleV1Tap(
     tapEvent.beneficiary = beneficiary;
     tapEvent.beneficiaryTransferAmount = beneficiaryTransferAmount;
     tapEvent.beneficiaryTransferAmountUSD = beneficiaryTransferAmountUSD;
-    tapEvent.caller = event.transaction.from;
+    tapEvent.caller = caller;
+    tapEvent.from = event.transaction.from;
     tapEvent.currency = currency;
     tapEvent.fundingCycleId = fundingCycleId;
     tapEvent.govFeeAmount = govFeeAmount;
@@ -56,8 +58,8 @@ export function handleV1Tap(
       tapEvent.id,
       pv,
       ProjectEventKey.tapEvent,
-      caller,
-      terminal
+      terminal,
+      caller
     );
   }
 

@@ -23,6 +23,7 @@ export function newPV2ConfigureEvent(
   mustStartAtOrAfter: BigInt,
   configuration: BigInt,
   metadata: BigInt,
+  caller: Bytes,
   memo: string | null = null
 ): ConfigureEvent {
   // TODO how to add `distributionLimitOf` result, which requires a terminal argument?
@@ -37,7 +38,8 @@ export function newPV2ConfigureEvent(
   configureEvent.project = idForProject(projectId, pv);
   configureEvent.timestamp = event.block.timestamp.toI32();
   configureEvent.txHash = event.transaction.hash;
-  configureEvent.caller = event.transaction.from;
+  configureEvent.caller = caller;
+  configureEvent.from = event.transaction.from;
 
   // From the cycle's JBFundingCycleData
   configureEvent.duration = duration.toI32();

@@ -18,9 +18,10 @@ export function newParticipant(
   participant.balance = BigInt.fromString("0");
   participant.stakedBalance = BigInt.fromString("0");
   participant.erc20Balance = BigInt.fromString("0");
-  participant.totalPaid = BigInt.fromString("0");
-  participant.totalPaidUSD = BigInt.fromString("0");
+  participant.volume = BigInt.fromString("0");
+  participant.volumeUSD = BigInt.fromString("0");
   participant.lastPaidTimestamp = 0;
+  participant.paymentsCount = 0;
 
   // Create a wallet any time we create a participant
   const walletId = toHexLowercase(wallet);
@@ -36,8 +37,8 @@ export function newParticipant(
 export function newWallet(id: string): Wallet {
   const wallet = new Wallet(id);
   wallet.lastPaidTimestamp = 0;
-  wallet.totalPaid = BigInt.fromString("0");
-  wallet.totalPaidUSD = BigInt.fromString("0");
+  wallet.volume = BigInt.fromString("0");
+  wallet.volumeUSD = BigInt.fromString("0");
   return wallet;
 }
 

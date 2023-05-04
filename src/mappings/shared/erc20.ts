@@ -16,7 +16,7 @@ export function handleERC20Transfer(event: Transfer): void {
   const projectId = BigInt.fromI32(context.getI32("projectId"));
   const pv = context.getString("pv") == "1" ? PV.PV1 : PV.PV2;
 
-  let sender = Participant.load(
+  const sender = Participant.load(
     idForParticipant(projectId, pv, event.params.from)
   );
 
@@ -50,7 +50,7 @@ export function handleERC20Transfer(event: Transfer): void {
     burnEvent.amount = event.params.value;
     burnEvent.stakedAmount = BigInt.fromString("0");
     burnEvent.erc20Amount = event.params.value;
-    burnEvent.caller = event.params.from;
+    burnEvent.from = event.params.from;
     burnEvent.save();
 
     saveNewProjectEvent(
@@ -59,7 +59,6 @@ export function handleERC20Transfer(event: Transfer): void {
       burnEvent.id,
       pv,
       ProjectEventKey.burnEvent,
-      event.params.from
     );
   }
 }

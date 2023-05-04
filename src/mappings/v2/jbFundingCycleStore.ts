@@ -25,6 +25,6 @@ export function handleInit(event: Init): void {
     event,
     event.params.projectId,
     event.params.configuration,
-    event.params.basedOn
+    event.params.basedOn,
   );
 }

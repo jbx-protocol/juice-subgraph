@@ -33,7 +33,8 @@ export function handleV2V3DistributeReservedTokenSplit(
   distributeReservedTokenSplitEvent.projectId = projectId.toI32();
   distributeReservedTokenSplitEvent.txHash = event.transaction.hash;
   distributeReservedTokenSplitEvent.timestamp = event.block.timestamp.toI32();
-  distributeReservedTokenSplitEvent.caller = event.transaction.from;
+  distributeReservedTokenSplitEvent.caller = caller;
+  distributeReservedTokenSplitEvent.from = event.transaction.from;
   distributeReservedTokenSplitEvent.tokenCount = tokenCount;
   distributeReservedTokenSplitEvent.allocator = allocator;
   distributeReservedTokenSplitEvent.beneficiary = beneficiary;
@@ -49,6 +50,5 @@ export function handleV2V3DistributeReservedTokenSplit(
     distributeReservedTokenSplitEvent.id,
     pv,
     ProjectEventKey.distributeToReservedTokenSplitEvent,
-    caller
   );
 }

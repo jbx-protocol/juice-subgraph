@@ -79,3 +79,7 @@ export function idForJB721DelegateToken(
 ): string {
   return `${toHexLowercase(address)}-${tokenId.toString()}`;
 }
+
+export function idForSplitsPayer(projectId: BigInt, address: Bytes): string {
+  return `${projectId.toString()}-${address.toHexString()}`;
+}

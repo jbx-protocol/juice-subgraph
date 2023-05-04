@@ -1,7 +1,6 @@
 import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 
 import { DistributeToTicketModEvent } from "../../../../generated/schema";
-import { DistributeToTicketModModStruct } from "../../../../generated/TerminalV1/TerminalV1";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../ids";
@@ -28,7 +27,8 @@ export function handleV1DistributeToTicketMod(
     pv,
     event
   );
-  distributeToTicketModEvent.caller = event.transaction.from;
+  distributeToTicketModEvent.caller = caller;
+  distributeToTicketModEvent.from = event.transaction.from;
   distributeToTicketModEvent.modBeneficiary = modBeneficiary;
   distributeToTicketModEvent.modPreferUnstaked = modPreferUnstaked;
   distributeToTicketModEvent.modCut = modCut;
@@ -46,7 +46,7 @@ export function handleV1DistributeToTicketMod(
     distributeToTicketModEvent.id,
     pv,
     ProjectEventKey.distributeToTicketModEvent,
-    caller,
-    terminal
+    terminal,
+    caller
   );
 }

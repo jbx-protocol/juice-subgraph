@@ -40,18 +40,17 @@ export function handlePay(event: Pay): void {
     terminal,
     event.params.beneficiary,
     event.params.note,
-    event.params.caller,
-    event.transaction.from
+    event.params.caller
   );
 
   let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
   if (!protocolV1Log) protocolV1Log = newProtocolV1Log();
   if (protocolV1Log) {
-    protocolV1Log.volumePaid = protocolV1Log.volumePaid.plus(
+    protocolV1Log.volume = protocolV1Log.volume.plus(
       event.params.amount
     );
     if (amountUSD) {
-      protocolV1Log.volumePaidUSD = protocolV1Log.volumePaidUSD.plus(amountUSD);
+      protocolV1Log.volumeUSD = protocolV1Log.volumeUSD.plus(amountUSD);
     }
     protocolV1Log.paymentsCount = protocolV1Log.paymentsCount + 1;
     protocolV1Log.save();

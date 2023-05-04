@@ -52,7 +52,8 @@ export function handleV2V3DistributeToPayoutSplit(
   distributePayoutSplitEvent.timestamp = event.block.timestamp.toI32();
   distributePayoutSplitEvent.amount = amount;
   distributePayoutSplitEvent.amountUSD = amountUSD;
-  distributePayoutSplitEvent.caller = event.transaction.from;
+  distributePayoutSplitEvent.caller = caller;
+  distributePayoutSplitEvent.from = event.transaction.from;
   distributePayoutSplitEvent.domain = domain;
   distributePayoutSplitEvent.group = group;
   distributePayoutSplitEvent.projectId = projectId.toI32();
@@ -71,7 +72,7 @@ export function handleV2V3DistributeToPayoutSplit(
     distributePayoutSplitEvent.id,
     pv,
     ProjectEventKey.distributeToPayoutSplitEvent,
-    caller,
-    terminal
+    terminal,
+    caller
   );
 }

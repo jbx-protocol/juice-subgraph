@@ -97,9 +97,9 @@ export function handlePay(event: Pay): void {
   // Update protocol log
   let protocolV2Log = ProtocolV2Log.load(PROTOCOL_ID);
   if (!protocolV2Log) protocolV2Log = newProtocolV2Log();
-  protocolV2Log.volumePaid = protocolV2Log.volumePaid.plus(event.params.amount);
+  protocolV2Log.volume = protocolV2Log.volume.plus(event.params.amount);
   if (amountUSD) {
-    protocolV2Log.volumePaidUSD = protocolV2Log.volumePaidUSD.plus(amountUSD);
+    protocolV2Log.volumeUSD = protocolV2Log.volumeUSD.plus(amountUSD);
   }
   protocolV2Log.paymentsCount = protocolV2Log.paymentsCount + 1;
   protocolV2Log.save();

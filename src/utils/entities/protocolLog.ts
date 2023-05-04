@@ -10,8 +10,8 @@ import { PROTOCOL_ID } from "../../constants";
 export function newProtocolLog(): ProtocolLog {
   const protocolLog = new ProtocolLog(PROTOCOL_ID);
   protocolLog.projectsCount = 0;
-  protocolLog.volumePaid = BigInt.fromString("0");
-  protocolLog.volumePaidUSD = BigInt.fromString("0");
+  protocolLog.volume = BigInt.fromString("0");
+  protocolLog.volumeUSD = BigInt.fromString("0");
   protocolLog.volumeRedeemed = BigInt.fromString("0");
   protocolLog.volumeRedeemedUSD = BigInt.fromString("0");
   protocolLog.paymentsCount = 0;
@@ -25,8 +25,8 @@ export function newProtocolV1Log(): ProtocolV1Log {
   const protocolV1Log = new ProtocolV1Log(PROTOCOL_ID);
   protocolV1Log.log = PROTOCOL_ID;
   protocolV1Log.projectsCount = 0;
-  protocolV1Log.volumePaid = BigInt.fromString("0");
-  protocolV1Log.volumePaidUSD = BigInt.fromString("0");
+  protocolV1Log.volume = BigInt.fromString("0");
+  protocolV1Log.volumeUSD = BigInt.fromString("0");
   protocolV1Log.volumeRedeemed = BigInt.fromString("0");
   protocolV1Log.volumeRedeemedUSD = BigInt.fromString("0");
   protocolV1Log.paymentsCount = 0;
@@ -39,8 +39,8 @@ export function newProtocolV2Log(): ProtocolV2Log {
   const protocolV2Log = new ProtocolV2Log(PROTOCOL_ID);
   protocolV2Log.log = PROTOCOL_ID;
   protocolV2Log.projectsCount = 0;
-  protocolV2Log.volumePaid = BigInt.fromString("0");
-  protocolV2Log.volumePaidUSD = BigInt.fromString("0");
+  protocolV2Log.volume = BigInt.fromString("0");
+  protocolV2Log.volumeUSD = BigInt.fromString("0");
   protocolV2Log.volumeRedeemed = BigInt.fromString("0");
   protocolV2Log.volumeRedeemedUSD = BigInt.fromString("0");
   protocolV2Log.paymentsCount = 0;
@@ -53,8 +53,8 @@ export function newProtocolV3Log(): ProtocolV3Log {
   const protocolV3Log = new ProtocolV3Log(PROTOCOL_ID);
   protocolV3Log.log = PROTOCOL_ID;
   protocolV3Log.projectsCount = 0;
-  protocolV3Log.volumePaid = BigInt.fromString("0");
-  protocolV3Log.volumePaidUSD = BigInt.fromString("0");
+  protocolV3Log.volume = BigInt.fromString("0");
+  protocolV3Log.volumeUSD = BigInt.fromString("0");
   protocolV3Log.volumeRedeemed = BigInt.fromString("0");
   protocolV3Log.volumeRedeemedUSD = BigInt.fromString("0");
   protocolV3Log.paymentsCount = 0;
@@ -74,8 +74,8 @@ export function updateProtocolEntity(): void {
   }
 
   let projectsCount = 0;
-  let volumePaid = BigInt.fromString("0");
-  let volumePaidUSD = BigInt.fromString("0");
+  let volume = BigInt.fromString("0");
+  let volumeUSD = BigInt.fromString("0");
   let volumeRedeemed = BigInt.fromString("0");
   let volumeRedeemedUSD = BigInt.fromString("0");
   let paymentsCount = 0;
@@ -88,8 +88,8 @@ export function updateProtocolEntity(): void {
     paymentsCount = paymentsCount + protocolV1Log.paymentsCount;
     projectsCount = projectsCount + protocolV1Log.projectsCount;
     redeemCount = redeemCount + protocolV1Log.redeemCount;
-    volumePaid = volumePaid.plus(protocolV1Log.volumePaid);
-    volumePaidUSD = volumePaidUSD.plus(protocolV1Log.volumePaidUSD);
+    volume = volume.plus(protocolV1Log.volume);
+    volumeUSD = volumeUSD.plus(protocolV1Log.volumeUSD);
     volumeRedeemed = volumeRedeemed.plus(protocolV1Log.volumeRedeemed);
     volumeRedeemedUSD = volumeRedeemedUSD.plus(protocolV1Log.volumeRedeemedUSD);
   }
@@ -100,8 +100,8 @@ export function updateProtocolEntity(): void {
     paymentsCount = paymentsCount + protocolV2Log.paymentsCount;
     projectsCount = projectsCount + protocolV2Log.projectsCount;
     redeemCount = redeemCount + protocolV2Log.redeemCount;
-    volumePaid = volumePaid.plus(protocolV2Log.volumePaid);
-    volumePaidUSD = volumePaidUSD.plus(protocolV2Log.volumePaidUSD);
+    volume = volume.plus(protocolV2Log.volume);
+    volumeUSD = volumeUSD.plus(protocolV2Log.volumeUSD);
     volumeRedeemed = volumeRedeemed.plus(protocolV2Log.volumeRedeemed);
     volumeRedeemedUSD = volumeRedeemedUSD.plus(protocolV2Log.volumeRedeemedUSD);
   }
@@ -112,8 +112,8 @@ export function updateProtocolEntity(): void {
     paymentsCount = paymentsCount + protocolV3Log.paymentsCount;
     projectsCount = projectsCount + protocolV3Log.projectsCount;
     redeemCount = redeemCount + protocolV3Log.redeemCount;
-    volumePaid = volumePaid.plus(protocolV3Log.volumePaid);
-    volumePaidUSD = volumePaidUSD.plus(protocolV3Log.volumePaidUSD);
+    volume = volume.plus(protocolV3Log.volume);
+    volumeUSD = volumeUSD.plus(protocolV3Log.volumeUSD);
     volumeRedeemed = volumeRedeemed.plus(protocolV3Log.volumeRedeemed);
     volumeRedeemedUSD = volumeRedeemedUSD.plus(protocolV3Log.volumeRedeemedUSD);
   }
@@ -122,8 +122,8 @@ export function updateProtocolEntity(): void {
   protocolLog.paymentsCount = paymentsCount;
   protocolLog.projectsCount = projectsCount;
   protocolLog.redeemCount = redeemCount;
-  protocolLog.volumePaid = volumePaid;
-  protocolLog.volumePaidUSD = volumePaidUSD;
+  protocolLog.volume = volume;
+  protocolLog.volumeUSD = volumeUSD;
   protocolLog.volumeRedeemed = volumeRedeemed;
   protocolLog.volumeRedeemedUSD = volumeRedeemedUSD;
   protocolLog.save();

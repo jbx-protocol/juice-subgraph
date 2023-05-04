@@ -58,13 +58,13 @@ export function handleV2V3Burn(
   burnEvent.stakedAmount = burnedStakedAmount;
   burnEvent.erc20Amount = BigInt.fromString("0");
   burnEvent.caller = caller;
+  burnEvent.from = event.transaction.from;
   burnEvent.save();
   saveNewProjectEvent(
     event,
     projectId,
     burnEvent.id,
     pv,
-    ProjectEventKey.burnEvent,
-    caller
+    ProjectEventKey.burnEvent
   );
 }

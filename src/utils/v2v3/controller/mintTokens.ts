@@ -29,7 +29,8 @@ export function handleV2V3MintTokens(
   mintTokensEvent.projectId = projectId.toI32();
   mintTokensEvent.amount = tokenCount;
   mintTokensEvent.beneficiary = beneficiary;
-  mintTokensEvent.caller = event.transaction.from;
+  mintTokensEvent.caller = caller;
+  mintTokensEvent.from = event.transaction.from;
   mintTokensEvent.memo = memo;
   mintTokensEvent.project = idForProject(projectId, pv);
   mintTokensEvent.timestamp = event.block.timestamp.toI32();
@@ -42,6 +43,5 @@ export function handleV2V3MintTokens(
     mintTokensEvent.id,
     pv,
     ProjectEventKey.mintTokensEvent,
-    caller
   );
 }

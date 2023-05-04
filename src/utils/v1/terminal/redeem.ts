@@ -29,7 +29,8 @@ export function handleV1Redeem(
     redeemEvent.terminal = terminal;
     redeemEvent.amount = amount;
     redeemEvent.beneficiary = beneficiary;
-    redeemEvent.caller = event.transaction.from;
+    redeemEvent.caller = caller;
+    redeemEvent.from = event.transaction.from;
     redeemEvent.holder = holder;
     redeemEvent.returnAmount = returnAmount;
     redeemEvent.returnAmountUSD = returnAmountUSD;
@@ -44,17 +45,17 @@ export function handleV1Redeem(
       redeemEvent.id,
       pv,
       ProjectEventKey.redeemEvent,
-      caller,
-      terminal
+      terminal,
+      caller
     );
   }
 
   const project = Project.load(idOfProject);
   if (project) {
-    project.totalRedeemed = project.totalRedeemed.plus(returnAmount);
+    project.redeemVolume = project.redeemVolume.plus(returnAmount);
     const amountRedeemedUSD = v1USDPriceForEth(returnAmount);
     if (amountRedeemedUSD) {
-      project.totalRedeemedUSD = project.totalRedeemedUSD.plus(
+      project.redeemVolumeUSD = project.redeemVolumeUSD.plus(
         amountRedeemedUSD
       );
     }

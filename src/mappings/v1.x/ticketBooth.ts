@@ -115,6 +115,7 @@ export function handleTicketTransfer(event: Transfer): void {
     burnEvent.stakedAmount = event.params.amount;
     burnEvent.erc20Amount = BigInt.fromString("0");
     burnEvent.caller = event.params.caller;
+    burnEvent.from = event.transaction.from;
     burnEvent.save();
 
     saveNewProjectEvent(
@@ -122,8 +123,7 @@ export function handleTicketTransfer(event: Transfer): void {
       event.params.projectId,
       burnEvent.id,
       pv,
-      ProjectEventKey.burnEvent,
-      event.params.caller
+      ProjectEventKey.burnEvent
     );
   }
 }
@@ -207,6 +207,7 @@ export function handleIssue(event: Issue): void {
   deployedERC20Event.timestamp = event.block.timestamp.toI32();
   deployedERC20Event.txHash = event.transaction.hash;
   deployedERC20Event.caller = event.params.caller;
+  deployedERC20Event.from = event.transaction.from;
   deployedERC20Event.save();
 
   saveNewProjectEvent(
@@ -214,8 +215,7 @@ export function handleIssue(event: Issue): void {
     event.params.projectId,
     deployedERC20Event.id,
     pv,
-    ProjectEventKey.deployedERC20Event,
-    event.params.caller
+    ProjectEventKey.deployedERC20Event
   );
 
   let protocolV1Log = ProtocolV1Log.load(PROTOCOL_ID);
@@ -230,10 +230,10 @@ export function handleIssue(event: Issue): void {
     );
     const ticketsOfCall = ticketBooth.try_ticketsOf(event.params.projectId);
     if (ticketsOfCall.reverted) {
-      log.error("[handleIssue] ticketsOf reverted, project: {}, ticketBooth: {}", [
-        event.params.projectId.toString(),
-        address_v1_ticketBooth!,
-      ]);
+      log.error(
+        "[handleIssue] ticketsOf reverted, project: {}, ticketBooth: {}",
+        [event.params.projectId.toString(), address_v1_ticketBooth!]
+      );
     } else {
       const erc20Context = new DataSourceContext();
       erc20Context.setI32("projectId", event.params.projectId.toI32());

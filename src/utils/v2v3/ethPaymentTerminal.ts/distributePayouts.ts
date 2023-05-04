@@ -1,4 +1,5 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
+
 import { DistributePayoutsEvent, Project } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
@@ -46,8 +47,9 @@ export function handleV2V3DistributePayouts(
   distributePayoutsEvent.amountUSD = v3USDPriceForEth(amount);
   distributePayoutsEvent.beneficiary = beneficiary;
   distributePayoutsEvent.beneficiaryDistributionAmount = beneficiaryDistributionAmount;
-  (distributePayoutsEvent.beneficiaryDistributionAmountUSD = beneficiaryDistributionAmountUSD),
-    (distributePayoutsEvent.caller = event.transaction.from);
+  distributePayoutsEvent.beneficiaryDistributionAmountUSD = beneficiaryDistributionAmountUSD;
+  distributePayoutsEvent.caller = caller;
+  distributePayoutsEvent.from = event.transaction.from;
   distributePayoutsEvent.distributedAmount = distributedAmount;
   distributePayoutsEvent.distributedAmountUSD = distributedAmountUSD;
   distributePayoutsEvent.fee = fee;
@@ -63,8 +65,8 @@ export function handleV2V3DistributePayouts(
     distributePayoutsEvent.id,
     pv,
     ProjectEventKey.distributePayoutsEvent,
-    caller,
-    terminal
+    terminal,
+    caller
   );
 
   const project = Project.load(idOfProject);

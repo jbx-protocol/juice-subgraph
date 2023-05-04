@@ -24,6 +24,29 @@
           handler: handleDeployProjectPayer
       file: ./src/mappings/v2/jbETHERC20ProjectPayerDeployer.ts
   {{ /jbETHERC20ProjectPayerDeployer }}
+  {{ #jbETHERC20SplitsPayerDeployer }}
+  - kind: ethereum/contract
+    name: JBETHERC20SplitsPayerDeployer2
+    network: {{network}}
+    source:
+      abi: JBETHERC20SplitsPayerDeployer
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - ETHERC20SplitsPayer
+        - DeployETHERC20SplitsPayerEvent
+      abis:
+        - name: JBETHERC20SplitsPayerDeployer
+          file: ./abis/v2/JBETHERC20SplitsPayerDeployer.json
+      eventHandlers:
+        - event: DeploySplitsPayer(indexed address,uint256,uint256,uint256,address,uint256,address,bool,string,bytes,bool,address,address)
+          handler: handleDeploySplitsPayer
+      file: ./src/mappings/v2/jbETHERC20SplitsPayerDeployer.ts
+  {{ /jbETHERC20SplitsPayerDeployer }}
   {{ #jbController }}
   - kind: ethereum/contract
     name: JBController2

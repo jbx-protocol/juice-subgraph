@@ -34,7 +34,7 @@ export function handleTrendingPayment(timestamp: BigInt): void {
    * We know that if a project hasn't received a payment after the
    * `oldestTrendingPayEvent` timestamp, its trending stats are already 0
    */
-  let didResetProjects: string[] = [];
+  const didResetProjects: string[] = [];
 
   for (let i = 0; i < latestPayEventId; i++) {
     // Reverse iterate over payEvents

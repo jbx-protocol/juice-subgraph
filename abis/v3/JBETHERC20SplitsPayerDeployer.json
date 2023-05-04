@@ -1,0 +1,263 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract IJBSplitsStore",
+        "name": "_splitsStore",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IJBSplitsPayer",
+        "name": "splitsPayer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "defaultSplitsProjectId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "defaultSplitsDomain",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "defaultSplitsGroup",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "contract IJBSplitsStore",
+        "name": "splitsStore",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "defaultProjectId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "defaultBeneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "defaultPreferClaimedTokens",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "defaultMemo",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "defaultMetadata",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "preferAddToBalance",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "DeploySplitsPayer",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_defaultSplitsProjectId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_defaultSplitsDomain",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_defaultSplitsGroup",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_defaultProjectId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_defaultBeneficiary",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_defaultPreferClaimedTokens",
+        "type": "bool"
+      },
+      {
+        "internalType": "string",
+        "name": "_defaultMemo",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_defaultMetadata",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bool",
+        "name": "_defaultPreferAddToBalance",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "deploySplitsPayer",
+    "outputs": [
+      {
+        "internalType": "contract IJBSplitsPayer",
+        "name": "splitsPayer",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_defaultSplitsProjectId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "preferClaimed",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "preferAddToBalance",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "percent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "projectId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address payable",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "lockedUntil",
+            "type": "uint256"
+          },
+          {
+            "internalType": "contract IJBSplitAllocator",
+            "name": "allocator",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct JBSplit[]",
+        "name": "_defaultSplits",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "contract IJBSplitsStore",
+        "name": "_splitsStore",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_defaultProjectId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_defaultBeneficiary",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_defaultPreferClaimedTokens",
+        "type": "bool"
+      },
+      {
+        "internalType": "string",
+        "name": "_defaultMemo",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_defaultMetadata",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bool",
+        "name": "_defaultPreferAddToBalance",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "deploySplitsPayerWithSplits",
+    "outputs": [
+      {
+        "internalType": "contract IJBSplitsPayer",
+        "name": "splitsPayer",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

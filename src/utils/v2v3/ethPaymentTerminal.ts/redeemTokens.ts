@@ -1,16 +1,8 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
-import {
-  Project,
-  ProtocolV2Log,
-  RedeemEvent,
-} from "../../../../generated/schema";
-import { PROTOCOL_ID } from "../../../constants";
+
+import { Project, RedeemEvent } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
-import {
-  newProtocolV2Log,
-  updateProtocolEntity,
-} from "../../entities/protocolLog";
 import { idForProject, idForProjectTx } from "../../ids";
 
 const pv = PV.PV2;
@@ -39,7 +31,8 @@ export function handleV2V3RedeemTokens(
   redeemEvent.terminal = terminal;
   redeemEvent.amount = tokenCount;
   redeemEvent.beneficiary = beneficiary;
-  redeemEvent.caller = event.transaction.from;
+  redeemEvent.caller = caller;
+  redeemEvent.from = event.transaction.from;
   redeemEvent.holder = holder;
   redeemEvent.returnAmount = reclaimedAmount;
   redeemEvent.returnAmountUSD = reclaimedAmountUSD;
@@ -56,8 +49,8 @@ export function handleV2V3RedeemTokens(
     redeemEvent.id,
     pv,
     ProjectEventKey.redeemEvent,
-    caller,
-    terminal
+    terminal,
+    caller
   );
 
   const project = Project.load(idOfProject);
@@ -65,9 +58,9 @@ export function handleV2V3RedeemTokens(
     log.error("[handleV2V3RedeemTokens] Missing project. ID:{}", [idOfProject]);
     return;
   }
-  project.totalRedeemed = project.totalRedeemed.plus(reclaimedAmount);
+  project.redeemVolume = project.redeemVolume.plus(reclaimedAmount);
   if (reclaimedAmountUSD) {
-    project.totalRedeemedUSD = project.totalRedeemedUSD.plus(
+    project.redeemVolumeUSD = project.redeemVolumeUSD.plus(
       reclaimedAmountUSD
     );
   }
