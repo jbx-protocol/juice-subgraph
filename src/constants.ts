@@ -12,7 +12,7 @@ export const ADDRESS_ZERO = Address.fromHexString(
 /**
  * Trending calculations are complex. to alleviate indexing computation load, we don't run calculations on blocks with timestamps older than this
  */
-export const BEGIN_TRENDING_TIMESTAMP = 1644474376; // feb 10 2022 - 1 year ago from the time i wrote this
+export const BEGIN_TRENDING_TIMESTAMP = 1652328000;
 
 export const BIGINT_WAD = BigInt.fromString("1000000000000000000");
 

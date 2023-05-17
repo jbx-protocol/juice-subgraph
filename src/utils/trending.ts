@@ -11,9 +11,9 @@ export function handleTrendingPayment(timestamp: BigInt): void {
   if (!protocolLog) return;
 
   /**
-   * These calculations are big, so we only run them at most every 5 min
+   * These calculations are big, so we only run them at most every 20 min
    */
-  const SECS_5_MIN = 5 * 60;
+  const SECS_5_MIN = 20 * 60;
   if (
     protocolLog.trendingLastUpdatedTimestamp >=
     timestamp.toI32() - SECS_5_MIN
@@ -23,8 +23,8 @@ export function handleTrendingPayment(timestamp: BigInt): void {
 
   const latestPayEventId = parseInt(idForPrevPayEvent());
 
-  const SECS_7_DAYS = 7 * 24 * 60 * 60;
-  const oldestValidTimestamp = timestamp.toI32() - SECS_7_DAYS;
+  const SECS_30_DAYS = 30 * 24 * 60 * 60;
+  const oldestValidTimestamp = timestamp.toI32() - SECS_30_DAYS;
 
   /**
    * We first reset the trending score for ALL trending projects. We're able

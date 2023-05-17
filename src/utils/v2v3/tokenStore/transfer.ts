@@ -37,7 +37,7 @@ export function handleV2V3Transfer(
   const receiverId = idForParticipant(projectId, pv, recipient);
   let receiver = Participant.load(receiverId);
   if (!receiver) {
-    receiver = newParticipant(pv, projectId, holder);
+    receiver = newParticipant(pv, projectId, recipient);
   }
 
   receiver.stakedBalance = receiver.stakedBalance.plus(amount);

@@ -60,6 +60,7 @@ type Project @entity {
   deployer: Bytes
 
   owner: Bytes!
+  creator: Bytes!
   createdAt: Int!
   paymentsCount: Int!
   contributorsCount: Int!
