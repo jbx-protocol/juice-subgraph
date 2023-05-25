@@ -9,7 +9,11 @@ import {
   updateParticipantBalance,
 } from "../../utils/entities/participant";
 import { saveNewProjectEvent } from "../../utils/entities/projectEvent";
-import { idForParticipant, idForProjectTx } from "../../utils/ids";
+import {
+  idForParticipant,
+  idForProject,
+  idForProjectTx,
+} from "../../utils/ids";
 
 export function handleERC20Transfer(event: Transfer): void {
   const context = dataSource.context();
@@ -39,12 +43,11 @@ export function handleERC20Transfer(event: Transfer): void {
   receiver.save();
 
   if (event.params.to == ADDRESS_ZERO && pv == PV.PV1) {
-    const _projectId = idForProjectTx(projectId, pv, event);
-    const burnEvent = new BurnEvent(_projectId);
+    const burnEvent = new BurnEvent(idForProjectTx(projectId, pv, event));
     burnEvent.timestamp = event.block.timestamp.toI32();
     burnEvent.txHash = event.transaction.hash;
     burnEvent.projectId = projectId.toI32();
-    burnEvent.project = _projectId;
+    burnEvent.project = idForProject(projectId, pv);
     burnEvent.holder = event.params.from;
     burnEvent.pv = pv.toString();
     burnEvent.amount = event.params.value;
@@ -58,7 +61,7 @@ export function handleERC20Transfer(event: Transfer): void {
       projectId,
       burnEvent.id,
       pv,
-      ProjectEventKey.burnEvent,
+      ProjectEventKey.burnEvent
     );
   }
 }

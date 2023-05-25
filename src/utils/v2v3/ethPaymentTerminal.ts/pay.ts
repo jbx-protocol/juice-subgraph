@@ -49,6 +49,7 @@ export function handleV2V3Pay(
   }
 
   project.volume = project.volume.plus(amount);
+  if (amountUSD) project.volumeUSD = project.volume.plus(amountUSD);
   project.currentBalance = project.currentBalance.plus(amount);
   project.paymentsCount = project.paymentsCount + 1;
 
