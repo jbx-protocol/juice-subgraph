@@ -4,6 +4,7 @@ import {
   AddToBalance,
   DistributePayouts,
   DistributeToPayoutSplit,
+  Migrate,
   Pay,
   ProcessFee,
   RedeemTokens,
@@ -20,6 +21,7 @@ import { v3USDPriceForEth } from "../../utils/prices/v3Prices";
 import { handleV2V3AddToBalance } from "../../utils/v2v3/ethPaymentTerminal/addToBalance";
 import { handleV2V3DistributePayouts } from "../../utils/v2v3/ethPaymentTerminal/distributePayouts";
 import { handleV2V3DistributeToPayoutSplit } from "../../utils/v2v3/ethPaymentTerminal/distributeToPayoutSplit";
+import { handleV2V3TerminalMigrate } from "../../utils/v2v3/ethPaymentTerminal/migrate";
 import { handleV2V3Pay } from "../../utils/v2v3/ethPaymentTerminal/pay";
 import { handleV2V3ProcessFee } from "../../utils/v2v3/ethPaymentTerminal/processFee";
 import { handleV2V3RedeemTokens } from "../../utils/v2v3/ethPaymentTerminal/redeemTokens";
@@ -163,4 +165,8 @@ export function handleUseAllowance(event: UseAllowance): void {
 
 export function handleProcessFee(event: ProcessFee): void {
   handleV2V3ProcessFee(event.params.projectId);
+}
+
+export function handleMigrate(event: Migrate): void {
+  handleV2V3TerminalMigrate(event.params.projectId, event.params.amount);
 }

@@ -280,6 +280,8 @@
           handler: handleDistributeToPayoutSplit
         - event: ProcessFee(indexed uint256,indexed uint256,indexed bool,address,address)
           handler: handleProcessFee
+        - event: Migrate(indexed uint256,indexed address,uint256,address)
+          handler: handleMigrate
       file: ./src/mappings/v3.x/jbETHPaymentTerminal.ts
   {{ /jbETHPaymentTerminal }}
   {{ #jbETHPaymentTerminal3_1 }}
@@ -324,6 +326,8 @@
           handler: handleDistributeToPayoutSplit
         - event: ProcessFee(indexed uint256,indexed uint256,indexed bool,address,address)
           handler: handleProcessFee
+        - event: Migrate(indexed uint256,indexed address,uint256,address)
+          handler: handleMigrate
       file: ./src/mappings/v3.x/jbETHPaymentTerminal3_1.ts
   {{ /jbETHPaymentTerminal3_1 }}
 {{ /v3 }}
