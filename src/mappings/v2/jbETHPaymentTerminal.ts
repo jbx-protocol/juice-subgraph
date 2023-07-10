@@ -17,13 +17,13 @@ import {
   updateProtocolEntity,
 } from "../../utils/entities/protocolLog";
 import { v2USDPriceForEth } from "../../utils/prices/v2Prices";
-import { handleV2V3AddToBalance } from "../../utils/v2v3/ethPaymentTerminal.ts/addToBalance";
-import { handleV2V3DistributePayouts } from "../../utils/v2v3/ethPaymentTerminal.ts/distributePayouts";
-import { handleV2V3DistributeToPayoutSplit } from "../../utils/v2v3/ethPaymentTerminal.ts/distributeToPayoutSplit";
-import { handleV2V3Pay } from "../../utils/v2v3/ethPaymentTerminal.ts/pay";
-import { handleV2V3ProcessFee } from "../../utils/v2v3/ethPaymentTerminal.ts/processFee";
-import { handleV2V3RedeemTokens } from "../../utils/v2v3/ethPaymentTerminal.ts/redeemTokens";
-import { handleV2V3UseAllowance } from "../../utils/v2v3/ethPaymentTerminal.ts/useAllowance";
+import { handleV2V3AddToBalance } from "../../utils/v2v3/ethPaymentTerminal/addToBalance";
+import { handleV2V3DistributePayouts } from "../../utils/v2v3/ethPaymentTerminal/distributePayouts";
+import { handleV2V3DistributeToPayoutSplit } from "../../utils/v2v3/ethPaymentTerminal/distributeToPayoutSplit";
+import { handleV2V3Pay } from "../../utils/v2v3/ethPaymentTerminal/pay";
+import { handleV2V3ProcessFee } from "../../utils/v2v3/ethPaymentTerminal/processFee";
+import { handleV2V3RedeemTokens } from "../../utils/v2v3/ethPaymentTerminal/redeemTokens";
+import { handleV2V3UseAllowance } from "../../utils/v2v3/ethPaymentTerminal/useAllowance";
 
 const terminal: Bytes = Bytes.fromHexString(address_v2_jbETHPaymentTerminal!);
 

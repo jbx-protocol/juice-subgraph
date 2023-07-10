@@ -17,6 +17,7 @@ export enum ProjectEventKey {
   distributeToTicketModEvent,
   initEvent,
   mintTokensEvent,
+  migrate,
   payEvent,
   printReservesEvent,
   projectCreateEvent,

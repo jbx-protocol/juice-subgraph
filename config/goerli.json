@@ -53,21 +53,25 @@
       "address": "0x9e259442f800d981752c1359a3c7633db70bc395",
       "startBlock": 7784244
     },
-    "jbTiered721DelegateDeployer": {
+    "jbTiered721DelegateDeployer3": {
       "address": "0x6060fa6d5c5b7bd219f2bc576992c239da8f6664",
       "startBlock": 7885285
     },
-    "jbTiered721DelegateDeployer2": {
-      "address": "0xF9d5Bc54f54eBEE30dE3e960992a343481073B3d",
-      "startBlock": 8568319
-    },
-    "jbTiered721DelegateStore": {
+    "jbTiered721DelegateStore3": {
       "address": "0x3ea16deff07f031e86bd13c55961eb576cd579a6",
       "startBlock": 7885285
     },
-    "jbTiered721DelegateStore2": {
+    "jbTiered721DelegateStore3_1": {
       "address": "0xF85DC8C2b9dFfeab95c614A306141882048dE467",
       "startBlock": 8568319
+    },
+    "jbTiered721DelegateStore3_2": {
+      "address": "0x8dA6B4569f88C0164d77Af5E5BF12E88d4bCd016",
+      "startBlock": 9047206
+    },
+    "jbTiered721DelegateStore3_3": {
+      "address": "0x155B49f303443a3334bB2EF42E10C628438a0656",
+      "startBlock": 9162460
     },
     "ensRegistry": {
       "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"

@@ -34,10 +34,14 @@
   "shared": [
     "legacy_jbProjectHandles",
     "jbProjectHandles",
-    "jbTiered721DelegateDeployer",
-    "jbTiered721DelegateDeployer2",
-    "jbTiered721DelegateStore",
-    "jbTiered721DelegateStore2",
+    "jbTiered721DelegateDeployer3",
+    "jbTiered721DelegateDeployer3_1",
+    "jbTiered721DelegateDeployer3_2",
+    "jbTiered721DelegateDeployer3_3",
+    "jbTiered721DelegateStore3",
+    "jbTiered721DelegateStore3_1",
+    "jbTiered721DelegateStore3_2",
+    "jbTiered721DelegateStore3_3",
     "ensRegistry",
     "defifa721Delegate"
   ]

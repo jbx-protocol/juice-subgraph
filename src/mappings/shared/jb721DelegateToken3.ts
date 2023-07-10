@@ -6,12 +6,12 @@ import {
   Project,
 } from "../../../generated/schema";
 import {
-  JB721Delegate,
+  JB721Delegate3,
   Transfer,
-} from "../../../generated/templates/JB721Delegate/JB721Delegate";
-import { JBTiered721DelegateStore } from "../../../generated/templates/JB721Delegate/JBTiered721DelegateStore";
+} from "../../../generated/templates/JB721Delegate3/JB721Delegate3";
+import { JBTiered721DelegateStore3 } from "../../../generated/templates/JB721Delegate3/JBTiered721DelegateStore3";
 import { ADDRESS_ZERO } from "../../constants";
-import { address_shared_jbTiered721DelegateStore } from "../../contractAddresses";
+import { address_shared_jbTiered721DelegateStore3 } from "../../contractAddresses";
 import { PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
 import {
@@ -26,7 +26,7 @@ export function handleTransfer(event: Transfer): void {
   const pv = context.getString("pv") === "1" ? PV.PV1 : PV.PV2;
   const governanceType = context.getI32("governanceType");
   const address = dataSource.address();
-  const jb721DelegateContract = JB721Delegate.bind(Address.fromBytes(address));
+  const jb721DelegateContract = JB721Delegate3.bind(Address.fromBytes(address));
 
   const tokenId = event.params.tokenId;
 
@@ -69,16 +69,16 @@ export function handleTransfer(event: Transfer): void {
     token.symbol = symbolCall.value;
 
     // Tier data
-    if (!address_shared_jbTiered721DelegateStore) {
+    if (!address_shared_jbTiered721DelegateStore3) {
       log.error(
-        "[jb721_v1:handleTransfer] missing address_shared_jbTiered721DelegateStore",
+        "[jb721_v1:handleTransfer] missing address_shared_jbTiered721DelegateStore3",
         []
       );
       return;
     }
-    const jbTiered721DelegateStoreContract = JBTiered721DelegateStore.bind(
+    const jbTiered721DelegateStoreContract = JBTiered721DelegateStore3.bind(
       Address.fromBytes(
-        Bytes.fromHexString(address_shared_jbTiered721DelegateStore!)
+        Bytes.fromHexString(address_shared_jbTiered721DelegateStore3!)
       )
     );
     const tierCall = jbTiered721DelegateStoreContract.try_tier(

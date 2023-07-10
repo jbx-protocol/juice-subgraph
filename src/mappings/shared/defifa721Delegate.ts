@@ -2,12 +2,12 @@ import { Address, Bytes, log } from "@graphprotocol/graph-ts";
 
 import { JB721DelegateToken, Participant } from "../../../generated/schema";
 import {
-  JB721Delegate,
+  JB721Delegate3,
   Transfer,
-} from "../../../generated/templates/JB721Delegate/JB721Delegate";
+} from "../../../generated/templates/JB721Delegate3/JB721Delegate3";
 import {
   address_shared_defifa721Delegate,
-  address_shared_jbTiered721DelegateStore,
+  address_shared_jbTiered721DelegateStore3,
 } from "../../contractAddresses";
 import { JB721GovernanceType, PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
@@ -23,7 +23,7 @@ export function handleTransfer(event: Transfer): void {
   const address = Bytes.fromHexString(
     address_shared_defifa721Delegate as string
   );
-  const jb721DelegateContract = JB721Delegate.bind(Address.fromBytes(address));
+  const jb721DelegateContract = JB721Delegate3.bind(Address.fromBytes(address));
 
   // projectId
   const projectIdCall = jb721DelegateContract.try_projectId();
@@ -70,7 +70,7 @@ export function handleTransfer(event: Transfer): void {
     token.symbol = symbolCall.value;
 
     // Tier data
-    if (!address_shared_jbTiered721DelegateStore) {
+    if (!address_shared_jbTiered721DelegateStore3) {
       log.error(
         "[handleTransfer] missing address_shared_jbTiered721DelegateStore",
         []
