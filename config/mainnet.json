@@ -119,21 +119,25 @@
       "address": "0xD75d2EeF7Fe65Bf9f46D7ef0b21EdED98cB0a3A4",
       "startBlock": 15873677
     },
-    "jbTiered721DelegateDeployer": {
+    "jbTiered721DelegateDeployer3": {
       "address": "0x748575f8aa3da88d478c331dca321282480e6038",
       "startBlock": 15890760
     },
-    "jbTiered721DelegateDeployer2": {
-      "address": "0xC3279bAbe48c43955932570694f3aDb55027eB8e",
-      "startBlock": 16722143
-    },
-    "jbTiered721DelegateStore": {
+    "jbTiered721DelegateStore3": {
       "address": "0xffb2cd8519439a7ddcf2c933caedd938053067d2",
-      "startBlock": 15890768
-    },
-    "jbTiered721DelegateStore2": {
-      "address": "0x167ea060D75727Aa93C1c02873f189d22ef98856",
       "startBlock": 16722143
+    },
+    "jbTiered721DelegateStore3_1": {
+      "address": "0x167ea060D75727Aa93C1c02873f189d22ef98856",
+      "startBlock": 7885285
+    },
+    "jbTiered721DelegateStore3_2": {
+      "address": "0x77027388eC3ADC00B1c22D115E5e91C486b31154",
+      "startBlock": 17318916
+    },
+    "jbTiered721DelegateStore3_3": {
+      "address": "0x615B5b50F1Fc591AAAb54e633417640d6F2773Fd",
+      "startBlock": 17459252
     },
     "ensRegistry": {
       "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"

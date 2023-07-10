@@ -87,6 +87,9 @@ export function saveNewProjectEvent(
     case ProjectEventKey.mintTokensEvent:
       projectEvent.mintTokensEvent = id;
       break;
+    case ProjectEventKey.migrate:
+      projectEvent.migrateEvent = id;
+      break;
     case ProjectEventKey.payEvent:
       projectEvent.payEvent = id;
       break;

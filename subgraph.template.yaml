@@ -24,45 +24,87 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleERC20Transfer
-  - name: JB721Delegate
+  - name: JB721Delegate3
     kind: ethereum/contract
     network: {{network}}
     source:
-      abi: JB721Delegate
+      abi: JB721Delegate3
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings/shared/jb721DelegateToken.ts
+      file: ./src/mappings/shared/jb721DelegateToken3.ts
       entities:
         - Participant
         - JB721DelegateToken
       abis:
-        - name: JB721Delegate
-          file: ./abis/shared/JB721Delegate.json
-        - name: JBTiered721DelegateStore
-          file: ./abis/shared/JBTiered721DelegateStore.json
+        - name: JB721Delegate3
+          file: ./abis/shared/JB721Delegate3.json
+        - name: JBTiered721DelegateStore3
+          file: ./abis/shared/JBTiered721DelegateStore3.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
-  - name: JB721Delegate2
+  - name: JB721Delegate3_1
     kind: ethereum/contract
     network: {{network}}
     source:
-      abi: JB721Delegate2
+      abi: JB721Delegate3_1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings/shared/jb721DelegateToken2.ts
+      file: ./src/mappings/shared/jb721DelegateToken3_1.ts
       entities:
         - Participant
         - JB721DelegateToken
       abis:
-        - name: JB721Delegate2
-          file: ./abis/shared/JB721Delegate2.json
-        - name: JBTiered721DelegateStore2
-          file: ./abis/shared/JBTiered721DelegateStore2.json
+        - name: JB721Delegate3_1
+          file: ./abis/shared/JB721Delegate3_1.json
+        - name: JBTiered721DelegateStore3_1
+          file: ./abis/shared/JBTiered721DelegateStore3_1.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+  - name: JB721Delegate3_2
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: JB721Delegate3_2
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/shared/jb721DelegateToken3_2.ts
+      entities:
+        - Participant
+        - JB721DelegateToken
+      abis:
+        - name: JB721Delegate3_2
+          file: ./abis/shared/JB721Delegate3_2.json
+        - name: JBTiered721DelegateStore3_2
+          file: ./abis/shared/JBTiered721DelegateStore3_2.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+  - name: JB721Delegate3_3
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: JB721Delegate3_3
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/shared/jb721DelegateToken3_3.ts
+      entities:
+        - Participant
+        - JB721DelegateToken
+      abis:
+        - name: JB721Delegate3_3
+          file: ./abis/shared/JB721Delegate3_3.json
+        - name: JBTiered721DelegateStore3_3
+          file: ./abis/shared/JBTiered721DelegateStore3_3.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer

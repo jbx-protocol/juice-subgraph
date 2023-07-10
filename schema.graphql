@@ -105,11 +105,10 @@ type Project @entity {
   useAllowanceEvents: [UseAllowanceEvent!]! @derivedFrom(field: "project")
   v1ConfigureEvents: [V1ConfigureEvent!]! @derivedFrom(field: "project")
   v1InitEvents: [V1InitEvent!]! @derivedFrom(field: "project")
-
-  # Derived entities
   ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
   jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "project")
   participants: [Participant!]! @derivedFrom(field: "project")
+  migrateEvents: [MigrateEvent!]! @derivedFrom(field: "project")
 }
 
 # shared
@@ -173,6 +172,7 @@ type ProjectEvent @entity {
   v1InitEvent: V1InitEvent
   burnEvent: BurnEvent
   setFundAccessConstraintsEvent: SetFundAccessConstraintsEvent
+  migrateEvent: MigrateEvent
 }
 
 # shared
@@ -305,6 +305,17 @@ type JB721DelegateToken @entity {
   # optional: only on tiered tokens
   floorPrice: BigInt
   lockedUntil: BigInt
+
+  # 3_2, 3_3
+  allowManualMint: Boolean
+  category: Int
+  encodedIPFSUri: Bytes
+  initialQuantity: Int
+  remainingQuantity: Int
+  reservedRate: BigInt
+  reservedTokenBeneficiary: Bytes
+  resolvedUri: String
+  transfersPausable: Boolean
 }
 
 #############################################################################
@@ -694,6 +705,20 @@ type InitEvent @entity {
 
   configuration: Int!
   basedOn: Int!
+}
+
+# v2, v3
+type MigrateEvent @entity {
+  id: ID!
+  projectId: Int!
+  project: Project!
+  timestamp: Int!
+  txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
+
+  amount: BigInt!
+  to: Bytes!
 }
 
 # v3

@@ -6,12 +6,12 @@ import {
   Project,
 } from "../../../generated/schema";
 import {
-  JB721Delegate2,
+  JB721Delegate3_3,
   Transfer,
-} from "../../../generated/templates/JB721Delegate2/JB721Delegate2";
-import { JBTiered721DelegateStore2 } from "../../../generated/templates/JB721Delegate2/JBTiered721DelegateStore2";
+} from "../../../generated/templates/JB721Delegate3_3/JB721Delegate3_3";
+import { JBTiered721DelegateStore3_3 } from "../../../generated/templates/JB721Delegate3_3/JBTiered721DelegateStore3_3";
 import { ADDRESS_ZERO } from "../../constants";
-import { address_shared_jbTiered721DelegateStore2 } from "../../contractAddresses";
+import { address_shared_jbTiered721DelegateStore3_3 } from "../../contractAddresses";
 import { PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
 import {
@@ -26,7 +26,9 @@ export function handleTransfer(event: Transfer): void {
   const pv = context.getString("pv") === "1" ? PV.PV1 : PV.PV2;
   const governanceType = context.getI32("governanceType");
   const address = dataSource.address();
-  const jb721DelegateContract = JB721Delegate2.bind(Address.fromBytes(address));
+  const jb721DelegateContract = JB721Delegate3_3.bind(
+    Address.fromBytes(address)
+  );
 
   const tokenId = event.params.tokenId;
 
@@ -50,7 +52,7 @@ export function handleTransfer(event: Transfer): void {
     const nameCall = jb721DelegateContract.try_name();
     if (nameCall.reverted) {
       log.error(
-        "[jb721_v2:handleTransfer] name() reverted for jb721Delegate:{}",
+        "[jb721_v1:handleTransfer] name() reverted for jb721Delegate:{}",
         [id]
       );
       return;
@@ -61,7 +63,7 @@ export function handleTransfer(event: Transfer): void {
     const symbolCall = jb721DelegateContract.try_symbol();
     if (symbolCall.reverted) {
       log.error(
-        "[jb721_v2:handleTransfer] symbol() reverted for jb721Delegate:{}",
+        "[jb721_v1:handleTransfer] symbol() reverted for jb721Delegate:{}",
         [id]
       );
       return;
@@ -69,31 +71,40 @@ export function handleTransfer(event: Transfer): void {
     token.symbol = symbolCall.value;
 
     // Tier data
-    if (!address_shared_jbTiered721DelegateStore2) {
+    if (!address_shared_jbTiered721DelegateStore3_3) {
       log.error(
-        "[jb721_v2:handleTransfer] missing address_shared_jbTiered721DelegateStore",
+        "[jb721_v1:handleTransfer] missing address_shared_jbTiered721DelegateStore",
         []
       );
       return;
     }
-    const jbTiered721DelegateStoreContract = JBTiered721DelegateStore2.bind(
+    const jbTiered721DelegateStoreContract = JBTiered721DelegateStore3_3.bind(
       Address.fromBytes(
-        Bytes.fromHexString(address_shared_jbTiered721DelegateStore2!)
+        Bytes.fromHexString(address_shared_jbTiered721DelegateStore3_3!)
       )
     );
-    const tierCall = jbTiered721DelegateStoreContract.try_tier(
+    const tierCall = jbTiered721DelegateStoreContract.try_tierOf(
       address,
-      tokenId
+      tokenId,
+      true
     );
     if (tierCall.reverted) {
       // Will revert for non-tiered tokens, among maybe other reasons
       log.error(
-        "[jb721_v2:handleTransfer] tier() reverted for address {}, tokenId {}",
+        "[jb721_v1:handleTransfer] tier() reverted for address {}, tokenId {}",
         [address.toHexString(), tokenId.toString()]
       );
     }
-    token.floorPrice = tierCall.value.contributionFloor;
-    token.lockedUntil = tierCall.value.lockedUntil;
+    token.floorPrice = tierCall.value.price;
+    token.allowManualMint = tierCall.value.allowManualMint;
+    token.category = tierCall.value.category.toI32();
+    token.encodedIPFSUri = tierCall.value.encodedIPFSUri;
+    token.initialQuantity = tierCall.value.initialQuantity.toI32();
+    token.remainingQuantity = tierCall.value.remainingQuantity.toI32();
+    token.reservedRate = tierCall.value.reservedRate;
+    token.reservedTokenBeneficiary = tierCall.value.reservedTokenBeneficiary;
+    token.resolvedUri = tierCall.value.resolvedUri;
+    token.transfersPausable = tierCall.value.transfersPausable;
   }
 
   /**
@@ -103,7 +114,7 @@ export function handleTransfer(event: Transfer): void {
   const tokenUriCall = jb721DelegateContract.try_tokenURI(tokenId);
   if (tokenUriCall.reverted) {
     log.error(
-      "[jb721_v2:handleTransfer] tokenURI() reverted for jb721Delegate:{}",
+      "[jb721_v1:handleTransfer] tokenURI() reverted for jb721Delegate:{}",
       [id]
     );
     return;
@@ -128,7 +139,7 @@ export function handleTransfer(event: Transfer): void {
       project.nftsMintedCount = project.nftsMintedCount + 1;
       project.save();
     } else {
-      log.error("[jb721_v2:handleTransfer] Missing project. ID:{}", [
+      log.error("[jb721_v1:handleTransfer] Missing project. ID:{}", [
         idOfProject,
       ]);
       return;

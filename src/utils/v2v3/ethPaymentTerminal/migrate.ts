@@ -1,16 +1,45 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
 
-import { Project } from "../../../../generated/schema";
-import { PV } from "../../../enums";
-import { idForProject } from "../../ids";
+import { MigrateEvent, Project } from "../../../../generated/schema";
+import { ProjectEventKey, PV } from "../../../enums";
+import { saveNewProjectEvent } from "../../entities/projectEvent";
+import { idForMigrateEvent, idForProject } from "../../ids";
 
 const pv = PV.PV2;
 
-export function handleV2V3TerminalMigrate(projectId: BigInt, amount: BigInt) {
-  const id = idForProject(projectId, pv);
-  const project = Project.load(id);
+export function handleV2V3TerminalMigrate(
+  event: ethereum.Event,
+  projectId: BigInt,
+  amount: BigInt,
+  caller: Bytes,
+  to: Bytes
+): void {
+  const project = Project.load(idForProject(projectId, pv));
+
   if (!project) return;
-  // The Migrate event triggers an AddToBalance event, which will incorrectly increase a project's balance. To negate the increase, we decrease the balance in the Migrate handler.
+
+  // Migrating terminals will emit an AddToBalance event prior to the Migrate event, incorrectly increasing the project's balance. We reverse the balance increase here.
   project.currentBalance = project.currentBalance.minus(amount);
   project.save();
+
+  const migrateEvent = new MigrateEvent(
+    idForMigrateEvent(projectId, pv, event.block.number)
+  );
+  migrateEvent.amount = amount;
+  migrateEvent.caller = caller;
+  migrateEvent.from = event.transaction.from;
+  migrateEvent.project = project.id;
+  migrateEvent.projectId = projectId.toI32();
+  migrateEvent.to = to;
+  migrateEvent.txHash = event.transaction.hash;
+  migrateEvent.timestamp = event.block.timestamp.toI32();
+  migrateEvent.save();
+
+  saveNewProjectEvent(
+    event,
+    projectId,
+    migrateEvent.id,
+    pv,
+    ProjectEventKey.migrate
+  );
 }

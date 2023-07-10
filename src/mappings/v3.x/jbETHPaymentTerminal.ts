@@ -169,5 +169,11 @@ export function handleProcessFee(event: ProcessFee): void {
 }
 
 export function handleMigrate(event: Migrate): void {
-  handleV2V3TerminalMigrate(event.params.projectId, event.params.amount);
+  handleV2V3TerminalMigrate(
+    event,
+    event.params.projectId,
+    event.params.amount,
+    event.params.caller,
+    event.params.to
+  );
 }

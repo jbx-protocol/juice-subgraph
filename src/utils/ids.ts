@@ -83,3 +83,11 @@ export function idForJB721DelegateToken(
 export function idForSplitsPayer(projectId: BigInt, address: Bytes): string {
   return `${projectId.toString()}-${address.toHexString()}`;
 }
+
+export function idForMigrateEvent(
+  projectId: BigInt,
+  pv: PV,
+  blockNumber: BigInt
+): string {
+  return `${idForProject(projectId, pv)}-${blockNumber.toString()}`;
+}
