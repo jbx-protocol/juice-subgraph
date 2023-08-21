@@ -9,7 +9,7 @@ import {
   address_shared_defifa721Delegate,
   address_shared_jbTiered721DelegateStore3,
 } from "../../contractAddresses";
-import { JB721GovernanceType, PV } from "../../enums";
+import { PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
 import {
   idForJB721DelegateToken,
@@ -46,28 +46,8 @@ export function handleTransfer(event: Transfer): void {
     // Create entity
     token = new JB721DelegateToken(id);
     token.tokenId = tokenId;
-    token.address = address;
-    token.projectId = projectId.toI32();
-    token.governanceType = JB721GovernanceType.TIERED;
     token.project = idForProject(projectId, pv);
-
-    // Name
-    const nameCall = jb721DelegateContract.try_name();
-    if (nameCall.reverted) {
-      log.error("[handleTransfer] jb721Delegate.name() reverted: {}", [id]);
-      return;
-    }
-    token.name = nameCall.value;
-
-    // Symbol
-    const symbolCall = jb721DelegateContract.try_symbol();
-    if (symbolCall.reverted) {
-      log.error("[handleTransfer] symbol() reverted for jb721Delegate:{}", [
-        id,
-      ]);
-      return;
-    }
-    token.symbol = symbolCall.value;
+    token.collection = address.toHexString();
 
     // Tier data
     if (!address_shared_jbTiered721DelegateStore3) {
@@ -85,9 +65,7 @@ export function handleTransfer(event: Transfer): void {
    */
   const tokenUriCall = jb721DelegateContract.try_tokenURI(tokenId);
   if (tokenUriCall.reverted) {
-    log.error("[handleTransfer] jb721Delegate.tokenURI() reverted:{}", [
-      id,
-    ]);
+    log.error("[handleTransfer] jb721Delegate.tokenURI() reverted:{}", [id]);
     return;
   }
   token.tokenUri = tokenUriCall.value;
@@ -100,6 +78,6 @@ export function handleTransfer(event: Transfer): void {
   // Create participant if doesn't exist
   let receiver = Participant.load(receiverId);
   if (!receiver) receiver = newParticipant(pv, projectId, event.params.to);
-  
+
   receiver.save();
 }

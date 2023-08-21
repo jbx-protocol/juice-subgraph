@@ -127,6 +127,18 @@
       "address": "0x748575f8aa3da88d478c331dca321282480e6038",
       "startBlock": 15890760
     },
+    "jbTiered721DelegateDeployer3_1": {
+      "address": "0xC3279bAbe48c43955932570694f3aDb55027eB8e",
+      "startBlock": 16722143
+    },
+    "jbTiered721DelegateDeployer3_2": {
+      "address": "0xd7C3CE7F47bc884f7e4cD8D49e3427c2E76859dc",
+      "startBlock": 17318916
+    },
+    "jbTiered721DelegateDeployer3_3": {
+      "address": "0xc017a3F357a1C5F5298cA40B5647d5667B73B22A",
+      "startBlock": 17459251
+    },
     "jbTiered721DelegateStore3": {
       "address": "0xffb2cd8519439a7ddcf2c933caedd938053067d2",
       "startBlock": 16722143

@@ -24,7 +24,6 @@ export function handleTransfer(event: Transfer): void {
   const context = dataSource.context();
   const projectId = context.getBigInt("projectId");
   const pv = context.getString("pv") === "1" ? PV.PV1 : PV.PV2;
-  const governanceType = context.getI32("governanceType");
   const address = dataSource.address();
   const jb721DelegateContract = JB721Delegate3_1.bind(
     Address.fromBytes(address)
@@ -43,32 +42,8 @@ export function handleTransfer(event: Transfer): void {
     // Create entity
     token = new JB721DelegateToken(id);
     token.tokenId = tokenId;
-    token.address = address;
-    token.projectId = projectId.toI32();
-    token.governanceType = governanceType;
     token.project = idForProject(projectId, pv);
-
-    // Name
-    const nameCall = jb721DelegateContract.try_name();
-    if (nameCall.reverted) {
-      log.error(
-        "[jb721_v1:handleTransfer] name() reverted for jb721Delegate:{}",
-        [id]
-      );
-      return;
-    }
-    token.name = nameCall.value;
-
-    // Symbol
-    const symbolCall = jb721DelegateContract.try_symbol();
-    if (symbolCall.reverted) {
-      log.error(
-        "[jb721_v1:handleTransfer] symbol() reverted for jb721Delegate:{}",
-        [id]
-      );
-      return;
-    }
-    token.symbol = symbolCall.value;
+    token.collection = address.toHexString();
 
     // Tier data
     if (!address_shared_jbTiered721DelegateStore3_1) {

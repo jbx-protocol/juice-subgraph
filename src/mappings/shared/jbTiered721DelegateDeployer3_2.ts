@@ -1,11 +1,11 @@
 import { Address, DataSourceContext, log } from "@graphprotocol/graph-ts";
 
-import { DelegateDeployed } from "../../../generated/JBTiered721DelegateDeployer3/JBTiered721DelegateDeployer3";
-import { JB721Delegate3 as JB721Delegate3DataSource } from "../../../generated/templates";
-import { JB721Delegate3 } from "../../../generated/templates/JB721Delegate3/JB721Delegate3";
+import { DelegateDeployed } from "../../../generated/JBTiered721DelegateDeployer3_2/JBTiered721DelegateDeployer3_2";
+import { JB721Delegate3_2 as JB721Delegate3_2DataSource } from "../../../generated/templates";
+import { JB721Delegate3_2 } from "../../../generated/templates/JB721Delegate3_2/JB721Delegate3_2";
 import { PV } from "../../enums";
-import { idForProject } from "../../utils/ids";
 import { JB721DelegateCollection } from "../../../generated/schema";
+import { idForProject } from "../../utils/ids";
 
 const pv = PV.PV2;
 
@@ -21,7 +21,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   jbTiered721DelegateContext.setString("pv", pv.toString());
 
   // Create a data source that will track token transfers
-  JB721Delegate3DataSource.createWithContext(
+  JB721Delegate3_2DataSource.createWithContext(
     address,
     jbTiered721DelegateContext
   );
@@ -31,7 +31,9 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   collection.governanceType = event.params.governanceType;
   collection.project = idForProject(event.params.projectId, pv);
 
-  const jb721DelegateContract = JB721Delegate3.bind(Address.fromBytes(address));
+  const jb721DelegateContract = JB721Delegate3_2.bind(
+    Address.fromBytes(address)
+  );
 
   // Name
   const nameCall = jb721DelegateContract.try_name();
