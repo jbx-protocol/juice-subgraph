@@ -107,6 +107,7 @@ type Project @entity {
   v1InitEvents: [V1InitEvent!]! @derivedFrom(field: "project")
   ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
   jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "project")
+  jb721DelegateCollections: [JB721DelegateCollection!]! @derivedFrom(field: "project")
   participants: [Participant!]! @derivedFrom(field: "project")
   migrateEvents: [MigrateEvent!]! @derivedFrom(field: "project")
 }
@@ -290,13 +291,9 @@ type BurnEvent @entity {
 # shared
 type JB721DelegateToken @entity {
   id: ID!
-  address: Bytes!
   tokenId: BigInt!
+  collection: JB721DelegateCollection!
   project: Project!
-  projectId: Int!
-  name: String!
-  symbol: String!
-  governanceType: Int!
 
   # dynamic fields
   owner: Participant!
@@ -316,6 +313,19 @@ type JB721DelegateToken @entity {
   reservedTokenBeneficiary: Bytes
   resolvedUri: String
   transfersPausable: Boolean
+}
+
+type JB721DelegateCollection @entity {
+  id: ID!
+  address: Bytes!
+  tokenId: BigInt!
+  project: Project!
+  projectId: Int!
+  name: String!
+  symbol: String!
+  governanceType: Int!
+
+  tokens: [JB721DelegateToken!]! @derivedFrom(field: "collection")
 }
 
 #############################################################################
