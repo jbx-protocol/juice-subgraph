@@ -26,6 +26,7 @@
     "jbETHPaymentTerminal",
     "jbETHPaymentTerminal3_1",
     "jbETHPaymentTerminal3_1_1",
+    "jbETHPaymentTerminal3_1_2",
     "jbETHERC20ProjectPayerDeployer",
     "jbETHERC20SplitsPayerDeployer",
     "jbFundingCycleStore",

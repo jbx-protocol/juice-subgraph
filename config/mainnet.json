@@ -93,6 +93,10 @@
       "address": "0x457cD63bee88ac01f3cD4a67D5DCc921D8C0D573",
       "startBlock": 17594325
     },
+    "jbETHPaymentTerminal3_1_2": {
+      "address": "0x1d9619E10086FdC1065B114298384aAe3F680CC0",
+      "startBlock": 17886636
+    },
     "jbFundAccessConstraintsStore": {
       "address": "0xA4425A1E5b7B28Cb689719B1428e3088C1F89E30",
       "startBlock": 16677456
