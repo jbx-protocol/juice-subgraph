@@ -73,11 +73,12 @@ export function idForPrevPayEvent(): string {
   return protocolLog.paymentsCount.toString();
 }
 
-export function idForJB721DelegateToken(
-  address: Address,
-  tokenId: BigInt
-): string {
+export function idForNFT(address: Address, tokenId: BigInt): string {
   return `${toHexLowercase(address)}-${tokenId.toString()}`;
+}
+
+export function idForNFTTier(address: Address, tierId: BigInt): string {
+  return `${toHexLowercase(address)}-${tierId.toString()}`;
 }
 
 export function idForSplitsPayer(projectId: BigInt, address: Bytes): string {

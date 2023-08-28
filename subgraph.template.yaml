@@ -36,7 +36,8 @@ templates:
       file: ./src/mappings/shared/jb721DelegateToken3.ts
       entities:
         - Participant
-        - JB721DelegateToken
+        - NFT
+        - NFTTier
       abis:
         - name: JB721Delegate3
           file: ./abis/shared/JB721Delegate3.json
@@ -57,7 +58,8 @@ templates:
       file: ./src/mappings/shared/jb721DelegateToken3_1.ts
       entities:
         - Participant
-        - JB721DelegateToken
+        - NFT
+        - NFTTier
       abis:
         - name: JB721Delegate3_1
           file: ./abis/shared/JB721Delegate3_1.json
@@ -66,6 +68,10 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
+        - event: AddTier(indexed uint256,(uint80,uint48,uint40,uint16,uint16,address,uint8,address,bytes32,uint8,bool,bool,bool,bool),address)
+          handler: handleAddTier
+        - event: RemoveTier(indexed uint256,address)
+          handler: handleRemoveTier
   - name: JB721Delegate3_2
     kind: ethereum/contract
     network: {{network}}
@@ -78,7 +84,8 @@ templates:
       file: ./src/mappings/shared/jb721DelegateToken3_2.ts
       entities:
         - Participant
-        - JB721DelegateToken
+        - NFT
+        - NFTTier
       abis:
         - name: JB721Delegate3_2
           file: ./abis/shared/JB721Delegate3_2.json
@@ -87,6 +94,10 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
+        - event: AddTier(indexed uint256,(uint104,uint32,uint32,uint16,address,bytes32,uint24,bool,bool,bool,bool),address)
+          handler: handleAddTier
+        - event: RemoveTier(indexed uint256,address)
+          handler: handleRemoveTier
   - name: JB721Delegate3_3
     kind: ethereum/contract
     network: {{network}}
@@ -99,7 +110,7 @@ templates:
       file: ./src/mappings/shared/jb721DelegateToken3_3.ts
       entities:
         - Participant
-        - JB721DelegateToken
+        - NFT
       abis:
         - name: JB721Delegate3_3
           file: ./abis/shared/JB721Delegate3_3.json
@@ -108,6 +119,10 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
+        - event: AddTier(indexed uint256,(uint104,uint32,uint32,uint16,address,bytes32,uint24,bool,bool,bool,bool),address)
+          handler: handleAddTier
+        - event: RemoveTier(indexed uint256,address)
+          handler: handleRemoveTier
   - name: ENSTextResolver
     kind: ethereum/contract
     network: {{network}}

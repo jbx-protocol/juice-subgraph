@@ -1,10 +1,6 @@
 import { Address, Bytes, dataSource, log } from "@graphprotocol/graph-ts";
 
-import {
-  JB721DelegateToken,
-  Participant,
-  Project,
-} from "../../../generated/schema";
+import { NFT, Participant, Project } from "../../../generated/schema";
 import {
   JB721Delegate3,
   Transfer,
@@ -15,33 +11,35 @@ import { address_shared_jbTiered721DelegateStore3 } from "../../contractAddresse
 import { PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
 import {
-  idForJB721DelegateToken,
+  idForNFT,
+  idForNFTTier,
   idForParticipant,
   idForProject,
 } from "../../utils/ids";
 
+const pv = PV.PV2;
+
 export function handleTransfer(event: Transfer): void {
   const context = dataSource.context();
   const projectId = context.getBigInt("projectId");
-  const pv = context.getString("pv") === "1" ? PV.PV1 : PV.PV2;
   const address = dataSource.address();
   const jb721DelegateContract = JB721Delegate3.bind(Address.fromBytes(address));
 
   const tokenId = event.params.tokenId;
 
-  const id = idForJB721DelegateToken(Address.fromBytes(address), tokenId);
+  const id = idForNFT(Address.fromBytes(address), tokenId);
 
-  let token = JB721DelegateToken.load(id);
+  let nft = NFT.load(id);
 
   /**
    * If entity doesn't exist, we create and get the values that aren't expected to change.
    */
-  if (!token) {
+  if (!nft) {
     // Create entity
-    token = new JB721DelegateToken(id);
-    token.tokenId = tokenId;
-    token.project = idForProject(projectId, pv);
-    token.collection = address.toHexString();
+    nft = new NFT(id);
+    nft.tokenId = tokenId;
+    nft.project = idForProject(projectId, pv);
+    nft.collection = address.toHexString();
 
     // Tier data
     if (!address_shared_jbTiered721DelegateStore3) {
@@ -63,12 +61,20 @@ export function handleTransfer(event: Transfer): void {
     if (tierCall.reverted) {
       // Will revert for non-tiered tokens, among maybe other reasons
       log.error(
-        "[jb721_v1:handleTransfer] tier() reverted for address {}, tokenId {}",
+        "[jb721_v3:handleTransfer] tier() reverted for address {}, tokenId {}",
         [address.toHexString(), tokenId.toString()]
       );
     }
-    token.floorPrice = tierCall.value.contributionFloor;
-    token.lockedUntil = tierCall.value.lockedUntil;
+    nft.tier = idForNFTTier(address, tierCall.value.id);
+    nft.price = tierCall.value.contributionFloor;
+    nft.allowManualMint = tierCall.value.allowManualMint;
+    nft.ipfsUri = tierCall.value.encodedIPFSUri;
+    nft.initialQuantity = tierCall.value.initialQuantity.toI32();
+    nft.remainingQuantity = tierCall.value.remainingQuantity.toI32();
+    nft.reservedRate = tierCall.value.reservedRate;
+    nft.reservedTokenBeneficiary = tierCall.value.reservedTokenBeneficiary;
+    nft.resolvedUri = tierCall.value.encodedIPFSUri.toString();
+    nft.transfersPausable = tierCall.value.transfersPausable;
   }
 
   /**
@@ -83,12 +89,12 @@ export function handleTransfer(event: Transfer): void {
     );
     return;
   }
-  token.tokenUri = tokenUriCall.value;
+  nft.tokenUri = tokenUriCall.value;
 
   const receiverId = idForParticipant(projectId, pv, event.params.to);
 
-  token.owner = receiverId;
-  token.save();
+  nft.owner = receiverId;
+  nft.save();
 
   // Create participant if doesn't exist
   let receiver = Participant.load(receiverId);

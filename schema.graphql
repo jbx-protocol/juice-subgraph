@@ -106,8 +106,8 @@ type Project @entity {
   v1ConfigureEvents: [V1ConfigureEvent!]! @derivedFrom(field: "project")
   v1InitEvents: [V1InitEvent!]! @derivedFrom(field: "project")
   ethErc20ProjectPayers: [ETHERC20ProjectPayer!]! @derivedFrom(field: "project")
-  jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "project")
-  jb721DelegateCollections: [JB721DelegateCollection!]! @derivedFrom(field: "project")
+  jb721DelegateTokens: [NFT!]! @derivedFrom(field: "project")
+  nftCollections: [NFTCollection!]! @derivedFrom(field: "project")
   participants: [Participant!]! @derivedFrom(field: "project")
   migrateEvents: [MigrateEvent!]! @derivedFrom(field: "project")
 }
@@ -127,7 +127,7 @@ type Participant @entity {
   balance: BigInt!
   stakedBalance: BigInt!
   erc20Balance: BigInt!
-  jb721DelegateTokens: [JB721DelegateToken!]! @derivedFrom(field: "owner")
+  jb721DelegateTokens: [NFT!]! @derivedFrom(field: "owner")
 }
 
 # shared
@@ -289,10 +289,11 @@ type BurnEvent @entity {
 }
 
 # shared
-type JB721DelegateToken @entity {
+type NFT @entity {
   id: ID!
   tokenId: BigInt!
-  collection: JB721DelegateCollection!
+  collection: NFTCollection!
+  tier: NFTTier!
   project: Project!
 
   # dynamic fields
@@ -300,22 +301,22 @@ type JB721DelegateToken @entity {
   tokenUri: String!
 
   # optional: only on tiered tokens
-  floorPrice: BigInt
+  price: BigInt
   lockedUntil: BigInt
-
-  # 3_2, 3_3
   allowManualMint: Boolean
-  category: Int
-  encodedIPFSUri: Bytes
+  ipfsUri: Bytes
   initialQuantity: Int
   remainingQuantity: Int
   reservedRate: BigInt
   reservedTokenBeneficiary: Bytes
   resolvedUri: String
   transfersPausable: Boolean
+
+  # Supported in version ^3.1
+  category: Int
 }
 
-type JB721DelegateCollection @entity {
+type NFTCollection @entity {
   id: ID!
   address: Bytes!
   tokenId: BigInt!
@@ -324,8 +325,30 @@ type JB721DelegateCollection @entity {
   name: String!
   symbol: String!
   governanceType: Int!
+  createdAt: Int!
 
-  tokens: [JB721DelegateToken!]! @derivedFrom(field: "collection")
+  tiers: [NFTTier!]! @derivedFrom(field: "collection")
+  nfts: [NFT!]! @derivedFrom(field: "collection")
+}
+
+type NFTTier @entity {
+  id: ID!
+  collection: NFTCollection!
+  tierId: Int!
+  allowManualMint: Boolean!
+  price: BigInt!
+  ipfsUri: String!
+  initialQuantity: BigInt!
+  remainingQuantity: BigInt!
+  transfersPausable: Boolean!
+  votingUnits: BigInt!
+
+  # Supported in version ^3.1
+  category: Int
+  reservedRate: BigInt
+  reservedTokenBeneficiary: Bytes
+
+  nfts: [NFT!]! @derivedFrom(field: "tier")
 }
 
 #############################################################################
