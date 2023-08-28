@@ -12,7 +12,7 @@ import {
 } from "../../../generated/JBETHPaymentTerminal3_1_2/JBETHPaymentTerminal3_1_2";
 import { ProtocolV3Log } from "../../../generated/schema";
 import { PROTOCOL_ID } from "../../constants";
-import { address_v3_jbETHPaymentTerminal } from "../../contractAddresses";
+import { address_v3_jbETHPaymentTerminal3_1_2 } from "../../contractAddresses";
 import {
   newProtocolV3Log,
   updateProtocolEntity,
@@ -27,7 +27,9 @@ import { handleV2V3ProcessFee } from "../../utils/v2v3/ethPaymentTerminal/proces
 import { handleV2V3RedeemTokens } from "../../utils/v2v3/ethPaymentTerminal/redeemTokens";
 import { handleV2V3UseAllowance } from "../../utils/v2v3/ethPaymentTerminal/useAllowance";
 
-const terminal: Bytes = Bytes.fromHexString(address_v3_jbETHPaymentTerminal!);
+const terminal: Bytes = Bytes.fromHexString(
+  address_v3_jbETHPaymentTerminal3_1_2!
+);
 
 export function handleAddToBalance(event: AddToBalance): void {
   handleV2V3AddToBalance(
