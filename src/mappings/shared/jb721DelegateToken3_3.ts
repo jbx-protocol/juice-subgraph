@@ -129,6 +129,7 @@ export function handleTransfer(event: Transfer): void {
   // Create participant if doesn't exist
   let receiver = Participant.load(receiverId);
   if (!receiver) receiver = newParticipant(pv, projectId, event.params.to);
+  receiver.save();
 
   // Increment project stats
   if (event.params.from == ADDRESS_ZERO) {
@@ -142,9 +143,6 @@ export function handleTransfer(event: Transfer): void {
       log.error("[jb721_v1:handleTransfer] Missing project. ID:{}", [
         idOfProject,
       ]);
-      return;
     }
   }
-
-  receiver.save();
 }

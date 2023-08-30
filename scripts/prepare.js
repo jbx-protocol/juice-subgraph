@@ -8,100 +8,101 @@ const PREFIXES = ["v1", "v2", "v3", "shared"];
 
 const network = process.argv.slice(2)[0];
 
+const { stdout, exit } = process;
+
 if (!network) {
-  console.log(chalk.red("Network undefined"));
-  process.exit(1);
+  stdout.write(chalk.red("Network undefined\n"));
+  exit(1);
 }
 
-console.log(`Network: ${chalk.cyan.bold(network)}\n`);
+stdout.write(`Network: ${chalk.cyan.bold(network)}\n`);
 
-const configTemplate = JSON.parse(fs.readFileSync(`config/template.json`));
+const configTemplatePath = `config/template.json`;
+const configTemplate = JSON.parse(fs.readFileSync(configTemplatePath));
 
 const config = JSON.parse(fs.readFileSync(`config/${network}.json`));
 
 if (!config) {
-  console.log(chalk.red("Missing config file"));
-  process.exit(1);
+  stdout.write(chalk.red("Missing config file\n"));
+  exit(1);
 }
-
-config.network = network;
 
 // Clear /generated and /build folder
 fs.rm("build", { force: true, recursive: true }, () => null);
 fs.rm("generated", { force: true, recursive: true }, () => null);
 
-// Write all contract addresses in config to a .ts file
-function writeContractAddresses() {
-  const contractAddressesPath = "src/contractAddresses.ts";
-
-  // Delete contractAddresses file if exists
-  fs.rmSync(contractAddressesPath, { force: true });
-
-  let fileContents = "";
-
-  for (p of PREFIXES) {
-    // Iterate over all var names declared in config template
-    // Add to fileContents using values from actual config
-    const contractNames = configTemplate[p];
-
-    fileContents += `${contractNames
-      .map((c) => {
-        // Use null if no address exists in config
-        const address =
-          config[p] && config[p][c] && config[p][c].address
-            ? `"${config[p][c].address}"`
-            : null;
-        return `export const address_${p}_${c}: string | null = ${address};\n`;
-      })
-      .join("")}\n`;
-  }
-
-  // Write fileContents to file
-  try {
-    fs.writeFileSync(contractAddressesPath, fileContents);
-  } catch (e) {
-    console.log("Error writing" + contractAddressesPath, e);
-  }
-
-  console.log(chalk.green("✔") + ` Wrote ${contractAddressesPath}\n`);
-}
-
-// Write all start blocks in config to a .ts file
-function writeStartBlocks() {
+function writeFilesFromTemplate() {
+  const addressesPath = "src/contractAddresses.ts";
   const startBlocksPath = "src/startBlocks.ts";
 
-  // Delete startBlocks file if exists
+  // Delete files if exists
+  fs.rmSync(addressesPath, { force: true });
   fs.rmSync(startBlocksPath, { force: true });
 
-  let fileContents = "";
+  let addressesFileContents = "";
+  let startBlocksFileContents = "";
 
-  for (p of PREFIXES) {
+  let templateContractsCount = 0;
+  let configContractsCount = 0;
+
+  stdout.write(`\nUsing contracts in ${configTemplatePath}...\n`);
+
+  for (const p of PREFIXES) {
     // Iterate over all var names declared in config template
     // Add to fileContents using values from actual config
     const contractNames = configTemplate[p];
 
-    fileContents += `${contractNames
-      .map((c) => {
-        // Use null if no address exists in config
-        const startBlock =
-          config[p] && config[p][c] ? `${config[p][c].startBlock || 0}` : 0; // must be 0: `number` cannot be nullable
-        return `export const startBlock_${p}_${c}: number = ${startBlock};\n`;
-      })
-      .join("")}\n`;
+    contractNames.forEach((c) => {
+      const contract = config[p] && config[p][c] ? config[p][c] : undefined;
+
+      stdout.write(chalk.gray(`  ${p}_${c}...`));
+
+      templateContractsCount++;
+
+      if (!contract) {
+        stdout.write(chalk.yellow(" No config\n"));
+      } else {
+        configContractsCount++;
+        stdout.write(" OK\n");
+      }
+
+      const address =
+        contract && contract.address ? `"${contract.address}"` : null;
+      const startBlock =
+        contract && contract.startBlock ? contract.startBlock : 0;
+
+      addressesFileContents += `export const address_${p}_${c}: string | null = ${address};\n`;
+      startBlocksFileContents += `export const startBlock_${p}_${c}: number = ${startBlock};\n`;
+    });
   }
 
-  // Write fileContents to file
+  stdout.write(
+    chalk[configContractsCount < templateContractsCount ? "yellow" : "green"](
+      `Found config for ${configContractsCount}/${templateContractsCount} contracts in template\n`
+    )
+  );
+
+  // Write addressesFileContents to file
   try {
-    fs.writeFileSync(startBlocksPath, fileContents);
+    fs.writeFileSync(addressesPath, addressesFileContents);
+    stdout.write(chalk.green("✔") + ` Wrote ${addressesPath}\n`);
   } catch (e) {
-    console.log("Error writing" + startBlocksPath, e);
+    stdout.write("Error writing" + addressesPath, e);
   }
 
-  console.log(chalk.green("✔") + ` Wrote ${startBlocksPath}\n`);
+  // Write startBlocksFileContents to file
+  try {
+    fs.writeFileSync(startBlocksPath, startBlocksFileContents);
+    stdout.write(chalk.green("✔") + ` Wrote ${startBlocksPath}\n`);
+  } catch (e) {
+    stdout.write("Error writing" + startBlocksPath, e);
+  }
 }
 
 // Write subgraph.yaml file from config
 function writeSubgraph() {
+  stdout.write(`\nWriting subgraph.yaml from dataSource snippets...\n`);
+
   const subgraphPath = "subgraph.yaml";
 
   // Delete subgraph.yaml if exists
@@ -110,21 +111,22 @@ function writeSubgraph() {
   // Build dataSource snippets from configs
   // We give this to subgraph.template.yaml to render subgraph.yaml
   const dataSourceSnippets = {};
-  for (p of PREFIXES) {
+  for (const p of PREFIXES) {
+    stdout.write(chalk.gray(`  ${p}...\n`));
+
     dataSourceSnippets[`dataSources_${p}`] = mustache
       .render(fs.readFileSync(`${p}.template.yaml`).toString(), config)
       .toString();
   }
 
   const graftConfig = config.graft
-    ? `  - grafting
-graft:
-  base: ${config.graft.base}
-  block: ${config.graft.startBlock}`
+    ? `  - grafting\ngraft:\n    base: ${config.graft.base}\n    block: ${config.graft.startBlock}\n`
     : undefined;
 
   if (graftConfig) {
-    console.log(chalk.cyan.bold("Grafting:"), config.graft);
+    stdout.write(
+      chalk.cyan.bold(`Grafting: ${JSON.stringify(config.graft)}\n`)
+    );
   }
 
   // Write new subgraph.yaml
@@ -141,10 +143,10 @@ graft:
         .toString()
     );
   } catch (e) {
-    console.log(chalk.red("Error writing subgraph.yaml"), e);
+    stdout.write(chalk.red("Error writing subgraph.yaml"), e, "\n");
   }
 
-  console.log(chalk.green("✔") + " Wrote subgraph.yaml\n");
+  stdout.write(chalk.green("✔") + " Wrote subgraph.yaml\n");
 }
 
 // Sanity check to ensure that all functions exported from mapping files are defined in subgraph.yaml
@@ -204,21 +206,21 @@ function checkHandlers() {
    * to those found in the subgraph.yaml file
    */
 
-  console.log(
-    `Checking that functions defined in mapping files are referenced in subgraph.yaml...`
+  stdout.write(
+    `\nSafety checking that functions defined in mapping files are referenced in subgraph.yaml...\n`
   );
 
   let missingHandlersCount = 0;
   let missingSourcesCount = 0;
 
   Object.keys(mappingHandlers).forEach((key) => {
-    process.stdout.write(chalk.gray(`  ${key}...`));
+    stdout.write(chalk.gray(`  ${key}...`));
 
     const src = subgraphYamlContents.find((d) => d.mapping.file === key);
 
     if (!src) {
       // Mapping file is not referenced in the generated in the subgraph.yaml
-      console.log(chalk.yellow(` No reference`));
+      stdout.write(chalk.yellow(` No reference\n`));
 
       missingSourcesCount++;
       return;
@@ -239,39 +241,37 @@ function checkHandlers() {
     // Deliver the news
     if (missingHandlers.length) {
       missingHandlers.forEach((x) =>
-        process.stdout.write(chalk.yellow(`\nNo reference to "${x}"\n`))
+        stdout.write(chalk.yellow(`\nNo reference to "${x}"\n`))
       );
 
       missingHandlersCount++;
     } else {
-      process.stdout.write(" OK\n");
+      stdout.write(" OK\n");
     }
   });
 
   if (missingHandlersCount) {
-    console.log(
+    stdout.write(
       chalk.yellow(
         `WARNING: ${missingHandlersCount} missing handler functions.`
       ) +
-        " Some handler functions defined in mapping files have no reference in the subgraph.yaml."
+        " Some handler functions defined in mapping files have no reference in the subgraph.yaml.\n\n"
     );
   }
 
   if (missingSourcesCount) {
-    console.log(
+    stdout.write(
       chalk.yellow(`WARNING: ${missingSourcesCount} missing mapping files.`) +
-        " Some mapping files have no reference in the subgraph.yaml.\n"
+        " Some mapping files have no reference in the subgraph.yaml.\n\n"
     );
   }
 
   if (!missingHandlersCount && !missingSourcesCount) {
-    console.log(chalk.green("✔") + " All good\n");
+    stdout.write(chalk.green("✔") + " All good\n\n");
   }
 }
 
-writeContractAddresses();
-
-writeStartBlocks();
+writeFilesFromTemplate();
 
 writeSubgraph();
 

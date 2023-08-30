@@ -19,14 +19,8 @@
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-redeclare": "error",
     "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/no-var-requires": "warn",
-    "no-console": ["error"],
-    "no-plusplus": [
-      "error",
-      {
-        "allowForLoopAfterthoughts": true
-      }
-    ]
+    "@typescript-eslint/no-var-requires": "off",
+    "no-console": ["error"]
   },
   "ignorePatterns": ["generated/*", "build/*", "spec/out/*", "spec/src/*.ts"]
 }

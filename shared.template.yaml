@@ -112,7 +112,7 @@
         - name: JBTiered721DelegateDeployer3_1
           file: ./abis/shared/JBTiered721DelegateDeployer3_1.json
       eventHandlers:
-        - event: DelegateDeployed(indexed uint256,address,uint8)
+        - event: DelegateDeployed(indexed uint256,address,uint8,address)
           handler: handleDelegateDeployed
       file: ./src/mappings/shared/jbTiered721DelegateDeployer3_1.ts
   {{ /jbTiered721DelegateDeployer3_1 }}
@@ -134,7 +134,7 @@
         - name: JBTiered721DelegateDeployer3_2
           file: ./abis/shared/JBTiered721DelegateDeployer3_2.json
       eventHandlers:
-        - event: DelegateDeployed(indexed uint256,address,uint8)
+        - event: DelegateDeployed(indexed uint256,address,uint8,address)
           handler: handleDelegateDeployed
       file: ./src/mappings/shared/jbTiered721DelegateDeployer3_2.ts
   {{ /jbTiered721DelegateDeployer3_2 }}
@@ -156,7 +156,7 @@
         - name: JBTiered721DelegateDeployer3_3
           file: ./abis/shared/JBTiered721DelegateDeployer3_3.json
       eventHandlers:
-        - event: DelegateDeployed(indexed uint256,address,uint8)
+        - event: DelegateDeployed(indexed uint256,address,uint8,address)
           handler: handleDelegateDeployed
       file: ./src/mappings/shared/jbTiered721DelegateDeployer3_3.ts
   {{ /jbTiered721DelegateDeployer3_3 }}
