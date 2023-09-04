@@ -36,6 +36,7 @@ export function handleV2V3Pay(
   amountUSD: BigInt | null,
   terminal: Bytes,
   beneficiary: Address,
+  beneficiaryTokenCount: BigInt,
   caller: Address,
   payer: Address,
   memo: string
@@ -63,6 +64,7 @@ export function handleV2V3Pay(
   pay.amount = amount;
   pay.amountUSD = amountUSD;
   pay.beneficiary = beneficiary;
+  pay.beneficiaryTokenCount = beneficiaryTokenCount;
   pay.caller = caller;
   pay.from = event.transaction.from;
   pay.project = idOfProject;
