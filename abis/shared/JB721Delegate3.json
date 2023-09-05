@@ -16,7 +16,17 @@
   },
   {
     "inputs": [],
+    "name": "BLOCK_NOT_YET_MINED",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "CALLER_NOT_OWNER_OR_APPROVED",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "DELEGATE_ADDRESS_ZERO",
     "type": "error"
   },
   {
@@ -50,6 +60,16 @@
     "type": "error"
   },
   {
+    "inputs": [],
+    "name": "NOT_AVAILABLE",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "OVERSPENDING",
+    "type": "error"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -63,6 +83,21 @@
       }
     ],
     "name": "PRBMath__MulDivOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "PRICING_RESOLVER_CHANGES_PAUSED",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "RESERVED_TOKEN_MINTING_PAUSED",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TRANSFERS_PAUSED",
     "type": "error"
   },
   {
@@ -84,6 +119,83 @@
     "inputs": [],
     "name": "UNEXPECTED_TOKEN_REDEEMED",
     "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tierId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint80",
+            "name": "contributionFloor",
+            "type": "uint80"
+          },
+          {
+            "internalType": "uint48",
+            "name": "lockedUntil",
+            "type": "uint48"
+          },
+          {
+            "internalType": "uint40",
+            "name": "initialQuantity",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint16",
+            "name": "votingUnits",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "reservedRate",
+            "type": "uint16"
+          },
+          {
+            "internalType": "address",
+            "name": "reservedTokenBeneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "encodedIPFSUri",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowManualMint",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "shouldUseBeneficiaryAsDefault",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "transfersPausable",
+            "type": "bool"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct JB721TierParams",
+        "name": "data",
+        "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "AddTier",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -140,6 +252,137 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "address",
+        "name": "delegator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "fromDelegate",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "toDelegate",
+        "type": "address"
+      }
+    ],
+    "name": "DelegateChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tierId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalAmountContributed",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "Mint",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tierId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "MintReservedToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tierId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "RemoveTier",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "string",
         "name": "baseUri",
         "type": "string"
@@ -178,6 +421,25 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "SetDefaultReservedTokenBeneficiary",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "contract IJBTokenUriResolver",
         "name": "newResolver",
         "type": "address"
@@ -190,6 +452,80 @@
       }
     ],
     "name": "SetTokenUriResolver",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "delegator",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "fromDelegate",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "toDelegate",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tierId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "TierDelegateChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "delegate",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tierId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "previousBalance",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newBalance",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "callre",
+        "type": "address"
+      }
+    ],
+    "name": "TierDelegateVotesChanged",
     "type": "event"
   },
   {
@@ -220,6 +556,76 @@
   {
     "inputs": [
       {
+        "components": [
+          {
+            "internalType": "uint80",
+            "name": "contributionFloor",
+            "type": "uint80"
+          },
+          {
+            "internalType": "uint48",
+            "name": "lockedUntil",
+            "type": "uint48"
+          },
+          {
+            "internalType": "uint40",
+            "name": "initialQuantity",
+            "type": "uint40"
+          },
+          {
+            "internalType": "uint16",
+            "name": "votingUnits",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "reservedRate",
+            "type": "uint16"
+          },
+          {
+            "internalType": "address",
+            "name": "reservedTokenBeneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "encodedIPFSUri",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bool",
+            "name": "allowManualMint",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "shouldUseBeneficiaryAsDefault",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "transfersPausable",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct JB721TierParams[]",
+        "name": "_tiersToAdd",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_tierIdsToRemove",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "adjustTiers",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "to",
         "type": "address"
@@ -239,7 +645,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "_owner",
         "type": "address"
       }
     ],
@@ -248,6 +654,51 @@
       {
         "internalType": "uint256",
         "name": "balance",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "codeOrigin",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "contractURI",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "creditsOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
         "type": "uint256"
       }
     ],
@@ -484,6 +935,38 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "firstOwnerOf",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fundingCycleStore",
+    "outputs": [
+      {
+        "internalType": "contract IJBFundingCycleStore",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
       }
@@ -497,6 +980,280 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tier",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_blockNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "getPastTierTotalVotes",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tier",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_blockNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "getPastTierVotes",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tier",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTierDelegate",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tier",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTierTotalVotes",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tier",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTierVotes",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_projectId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "contract IJBDirectory",
+        "name": "_directory",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_symbol",
+        "type": "string"
+      },
+      {
+        "internalType": "contract IJBFundingCycleStore",
+        "name": "_fundingCycleStore",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_baseUri",
+        "type": "string"
+      },
+      {
+        "internalType": "contract IJBTokenUriResolver",
+        "name": "_tokenUriResolver",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_contractUri",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "uint80",
+                "name": "contributionFloor",
+                "type": "uint80"
+              },
+              {
+                "internalType": "uint48",
+                "name": "lockedUntil",
+                "type": "uint48"
+              },
+              {
+                "internalType": "uint40",
+                "name": "initialQuantity",
+                "type": "uint40"
+              },
+              {
+                "internalType": "uint16",
+                "name": "votingUnits",
+                "type": "uint16"
+              },
+              {
+                "internalType": "uint16",
+                "name": "reservedRate",
+                "type": "uint16"
+              },
+              {
+                "internalType": "address",
+                "name": "reservedTokenBeneficiary",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "encodedIPFSUri",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bool",
+                "name": "allowManualMint",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "shouldUseBeneficiaryAsDefault",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "transfersPausable",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct JB721TierParams[]",
+            "name": "tiers",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "currency",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "decimals",
+            "type": "uint256"
+          },
+          {
+            "internalType": "contract IJBPrices",
+            "name": "prices",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct JB721PricingParams",
+        "name": "_pricing",
+        "type": "tuple"
+      },
+      {
+        "internalType": "contract IJBTiered721DelegateStore",
+        "name": "_store",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bool",
+            "name": "lockReservedTokenChanges",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "lockVotingUnitChanges",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "lockManualMintingChanges",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct JBTiered721Flags",
+        "name": "_flags",
+        "type": "tuple"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -524,6 +1281,98 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint16[]",
+            "name": "tierIds",
+            "type": "uint16[]"
+          },
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct JBTiered721MintForTiersData[]",
+        "name": "_mintForTiersData",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "mintFor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint16[]",
+        "name": "_tierIds",
+        "type": "uint16[]"
+      },
+      {
+        "internalType": "address",
+        "name": "_beneficiary",
+        "type": "address"
+      }
+    ],
+    "name": "mintFor",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "tokenIds",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "count",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct JBTiered721MintReservesForTiersData[]",
+        "name": "_mintReservesForTiersData",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "mintReservesFor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tierId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_count",
+        "type": "uint256"
+      }
+    ],
+    "name": "mintReservesFor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "name",
     "outputs": [
@@ -531,6 +1380,19 @@
         "internalType": "string",
         "name": "",
         "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -665,6 +1527,45 @@
         "internalType": "struct JBPayDelegateAllocation[]",
         "name": "delegateAllocations",
         "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "prices",
+    "outputs": [
+      {
+        "internalType": "contract IJBPrices",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pricingCurrency",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pricingDecimals",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -809,6 +1710,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -894,11 +1802,67 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "_contractMetadataUri",
+        "name": "_contractUri",
         "type": "string"
       }
     ],
     "name": "setContractUri",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_beneficiary",
+        "type": "address"
+      }
+    ],
+    "name": "setDefaultReservedTokenBeneficiary",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_delegatee",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tierId",
+        "type": "uint256"
+      }
+    ],
+    "name": "setTierDelegate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "delegatee",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tierId",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct JBTiered721SetTierDelegatesData[]",
+        "name": "_setTierDelegatesData",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "setTierDelegates",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -914,6 +1878,19 @@
     "name": "setTokenUriResolver",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "store",
+    "outputs": [
+      {
+        "internalType": "contract IJBTiered721DelegateStore",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -952,7 +1929,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "_tokenId",
         "type": "uint256"
       }
     ],
@@ -986,6 +1963,19 @@
       }
     ],
     "name": "transferFrom",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

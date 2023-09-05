@@ -68,6 +68,8 @@
           file: ./abis/shared/JBTiered721DelegateDeployer3.json
         - name: JB721Delegate3
           file: ./abis/shared/JB721Delegate3.json
+        - name: JBTiered721DelegateStore3
+          file: ./abis/shared/JBTiered721DelegateStore3.json
       eventHandlers:
         - event: DelegateDeployed(indexed uint256,address,uint8)
           handler: handleDelegateDeployed
@@ -94,6 +96,8 @@
           file: ./abis/shared/JBTiered721DelegateDeployer3_1.json
         - name: JB721Delegate3_1
           file: ./abis/shared/JB721Delegate3_1.json
+        - name: JBTiered721DelegateStore3_1
+          file: ./abis/shared/JBTiered721DelegateStore3_1.json
       eventHandlers:
         - event: DelegateDeployed(indexed uint256,address,uint8,address)
           handler: handleDelegateDeployed
@@ -120,6 +124,8 @@
           file: ./abis/shared/JBTiered721DelegateDeployer3_2.json
         - name: JB721Delegate3_2
           file: ./abis/shared/JB721Delegate3_2.json
+        - name: JBTiered721DelegateStore3_2
+          file: ./abis/shared/JBTiered721DelegateStore3_2.json
       eventHandlers:
         - event: DelegateDeployed(indexed uint256,address,uint8,address)
           handler: handleDelegateDeployed
@@ -144,6 +150,8 @@
       abis:
         - name: JBTiered721DelegateDeployer3_3
           file: ./abis/shared/JBTiered721DelegateDeployer3_3.json
+        - name: JBTiered721DelegateStore3_3
+          file: ./abis/shared/JBTiered721DelegateStore3_3.json
         - name: JB721Delegate3_3
           file: ./abis/shared/JB721Delegate3_3.json
       eventHandlers:

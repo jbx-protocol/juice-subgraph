@@ -25,6 +25,7 @@ import {
   idForParticipant,
   idForProject,
 } from "../../utils/ids";
+import { saveNewNFTTier } from "../../utils/entities/nft";
 
 const pv = PV.PV2;
 
@@ -49,13 +50,14 @@ export function handleTransfer(event: Transfer): void {
     // Create entity
     nft = new NFT(id);
     nft.tokenId = tokenId;
+    nft.projectId = projectId.toI32();
     nft.project = idForProject(projectId, pv);
     nft.collection = address.toHexString();
 
     // Tier data
     if (!address_shared_jbTiered721DelegateStore3_3) {
       log.error(
-        "[jb721_v1:handleTransfer] missing address_shared_jbTiered721DelegateStore",
+        "[jb721_3_3:handleTransfer] missing address_shared_jbTiered721DelegateStore",
         []
       );
       return;
@@ -65,7 +67,7 @@ export function handleTransfer(event: Transfer): void {
         Bytes.fromHexString(address_shared_jbTiered721DelegateStore3_3!)
       )
     );
-    const tierCall = jbTiered721DelegateStoreContract.try_tierOf(
+    const tierCall = jbTiered721DelegateStoreContract.try_tierOfTokenId(
       address,
       tokenId,
       true
@@ -73,21 +75,29 @@ export function handleTransfer(event: Transfer): void {
     if (tierCall.reverted) {
       // Will revert for non-tiered tokens, among maybe other reasons
       log.error(
-        "[jb721_v3_3:handleTransfer] tier() reverted for address {}, tokenId {}",
+        "[jb721_v3_3:handleTransfer] tierOfTokenId() reverted for address {}, tokenId {}",
         [address.toHexString(), tokenId.toString()]
       );
     }
-    nft.tier = idForNFTTier(address, tierCall.value.id);
-    nft.price = tierCall.value.price;
-    nft.allowManualMint = tierCall.value.allowManualMint;
-    nft.category = tierCall.value.category.toI32();
-    nft.ipfsUri = tierCall.value.encodedIPFSUri;
-    nft.initialQuantity = tierCall.value.initialQuantity.toI32();
-    nft.remainingQuantity = tierCall.value.remainingQuantity.toI32();
-    nft.reservedRate = tierCall.value.reservedRate;
-    nft.reservedTokenBeneficiary = tierCall.value.reservedTokenBeneficiary;
-    nft.resolvedUri = tierCall.value.resolvedUri;
-    nft.transfersPausable = tierCall.value.transfersPausable;
+    const tierId = idForNFTTier(address, tierCall.value.id);
+    const tier = NFTTier.load(tierId);
+
+    if (tier) {
+      nft.tier = tierId;
+
+      tier.remainingQuantity = tierCall.value.remainingQuantity;
+      tier.save();
+    } else {
+      // Will revert for non-tiered tokens, among maybe other reasons
+      log.error(
+        "[jb721_v3_3:handleTransfer] missing tier for token with address {}, tokenId {}, tierId {}",
+        [
+          address.toHexString(),
+          tokenId.toString(),
+          tierCall.value.id.toString(),
+        ]
+      );
+    }
   }
 
   /**
@@ -97,7 +107,7 @@ export function handleTransfer(event: Transfer): void {
   const tokenUriCall = jb721DelegateContract.try_tokenURI(tokenId);
   if (tokenUriCall.reverted) {
     log.error(
-      "[jb721_v1:handleTransfer] tokenURI() reverted for jb721Delegate:{}",
+      "[jb721_3_3:handleTransfer] tokenURI() reverted for jb721Delegate:{}",
       [id]
     );
     return;
@@ -123,7 +133,7 @@ export function handleTransfer(event: Transfer): void {
       project.nftsMintedCount = project.nftsMintedCount + 1;
       project.save();
     } else {
-      log.error("[jb721_v1:handleTransfer] Missing project. ID:{}", [
+      log.error("[jb721_3_3:handleTransfer] Missing project. ID:{}", [
         idOfProject,
       ]);
     }
@@ -133,16 +143,50 @@ export function handleTransfer(event: Transfer): void {
 export function handleAddTier(event: AddTier): void {
   const address = dataSource.address();
 
-  const tier = new NFTTier(idForNFTTier(address, event.params.tierId));
-  tier.category = event.params.data.category;
-  tier.allowManualMint = event.params.data.allowManualMint;
-  tier.price = event.params.data.price;
-  tier.ipfsUri = event.params.data.encodedIPFSUri.toString();
-  tier.initialQuantity = event.params.data.initialQuantity;
-  tier.reservedRate = BigInt.fromI32(event.params.data.reservedRate);
-  tier.reservedTokenBeneficiary = event.params.data.reservedTokenBeneficiary;
-  tier.transfersPausable = event.params.data.transfersPausable;
-  tier.save();
+  const tierId = event.params.tierId;
+  const data = event.params.data;
+
+  // Tier data
+  if (!address_shared_jbTiered721DelegateStore3_3) {
+    log.error(
+      "[jb721_3_3:handleAddTier] missing address_shared_jbTiered721DelegateStore",
+      []
+    );
+    return;
+  }
+  const jbTiered721DelegateStoreContract = JBTiered721DelegateStore3_3.bind(
+    Address.fromBytes(
+      Bytes.fromHexString(address_shared_jbTiered721DelegateStore3_3!)
+    )
+  );
+  const tierCall = jbTiered721DelegateStoreContract.try_tierOf(
+    address,
+    tierId,
+    true
+  );
+  if (tierCall.reverted) {
+    // Will revert for non-tiered tokens, among maybe other reasons
+    log.error(
+      "[jb721_v3_3:handleTransfer] tierOf() reverted for address {}, tierId {}",
+      [address.toHexString(), tierId.toString()]
+    );
+  }
+
+  saveNewNFTTier(
+    address,
+    tierId,
+    data.allowManualMint,
+    data.votingUnits,
+    data.price,
+    data.initialQuantity,
+    BigInt.fromI32(data.reservedRate),
+    data.reservedTokenBeneficiary,
+    data.transfersPausable,
+    event.block.timestamp,
+    data.encodedIPFSUri.toHexString(),
+    tierCall.value.resolvedUri,
+    BigInt.fromI32(data.category)
+  );
 }
 
 export function handleRemoveTier(event: RemoveTier): void {

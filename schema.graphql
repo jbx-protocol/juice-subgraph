@@ -295,31 +295,16 @@ type NFT @entity {
   collection: NFTCollection!
   tier: NFTTier!
   project: Project!
+  projectId: Int!
 
   # dynamic fields
   owner: Participant!
   tokenUri: String!
-
-  # optional: only on tiered tokens
-  price: BigInt
-  lockedUntil: BigInt
-  allowManualMint: Boolean
-  ipfsUri: Bytes
-  initialQuantity: Int
-  remainingQuantity: Int
-  reservedRate: BigInt
-  reservedTokenBeneficiary: Bytes
-  resolvedUri: String
-  transfersPausable: Boolean
-
-  # Supported in version ^3.1
-  category: Int
 }
 
 type NFTCollection @entity {
   id: ID!
   address: Bytes!
-  tokenId: BigInt!
   project: Project!
   projectId: Int!
   name: String!
@@ -337,11 +322,13 @@ type NFTTier @entity {
   tierId: Int!
   allowManualMint: Boolean!
   price: BigInt!
-  ipfsUri: String!
+  encodedIpfsUri: String
+  resolvedUri: String
   initialQuantity: BigInt!
   remainingQuantity: BigInt!
   transfersPausable: Boolean!
   votingUnits: BigInt!
+  createdAt: Int!
 
   # Supported in version ^3.1
   category: Int

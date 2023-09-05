@@ -7,13 +7,14 @@ import {
 } from "@graphprotocol/graph-ts";
 
 import { DelegateDeployed } from "../../../generated/JBTiered721DelegateDeployer3/JBTiered721DelegateDeployer3";
+import { JBTiered721DelegateStore3 } from "../../../generated/JBTiered721DelegateDeployer3/JBTiered721DelegateStore3";
+import { JB721Delegate3 } from "../../../generated/JBTiered721DelegateDeployer3/JB721Delegate3";
 import { JB721Delegate3 as JB721Delegate3DataSource } from "../../../generated/templates";
-import { JBTiered721DelegateStore3 } from "../../../generated/templates/JB721Delegate3/JBTiered721DelegateStore3";
-import { JB721Delegate3 } from "../../../generated/templates/JB721Delegate3/JB721Delegate3";
 import { PV } from "../../enums";
-import { idForNFTTier, idForProject } from "../../utils/ids";
-import { NFTCollection, NFTTier } from "../../../generated/schema";
+import { idForProject } from "../../utils/ids";
+import { NFTCollection } from "../../../generated/schema";
 import { address_shared_jbTiered721DelegateStore3 } from "../../contractAddresses";
+import { saveNewNFTTier } from "../../utils/entities/nft";
 
 const pv = PV.PV2;
 
@@ -35,6 +36,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
    * Create collection entity
    */
   const collection = new NFTCollection(address.toHexString());
+  collection.address = address;
   collection.projectId = event.params.projectId.toI32();
   collection.governanceType = event.params.governanceType;
   collection.project = idForProject(event.params.projectId, pv);
@@ -46,7 +48,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   const nameCall = jb721DelegateContract.try_name();
   if (nameCall.reverted) {
     log.error(
-      "[jb721_v1:handleTransfer] name() reverted for jb721Delegate:{}",
+      "[jbTiered721DelegateDeployer_3:handleDelegateDeployed] name() reverted for {}",
       [address.toHexString()]
     );
     return;
@@ -57,7 +59,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   const symbolCall = jb721DelegateContract.try_symbol();
   if (symbolCall.reverted) {
     log.error(
-      "[jb721_v1:handleTransfer] symbol() reverted for jb721Delegate:{}",
+      "[jbTiered721DelegateDeployer_3:handleDelegateDeployed] symbol() reverted for {}",
       [address.toHexString()]
     );
     return;
@@ -71,7 +73,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
    */
   if (!address_shared_jbTiered721DelegateStore3) {
     log.error(
-      "[jb721_v1:handleTransfer] missing address_shared_jbTiered721DelegateStore",
+      "[jbTiered721DelegateDeployer_3:handleDelegateDeployed] missing address_shared_jbTiered721DelegateStore",
       []
     );
     return;
@@ -87,7 +89,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   if (maxTierCall.reverted) {
     // Will revert for non-tiered tokens, among maybe other reasons
     log.error(
-      "[jbTiered721DelegateDeployer:handleDelegateDeployed] maxTier() reverted for address {}",
+      "[jbTiered721DelegateDeployer_3:handleDelegateDeployed] maxTier() reverted for {}",
       [address.toHexString()]
     );
   }
@@ -100,7 +102,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   if (tiersCall.reverted) {
     // Will revert for non-tiered tokens, among maybe other reasons
     log.error(
-      "[jbTiered721DelegateDeployer:handleDelegateDeployed] tiers() reverted for address {}",
+      "[jbTiered721DelegateDeployer:handleDelegateDeployed] tiers() reverted for {}",
       [address.toHexString()]
     );
   }
@@ -108,18 +110,18 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
   for (let i = 0; i < tiersCall.value.length; i++) {
     const tier = tiersCall.value[i];
 
-    const nftTier = new NFTTier(idForNFTTier(address, tier.id));
-    nftTier.tierId = tier.id.toI32();
-    nftTier.allowManualMint = tier.allowManualMint;
-    nftTier.price = tier.contributionFloor;
-    nftTier.ipfsUri = tier.encodedIPFSUri.toString();
-    nftTier.initialQuantity = tier.initialQuantity;
-    nftTier.remainingQuantity = tier.remainingQuantity;
-    nftTier.reservedRate = tier.reservedRate;
-    nftTier.reservedTokenBeneficiary = tier.reservedTokenBeneficiary;
-    nftTier.transfersPausable = tier.transfersPausable;
-    nftTier.votingUnits = tier.votingUnits;
-    nftTier.collection = collection.id;
-    nftTier.save();
+    saveNewNFTTier(
+      address,
+      tier.id,
+      tier.allowManualMint,
+      tier.votingUnits,
+      tier.contributionFloor,
+      tier.initialQuantity,
+      tier.reservedRate,
+      tier.reservedTokenBeneficiary,
+      tier.transfersPausable,
+      event.block.timestamp,
+      tier.encodedIPFSUri.toHexString()
+    );
   }
 }

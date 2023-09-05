@@ -2,7 +2,12 @@ specVersion: 0.0.4
 description: Juicebox protocol on {{network}}
 features:
   - fullTextSearch
-{{{ graftConfig }}}
+{{ #graftConfig }}
+  - grafting
+graft:
+  base: "{{ base }}"
+  block: {{ startBlock }}
+{{ /graftConfig }}
 schema:
   file: ./schema.graphql
 templates:
@@ -46,6 +51,10 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
+        - event: AddTier(indexed uint256,(uint80,uint48,uint40,uint16,uint16,address,bytes32,bool,bool,bool),address)
+          handler: handleAddTier
+        - event: RemoveTier(indexed uint256,address)
+          handler: handleRemoveTier
   - name: JB721Delegate3_1
     kind: ethereum/contract
     network: {{network}}
