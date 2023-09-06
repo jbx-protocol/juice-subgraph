@@ -38,13 +38,16 @@ The `prepare.js` script also performs a safety check for mismatches between the 
 
 [Grafting](https://thegraph.com/docs/en/developing/creating-a-subgraph/#grafting-onto-existing-subgraphs) allows a new subgraph to use data from a pre-indexed subgraph version up to a specific block height, requiring less time for the new subgraph to index. 
 
-A grafting configuration can be defined with an optional `graft` property in `config/<network>.json`, like:
+A grafting configuration can be optionally defined in `config/graft.json`, like:
 ```
-"graft": {
+{
   "base": "<subgraph-id>", # Qm...
-  "startBlock": <block-number> # 123...
+  "startBlock": <block-number>, # 123...
+  "skip" <boolean> # ignore grafting config if true
 },
 ```
+
+See `config/graft.example.json` as an example.
 
 > Note: Grafting is only supported on the hosted service and cannot be used in a subgraph deployed on the decentralized network
 

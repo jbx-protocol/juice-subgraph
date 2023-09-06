@@ -1,12 +1,17 @@
-import { Address, Bytes, dataSource, log } from "@graphprotocol/graph-ts";
+import {
+  Address,
+  BigInt,
+  Bytes,
+  dataSource,
+  log,
+  store,
+} from "@graphprotocol/graph-ts";
 
+import { NFT, NFTTier, Participant, Project } from "../../../generated/schema";
 import {
-  JB721DelegateToken,
-  Participant,
-  Project,
-} from "../../../generated/schema";
-import {
+  AddTier,
   JB721Delegate3_2,
+  RemoveTier,
   Transfer,
 } from "../../../generated/templates/JB721Delegate3_2/JB721Delegate3_2";
 import { JBTiered721DelegateStore3_2 } from "../../../generated/templates/JB721Delegate3_2/JBTiered721DelegateStore3_2";
@@ -15,16 +20,18 @@ import { address_shared_jbTiered721DelegateStore3_2 } from "../../contractAddres
 import { PV } from "../../enums";
 import { newParticipant } from "../../utils/entities/participant";
 import {
-  idForJB721DelegateToken,
+  idForNFT,
+  idForNFTTier,
   idForParticipant,
   idForProject,
 } from "../../utils/ids";
+import { saveNewNFTTier } from "../../utils/entities/nft";
+
+const pv = PV.PV2;
 
 export function handleTransfer(event: Transfer): void {
   const context = dataSource.context();
   const projectId = context.getBigInt("projectId");
-  const pv = context.getString("pv") === "1" ? PV.PV1 : PV.PV2;
-  const governanceType = context.getI32("governanceType");
   const address = dataSource.address();
   const jb721DelegateContract = JB721Delegate3_2.bind(
     Address.fromBytes(address)
@@ -32,48 +39,25 @@ export function handleTransfer(event: Transfer): void {
 
   const tokenId = event.params.tokenId;
 
-  const id = idForJB721DelegateToken(Address.fromBytes(address), tokenId);
+  const id = idForNFT(Address.fromBytes(address), tokenId);
 
-  let token = JB721DelegateToken.load(id);
+  let nft = NFT.load(id);
 
   /**
    * If entity doesn't exist, we create and get the values that aren't expected to change.
    */
-  if (!token) {
+  if (!nft) {
     // Create entity
-    token = new JB721DelegateToken(id);
-    token.tokenId = tokenId;
-    token.address = address;
-    token.projectId = projectId.toI32();
-    token.governanceType = governanceType;
-    token.project = idForProject(projectId, pv);
-
-    // Name
-    const nameCall = jb721DelegateContract.try_name();
-    if (nameCall.reverted) {
-      log.error(
-        "[jb721_v1:handleTransfer] name() reverted for jb721Delegate:{}",
-        [id]
-      );
-      return;
-    }
-    token.name = nameCall.value;
-
-    // Symbol
-    const symbolCall = jb721DelegateContract.try_symbol();
-    if (symbolCall.reverted) {
-      log.error(
-        "[jb721_v1:handleTransfer] symbol() reverted for jb721Delegate:{}",
-        [id]
-      );
-      return;
-    }
-    token.symbol = symbolCall.value;
+    nft = new NFT(id);
+    nft.tokenId = tokenId;
+    nft.projectId = projectId.toI32();
+    nft.project = idForProject(projectId, pv);
+    nft.collection = address.toHexString();
 
     // Tier data
     if (!address_shared_jbTiered721DelegateStore3_2) {
       log.error(
-        "[jb721_v1:handleTransfer] missing address_shared_jbTiered721DelegateStore",
+        "[jb721_3_2:handleTransfer] missing address_shared_jbTiered721DelegateStore",
         []
       );
       return;
@@ -83,7 +67,7 @@ export function handleTransfer(event: Transfer): void {
         Bytes.fromHexString(address_shared_jbTiered721DelegateStore3_2!)
       )
     );
-    const tierCall = jbTiered721DelegateStoreContract.try_tierOf(
+    const tierCall = jbTiered721DelegateStoreContract.try_tierOfTokenId(
       address,
       tokenId,
       true
@@ -91,20 +75,29 @@ export function handleTransfer(event: Transfer): void {
     if (tierCall.reverted) {
       // Will revert for non-tiered tokens, among maybe other reasons
       log.error(
-        "[jb721_v1:handleTransfer] tier() reverted for address {}, tokenId {}",
+        "[jb721_v3_2:handleTransfer] tierOfTokenId() reverted for address {}, tokenId {}",
         [address.toHexString(), tokenId.toString()]
       );
     }
-    token.floorPrice = tierCall.value.price;
-    token.allowManualMint = tierCall.value.allowManualMint;
-    token.category = tierCall.value.category.toI32();
-    token.encodedIPFSUri = tierCall.value.encodedIPFSUri;
-    token.initialQuantity = tierCall.value.initialQuantity.toI32();
-    token.remainingQuantity = tierCall.value.remainingQuantity.toI32();
-    token.reservedRate = tierCall.value.reservedRate;
-    token.reservedTokenBeneficiary = tierCall.value.reservedTokenBeneficiary;
-    token.resolvedUri = tierCall.value.resolvedUri;
-    token.transfersPausable = tierCall.value.transfersPausable;
+    const tierId = idForNFTTier(address, tierCall.value.id);
+    const tier = NFTTier.load(tierId);
+
+    if (tier) {
+      nft.tier = tierId;
+
+      tier.remainingQuantity = tierCall.value.remainingQuantity;
+      tier.save();
+    } else {
+      // Will revert for non-tiered tokens, among maybe other reasons
+      log.error(
+        "[jb721_v3_2:handleTransfer] missing tier for token with address {}, tokenId {}, tierId {}",
+        [
+          address.toHexString(),
+          tokenId.toString(),
+          tierCall.value.id.toString(),
+        ]
+      );
+    }
   }
 
   /**
@@ -114,17 +107,17 @@ export function handleTransfer(event: Transfer): void {
   const tokenUriCall = jb721DelegateContract.try_tokenURI(tokenId);
   if (tokenUriCall.reverted) {
     log.error(
-      "[jb721_v1:handleTransfer] tokenURI() reverted for jb721Delegate:{}",
+      "[jb721_3_2:handleTransfer] tokenURI() reverted for jb721Delegate:{}",
       [id]
     );
     return;
   }
-  token.tokenUri = tokenUriCall.value;
+  nft.tokenUri = tokenUriCall.value;
 
   const receiverId = idForParticipant(projectId, pv, event.params.to);
 
-  token.owner = receiverId;
-  token.save();
+  nft.owner = receiverId;
+  nft.save();
 
   // Create participant if doesn't exist
   let receiver = Participant.load(receiverId);
@@ -140,9 +133,64 @@ export function handleTransfer(event: Transfer): void {
       project.nftsMintedCount = project.nftsMintedCount + 1;
       project.save();
     } else {
-      log.error("[jb721_v1:handleTransfer] Missing project. ID:{}", [
+      log.error("[jb721_3_2:handleTransfer] Missing project. ID:{}", [
         idOfProject,
       ]);
     }
   }
+}
+
+export function handleAddTier(event: AddTier): void {
+  const address = dataSource.address();
+
+  const tierId = event.params.tierId;
+  const data = event.params.data;
+
+  // Tier data
+  if (!address_shared_jbTiered721DelegateStore3_2) {
+    log.error(
+      "[jb721_3_2:handleAddTier] missing address_shared_jbTiered721DelegateStore",
+      []
+    );
+    return;
+  }
+  const jbTiered721DelegateStoreContract = JBTiered721DelegateStore3_2.bind(
+    Address.fromBytes(
+      Bytes.fromHexString(address_shared_jbTiered721DelegateStore3_2!)
+    )
+  );
+  const tierCall = jbTiered721DelegateStoreContract.try_tierOf(
+    address,
+    tierId,
+    true
+  );
+  if (tierCall.reverted) {
+    // Will revert for non-tiered tokens, among maybe other reasons
+    log.error(
+      "[jb721_v3_2:handleTransfer] tierOf() reverted for address {}, tierId {}",
+      [address.toHexString(), tierId.toString()]
+    );
+  }
+
+  saveNewNFTTier(
+    address,
+    event.params.tierId,
+    data.allowManualMint,
+    data.votingUnits,
+    data.price,
+    data.initialQuantity,
+    BigInt.fromI32(data.reservedRate),
+    data.reservedTokenBeneficiary,
+    data.transfersPausable,
+    event.block.timestamp,
+    data.encodedIPFSUri.toHexString(),
+    null,
+    BigInt.fromI32(data.category)
+  );
+}
+
+export function handleRemoveTier(event: RemoveTier): void {
+  const address = dataSource.address();
+
+  store.remove("NFTTier", idForNFTTier(address, event.params.tierId));
 }

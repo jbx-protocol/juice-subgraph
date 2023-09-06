@@ -161,10 +161,6 @@
     },
     "ensRegistry": {
       "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
-    },
-    "defifa721Delegate": {
-      "address": "0xBC855060A8c96076a6778D547D430E6f43E9809A",
-      "startBlock": 15930559
     }
   }
 }

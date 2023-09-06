@@ -28,9 +28,3 @@ export enum ProjectEventKey {
   v1ConfigureEvent,
   v1InitEvent,
 }
-
-export enum JB721GovernanceType {
-  NONE,
-  TIERED,
-  GLOBAL,
-}

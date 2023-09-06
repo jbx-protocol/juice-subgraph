@@ -20,6 +20,8 @@ stdout.write(`Network: ${chalk.cyan.bold(network)}\n`);
 const configTemplatePath = `config/template.json`;
 const configTemplate = JSON.parse(fs.readFileSync(configTemplatePath));
 
+const graftConfigPath = `config/graft.${network}.json`;
+
 const config = JSON.parse(fs.readFileSync(`config/${network}.json`));
 
 if (!config) {
@@ -119,14 +121,22 @@ function writeSubgraph() {
       .toString();
   }
 
-  const graftConfig = config.graft
-    ? `  - grafting\ngraft:\n    base: ${config.graft.base}\n    block: ${config.graft.startBlock}\n`
-    : undefined;
+  let graftConfig;
+  try {
+    const _graftConfig = JSON.parse(fs.readFileSync(graftConfigPath));
 
-  if (graftConfig) {
-    stdout.write(
-      chalk.cyan.bold(`Grafting: ${JSON.stringify(config.graft)}\n`)
-    );
+    if (_graftConfig) {
+      if (_graftConfig.skip === true) {
+        stdout.write(chalk.cyan.bold(`Skipping graft config\n`));
+      } else {
+        graftConfig = _graftConfig;
+        stdout.write(
+          chalk.cyan.bold(`Grafting: ${JSON.stringify(graftConfig)}\n`)
+        );
+      }
+    }
+  } catch (_) {
+    stdout.write(`No grafting config found\n`);
   }
 
   // Write new subgraph.yaml

@@ -20,6 +20,9 @@ subgraph.yaml
 src/contractAddresses.ts
 src/startBlocks.ts
 
+config/graft.*.json
+!config/graft.example.json
+
 spec/out
 
 .env

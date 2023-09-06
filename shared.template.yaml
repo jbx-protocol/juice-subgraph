@@ -47,31 +47,6 @@
           handler: handleSetEnsNameParts
       file: ./src/mappings/shared/jbProjectHandles.ts
   {{ /legacy_jbProjectHandles }}
-  {{ #defifa721Delegate }}
-  - name: Defifa721Delegate
-    kind: ethereum/contract
-    network: {{network}}
-    source:
-      abi: JB721Delegate3
-      address: '{{address}}'
-      startBlock: {{startBlock}}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - Participant
-        - JB721DelegateToken
-      abis:
-        - name: JB721Delegate3
-          file: ./abis/shared/JB721Delegate3.json
-        - name: JBTiered721DelegateStore3
-          file: ./abis/shared/JBTiered721DelegateStore3.json
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-      file: ./src/mappings/shared/defifa721Delegate.ts
-  {{ /defifa721Delegate }}
   {{ #jbTiered721DelegateDeployer3 }}
   - kind: ethereum/contract
     name: JBTiered721DelegateDeployer3
@@ -85,10 +60,16 @@
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - JB721DelegateToken
+        - NFT
+        - NFTTier
+        - NFTCollection
       abis:
         - name: JBTiered721DelegateDeployer3
           file: ./abis/shared/JBTiered721DelegateDeployer3.json
+        - name: JB721Delegate3
+          file: ./abis/shared/JB721Delegate3.json
+        - name: JBTiered721DelegateStore3
+          file: ./abis/shared/JBTiered721DelegateStore3.json
       eventHandlers:
         - event: DelegateDeployed(indexed uint256,address,uint8)
           handler: handleDelegateDeployed
@@ -107,10 +88,16 @@
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - JB721DelegateToken
+        - NFT
+        - NFTTier
+        - NFTCollection
       abis:
         - name: JBTiered721DelegateDeployer3_1
           file: ./abis/shared/JBTiered721DelegateDeployer3_1.json
+        - name: JB721Delegate3_1
+          file: ./abis/shared/JB721Delegate3_1.json
+        - name: JBTiered721DelegateStore3_1
+          file: ./abis/shared/JBTiered721DelegateStore3_1.json
       eventHandlers:
         - event: DelegateDeployed(indexed uint256,address,uint8,address)
           handler: handleDelegateDeployed
@@ -129,10 +116,16 @@
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - JB721DelegateToken
+        - NFT
+        - NFTTier
+        - NFTCollection
       abis:
         - name: JBTiered721DelegateDeployer3_2
           file: ./abis/shared/JBTiered721DelegateDeployer3_2.json
+        - name: JB721Delegate3_2
+          file: ./abis/shared/JB721Delegate3_2.json
+        - name: JBTiered721DelegateStore3_2
+          file: ./abis/shared/JBTiered721DelegateStore3_2.json
       eventHandlers:
         - event: DelegateDeployed(indexed uint256,address,uint8,address)
           handler: handleDelegateDeployed
@@ -151,10 +144,16 @@
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - JB721DelegateToken
+        - NFT
+        - NFTTier
+        - NFTCollection
       abis:
         - name: JBTiered721DelegateDeployer3_3
           file: ./abis/shared/JBTiered721DelegateDeployer3_3.json
+        - name: JBTiered721DelegateStore3_3
+          file: ./abis/shared/JBTiered721DelegateStore3_3.json
+        - name: JB721Delegate3_3
+          file: ./abis/shared/JB721Delegate3_3.json
       eventHandlers:
         - event: DelegateDeployed(indexed uint256,address,uint8,address)
           handler: handleDelegateDeployed
