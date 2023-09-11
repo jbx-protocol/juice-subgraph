@@ -82,7 +82,7 @@ export function handleV2V3Pay(
     caller
   );
 
-  handleTrendingPayment(event.block.timestamp);
+  handleTrendingPayment(event.block.timestamp, pay.id);
 
   if (!isDistribution) {
     const lastPaidTimestamp = event.block.timestamp.toI32();

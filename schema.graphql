@@ -70,10 +70,11 @@ type Project @entity {
   redeemVolume: BigInt!
   redeemVolumeUSD: BigInt!
   currentBalance: BigInt!
+  tokenSupply: BigInt!
   trendingScore: BigInt!
   trendingVolume: BigInt!
   trendingPaymentsCount: Int!
-  createdWithinTrendingWindow: Boolean!
+  createdWithinTrendingWindow: Boolean
 
   nftsMintedCount: Int! # only if project has jb721DelegateTokens
   # Derived event entities

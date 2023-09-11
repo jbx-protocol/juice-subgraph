@@ -1,6 +1,6 @@
 import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 
-import { BurnEvent, Participant } from "../../../../generated/schema";
+import { BurnEvent, Participant, Project } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { updateParticipantBalance } from "../../entities/participant";
 import { saveNewProjectEvent } from "../../entities/projectEvent";
@@ -67,4 +67,10 @@ export function handleV2V3Burn(
     pv,
     ProjectEventKey.burnEvent
   );
+
+  const project = Project.load(idForProject(projectId, pv));
+  if (project) {
+    project.tokenSupply = project.tokenSupply.minus(amount);
+    project.save();
+  }
 }

@@ -40,7 +40,6 @@ export function handleProjectCreate(
   project.trendingScore = BigInt.fromString("0");
   project.trendingVolume = BigInt.fromString("0");
   project.trendingPaymentsCount = BigInt.fromString("0").toI32();
-  project.createdWithinTrendingWindow = true;
   project.owner = owner;
   project.creator = event.transaction.from;
   project.deployer = caller;
@@ -56,6 +55,7 @@ export function handleProjectCreate(
   project.contributorsCount = 0;
   project.redeemCount = 0;
   project.nftsMintedCount = 0;
+  project.tokenSupply = BigInt.fromString("0");
   project.handle = handle;
   project.save();
 
@@ -76,7 +76,7 @@ export function handleProjectCreate(
     projectId,
     projectCreateEvent.id,
     pv,
-    ProjectEventKey.projectCreateEvent,
+    ProjectEventKey.projectCreateEvent
   );
 
   /**

@@ -67,6 +67,12 @@ export function handlePrint(event: Print): void {
   updateParticipantBalance(participant);
 
   participant.save();
+
+  const project = Project.load(idForProject(event.params.projectId, pv));
+  if (project) {
+    project.tokenSupply = project.tokenSupply.plus(event.params.amount);
+    project.save();
+  }
 }
 
 export function handleTicketTransfer(event: Transfer): void {
@@ -125,6 +131,12 @@ export function handleTicketTransfer(event: Transfer): void {
       pv,
       ProjectEventKey.burnEvent
     );
+
+    // const project = Project.load(idForProject(event.params.projectId, pv));
+    // if (project) {
+    //   project.tokenSupply = project.tokenSupply.minus(event.params.amount);
+    //   project.save();
+    // }
   }
 }
 
