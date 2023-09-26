@@ -1,6 +1,5 @@
 import {
   Address,
-  BigInt,
   DataSourceContext,
   log,
 } from "@graphprotocol/graph-ts";
@@ -22,7 +21,7 @@ import {
   Transfer,
   Unstake,
 } from "../../../generated/TicketBooth/TicketBooth";
-import { ADDRESS_ZERO, PROTOCOL_ID } from "../../constants";
+import { ADDRESS_ZERO, BIGINT_0, PROTOCOL_ID } from "../../constants";
 import { address_v1_ticketBooth } from "../../contractAddresses";
 import { ProjectEventKey, PV } from "../../enums";
 import {
@@ -119,7 +118,7 @@ export function handleTicketTransfer(event: Transfer): void {
     burnEvent.txHash = event.transaction.hash;
     burnEvent.amount = event.params.amount;
     burnEvent.stakedAmount = event.params.amount;
-    burnEvent.erc20Amount = BigInt.fromString("0");
+    burnEvent.erc20Amount = BIGINT_0;
     burnEvent.caller = event.params.caller;
     burnEvent.from = event.transaction.from;
     burnEvent.save();
@@ -132,11 +131,11 @@ export function handleTicketTransfer(event: Transfer): void {
       ProjectEventKey.burnEvent
     );
 
-    // const project = Project.load(idForProject(event.params.projectId, pv));
-    // if (project) {
-    //   project.tokenSupply = project.tokenSupply.minus(event.params.amount);
-    //   project.save();
-    // }
+    const project = Project.load(idForProject(event.params.projectId, pv));
+    if (project) {
+      project.tokenSupply = project.tokenSupply.minus(event.params.amount);
+      project.save();
+    }
   }
 }
 
@@ -191,7 +190,7 @@ export function handleRedeem(event: Redeem): void {
         event.params.amount
       );
     } else {
-      participant.stakedBalance = BigInt.fromString("0");
+      participant.stakedBalance = BIGINT_0;
     }
   }
 

@@ -26,6 +26,7 @@ import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { toHexLowercase } from "../../format";
 import { idForParticipant, idForPayEvent, idForProject } from "../../ids";
 import { handleTrendingPayment } from "../../trending";
+import { extrapolateLatestFC } from "../../entities/fundingCycle";
 
 const pv = PV.PV2;
 
@@ -123,6 +124,8 @@ export function handleV2V3Pay(
   }
 
   project.save();
+
+  extrapolateLatestFC(projectId, event.block.timestamp);
 }
 
 function addrEquals(addr: Address, b: string | null): boolean {

@@ -20,7 +20,7 @@ export function handleV2V3Init(
   initEvent.timestamp = event.block.timestamp.toI32();
   initEvent.txHash = event.transaction.hash;
   initEvent.from = event.transaction.from;
-  initEvent.configuration = configuration.toI32();
+  initEvent.configuration = configuration;
   initEvent.basedOn = basedOn.toI32();
   initEvent.save();
 
@@ -29,6 +29,6 @@ export function handleV2V3Init(
     projectId,
     initEvent.id,
     pv,
-    ProjectEventKey.initEvent,
+    ProjectEventKey.initEvent
   );
 }

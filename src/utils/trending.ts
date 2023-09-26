@@ -1,7 +1,7 @@
 import { BigInt, log } from "@graphprotocol/graph-ts";
 
 import { PayEvent, Project, ProtocolLog } from "../../generated/schema";
-import { BEGIN_TRENDING_TIMESTAMP, PROTOCOL_ID } from "../constants";
+import { BEGIN_TRENDING_TIMESTAMP, BIGINT_0, PROTOCOL_ID } from "../constants";
 
 export function handleTrendingPayment(
   timestamp: BigInt,
@@ -68,9 +68,9 @@ export function handleTrendingPayment(
     }
 
     // Reset project trending stats
-    project.trendingScore = BigInt.fromString("0");
-    project.trendingPaymentsCount = BigInt.fromString("0").toI32();
-    project.trendingVolume = BigInt.fromString("0");
+    project.trendingScore = BIGINT_0;
+    project.trendingPaymentsCount = BIGINT_0.toI32();
+    project.trendingVolume = BIGINT_0;
     project.createdWithinTrendingWindow =
       project.createdAt > oldestValidTimestamp;
     project.save();

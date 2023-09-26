@@ -51,7 +51,7 @@ export function handleERC20Transfer(event: Transfer): void {
     burnEvent.holder = event.params.from;
     burnEvent.pv = pv.toString();
     burnEvent.amount = event.params.value;
-    burnEvent.stakedAmount = BigInt.fromString("0");
+    burnEvent.stakedAmount = BigInt.fromI32(0);
     burnEvent.erc20Amount = event.params.value;
     burnEvent.from = event.params.from;
     burnEvent.save();

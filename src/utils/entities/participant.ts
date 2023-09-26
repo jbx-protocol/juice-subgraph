@@ -3,6 +3,7 @@ import { Participant, Wallet } from "../../../generated/schema";
 import { PV } from "../../enums";
 import { toHexLowercase } from "../format";
 import { idForParticipant, idForProject } from "../ids";
+import { BIGINT_0 } from "../../constants";
 
 export function newParticipant(
   pv: PV,
@@ -15,11 +16,11 @@ export function newParticipant(
   participant.project = idForProject(projectId, pv);
   participant.address = wallet;
   participant.wallet = wallet.toHexString();
-  participant.balance = BigInt.fromString("0");
-  participant.stakedBalance = BigInt.fromString("0");
-  participant.erc20Balance = BigInt.fromString("0");
-  participant.volume = BigInt.fromString("0");
-  participant.volumeUSD = BigInt.fromString("0");
+  participant.balance = BIGINT_0;
+  participant.stakedBalance = BIGINT_0;
+  participant.erc20Balance = BIGINT_0;
+  participant.volume = BIGINT_0;
+  participant.volumeUSD = BIGINT_0;
   participant.lastPaidTimestamp = 0;
   participant.paymentsCount = 0;
 
@@ -37,8 +38,8 @@ export function newParticipant(
 export function newWallet(id: string): Wallet {
   const wallet = new Wallet(id);
   wallet.lastPaidTimestamp = 0;
-  wallet.volume = BigInt.fromString("0");
-  wallet.volumeUSD = BigInt.fromString("0");
+  wallet.volume = BIGINT_0;
+  wallet.volumeUSD = BIGINT_0;
   return wallet;
 }
 
