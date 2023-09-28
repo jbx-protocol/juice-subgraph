@@ -1,10 +1,11 @@
 import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 
-import { BurnEvent, Participant } from "../../../../generated/schema";
+import { BurnEvent, Participant, Project } from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { updateParticipantBalance } from "../../entities/participant";
 import { saveNewProjectEvent } from "../../entities/projectEvent";
 import { idForParticipant, idForProject, idForProjectTx } from "../../ids";
+import { BIGINT_0 } from "../../../constants";
 
 const pv = PV.PV2;
 
@@ -24,7 +25,7 @@ export function handleV2V3Burn(
     return;
   }
 
-  let burnedStakedAmount = BigInt.fromString("0");
+  let burnedStakedAmount = BIGINT_0;
 
   // Only update stakedBalance, since erc20Balance will be updated by erc20 handler
   if (preferClaimedTokens) {
@@ -39,7 +40,7 @@ export function handleV2V3Burn(
       burnedStakedAmount = amount;
       participant.stakedBalance = participant.stakedBalance.minus(amount);
     } else {
-      participant.stakedBalance = BigInt.fromString("0");
+      participant.stakedBalance = BIGINT_0;
     }
   }
 
@@ -56,7 +57,7 @@ export function handleV2V3Burn(
   burnEvent.txHash = event.transaction.hash;
   burnEvent.amount = amount;
   burnEvent.stakedAmount = burnedStakedAmount;
-  burnEvent.erc20Amount = BigInt.fromString("0");
+  burnEvent.erc20Amount = BIGINT_0;
   burnEvent.caller = caller;
   burnEvent.from = event.transaction.from;
   burnEvent.save();
@@ -67,4 +68,10 @@ export function handleV2V3Burn(
     pv,
     ProjectEventKey.burnEvent
   );
+
+  const project = Project.load(idForProject(projectId, pv));
+  if (project) {
+    project.tokenSupply = project.tokenSupply.minus(amount);
+    project.save();
+  }
 }

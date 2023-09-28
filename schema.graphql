@@ -70,10 +70,12 @@ type Project @entity {
   redeemVolume: BigInt!
   redeemVolumeUSD: BigInt!
   currentBalance: BigInt!
+  tokenSupply: BigInt!
   trendingScore: BigInt!
   trendingVolume: BigInt!
   trendingPaymentsCount: Int!
-  createdWithinTrendingWindow: Boolean!
+  createdWithinTrendingWindow: Boolean
+  latestFundingCycle: Int!
 
   nftsMintedCount: Int! # only if project has jb721DelegateTokens
   # Derived event entities
@@ -679,15 +681,61 @@ type ConfigureEvent @entity {
   txHash: Bytes!
   from: Bytes!
   caller: Bytes!
+  fundingCycle: FundingCycle @derivedFrom(field: "configureEvent")
 
   duration: Int!
   weight: BigInt!
   discountRate: BigInt!
   ballot: Bytes!
   memo: String
-
   mustStartAtOrAfter: Int!
-  configuration: Int!
+  configuration: BigInt!
+}
+
+# v2, v3
+type InitEvent @entity {
+  id: ID!
+  projectId: Int!
+  project: Project!
+  timestamp: Int!
+  txHash: Bytes!
+  from: Bytes!
+
+  configuration: BigInt!
+  basedOn: Int!
+}
+
+# v2, v3
+type MigrateEvent @entity {
+  id: ID!
+  projectId: Int!
+  project: Project!
+  timestamp: Int!
+  txHash: Bytes!
+  from: Bytes!
+  caller: Bytes!
+
+  amount: BigInt!
+  to: Bytes!
+}
+
+# v2+
+type FundingCycle @entity {
+  id: ID!
+  projectId: Int!
+  project: Project!
+  configureEvent: ConfigureEvent
+  number: Int!
+  basedOn: Int!
+
+  startTimestamp: Int!
+  duration: Int!
+  weight: BigInt!
+  discountRate: BigInt!
+  ballot: Bytes!
+
+  mustStartAtOrAfter: Int
+  configuration: BigInt!
   metadata: BigInt!
 
   setTerminalsAllowed: Boolean!
@@ -712,33 +760,8 @@ type ConfigureEvent @entity {
 
   dataSource: Bytes
   metametadata: Int!
-}
 
-# v2, v3
-type InitEvent @entity {
-  id: ID!
-  projectId: Int!
-  project: Project!
-  timestamp: Int!
-  txHash: Bytes!
-  from: Bytes!
-
-  configuration: Int!
-  basedOn: Int!
-}
-
-# v2, v3
-type MigrateEvent @entity {
-  id: ID!
-  projectId: Int!
-  project: Project!
-  timestamp: Int!
-  txHash: Bytes!
-  from: Bytes!
-  caller: Bytes!
-
-  amount: BigInt!
-  to: Bytes!
+  withdrawnAmount: BigInt!
 }
 
 # v3

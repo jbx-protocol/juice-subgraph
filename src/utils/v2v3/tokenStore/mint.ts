@@ -1,12 +1,12 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
 
-import { Participant } from "../../../../generated/schema";
+import { Participant, Project } from "../../../../generated/schema";
 import { PV } from "../../../enums";
 import {
   newParticipant,
   updateParticipantBalance,
 } from "../../entities/participant";
-import { idForParticipant } from "../../ids";
+import { idForParticipant, idForProject } from "../../ids";
 
 const pv = PV.PV2;
 
@@ -33,4 +33,10 @@ export function handleV2V3Mint(
   updateParticipantBalance(receiver);
 
   receiver.save();
+
+  const project = Project.load(idForProject(projectId, pv));
+  if (project) {
+    project.tokenSupply = project.tokenSupply.plus(amount);
+    project.save();
+  }
 }

@@ -92,3 +92,7 @@ export function idForMigrateEvent(
 ): string {
   return `${idForProject(projectId, pv)}-${blockNumber.toString()}`;
 }
+
+export function idForFundingCycle(projectId: BigInt, number: BigInt): string {
+  return `${idForProject(projectId, PV.PV2)}-${number.toString()}`;
+}

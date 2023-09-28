@@ -6,7 +6,7 @@ import {
   ProtocolV1Log,
   ProtocolV2Log,
 } from "../../../generated/schema";
-import { PROTOCOL_ID } from "../../constants";
+import { BIGINT_0, PROTOCOL_ID } from "../../constants";
 import { ProjectEventKey, PV } from "../../enums";
 import { saveNewProjectEvent } from "../entities/projectEvent";
 import {
@@ -35,27 +35,28 @@ export function handleProjectCreate(
     ]);
     return;
   }
+  project.latestFundingCycle = BIGINT_0.toI32();
   project.projectId = projectId.toI32();
   project.pv = pv.toString();
-  project.trendingScore = BigInt.fromString("0");
-  project.trendingVolume = BigInt.fromString("0");
-  project.trendingPaymentsCount = BigInt.fromString("0").toI32();
-  project.createdWithinTrendingWindow = true;
+  project.trendingScore = BIGINT_0;
+  project.trendingVolume = BIGINT_0;
+  project.trendingPaymentsCount = BIGINT_0.toI32();
   project.owner = owner;
   project.creator = event.transaction.from;
   project.deployer = caller;
   project.createdAt = event.block.timestamp.toI32();
   project.metadataUri = metadataUri;
   project.metadataDomain = metadataDomain;
-  project.volume = BigInt.fromString("0");
-  project.volumeUSD = BigInt.fromString("0");
-  project.redeemVolume = BigInt.fromString("0");
-  project.redeemVolumeUSD = BigInt.fromString("0");
-  project.currentBalance = BigInt.fromString("0");
+  project.volume = BIGINT_0;
+  project.volumeUSD = BIGINT_0;
+  project.redeemVolume = BIGINT_0;
+  project.redeemVolumeUSD = BIGINT_0;
+  project.currentBalance = BIGINT_0;
   project.paymentsCount = 0;
   project.contributorsCount = 0;
   project.redeemCount = 0;
   project.nftsMintedCount = 0;
+  project.tokenSupply = BIGINT_0;
   project.handle = handle;
   project.save();
 
@@ -76,7 +77,7 @@ export function handleProjectCreate(
     projectId,
     projectCreateEvent.id,
     pv,
-    ProjectEventKey.projectCreateEvent,
+    ProjectEventKey.projectCreateEvent
   );
 
   /**

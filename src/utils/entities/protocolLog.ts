@@ -1,19 +1,19 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { log } from "@graphprotocol/graph-ts";
 import {
   ProtocolLog,
   ProtocolV1Log,
   ProtocolV2Log,
   ProtocolV3Log,
 } from "../../../generated/schema";
-import { PROTOCOL_ID } from "../../constants";
+import { BIGINT_0, PROTOCOL_ID } from "../../constants";
 
 export function newProtocolLog(): ProtocolLog {
   const protocolLog = new ProtocolLog(PROTOCOL_ID);
   protocolLog.projectsCount = 0;
-  protocolLog.volume = BigInt.fromString("0");
-  protocolLog.volumeUSD = BigInt.fromString("0");
-  protocolLog.volumeRedeemed = BigInt.fromString("0");
-  protocolLog.volumeRedeemedUSD = BigInt.fromString("0");
+  protocolLog.volume = BIGINT_0;
+  protocolLog.volumeUSD = BIGINT_0;
+  protocolLog.volumeRedeemed = BIGINT_0;
+  protocolLog.volumeRedeemedUSD = BIGINT_0;
   protocolLog.paymentsCount = 0;
   protocolLog.redeemCount = 0;
   protocolLog.erc20Count = 0;
@@ -25,10 +25,10 @@ export function newProtocolV1Log(): ProtocolV1Log {
   const protocolV1Log = new ProtocolV1Log(PROTOCOL_ID);
   protocolV1Log.log = PROTOCOL_ID;
   protocolV1Log.projectsCount = 0;
-  protocolV1Log.volume = BigInt.fromString("0");
-  protocolV1Log.volumeUSD = BigInt.fromString("0");
-  protocolV1Log.volumeRedeemed = BigInt.fromString("0");
-  protocolV1Log.volumeRedeemedUSD = BigInt.fromString("0");
+  protocolV1Log.volume = BIGINT_0;
+  protocolV1Log.volumeUSD = BIGINT_0;
+  protocolV1Log.volumeRedeemed = BIGINT_0;
+  protocolV1Log.volumeRedeemedUSD = BIGINT_0;
   protocolV1Log.paymentsCount = 0;
   protocolV1Log.redeemCount = 0;
   protocolV1Log.erc20Count = 0;
@@ -39,10 +39,10 @@ export function newProtocolV2Log(): ProtocolV2Log {
   const protocolV2Log = new ProtocolV2Log(PROTOCOL_ID);
   protocolV2Log.log = PROTOCOL_ID;
   protocolV2Log.projectsCount = 0;
-  protocolV2Log.volume = BigInt.fromString("0");
-  protocolV2Log.volumeUSD = BigInt.fromString("0");
-  protocolV2Log.volumeRedeemed = BigInt.fromString("0");
-  protocolV2Log.volumeRedeemedUSD = BigInt.fromString("0");
+  protocolV2Log.volume = BIGINT_0;
+  protocolV2Log.volumeUSD = BIGINT_0;
+  protocolV2Log.volumeRedeemed = BIGINT_0;
+  protocolV2Log.volumeRedeemedUSD = BIGINT_0;
   protocolV2Log.paymentsCount = 0;
   protocolV2Log.redeemCount = 0;
   protocolV2Log.erc20Count = 0;
@@ -53,10 +53,10 @@ export function newProtocolV3Log(): ProtocolV3Log {
   const protocolV3Log = new ProtocolV3Log(PROTOCOL_ID);
   protocolV3Log.log = PROTOCOL_ID;
   protocolV3Log.projectsCount = 0;
-  protocolV3Log.volume = BigInt.fromString("0");
-  protocolV3Log.volumeUSD = BigInt.fromString("0");
-  protocolV3Log.volumeRedeemed = BigInt.fromString("0");
-  protocolV3Log.volumeRedeemedUSD = BigInt.fromString("0");
+  protocolV3Log.volume = BIGINT_0;
+  protocolV3Log.volumeUSD = BIGINT_0;
+  protocolV3Log.volumeRedeemed = BIGINT_0;
+  protocolV3Log.volumeRedeemedUSD = BIGINT_0;
   protocolV3Log.paymentsCount = 0;
   protocolV3Log.redeemCount = 0;
   protocolV3Log.erc20Count = 0;
@@ -74,10 +74,10 @@ export function updateProtocolEntity(): void {
   }
 
   let projectsCount = 0;
-  let volume = BigInt.fromString("0");
-  let volumeUSD = BigInt.fromString("0");
-  let volumeRedeemed = BigInt.fromString("0");
-  let volumeRedeemedUSD = BigInt.fromString("0");
+  let volume = BIGINT_0;
+  let volumeUSD = BIGINT_0;
+  let volumeRedeemed = BIGINT_0;
+  let volumeRedeemedUSD = BIGINT_0;
   let paymentsCount = 0;
   let redeemCount = 0;
   let erc20Count = 0;

@@ -70,7 +70,7 @@ export function handleV1Pay(
       caller
     );
 
-    handleTrendingPayment(event.block.timestamp);
+    handleTrendingPayment(event.block.timestamp, pay.id);
   }
 
   if (!isDistribution) {

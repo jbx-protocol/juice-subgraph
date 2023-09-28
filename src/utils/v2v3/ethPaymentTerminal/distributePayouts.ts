@@ -5,6 +5,7 @@ import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
 import { idForProject, idForProjectTx } from "../../ids";
 import { v3USDPriceForEth } from "../../prices/v3Prices";
+import { extrapolateLatestFC } from "../../entities/fundingCycle";
 
 const pv = PV.PV2;
 
@@ -78,4 +79,10 @@ export function handleV2V3DistributePayouts(
   }
   project.currentBalance = project.currentBalance.minus(distributedAmount);
   project.save();
+
+  const latestFc = extrapolateLatestFC(projectId, event.block.timestamp);
+  if (latestFc) {
+    latestFc.withdrawnAmount = latestFc.withdrawnAmount.plus(amount);
+    latestFc.save();
+  }
 }
