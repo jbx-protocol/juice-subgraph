@@ -51,10 +51,11 @@ export function extrapolateLatestFC(
     fc.save();
 
     project.latestFundingCycle = fc.number;
-    project.save();
 
     counter++;
   }
+
+  project.save();
 
   return fc;
 }
@@ -79,6 +80,9 @@ export function newFundingCycle(
   fc.projectId = projectId.toI32();
   fc.project = idForProject(projectId, PV.PV2);
   fc.startTimestamp = startTimestamp.toI32();
+  if (duration.gt(BIGINT_0)) {
+    fc.endTimestamp = startTimestamp.plus(duration).toI32();
+  }
   fc.duration = duration.toI32();
   fc.weight = weight;
   fc.discountRate = discountRate;

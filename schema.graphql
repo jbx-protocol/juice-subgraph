@@ -729,6 +729,7 @@ type FundingCycle @entity {
   basedOn: Int!
 
   startTimestamp: Int!
+  endTimestamp: Int
   duration: Int!
   weight: BigInt!
   discountRate: BigInt!

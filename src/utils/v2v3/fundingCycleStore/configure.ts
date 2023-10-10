@@ -1,12 +1,14 @@
-import { Address, BigInt, ethereum, store } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
 
 import { ProjectEventKey, PV } from "../../../enums";
 import { newPV2ConfigureEvent } from "../../entities/configureEvent";
 import { saveNewProjectEvent } from "../../entities/projectEvent";
-import { newFundingCycle } from "../../entities/fundingCycle";
+import {
+  extrapolateLatestFC,
+  newFundingCycle,
+} from "../../entities/fundingCycle";
 import { Project } from "../../../../generated/schema";
-import { idForFundingCycle, idForProject } from "../../ids";
-import { BIGINT_0, BIGINT_1 } from "../../../constants";
+import { idForProject } from "../../ids";
 
 const pv = PV.PV2;
 
@@ -47,6 +49,8 @@ export function handleV2V3Configure(
     ProjectEventKey.configureEvent
   );
 
+  extrapolateLatestFC(projectId, event.block.timestamp);
+
   const fc = newFundingCycle(
     projectId,
     number,
@@ -62,33 +66,6 @@ export function handleV2V3Configure(
   );
   fc.configureEvent = configureEvent.id;
   fc.save();
-
-  if (number.gt(BIGINT_1)) {
-    // Interpolate all previous funding cycles, beginning with `number` and iterating downward
-    for (
-      let i = number.minus(BIGINT_1);
-      i.gt(BIGINT_0);
-      i = i.minus(BIGINT_1)
-    ) {
-      if (store.get("FundingCycle", idForFundingCycle(projectId, i))) {
-        // break once stored fc with matching number is found
-        break;
-      }
-
-      newFundingCycle(
-        projectId,
-        i,
-        basedOn, // Interpolated fcs should all have the same basedOn
-        metadata,
-        startTimestamp.minus(number.minus(i).times(duration)),
-        duration,
-        weight,
-        discountRate,
-        ballot,
-        configuration
-      ).save();
-    }
-  }
 
   const project = Project.load(idForProject(projectId, pv));
   if (project) {
