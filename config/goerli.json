@@ -81,6 +81,10 @@
       "address": "0x55e778fBD008Cf3e29beaed2FB3E7F55f89cB487",
       "startBlock": 9162460
     },
+    "jbTiered721DelegateDeployer3_4": {
+      "address": "0xa69De301D5c676C504a8A8B044527Aa024d833bA",
+      "startBlock": 9518267
+    },
     "jbTiered721DelegateStore3": {
       "address": "0x3ea16deff07f031e86bd13c55961eb576cd579a6",
       "startBlock": 7885285

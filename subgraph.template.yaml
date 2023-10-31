@@ -132,6 +132,31 @@ templates:
           handler: handleAddTier
         - event: RemoveTier(indexed uint256,address)
           handler: handleRemoveTier
+  - name: JB721Delegate3_4
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: JB721Delegate3_4
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/shared/jb721DelegateToken3_4.ts
+      entities:
+        - Participant
+        - NFT
+      abis:
+        - name: JB721Delegate3_4
+          file: ./abis/shared/JB721Delegate3_4.json
+        - name: JBTiered721DelegateStore3_3
+          file: ./abis/shared/JBTiered721DelegateStore3_3.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: AddTier(indexed uint256,(uint104,uint32,uint32,uint16,address,bytes32,uint24,bool,bool,bool,bool),address)
+          handler: handleAddTier
+        - event: RemoveTier(indexed uint256,address)
+          handler: handleRemoveTier
   - name: ENSTextResolver
     kind: ethereum/contract
     network: {{network}}

@@ -159,4 +159,32 @@
           handler: handleDelegateDeployed
       file: ./src/mappings/shared/jbTiered721DelegateDeployer3_3.ts
   {{ /jbTiered721DelegateDeployer3_3 }}
+  {{ #jbTiered721DelegateDeployer3_4 }}
+  - kind: ethereum/contract
+    name: JBTiered721DelegateDeployer3_4
+    network: {{network}}
+    source:
+      abi: JBTiered721DelegateDeployer3_4
+      address: '{{address}}'
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - NFT
+        - NFTTier
+        - NFTCollection
+      abis:
+        - name: JBTiered721DelegateDeployer3_4
+          file: ./abis/shared/JBTiered721DelegateDeployer3_4.json
+        - name: JBTiered721DelegateStore3_3
+          file: ./abis/shared/JBTiered721DelegateStore3_3.json
+        - name: JB721Delegate3_4
+          file: ./abis/shared/JB721Delegate3_4.json
+      eventHandlers:
+        - event: DelegateDeployed(indexed uint256,address,uint8)
+          handler: handleDelegateDeployed
+      file: ./src/mappings/shared/jbTiered721DelegateDeployer3_4.ts
+  {{ /jbTiered721DelegateDeployer3_4 }}
 {{ /shared }}
