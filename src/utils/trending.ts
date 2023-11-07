@@ -25,8 +25,9 @@ export function handleTrendingPayment(
 
   const _latestPayEventId = parseInt(latestPayEventId);
 
-  const SECS_30_DAYS = 30 * 24 * 60 * 60;
-  const oldestValidTimestamp = timestamp.toI32() - SECS_30_DAYS;
+  const TRENDING_WINDOW_DAYS = 7;
+  const oldestValidTimestamp =
+    timestamp.toI32() - TRENDING_WINDOW_DAYS * 24 * 60 * 60;
 
   /**
    * We first reset the trending score for ALL trending projects.
