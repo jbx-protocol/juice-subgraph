@@ -53,10 +53,15 @@ See `config/graft.example.json` as an example.
 
 ## Deploying
 
-To deploy a new subgraph version, first prepare the subgraph for the intended network:
+To deploy a new subgraph version, first prepare the subgraph for the intended network. This will:
+- Run a sanity check beyond the integrated graph-cli checks that ensures there are no missing or extra mapping functions or dataSources
+- Generate files with network-dependent variables `src/startBlocks.ts` and `src/contractAddresses.ts`
+- Generate schema types
+- Generate the subgraph.yaml
 
 ```bash
-yarn prep <network-name> # mainnet, goerli
+yarn prep:goerli
+yarn prep:mainnet
 ```
 
 - Generates TS types for the schema defined in `schema.graphql`

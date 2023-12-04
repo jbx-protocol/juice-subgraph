@@ -191,6 +191,7 @@ type PayEvent @entity {
   caller: Bytes!
 
   isDistribution: Boolean!
+  distributionFromProjectId: Int
   beneficiary: Bytes!
   amount: BigInt!
   amountUSD: BigInt

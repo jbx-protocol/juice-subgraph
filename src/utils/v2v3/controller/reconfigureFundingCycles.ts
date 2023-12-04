@@ -11,7 +11,7 @@ export function handleV2V3ReconfigureFundingCycles(
   memo: string
 ): void {
   const configureEventId = idForConfigureEvent(projectId, pv, event);
-  const configureEvent = ConfigureEvent.load(configureEventId);
+  const configureEvent = ConfigureEvent.loadInBlock(configureEventId);
 
   if (!configureEvent) {
     log.error(

@@ -5,7 +5,7 @@ import { idForPrevPayEvent } from "../../ids";
 
 export function handleV2V3ProcessFee(projectId: BigInt): void {
   const id = idForPrevPayEvent();
-  const pay = PayEvent.load(id);
+  const pay = PayEvent.loadInBlock(id);
   if (!pay) {
     log.error("[handleV2V3ProcessFee] Missing PayEvent. ID:{}", [id]);
     return;

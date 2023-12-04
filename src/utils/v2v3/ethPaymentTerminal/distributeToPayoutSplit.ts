@@ -1,8 +1,12 @@
 import { Address, BigInt, Bytes, ethereum, log } from "@graphprotocol/graph-ts";
-import { DistributeToPayoutSplitEvent } from "../../../../generated/schema";
+import {
+  DistributeToPayoutSplitEvent,
+  PayEvent,
+} from "../../../../generated/schema";
 import { ProjectEventKey, PV } from "../../../enums";
 import { saveNewProjectTerminalEvent } from "../../entities/projectEvent";
-import { idForProject, idForProjectTx } from "../../ids";
+import { idForPrevPayEvent, idForProject, idForProjectTx } from "../../ids";
+import { BIGINT_0 } from "../../../constants";
 
 const pv = PV.PV2;
 
@@ -75,4 +79,23 @@ export function handleV2V3DistributeToPayoutSplit(
     terminal,
     caller
   );
+
+  // DistributeToPayoutSplitEvent always occurs right after the Pay event, in the case of split payments to projects
+  if (splitProjectId.gt(BIGINT_0)) {
+    const payEvent = PayEvent.loadInBlock(idForPrevPayEvent());
+
+    if (!payEvent || payEvent.projectId != splitProjectId.toI32()) {
+      log.warning(
+        "[handleV2V3DistributeToPayoutSplit] Missing or mismatched pay event. splitProjectId: {}, payEvent projectId: {}",
+        [
+          splitProjectId.toString(),
+          payEvent ? payEvent.projectId.toString() : "missing",
+        ]
+      );
+      return;
+    } else {
+      payEvent.distributionFromProjectId = projectId.toI32();
+      payEvent.save();
+    }
+  }
 }

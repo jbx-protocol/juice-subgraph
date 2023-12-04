@@ -2,7 +2,6 @@ const chalk = require("chalk");
 const fs = require("fs");
 const jsyaml = require("js-yaml");
 const mustache = require("mustache");
-const graph = require("@graphprotocol/graph-cli/src/cli");
 
 const PREFIXES = ["v1", "v2", "v3", "shared"];
 
@@ -286,5 +285,3 @@ writeFilesFromTemplate();
 writeSubgraph();
 
 checkHandlers();
-
-graph.run("codegen");
