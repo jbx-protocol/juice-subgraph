@@ -155,6 +155,6 @@ export function handleTrendingPayment(
  */
 function updateTrendingScore(project: Project): void {
   project.trendingScore = project.trendingVolume.times(
-    BigInt.fromI32(project.paymentsCount).pow(2)
+    BigInt.fromI32(project.trendingPaymentsCount).pow(2)
   );
 }
