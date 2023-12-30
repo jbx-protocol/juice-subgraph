@@ -193,6 +193,7 @@ type PayEvent @entity {
   isDistribution: Boolean!
   distributionFromProjectId: Int
   beneficiary: Bytes!
+  beneficiaryTokenCount: BigInt!
   amount: BigInt!
   amountUSD: BigInt
   note: String!

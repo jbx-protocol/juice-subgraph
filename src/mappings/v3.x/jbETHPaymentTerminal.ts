@@ -91,6 +91,7 @@ export function handlePay(event: Pay): void {
     amountUSD,
     terminal,
     event.params.beneficiary,
+    event.params.beneficiaryTokenCount,
     event.params.caller,
     event.params.payer,
     event.params.memo
