@@ -15,7 +15,7 @@ type ProtocolLog @entity {
   redeemCount: Int!
   erc20Count: Int!
   trendingLastUpdatedTimestamp: Int!
-  oldestTrendingPayEvent: PayEvent
+  latestInvalidTrendingPayEvent: PayEvent
 }
 
 type _Schema_

@@ -42,7 +42,7 @@ export function handleV2V3Pay(
   memo: string
 ): void {
   const idOfProject = idForProject(projectId, pv);
-  const project = Project.load(idOfProject);
+  let project = Project.load(idOfProject);
 
   if (!project) {
     log.error("[handleV2V3Pay] Missing project. ID:{}", [idOfProject]);
@@ -53,6 +53,7 @@ export function handleV2V3Pay(
   if (amountUSD) project.volumeUSD = project.volumeUSD.plus(amountUSD);
   project.currentBalance = project.currentBalance.plus(amount);
   project.paymentsCount = project.paymentsCount + 1;
+  project.save();
 
   // For distribute events, caller will be a terminal
   const isDistribution = isTerminalAddress(caller);
@@ -94,7 +95,10 @@ export function handleV2V3Pay(
 
     // update contributorsCount
     if (!participant || participant.volume.isZero()) {
+      // Reload project before saving again
+      project = Project.load(idOfProject)!;
       project.contributorsCount = project.contributorsCount + 1;
+      project.save();
     }
 
     if (!participant) {
@@ -122,8 +126,6 @@ export function handleV2V3Pay(
     wallet.lastPaidTimestamp = lastPaidTimestamp;
     wallet.save();
   }
-
-  project.save();
 
   extrapolateLatestFC(projectId, event.block.timestamp);
 }

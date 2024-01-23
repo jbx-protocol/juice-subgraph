@@ -3,6 +3,9 @@ import { BigInt, log } from "@graphprotocol/graph-ts";
 import { PayEvent, Project, ProtocolLog } from "../../generated/schema";
 import { BEGIN_TRENDING_TIMESTAMP, BIGINT_0, PROTOCOL_ID } from "../constants";
 
+const TRENDING_WINDOW_DAYS = 7;
+const BUFFER_TIME_MIN = 20;
+
 export function handleTrendingPayment(
   timestamp: BigInt,
   latestPayEventId: string
@@ -13,85 +16,31 @@ export function handleTrendingPayment(
   if (!protocolLog) return;
 
   /**
-   * These calculations are big, so we only run them at most every 20 min
+   * This routine can be demanding, so we only run it once per buffer time (at most)
    */
-  const SECS_20_MIN = 20 * 60;
   if (
     protocolLog.trendingLastUpdatedTimestamp >=
-    timestamp.toI32() - SECS_20_MIN
+    timestamp.toI32() - BUFFER_TIME_MIN * 60
   ) {
     return;
   }
 
-  const _latestPayEventId = parseInt(latestPayEventId);
-
-  const TRENDING_WINDOW_DAYS = 7;
   const oldestValidTimestamp =
     timestamp.toI32() - TRENDING_WINDOW_DAYS * 24 * 60 * 60;
-
-  /**
-   * We first reset the trending score for ALL trending projects.
-   *
-   * We reverse-chronologically iterate over all payments until we get to the
-   * `oldestTrendingPayEvent`.
-   *
-   * We know that if a project hasn't received a payment after the
-   * `oldestTrendingPayEvent` timestamp, its trending stats are already 0 due
-   * to having been previously reset.
-   */
   const didResetProjects: string[] = [];
-  for (let i = _latestPayEventId; i > 0; i--) {
-    // Reverse iterate over payEvents. Math op converts int to float, so we split decimal
-    const payEventId = i.toString().split(".")[0];
-
-    // Stop once oldest trending payEvent is reached
-    if (payEventId == protocolLog.oldestTrendingPayEvent) break;
-
-    const payEvent = PayEvent.load(payEventId);
-    if (!payEvent) {
-      log.error(
-        "[handleTrendingPayment: reset stats] Failed to load payEvent {}",
-        [payEventId]
-      );
-      continue;
-    }
-
-    // No need to reset a project twice
-    if (didResetProjects.includes(payEvent.project)) continue;
-
-    const project = Project.load(payEvent.project);
-    if (!project) {
-      log.error(
-        "[handleTrendingPayment: reset stats] Failed to load project {}",
-        [payEvent.project]
-      );
-      continue;
-    }
-
-    // Reset project trending stats
-    project.trendingScore = BIGINT_0;
-    project.trendingPaymentsCount = BIGINT_0.toI32();
-    project.trendingVolume = BIGINT_0;
-    project.createdWithinTrendingWindow =
-      project.createdAt > oldestValidTimestamp;
-    project.save();
-
-    // Store project id so we don't load it twice
-    didResetProjects.push(project.id);
-  }
+  let latestInvalidTrendingPayEvent: string | null = null;
 
   /**
-   * Next we calculate new trending stats.
+   * Reverse-chronologically iterate over all payments until we get to the `latestInvalidTrendingPayEvent`, which is the most recent pay event that fell outside of the trending window during the last update to trending stats.
    *
-   * We reverse-chronologically iterate over all payments until we get to the
-   * `oldestValidTimestamp`. We then record new `oldestTrendingPayEvent`.
-   *
-   * For each payment, update the trending stats of the project that received it.
+   * For the project that received each payment, reset its stats (once) and then update its trending stats.
    */
-  for (let i = _latestPayEventId; i > 0; i--) {
-    // Reverse iterate over payEvents. Math op converts int to float, so we split decimal
-    const payEventId = i.toString().split(".")[0];
-
+  for (
+    let i = parseInt(latestPayEventId);
+    i > parseInt((protocolLog.latestInvalidTrendingPayEvent || "0")!);
+    i--
+  ) {
+    const payEventId = i.toString().split(".")[0]; // Math op converts int to float, so we split decimal
     const payEvent = PayEvent.load(payEventId);
     if (!payEvent) {
       log.error(
@@ -99,17 +48,6 @@ export function handleTrendingPayment(
         [payEventId]
       );
       continue;
-    }
-
-    // Stop once payEvent timestamp is outside of trending time window
-    if (payEvent.timestamp < oldestValidTimestamp) {
-      /**
-       * Store new `oldestTrendingPayEvent`. The next time we calculate
-       * trending stats, we'll know that this pay event and all previous
-       * pay events can be ignored.
-       */
-      protocolLog.oldestTrendingPayEvent = payEvent.id;
-      break;
     }
 
     const project = Project.load(payEvent.project);
@@ -121,26 +59,55 @@ export function handleTrendingPayment(
       continue;
     }
 
-    // Update properties for each trending payEvent
-    project.trendingPaymentsCount = project.trendingPaymentsCount + 1;
-    project.trendingVolume = project.trendingVolume.plus(payEvent.amount);
+    /**
+     * Every trending project should be reset to 0 before any calculations. This ensures any previous stats from payments now outside of the trending window are discarded.
+     */
+    if (!didResetProjects.includes(project.id)) {
+      project.trendingScore = BIGINT_0;
+      project.trendingPaymentsCount = BIGINT_0.toI32();
+      project.trendingVolume = BIGINT_0;
+      project.createdWithinTrendingWindow =
+        project.createdAt > oldestValidTimestamp;
+      project.save();
+
+      if (project.id == "2-618") {
+        log.warning("RESET Project — count: {}, volume: {}", [
+          project.trendingPaymentsCount.toString(),
+          project.trendingVolume.toString(),
+        ]);
+      }
+
+      didResetProjects.push(project.id);
+    }
 
     /**
-     * The score for a project is recalculated with every payment it has
-     * received within the trending window, using its stored
-     * `trendingPaymentsCount` and `trendingVolume` properties
+     * Set new latestInvalidTrendingPayEvent once timestamp is outside of trending time window.
      */
+    if (payEvent.timestamp < oldestValidTimestamp) {
+      if (latestInvalidTrendingPayEvent == null) {
+        latestInvalidTrendingPayEvent = payEvent.id;
+      }
+
+      continue;
+    }
+
+    /**
+     * Update project trending stats
+     */
+    project.trendingPaymentsCount = project.trendingPaymentsCount + 1;
+    project.trendingVolume = project.trendingVolume.plus(payEvent.amount);
     updateTrendingScore(project);
     project.save();
   }
 
+  protocolLog.latestInvalidTrendingPayEvent = latestInvalidTrendingPayEvent;
   protocolLog.trendingLastUpdatedTimestamp = timestamp.toI32();
   protocolLog.save();
 
   log.info(
     "[handleTrendingPayment] Updated trending stats using payments {}-{} at timestamp {}",
     [
-      (protocolLog.oldestTrendingPayEvent || "0") as string,
+      (protocolLog.latestInvalidTrendingPayEvent || "0") as string,
       latestPayEventId.toString(),
       timestamp.toString().split(".")[0],
     ]
