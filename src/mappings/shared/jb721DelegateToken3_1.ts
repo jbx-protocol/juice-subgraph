@@ -77,6 +77,7 @@ export function handleTransfer(event: Transfer): void {
         "[jb721_v3_1:handleTransfer] tierOfTokenId() reverted for address {}, tokenId {}",
         [address.toHexString(), tokenId.toString()]
       );
+      return;
     }
     const tierId = idForNFTTier(address, tierCall.value.id);
     const tier = NFTTier.load(tierId);

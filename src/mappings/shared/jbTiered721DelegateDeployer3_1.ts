@@ -93,6 +93,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
       "[jbTiered721DelegateDeployer_3_1:handleDelegateDeployed] maxTier() reverted for {}",
       [address.toHexString()]
     );
+    return;
   }
 
   const tiersCall = jbTiered721DelegateStoreContract.try_tiers(
@@ -107,6 +108,7 @@ export function handleDelegateDeployed(event: DelegateDeployed): void {
       "[jbTiered721DelegateDeployer:handleDelegateDeployed] tiers() reverted for {}",
       [address.toHexString()]
     );
+    return;
   }
 
   for (let i = 0; i < tiersCall.value.length; i++) {

@@ -33,6 +33,7 @@ export function handleConfigure(event: Configure): void {
         event.params.configuration.toHexString(),
       ]
     );
+    return;
   }
 
   handleV2V3Configure(

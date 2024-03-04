@@ -78,6 +78,7 @@ export function handleTransfer(event: Transfer): void {
         "[jb721_v3_3:handleTransfer] tierOfTokenId() reverted for address {}, tokenId {}",
         [address.toHexString(), tokenId.toString()]
       );
+      return;
     }
     const tierId = idForNFTTier(address, tierCall.value.id);
     const tier = NFTTier.load(tierId);
@@ -170,6 +171,7 @@ export function handleAddTier(event: AddTier): void {
       "[jb721_v3_4:handleTransfer] tierOf() reverted for address {}, tierId {}",
       [address.toHexString(), tierId.toString()]
     );
+    return;
   }
 
   saveNewNFTTier(
