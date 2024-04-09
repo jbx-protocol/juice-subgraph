@@ -1,5 +1,5 @@
 {
-  "network": "goerli",
+  "network": "sepolia",
   "v2": {
     "jbProjects": {
       "address": "0x43CB8FCe4F0d61579044342A5d5A027aB7aE4D63",

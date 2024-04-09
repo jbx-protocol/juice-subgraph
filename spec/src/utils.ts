@@ -3,7 +3,7 @@ import axios from "axios";
 
 dotenv.config();
 
-export const network = process.env.NETWORK as "mainnet" | "goerli";
+export const network = process.env.NETWORK as "mainnet" | "goerli" | "sepolia";
 
 if (!network) {
   console.error("Error: network is undefined");
