@@ -1,0 +1,68 @@
+{
+  "network": "sepolia",
+  "v2": {
+    "jbProjects": {
+      "address": "0x43CB8FCe4F0d61579044342A5d5A027aB7aE4D63",
+      "startBlock": 3446219
+    }
+  },
+  "v3": {
+    "jbController3_1": {
+      "address": "0x0c750ac5805AC3357b72554e3AE70840BBD09A98",
+      "startBlock": 3446225
+    },
+    "jbTokenStore": {
+      "address": "0x25fdda0eBD9e979b8c1657780045Cf87392a14E4",
+      "startBlock": 3446222
+    },
+    "jbETHPaymentTerminal3_1": {
+      "address": "0xd93B5BCaE492a55D17c0ecdA3d7F635645939760",
+      "startBlock": 3446233
+    },
+    "jbETHPaymentTerminal3_1_1": {
+      "address": "0x82129d4109625F94582bDdF6101a8Cd1a27919f5",
+      "startBlock": 3798041
+    },
+    "jbETHPaymentTerminal3_1_2": {
+      "address": "0x55FF1D8093166c1fF9664efd613D8C543b95feFc",
+      "startBlock": 5300225
+    },
+    "jbFundAccessConstraintsStore": {
+      "address": "0x1170fd70b5EEBcee2158d064925ecD66CFd112b1",
+      "startBlock": 3446224
+    },
+    "jbETHERC20ProjectPayerDeployer": {
+      "address": "0xA4A758FD9db2Ef94163Aa5b720a174c2cE1bD4b5",
+      "startBlock": 3446234
+    },
+    "jbETHERC20SplitsPayerDeployer": {
+      "address": "0xaB68D1bc17fD9cfBb61E7eFe051015A57a3a7723",
+      "startBlock": 3446235
+    },
+    "jbFundingCycleStore": {
+      "address": "0xCb881e166d527010B9eF11159b487f907040D7C4",
+      "startBlock": 3446221
+    },
+    "jbPrices": {
+      "address": "0x6EF51C14045B386A0ae6374E48a9EeB928105ffb",
+      "startBlock": 3446218
+    }
+  },
+  "shared": {
+    "jbProjectHandles": {
+      "address": "0xF041486C260A8b0023b7D5efF8A30906d10bFD7b",
+      "startBlock": 5663523
+    },
+    "jbTiered721DelegateDeployer3_4": {
+      "address": "0x79c66fCEC6b9843EEa0c28397609d6DA3e5E1781",
+      "startBlock": 5663291
+    },
+    "jbTiered721DelegateStore3_3": {
+      "address": "0xd7F9Ee12b5De2388109C9dD4fAAf39BEfe4C92FB",
+      "startBlock": 5663291
+    },
+    "ensRegistry": {
+      "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
+    }
+  }
+}

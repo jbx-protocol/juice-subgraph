@@ -5,6 +5,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "prep:goerli": "node scripts/prepare.js goerli && yarn codegen",
+    "prep:sepolia": "node scripts/prepare.js sepolia && yarn codegen",
     "prep:mainnet": "node scripts/prepare.js mainnet && yarn codegen",
     "lint": "eslint --ext .ts ./",
     "lint-staged": "lint-staged",
