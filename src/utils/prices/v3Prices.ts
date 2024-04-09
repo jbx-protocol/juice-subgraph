@@ -1,6 +1,6 @@
 import { Address, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 
-import { JBPrices3 } from "../../../generated/JBETHPaymentTerminal3/JBPrices3";
+import { JBPrices3 } from "../../../generated/JBETHPaymentTerminal3_1_2/JBPrices3";
 import {
   BIGINT_WAD,
   V2V3_CURRENCY_ETH,

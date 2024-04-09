@@ -6,9 +6,9 @@ import {
   log,
 } from "@graphprotocol/graph-ts";
 
-import { DelegateDeployed } from "../../../generated/JBTiered721DelegateDeployer3_3/JBTiered721DelegateDeployer3_3";
+import { DelegateDeployed } from "../../../generated/JBTiered721DelegateDeployer3_4/JBTiered721DelegateDeployer3_4";
 import { JB721Delegate3_4 as JB721Delegate3_4DataSource } from "../../../generated/templates";
-import { JBTiered721DelegateStore3_3 } from "../../../generated/JBTiered721DelegateDeployer3_3/JBTiered721DelegateStore3_3";
+import { JBTiered721DelegateStore3_3 } from "../../../generated/JBTiered721DelegateDeployer3_4/JBTiered721DelegateStore3_3";
 import { JB721Delegate3_4 } from "../../../generated/JBTiered721DelegateDeployer3_4/JB721Delegate3_4";
 import { PV } from "../../enums";
 import { NFTCollection } from "../../../generated/schema";
