@@ -19,6 +19,8 @@ import {
   address_v2_jbETHPaymentTerminal,
   address_v3_jbETHPaymentTerminal,
   address_v3_jbETHPaymentTerminal3_1,
+  address_v3_jbETHPaymentTerminal3_1_1,
+  address_v3_jbETHPaymentTerminal3_1_2,
 } from "../../../contractAddresses";
 import { ProjectEventKey, PV } from "../../../enums";
 import { newParticipant, newWallet } from "../../entities/participant";
@@ -141,6 +143,8 @@ function isTerminalAddress(addr: Address): boolean {
     addrEquals(addr, address_v1_terminalV1_1) ||
     addrEquals(addr, address_v2_jbETHPaymentTerminal) ||
     addrEquals(addr, address_v3_jbETHPaymentTerminal) ||
-    addrEquals(addr, address_v3_jbETHPaymentTerminal3_1)
+    addrEquals(addr, address_v3_jbETHPaymentTerminal3_1) ||
+    addrEquals(addr, address_v3_jbETHPaymentTerminal3_1_1) ||
+    addrEquals(addr, address_v3_jbETHPaymentTerminal3_1_2)
   );
 }
